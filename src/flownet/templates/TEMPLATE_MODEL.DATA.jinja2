@@ -1,0 +1,134 @@
+-------
+RUNSPEC
+-------
+
+TITLE
+    Flownet Generated Case
+
+CPR
+/
+
+METRIC
+
+DIMENS
+    {{ nx }} 1 1 /
+
+MESSAGES
+ 1* 1* 1* 1000 /
+
+START
+   {{ startdate.strftime('%d %b %Y').upper() }} /
+
+WELLDIMS
+   {{ welldims.number_wells }} {{ welldims.max_connections }} 1 100 /
+
+UNIFOUT
+
+TABDIMS
+--ntsfun ntpvt nssfun nppvt ntfip nrpvt ntend
+ {{ dims["NTSFUN"]|default("1*") }} 1 {{ dims["NSSFUN"]|default("1*") }} 60 1 60 60 /
+
+EQLDIMS
+-- ntequl nprsvd ndrxvd ttrvd nstrvd
+ {{ dims["NTEQUL"]|default("1*") }} 1* 1* 1* 1* /
+
+{% if 'RUNSPEC' in sections_with_include -%}
+INCLUDE
+   './include/RUNSPEC_PARAMETERS.inc' /
+{%- endif %}
+
+INCLUDE
+ './include/RUNSPEC.inc' /
+
+----
+GRID
+----
+
+NEWTRAN
+
+INIT
+
+GDFILE
+   'FLOWNET_REALIZATION.EGRID' /
+
+INCLUDE
+   './include/ACTNUM.grdecl' /
+
+{% if 'GRID' in sections_with_include -%}
+INCLUDE
+   './include/GRID_PARAMETERS.inc' /
+{%- endif %}
+
+-----
+EDIT
+-----
+
+{% if 'EDIT' in sections_with_include -%}
+INCLUDE
+   './include/EDIT_PARAMETERS.inc' /
+{%- endif %}
+
+-----
+PROPS
+-----
+
+{% if 'PROPS' in sections_with_include -%}
+INCLUDE
+   './include/PROPS_PARAMETERS.inc' /
+{%- endif %}
+
+INCLUDE
+ './include/PROPS.inc' /
+
+-------
+REGIONS
+-------
+
+{% if 'REGIONS' in sections_with_include -%}
+INCLUDE
+   './include/REGIONS_PARAMETERS.inc' /
+{%- endif %}
+
+--------
+SOLUTION
+--------
+
+{% if 'SOLUTION' in sections_with_include -%}
+INCLUDE
+   './include/SOLUTION_PARAMETERS.inc' /
+{%- endif %}
+
+INCLUDE
+ './include/SOLUTION.inc' /
+
+RPTRST
+ BASIC=4 CONV /
+
+-------
+SUMMARY
+-------
+
+INCLUDE
+ './include/SUMMARY.inc' /
+
+--------
+SCHEDULE
+--------
+
+RPTRST
+ BASIC=4 /
+
+INCLUDE
+ './include/SCHEDULE.inc' /
+
+{% if schedule|length > 0 -%}
+INCLUDE
+   './include/HISTORY_SCHEDULE.inc' /
+{%- endif %}
+
+{% if pred_schedule_file is not none -%}
+INCLUDE
+   './include/PREDICTION_SCHEDULE.inc' /
+{%- endif %}
+
+END

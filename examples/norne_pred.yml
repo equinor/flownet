@@ -1,0 +1,15 @@
+name: Norne
+
+ert:
+  pred_schedule_file: ./trivial_prediction_schedule.sch
+  static_include_files: ./norne_static
+  realizations:
+    num_realizations: 10
+    required_success_percent: 20
+    max_runtime: 300 # Maximum runtime of on single realization in seconds
+  simulator:
+    name: Flow
+  queue:
+    system: LOCAL # LOCAL or LSF
+    name: mr # ignored when system is LOCAL
+    max_running: 10 # Maximum number of simultaneous runs

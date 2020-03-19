@@ -1,0 +1,58 @@
+language: python
+dist: bionic
+
+os:
+  - linux
+
+cache:
+  directories:
+    - $VIRTUAL_ENV
+
+python:
+  - "3.6"
+  - "3.7"
+
+env:
+  # These are calculated by running e.g. "md5sum ./setup.py"
+  - SETUP_MD5="fa95e17e1836b433f275d695c62b21b1" BUILD_SCRIPT_MD5="51ac979535fec015e2e630bf5622a3bb"
+
+before_install:
+  - echo "Checking that current md5sum (`md5sum ./setup.py`) equals $SETUP_MD5"
+  - md5sum -c <<<"$SETUP_MD5 *setup.py"  # If this fails, update md5 sum of setup.py
+  - echo "Checksum correct for setup.py"
+
+  - echo "Checking that current md5sum (`md5sum ./build_environment.sh`) equals $BUILD_SCRIPT_MD5"
+  - md5sum -c <<<"$BUILD_SCRIPT_MD5 *build_environment.sh"  # If this fails, update md5sum of build_environment.sh
+  - echo "Checksum correct for build_environment.sh"
+
+  - sudo apt-get -qq update
+  - export PYTHONPATH=$VIRTUAL_ENV/lib/python$TRAVIS_PYTHON_VERSION/dist-packages:$PYTHONPATH
+  - echo "The virtual env is $VIRTUAL_ENV"
+  - |
+    if [ -f "$VIRTUAL_ENV/lib/libecl.so" ]; then
+      echo "Cached virtual environment exists... reuse"
+      bash ./build_environment.sh $VIRTUAL_ENV true;
+    else
+      echo "Cached virtual environment does NOT exist... compile and install"
+      pip freeze | grep -vw "pip" | xargs pip uninstall -y;
+      pip install --upgrade pip;
+      bash ./build_environment.sh $VIRTUAL_ENV;
+    fi
+
+install:
+  - pip install .
+  - pip install .[tests]
+  - webviz certificate --auto-install --force
+
+script:
+  - black --check examples/ tests/ src/ setup.py
+  - pylint src/ tests/ setup.py
+  - mypy --ignore-missing-imports src/ tests/ setup.py
+  - pytest --cov=flownet --cov-fail-under=50 ./tests 
+  - pushd examples
+  - flownet ahm ../tests/configs/norne_parameters.yml ./some_ahm_run
+  - flownet pred ../tests/configs/norne_pred.yml ./some_pred_run ./some_ahm_run
+  - popd
+  - pushd docs
+  - make html
+  - popd
