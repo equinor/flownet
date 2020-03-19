@@ -1,0 +1,76 @@
+smry:
+ {%- for well_name in schedule.get_wells(kw_class="WCONHIST") -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="oil_rate") -%}
+   {% if loop.first and not loop.last: %}
+ - key: WOPR:{{ well_name }}
+   observations:
+   {%- elif not loop.first: %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.oil_rate }}
+      error: {{ [0.1 * kw.oil_rate, 50] | max }}
+   {%- endif -%}
+   {%- endfor %}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="gas_rate") -%}
+   {% if loop.first and not loop.last: %}
+ - key: WGPR:{{ well_name }}
+   observations:
+   {%- elif not loop.first: %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.gas_rate }}
+      error: {{ [0.1 * kw.gas_rate, 100000] | max }}
+   {%- endif -%}
+   {%- endfor %}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="water_rate") -%}
+   {% if loop.first and not loop.last: %}
+ - key: WWPR:{{ well_name }}
+   observations:
+   {%- elif not loop.first: %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.water_rate }}
+      error: {{ [0.1 * kw.water_rate, 50] | max }}
+   {%- endif -%}
+   {%- endfor %}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="bhp") -%}
+   {% if loop.first and not loop.last: %}
+ - key: WBHP:{{ well_name }}
+   observations:
+   {%- elif not loop.first: %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.bhp }}
+      error: {{ [0.05 * kw.bhp, 10] | max }}
+   {%- endif -%}
+   {%- endfor %}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="thp") -%}
+   {% if loop.first and not loop.last: %}
+ - key: WTHP:{{ well_name }}
+   observations:
+   {%- elif not loop.first: %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.thp }}
+      error: {{ [0.05 * kw.thp, 5] | max }}
+   {%- endif -%}
+   {%- endfor %}
+{%- endfor -%}
+
+{% for well_name in schedule.get_wells(kw_class="WCONINJH") %}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="bhp") -%}
+   {% if loop.first and not loop.last: %}
+ - key: WBHP:{{ well_name }}
+   observations:
+   {%- elif not loop.first: %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.bhp }}
+      error: {{ [0.05 * kw.bhp, 10] | max }}
+   {%- endif -%}
+   {%- endfor %}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp") -%}
+   {% if loop.first and not loop.last: %}
+ - key: WTHP:{{ well_name }}
+   observations:
+   {%- elif not loop.first: %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.bhp }}
+      error: {{ [0.05 * kw.thp, 5] | max }}
+   {%- endif -%}
+   {%- endfor %}
+ {%- endfor -%}

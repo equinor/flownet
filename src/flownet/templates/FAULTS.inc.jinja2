@@ -1,0 +1,12 @@
+--
+-- DEFINE FAULTS IN THE GRID GEOMETRY
+--
+-- FAULT ------------ FAULT TRACE -------------
+-- NAME I1 I2 J1 J2 K1 K2 FACE
+FAULTS
+{%- for fault, coordinates in faults.items() %}
+{% for coordinate in coordinates -%}
+ '{{ fault }}' {{ coordinate + 1 }} {{ coordinate + 1 }} 1 1 1 1 'X+' /
+{% endfor -%}
+{% endfor -%}
+/

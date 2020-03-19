@@ -1,0 +1,49 @@
+{%- for date in schedule.get_dates()[0:num_training_dates-1] -%}
+
+{%- if schedule.get_keywords(date=date, kw_class="WCONHIST"): %}
+{%- for kw in schedule.get_keywords(date=date, kw_class="WCONHIST"): -%}
+
+{%- if not schedule.get_well_start_date(kw.well_name) == date: %}
+
+{%- set index_name = date.strftime('%d_%m_%Y') -%}
+{%- set date_formatted = date.strftime('%d/%m/%Y') %}
+
+{%- if not isnan(kw.oil_rate): -%}
+SUMMARY_OBSERVATION WOPR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.oil_rate }}; ERROR = {{ [0.1 * kw.oil_rate, 50] | max }}; DATE = {{ date_formatted  }}; KEY = WOPR:{{ kw.well_name }}; };
+{%- endif %}
+{%- if not isnan(kw.gas_rate): %}
+SUMMARY_OBSERVATION WGPR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.gas_rate }}; ERROR = {{ [0.1 * kw.gas_rate, 100000] | max }}; DATE  = {{ date_formatted  }}; KEY = WGPR:{{ kw.well_name }}; };
+{%- endif %}
+{%- if not isnan(kw.bhp): %}
+SUMMARY_OBSERVATION WBHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.bhp }}; ERROR = {{ [0.05 * kw.bhp, 10] | max }}; DATE = {{ date_formatted  }}; KEY = WBHP:{{ kw.well_name }}; };
+{%- endif %}
+{%- if not isnan(kw.thp): %}
+SUMMARY_OBSERVATION WTHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.thp }}; ERROR = {{ [0.05 * kw.thp, 5] | max }}; DATE = {{ date_formatted  }}; KEY = WTHP:{{ kw.well_name }}; };
+{%- endif %}
+
+{%- endif %}
+
+{% endfor %}
+{%- endif %}
+
+{%- if schedule.get_keywords(date=date, kw_class="WCONINJH"): %}
+{%- for kw in schedule.get_keywords(date=date, kw_class="WCONINJH"): -%}
+
+{%- if not schedule.get_well_start_date(kw.well_name) == date: %}
+
+{%- set index_name = date.strftime('%d_%m_%Y') -%}
+{%- set date_formatted = date.strftime('%d/%m/%Y') %}
+
+{%- if not isnan(kw.bhp): %}
+SUMMARY_OBSERVATION WBHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.bhp }}; ERROR = {{ [0.05 * kw.bhp, 10] | max }}; DATE = {{ date_formatted  }}; KEY = WBHP:{{ kw.well_name }}; };
+{%- endif %}
+{%- if not isnan(kw.thp): %}
+SUMMARY_OBSERVATION WTHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.thp }}; ERROR = {{ [0.05 * kw.thp, 5] | max }}; DATE = {{ date_formatted  }}; KEY = WTHP:{{ kw.well_name }}; };
+{%- endif %}
+
+{%- endif %}
+
+{% endfor %}
+{%- endif %}
+
+{%- endfor -%}

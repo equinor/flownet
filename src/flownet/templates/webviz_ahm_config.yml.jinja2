@@ -1,0 +1,38 @@
+# The configuration files uses YAML (https://en.wikipedia.org/wiki/YAML).
+
+title: Flownet
+
+shared_settings:
+  scratch_ensembles: 
+  {%- for iteration in iterations[-1:] %}
+    iter-{{ iteration }}: {{ runpath[:-2] | replace("%d","*") }}{{ iteration }}
+  {%- endfor %}
+
+pages:
+ - title: History match
+   content: 
+    - The plot below show the results of the run for the different ensembles
+    - HistoryMatch:
+        ensembles:
+        {%- for iteration in iterations[-1:] %}
+         - iter-{{ iteration }}
+        {%- endfor %}
+        observation_file: ./observations.yamlobs
+ - title: Parameter distribution
+   content: 
+    - ParameterDistribution:
+        ensembles:
+        {%- for iteration in iterations[-1:] %}
+         - iter-{{ iteration }}
+        {%- endfor %}
+ - title: Reservoir simulation time series
+   content:
+    - ReservoirSimulationTimeSeries:
+        ensembles:
+        {%- for iteration in iterations[-1:] %}
+         - iter-{{ iteration }}
+        {%- endfor %}
+        obsfile: ./observations.yamlobs
+        sampling: monthly
+        options:
+          visualization: statistics

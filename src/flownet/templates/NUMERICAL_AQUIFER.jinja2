@@ -1,0 +1,9 @@
+
+-- NUMERICAL AQUIFER VOLUMES
+{%- for aquid in unique_aquids: %}
+BOX
+ {{ aquifer_i[aquid-1][0] + 1 }} {{ aquifer_i[aquid-1][-1] + 1 }} 1 1 1 1 /
+PORV
+ {{ aquifer_i[aquid-1]|length}}*{{ (total_bulkvolume * parameters[aquid-1]["size_in_bulkvolumes"])/(unique_aquids|length * aquifer_i[aquid-1]|length) }} /
+ENDBOX
+{%- endfor %}

@@ -1,0 +1,112 @@
+name: Norne
+
+flownet:
+  data_source:
+    eclipse_case: ../tests/data/norne/NORNE_ATW2013
+    resample: M
+  cell_length: 100
+  additional_flow_nodes: 100
+  additional_node_candidates: 1000
+  hull_factor: 1.2
+  random_seed: 123456
+  perforation_handling_strategy: bottom_point
+  fast_pyscal: True
+  training_set_fraction: 0.7 # Fraction of observations (from 0 to 1) to use as training data
+  training_set_end_date: 2005-01-31 #YYYY-MM-DD. If defined training set fraction is calculated from this date
+  fault_tolerance: 1.0e-5
+
+ert:
+  static_include_files: ./norne_static
+  realizations:
+    num_realizations: 10
+    required_success_percent: 70
+    max_runtime: 600   # Maximum runtime of on single realization in seconds
+  queue:
+    system: LOCAL   # LOCAL or LSF
+    name: mr   # ignored when system is LOCAL
+    max_running: 1   # Maximum number of simultaneous runs
+  ensemble_weights:
+    - 4
+    - 2
+    - 1
+
+model_parameters:
+  permeability:
+    min: 0.1
+    max: 5000
+  porosity:
+    min: 0.05
+    max: 0.3
+  bulkvolume_mult:
+    mean: 0.17
+    max: 0.68
+  fault_mult:
+    min: 1.0e-5
+    max: 100
+    logunif: True
+  relative_permeability:
+    scheme: individual
+    swirr:
+      min: 0.01
+      max: 0.04
+    swl:
+      min: 0.05
+      max: 0.09
+    swcr:
+      min: 0.30
+      max: 0.35
+    sorw:
+      min: 0.2
+      max: 0.3
+    sorg:
+      min: 0.4
+      max: 0.5
+    sgcr:
+      min: 0.03
+      max: 0.08
+    krwend:
+      min: 0.5
+      max: 0.7
+    krowend:
+      min: 0.3
+      max: 0.5
+    krgend:
+      min: 0.9
+      max: 1.0
+    krogend:
+      min: 0.9
+      max: 1.0
+    nw:
+      min: 0.5
+      max: 2.5
+    now:
+      min: 0.5
+      max: 1.0
+    ng:
+      min: 1.0
+      max: 1.5
+    nog:
+      min: 1.5
+      max: 2.0
+  equil:
+    datum_pressure:
+      min: 250
+      max: 275
+    owc_depth:
+      min: 2675
+      max: 2725
+    goc_depth:
+      min: 2575
+      max: 2600
+  rock_compressibility:
+    reference_pressure: 277
+    min: 4.8e-5
+    max: 5.2e-5
+  aquifer:
+    scheme: individual
+    fraction: 0.25
+    delta_depth: 1000
+    size_in_bulkvolumes:
+      min: 1.0e-6
+      max: 2
+      loguniform: True
