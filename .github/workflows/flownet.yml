@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - master
+  
+jobs:
+  FlowNet:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        python-version: ['3.6', '3.7']
+    env:
+      VENV_PATH: ${{ github.workspace }}/flownet_venv
+      PYTHONPATH: ${{ github.workspace }}/flownet_venv/lib/python${{ matrix.python-version }}/dist-packages
+    steps:
+      - name: Checkout commit locally
+        uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache virtual environment
+        id: cache-venv
+        uses: actions/cache@v1
+        with:
+          path: $VENV_PATH
+          key: ${{ runner.os }}-${{ hashFiles('setup.py') }}-${{ hashFiles('build_environment.sh') }}
+
+      - name: Build venv and install non-python dependencies
+        run: bash ./build_environment.sh $VENV_PATH ${{ steps.cache-venv.outputs.cache-hit }}
+
+      - name: Install FlowNet
+        run: |
+          source $VENV_PATH/bin/activate
+          pip install .
+
+      - name: Install test dependencies
+        run: |
+          source $VENV_PATH/bin/activate
+          pip install .[tests]
+      
+      - name: List all installed packages
+        run: |
+          source $VENV_PATH/bin/activate
+          pip freeze
+
+      - name: Check code style & linting
+        run: |
+          source $VENV_PATH/bin/activate
+          black --check examples/ tests/ src/ setup.py
+          pylint src/ tests/ setup.py
+          mypy --ignore-missing-imports src/ tests/ setup.py
+
+      - name: Run tests
+        run: |
+          source $VENV_PATH/bin/activate
+          webviz certificate --force
+          pytest --cov=flownet --cov-fail-under=50 ./tests
+
+      - name: Run full FlowNet example
+        run: |
+          source $VENV_PATH/bin/activate
+          pushd examples
+          flownet ahm ../tests/configs/norne_parameters.yml ./some_ahm_run
+          flownet pred ../tests/configs/norne_pred.yml ./some_pred_run ./some_ahm_run
+          popd
+
+      - name: Build documentation
+        run: |
+          source $VENV_PATH/bin/activate
+          pushd docs
+          make html
+          popd
