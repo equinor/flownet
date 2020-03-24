@@ -313,6 +313,7 @@ def create_schema(_to_abs_path) -> Dict:
                     "equil": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
+                            "scheme": {MK.Type: types.String, MK.Required: False},
                             "datum_depth": {MK.Type: types.Number, MK.Required: False},
                             "datum_pressure": {
                                 MK.Type: types.NamedDict,
@@ -403,6 +404,7 @@ DEFAULT_VALUES = {
         "permeability": {"loguniform": True},
         "porosity": {"loguniform": False},
         "bulkvolume_mult": {"loguniform": True},
+        "equil": {"scheme": "global"},
     },
 }
 

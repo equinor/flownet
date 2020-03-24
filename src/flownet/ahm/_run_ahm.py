@@ -244,8 +244,21 @@ def run_flownet_history_mathing(config: ConfigSuite.snapshot, args: argparse.Nam
     # Equilibration                         #
     #########################################
 
-    # Create a Pandas dataframe with all EQLNUM
-    df_eqlnum = pd.DataFrame([1] * len(network.grid.model.unique()), columns=["EQLNUM"])
+    # Create a Pandas dataframe with all EQLNUM based on the chosen scheme
+    if config.model_parameters.equil.scheme == "individual":
+        df_eqlnum = pd.DataFrame(
+            range(1, len(network.grid.model.unique()) + 1), columns=["EQLNUM"]
+        )
+    elif config.model_parameters.equil.scheme == "global":
+        df_eqlnum = pd.DataFrame(
+            [1] * len(network.grid.model.unique()), columns=["EQLNUM"]
+        )
+    else:
+        raise ValueError(
+            f"The equilibration scheme "
+            f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
+            f"Valid options are 'global' or 'individual'."
+        )
 
     # Create a pandas dataframe with all parameter definition for each individual tube
     equil_dist_values = pd.DataFrame(
@@ -346,7 +359,9 @@ def run_flownet_history_mathing(config: ConfigSuite.snapshot, args: argparse.Nam
         RelativePermeability(
             relperm_dist_values, ti2ci, df_satnum, fast_pyscal=fast_pyscal
         ),
-        Equilibration(equil_dist_values, ti2ci, df_eqlnum, equil_config.datum_depth),
+        Equilibration(
+            equil_dist_values, network, ti2ci, df_eqlnum, equil_config.datum_depth
+        ),
         RockCompressibility(
             config.model_parameters.rock_compressibility.reference_pressure,
             config.model_parameters.rock_compressibility.min,
