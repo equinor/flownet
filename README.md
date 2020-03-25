@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.com/equinor/flownet.svg?token=zKASDqz9PfgMt9WutZq4&branch=master)](https://travis-ci.com/equinor/flownet)
-[![Python 3.6 | 3.7 | 3.8](https://img.shields.io/badge/python-3.6%20|%203.7%20|%203.8-blue.svg)](https://www.python.org/)
+[![Python 3.6 | 3.7](https://img.shields.io/badge/python-3.6%20|%203.7-blue.svg)](https://www.python.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 # _FlowNet_
