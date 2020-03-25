@@ -1,6 +1,7 @@
-[![Build Status](https://travis-ci.com/equinor/flownet.svg?token=zKASDqz9PfgMt9WutZq4&branch=master)](https://travis-ci.com/equinor/flownet)
 [![Python 3.6 | 3.7](https://img.shields.io/badge/python-3.6%20|%203.7-blue.svg)](https://www.python.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/equinor/flownet.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/equinor/flownet/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/equinor/flownet.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/equinor/flownet/context:python)
 
 # _FlowNet_
 
