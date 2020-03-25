@@ -1,0 +1,493 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>flownet.realization._schedule module &mdash; FlowNet  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="flownet.realization._simulation_keywords module" href="flownet.realization._simulation_keywords.html" />
+    <link rel="prev" title="flownet.realization._render_realization module" href="flownet.realization._render_realization.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> FlowNet
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="flownet.html">flownet package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="flownet.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="flownet.ahm.html">flownet.ahm package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.config_parser.html">flownet.config_parser package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.data.html">flownet.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.ert.html">flownet.ert package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.network_model.html">flownet.network_model package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.parameters.html">flownet.parameters package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.prediction.html">flownet.prediction package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="flownet.realization.html">flownet.realization package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="flownet.realization.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.realization.html#module-flownet.realization">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.utils.html">flownet.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="flownet.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flownet.html#module-flownet">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">FlowNet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="flownet.html">flownet package</a> &raquo;</li>
+        
+          <li><a href="flownet.realization.html">flownet.realization package</a> &raquo;</li>
+        
+      <li>flownet.realization._schedule module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/flownet.realization._schedule.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-flownet.realization._schedule">
+<span id="flownet-realization-schedule-module"></span><h1>flownet.realization._schedule module<a class="headerlink" href="#module-flownet.realization._schedule" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="flownet.realization._schedule.Schedule">
+<em class="property">class </em><code class="sig-prename descclassname">flownet.realization._schedule.</code><code class="sig-name descname">Schedule</code><span class="sig-paren">(</span><em class="sig-param">network: flownet.network_model._network_model.NetworkModel</em>, <em class="sig-param">df_production_data: pandas.core.frame.DataFrame</em>, <em class="sig-param">case_name: str</em>, <em class="sig-param">control_mode: str = 'RESV'</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Python class to to store all schedule items for the Flownet run.</p>
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule._calculate_compdat">
+<code class="sig-name descname">_calculate_compdat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._calculate_compdat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper Function that generates the COMPDAT keywords based on geometrical information from the NetworkModel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule._calculate_entity_dates">
+<code class="sig-name descname">_calculate_entity_dates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._calculate_entity_dates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function that calculate the start dates of all entities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule._calculate_wconhist">
+<code class="sig-name descname">_calculate_wconhist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._calculate_wconhist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function that generates the WCONHIST keywords based on loaded production data.
+Currently the data is loaded from hard-coded filepath.</p>
+<p>A WCONHIST keyword will be written out for each line in the provided production data.
+Therefore, potential up-sampling needs to be done before the schedule is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule._calculate_wconinjh">
+<code class="sig-name descname">_calculate_wconinjh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._calculate_wconinjh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function that generates the WCONINJ keywords based on loaded production data.
+Currently the data is loaded from hard-coded filepath.</p>
+<p>A WCONINJH keyword will be written out for each line in the provided
+production data. Therefore, potential up-sampling needs to be done before
+the schedule is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule._calculate_welspecs">
+<code class="sig-name descname">_calculate_welspecs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._calculate_welspecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function that generates the WELSPECS keywords based which wells there are in the production data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule._create_schedule">
+<code class="sig-name descname">_create_schedule</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._create_schedule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function that calls all functions involved in creating the schedule for the FlowNet run.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule._retrieve_date_first_non_zero_prodinj">
+<em class="property">static </em><code class="sig-name descname">_retrieve_date_first_non_zero_prodinj</code><span class="sig-paren">(</span><em class="sig-param">df_production_data: pandas.core.frame.DataFrame</em>, <em class="sig-param">well_name: str</em><span class="sig-paren">)</span> &#x2192; Optional[datetime.date]<a class="headerlink" href="#flownet.realization._schedule.Schedule._retrieve_date_first_non_zero_prodinj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to retrieve the date of first non-zero production or injection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_production_data</strong> – DataFrame with all production data</p></li>
+<li><p><strong>well_name</strong> – Name of the well to retrieve date for</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The first date of non-zero production or None if no such date exist</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule.append">
+<code class="sig-name descname">append</code><span class="sig-paren">(</span><em class="sig-param">_keyword</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule.append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to append Keyword’s to the Schedule instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>_keyword</strong> – Keyword instance to append</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule.get_compdat">
+<code class="sig-name descname">get_compdat</code><span class="sig-paren">(</span><em class="sig-param">well_name: str = None</em><span class="sig-paren">)</span> &#x2192; List[flownet.realization._simulation_keywords.COMPDAT]<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_compdat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to retrieve all COMPDAT entries defined for a particular well.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>well_name</strong> – Name of the well to get COMPDAT’s for</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>COMPDAT keywords defined for a particular well</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule.get_dates">
+<code class="sig-name descname">get_dates</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[datetime.date]<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_dates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to retrieve a sorted list of all unique dates in the schedule object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Listing of PyDate’s in the Schedule</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule.get_first_date">
+<code class="sig-name descname">get_first_date</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; datetime.date<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_first_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to look-up the first date in the schedule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Schedule’s first date.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule.get_keywords">
+<code class="sig-name descname">get_keywords</code><span class="sig-paren">(</span><em class="sig-param">date: datetime.date = None</em>, <em class="sig-param">kw_class: Union[flownet.realization._simulation_keywords.Keyword</em>, <em class="sig-param">str</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">well_name: str = None</em>, <em class="sig-param">ignore_nan: str = None</em><span class="sig-paren">)</span> &#x2192; List[flownet.realization._simulation_keywords.Keyword]<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_keywords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all keywords at a given date and/or of a
+particular keyword class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date</strong> – Date at which to lookup keywords</p></li>
+<li><p><strong>kw_class</strong> – keyword class or class name string</p></li>
+<li><p><strong>well_name</strong> – well name</p></li>
+<li><p><strong>ignore_nan</strong> – keyword attribute to ignore nan values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>keywords at specified date and/or with a specific well name and/or of a specific keyword class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule.get_nr_observations">
+<code class="sig-name descname">get_nr_observations</code><span class="sig-paren">(</span><em class="sig-param">training_set_fraction: float</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_nr_observations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to retrieve the number of unique observations in the training process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>training_set_fraction</strong> – Fraction of dates to use in the training process.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The number of unique observations used in the training process</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule.get_vfp">
+<code class="sig-name descname">get_vfp</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_vfp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to retrieve the VFP tables associated with all wells.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of VFP table numbers or None if no such date exist</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule.get_well_start_date">
+<code class="sig-name descname">get_well_start_date</code><span class="sig-paren">(</span><em class="sig-param">well_name: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Optional[datetime.date]<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_well_start_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to retrieve the start date of a well.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>well_name</strong> – Name of the well to get the start-date for</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the date if found, otherwise None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule.get_wells">
+<code class="sig-name descname">get_wells</code><span class="sig-paren">(</span><em class="sig-param">kw_class: Union[flownet.realization._simulation_keywords.Keyword</em>, <em class="sig-param">str</em>, <em class="sig-param">None] = None</em><span class="sig-paren">)</span> &#x2192; List[str]<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_wells" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to retrieve all wells that are associated to any keyword
+in the Schedule or associated to a particular kw_class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kw_class</strong> – keyword class or class name string</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of strings of unique well names</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule.max_connections">
+<code class="sig-name descname">max_connections</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#flownet.realization._schedule.Schedule.max_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to retrieve the maximum number of well connections to the grid
+in any defined well in the Schedule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Maximum number of connections with the grid in a single well in the schedule</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule.num_connections">
+<code class="sig-name descname">num_connections</code><span class="sig-paren">(</span><em class="sig-param">well_name: str</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#flownet.realization._schedule.Schedule.num_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to retrieve the number of well connections to the grid
+in a specific well.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>well_name</strong> – Well name to retrieve the connections for</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Number of connections with the grid in the well</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule.num_wells">
+<code class="sig-name descname">num_wells</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#flownet.realization._schedule.Schedule.num_wells" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to retrieve the number of unique wells in the Schedule associated
+to any keyword in the Schedule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Number of unique wells in the schedule</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._schedule.Schedule.sort">
+<code class="sig-name descname">sort</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule.sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to return a list if schedule items (keywords) sorted on
+by date</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Date-sorted schedule items</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="flownet.realization._simulation_keywords.html" class="btn btn-neutral float-right" title="flownet.realization._simulation_keywords module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="flownet.realization._render_realization.html" class="btn btn-neutral float-left" title="flownet.realization._render_realization module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Equinor
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

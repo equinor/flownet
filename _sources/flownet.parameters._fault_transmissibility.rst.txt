@@ -1,0 +1,8 @@
+flownet.parameters.\_fault\_transmissibility module
+===================================================
+
+.. automodule:: flownet.parameters._fault_transmissibility
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

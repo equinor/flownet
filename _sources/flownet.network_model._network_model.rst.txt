@@ -1,0 +1,8 @@
+flownet.network\_model.\_network\_model module
+==============================================
+
+.. automodule:: flownet.network_model._network_model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

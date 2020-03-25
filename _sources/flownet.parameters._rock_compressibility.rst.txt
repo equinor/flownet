@@ -1,0 +1,8 @@
+flownet.parameters.\_rock\_compressibility module
+=================================================
+
+.. automodule:: flownet.parameters._rock_compressibility
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

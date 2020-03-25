@@ -1,0 +1,8 @@
+flownet.parameters.\_equilibration module
+=========================================
+
+.. automodule:: flownet.parameters._equilibration
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

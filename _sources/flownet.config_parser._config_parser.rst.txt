@@ -1,0 +1,8 @@
+flownet.config\_parser.\_config\_parser module
+==============================================
+
+.. automodule:: flownet.config_parser._config_parser
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

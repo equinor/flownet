@@ -1,0 +1,20 @@
+flownet.data package
+====================
+
+Submodules
+----------
+
+.. toctree::
+
+   flownet.data.from_eclipse
+   flownet.data.from_pdm
+   flownet.data.from_source
+
+Module contents
+---------------
+
+.. automodule:: flownet.data
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

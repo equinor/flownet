@@ -1,0 +1,8 @@
+flownet.parameters.\_base\_parameter module
+===========================================
+
+.. automodule:: flownet.parameters._base_parameter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

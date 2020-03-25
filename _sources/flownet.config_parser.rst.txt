@@ -1,0 +1,19 @@
+flownet.config\_parser package
+==============================
+
+Submodules
+----------
+
+.. toctree::
+
+   flownet.config_parser._config_parser
+   flownet.config_parser._config_parser_pred
+
+Module contents
+---------------
+
+.. automodule:: flownet.config_parser
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

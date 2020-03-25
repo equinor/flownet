@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>flownet._command_line module &mdash; FlowNet  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="flownet.utils.write_grdecl_file module" href="flownet.utils.write_grdecl_file.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> FlowNet
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="flownet.html">flownet package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="flownet.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="flownet.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">flownet._command_line module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="flownet.html#module-flownet">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">FlowNet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="flownet.html">flownet package</a> &raquo;</li>
+        
+      <li>flownet._command_line module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/flownet._command_line.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-flownet._command_line">
+<span id="flownet-command-line-module"></span><h1>flownet._command_line module<a class="headerlink" href="#module-flownet._command_line" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="flownet._command_line.create_webviz">
+<code class="sig-prename descclassname">flownet._command_line.</code><code class="sig-name descname">create_webviz</code><span class="sig-paren">(</span><em class="sig-param">output_folder: pathlib.Path</em>, <em class="sig-param">start_webviz: bool = True</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet._command_line.create_webviz" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will spawn a webviz process to generated a webviz
+portable app using the FlowNet simulation results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_folder</strong> – Output folder where the webviz portable app will be stored.</p></li>
+<li><p><strong>start_webviz</strong> – Start webviz?</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="flownet._command_line.flownet_ahm">
+<code class="sig-prename descclassname">flownet._command_line.</code><code class="sig-name descname">flownet_ahm</code><span class="sig-paren">(</span><em class="sig-param">args: argparse.Namespace</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#flownet._command_line.flownet_ahm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entrypoint for running flownet in AHM mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – input namespace from argparse</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="flownet._command_line.flownet_hyperparam">
+<code class="sig-prename descclassname">flownet._command_line.</code><code class="sig-name descname">flownet_hyperparam</code><span class="sig-paren">(</span><em class="sig-param">args: argparse.Namespace</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet._command_line.flownet_hyperparam" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="flownet._command_line.flownet_pred">
+<code class="sig-prename descclassname">flownet._command_line.</code><code class="sig-name descname">flownet_pred</code><span class="sig-paren">(</span><em class="sig-param">args: argparse.Namespace</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#flownet._command_line.flownet_pred" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entrypoint for running flownet in prediction mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – input namespace from argparse</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="flownet._command_line.main">
+<code class="sig-prename descclassname">flownet._command_line.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet._command_line.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main functionality run when the ‘flownet’ command-line tool is called.</p>
+<dl class="simple">
+<dt>The following will be performed:</dt><dd><ul class="simple">
+<li><p>the input parameters will be read;</p></li>
+<li><p>the configuration file interpreted;</p></li>
+<li><p>the assisted history match process will be started;</p></li>
+<li><p>Post-processing will be performed if required.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="flownet.utils.write_grdecl_file.html" class="btn btn-neutral float-left" title="flownet.utils.write_grdecl_file module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Equinor
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

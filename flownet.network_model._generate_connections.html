@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>flownet.network_model._generate_connections module &mdash; FlowNet  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="flownet.network_model._mitchell module" href="flownet.network_model._mitchell.html" />
+    <link rel="prev" title="flownet.network_model._create_egrid module" href="flownet.network_model._create_egrid.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> FlowNet
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="flownet.html">flownet package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="flownet.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="flownet.ahm.html">flownet.ahm package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.config_parser.html">flownet.config_parser package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.data.html">flownet.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.ert.html">flownet.ert package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="flownet.network_model.html">flownet.network_model package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="flownet.network_model.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.network_model.html#module-flownet.network_model">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.parameters.html">flownet.parameters package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.prediction.html">flownet.prediction package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.realization.html">flownet.realization package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.utils.html">flownet.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="flownet.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flownet.html#module-flownet">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">FlowNet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="flownet.html">flownet package</a> &raquo;</li>
+        
+          <li><a href="flownet.network_model.html">flownet.network_model package</a> &raquo;</li>
+        
+      <li>flownet.network_model._generate_connections module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/flownet.network_model._generate_connections.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-flownet.network_model._generate_connections">
+<span id="flownet-network-model-generate-connections-module"></span><h1>flownet.network_model._generate_connections module<a class="headerlink" href="#module-flownet.network_model._generate_connections" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="flownet.network_model._generate_connections.__get_entity_str">
+<code class="sig-prename descclassname">flownet.network_model._generate_connections.</code><code class="sig-name descname">__get_entity_str</code><span class="sig-paren">(</span><em class="sig-param">df_coordinates: pandas.core.frame.DataFrame, coordinate: Union[Tuple[float, float, float], List[float], Tuple[Any, ...]]</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#flownet.network_model._generate_connections.__get_entity_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to find the name of the entity, if any, that is located at the specified coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_coordinates</strong> – Dataframe with entity coordinates</p></li>
+<li><p><strong>coordinate</strong> – Coordinate to look-up</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Name of the entity or an empty string if no name is connected to the specified coordinates.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="flownet.network_model._generate_connections._check_for_none_connectivity_amongst_entities">
+<code class="sig-prename descclassname">flownet.network_model._generate_connections.</code><code class="sig-name descname">_check_for_none_connectivity_amongst_entities</code><span class="sig-paren">(</span><em class="sig-param">conn_matrix: numpy.ndarray</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.network_model._generate_connections._check_for_none_connectivity_amongst_entities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the number of flow nodes that are not connected to the FlowNet (rows or columns in conn_matrix
+with all zeros), and the total number of connections in the FlowNet (how many ones on either side
+of the diagonal).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>conn_matrix</strong> – matrix containing 0s and 1s explaining which nodes should be connected in FlowNet</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="flownet.network_model._generate_connections._create_entity_connection_matrix">
+<code class="sig-prename descclassname">flownet.network_model._generate_connections.</code><code class="sig-name descname">_create_entity_connection_matrix</code><span class="sig-paren">(</span><em class="sig-param">df_coordinates: pandas.core.frame.DataFrame, starts: List[Union[Tuple[float, float, float], List[float], Tuple[Any, ...]]], ends: List[Union[Tuple[float, float, float], List[float], Tuple[Any, ...]]], aquifer_starts: List[Union[Tuple[float, float, float], List[float], Tuple[Any, ...]]], aquifer_ends: List[Union[Tuple[float, float, float], List[float], Tuple[Any, ...]]]</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.network_model._generate_connections._create_entity_connection_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the the coordinates given for starts and ends to the desired DataFrame format for simulation input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_coordinates</strong> – original DataFrame version of coordinates</p></li>
+<li><p><strong>starts</strong> – List of coordinates for all the starting entities</p></li>
+<li><p><strong>ends</strong> – List of coordinates of all the end entities</p></li>
+<li><p><strong>aquifer_starts</strong> – List of coordinates for all aquifer starts</p></li>
+<li><p><strong>aquifer_ends</strong> – List of coordinates of all aquifer ends</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Connection coordinate DataFrame on eclipse desired format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="flownet.network_model._generate_connections._create_record">
+<code class="sig-prename descclassname">flownet.network_model._generate_connections.</code><code class="sig-name descname">_create_record</code><span class="sig-paren">(</span><em class="sig-param">well_pairs: numpy.ndarray</em>, <em class="sig-param">dist_matrix: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; List[Tuple[Any, ...]]<a class="headerlink" href="#flownet.network_model._generate_connections._create_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a record of every well_pair triangle for which one of the angles is too large
+(currently set to be above 150 degrees)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>well_pairs</strong> – All well pairs created through Delaunay triangulation</p></li>
+<li><p><strong>dist_matrix</strong> – Euclidean distance between well coordinates</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A record of connections (from_well, to_well) of undesirables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="flownet.network_model._generate_connections._generate_aquifer_connections">
+<code class="sig-prename descclassname">flownet.network_model._generate_connections.</code><code class="sig-name descname">_generate_aquifer_connections</code><span class="sig-paren">(</span><em class="sig-param">starts: List[Union[Tuple[float, float, float], List[float], Tuple[Any, ...]]], ends: List[Union[Tuple[float, float, float], List[float], Tuple[Any, ...]]], scheme: str, fraction: float = 0.1, delta_depth: float = 200</em><span class="sig-paren">)</span> &#x2192; Tuple[List[Union[Tuple[float, float, float], List[float], Tuple[Any, ...]]], List[Union[Tuple[float, float, float], List[float], Tuple[Any, ...]]]]<a class="headerlink" href="#flownet.network_model._generate_connections._generate_aquifer_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to create aquifer connections</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>starts</strong> – Flowtube starting coordinates</p></li>
+<li><p><strong>ends</strong> – Flowtube ending coordinates</p></li>
+<li><p><strong>scheme</strong> – Aquifer scheme to use (‘global’ or ‘individual’)</p></li>
+<li><p><strong>fraction</strong> – Fraction of deepest nodes to connection to an aquifer</p></li>
+<li><p><strong>delta_depth</strong> – depth difference between aquifer and connected node</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>lists of aquifer starting and ending coordinates.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="flownet.network_model._generate_connections._generate_connections">
+<code class="sig-prename descclassname">flownet.network_model._generate_connections.</code><code class="sig-name descname">_generate_connections</code><span class="sig-paren">(</span><em class="sig-param">df_coordinates: pandas.core.frame.DataFrame</em>, <em class="sig-param">configuration: Any</em><span class="sig-paren">)</span> &#x2192; Tuple[List[Union[Tuple[float, float, float], List[float], Tuple[Any, ...]]], List[Union[Tuple[float, float, float], List[float], Tuple[Any, ...]]]]<a class="headerlink" href="#flownet.network_model._generate_connections._generate_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses MitchellBestCandidate and Delaunay triangulation to populate the reservoir
+with extra flow nodes and returns the start and end coordinates of all
+connections between wells and extra flow nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_coordinates</strong> – coordinates on original DataFrame format</p></li>
+<li><p><strong>configuration</strong> – FlowNet configuration yaml</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The tuple consisting of the start_coords and end_coords for connections.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="flownet.network_model._generate_connections._remove_recorded_connections">
+<code class="sig-prename descclassname">flownet.network_model._generate_connections.</code><code class="sig-name descname">_remove_recorded_connections</code><span class="sig-paren">(</span><em class="sig-param">record: List[Tuple[Any, ...]], conn_matrix: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#flownet.network_model._generate_connections._remove_recorded_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will take in a list of (i,j)/(j,i) addresses that should be removed = set to zero in
+a given Numpy array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>record</strong> – List containing the addresses of elements in conn_matrix that should be removed</p></li>
+<li><p><strong>conn_matrix</strong> – matrix containing 0s and 1s explaining which nodes should be connected in FlowNet</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Numpy array with recorded elements set to zero.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="flownet.network_model._generate_connections.create_connections">
+<code class="sig-prename descclassname">flownet.network_model._generate_connections.</code><code class="sig-name descname">create_connections</code><span class="sig-paren">(</span><em class="sig-param">df_coordinates: pandas.core.frame.DataFrame</em>, <em class="sig-param">configuration: Any</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.network_model._generate_connections.create_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates additional flow nodes to increase complexity of field simulation structure so that history-matching can
+be performed.</p>
+<p>Takes in field-entity-coordinates and desired added complexity arguments and returns eclipse format coordinate
+DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_coordinates</strong> – Original structure of entity and X, Y, Z coords</p></li>
+<li><p><strong>configuration</strong> – FlowNet configuration yaml as dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Desired restructuring of start-end coordinates into separate columns, as per eclipse needs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="flownet.network_model._mitchell.html" class="btn btn-neutral float-right" title="flownet.network_model._mitchell module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="flownet.network_model._create_egrid.html" class="btn btn-neutral float-left" title="flownet.network_model._create_egrid module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Equinor
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

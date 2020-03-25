@@ -1,0 +1,563 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>flownet.realization._simulation_keywords module &mdash; FlowNet  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="flownet.realization._simulation_realization module" href="flownet.realization._simulation_realization.html" />
+    <link rel="prev" title="flownet.realization._schedule module" href="flownet.realization._schedule.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> FlowNet
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="flownet.html">flownet package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="flownet.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="flownet.ahm.html">flownet.ahm package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.config_parser.html">flownet.config_parser package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.data.html">flownet.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.ert.html">flownet.ert package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.network_model.html">flownet.network_model package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.parameters.html">flownet.parameters package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.prediction.html">flownet.prediction package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="flownet.realization.html">flownet.realization package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="flownet.realization.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.realization.html#module-flownet.realization">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.utils.html">flownet.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="flownet.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flownet.html#module-flownet">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">FlowNet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="flownet.html">flownet package</a> &raquo;</li>
+        
+          <li><a href="flownet.realization.html">flownet.realization package</a> &raquo;</li>
+        
+      <li>flownet.realization._simulation_keywords module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/flownet.realization._simulation_keywords.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-flownet.realization._simulation_keywords">
+<span id="flownet-realization-simulation-keywords-module"></span><h1>flownet.realization._simulation_keywords module<a class="headerlink" href="#module-flownet.realization._simulation_keywords" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="flownet.realization._simulation_keywords.COMPDAT">
+<em class="property">class </em><code class="sig-prename descclassname">flownet.realization._simulation_keywords.</code><code class="sig-name descname">COMPDAT</code><span class="sig-paren">(</span><em class="sig-param">date: datetime.date</em>, <em class="sig-param">well_name: str</em>, <em class="sig-param">i: int</em>, <em class="sig-param">j: int</em>, <em class="sig-param">k1: int</em>, <em class="sig-param">k2: int</em>, <em class="sig-param">rw: float</em>, <em class="sig-param">status: str = '1*'</em>, <em class="sig-param">satnum: str = '1*'</em>, <em class="sig-param">confact: str = '1*'</em>, <em class="sig-param">kh: str = '1*'</em>, <em class="sig-param">skin: str = '1*'</em>, <em class="sig-param">dfact: str = '1*'</em>, <em class="sig-param">direct: str = '1*'</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._simulation_keywords.COMPDAT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flownet.realization._simulation_keywords.Keyword" title="flownet.realization._simulation_keywords.Keyword"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.realization._simulation_keywords.Keyword</span></code></a></p>
+<p>The COMPDAT keyword defines how a well is connected to the reservoir by defining or modifying existing
+well connections. Ideally the connections should be declared in the correct sequence, starting with the
+connection nearest the well head and then working along the wellbore towards the bottom or toe of the
+well.</p>
+<p>See the OPM Flow manual for further details.</p>
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.COMPDAT._abc_cache">
+<code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.COMPDAT._abc_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.COMPDAT._abc_negative_cache">
+<code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.COMPDAT._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.COMPDAT._abc_negative_cache_version">
+<code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.realization._simulation_keywords.COMPDAT._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.COMPDAT._abc_registry">
+<code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.COMPDAT._abc_registry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.COMPDAT.bhp">
+<code class="sig-name descname">bhp</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.COMPDAT.bhp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.COMPDAT.gas_rate">
+<code class="sig-name descname">gas_rate</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.COMPDAT.gas_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.COMPDAT.oil_rate">
+<code class="sig-name descname">oil_rate</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.COMPDAT.oil_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.COMPDAT.thp">
+<code class="sig-name descname">thp</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.COMPDAT.thp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.COMPDAT.well_name">
+<code class="sig-name descname">well_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.COMPDAT.well_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="flownet.realization._simulation_keywords.DATES">
+<em class="property">class </em><code class="sig-prename descclassname">flownet.realization._simulation_keywords.</code><code class="sig-name descname">DATES</code><span class="sig-paren">(</span><em class="sig-param">date</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._simulation_keywords.DATES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flownet.realization._simulation_keywords.Keyword" title="flownet.realization._simulation_keywords.Keyword"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.realization._simulation_keywords.Keyword</span></code></a></p>
+<p>This keyword advances the simulation to a given report date after which additional keywords may be entered
+to instruct OPM Flow to perform additional functions via the SCHEDULE section keywords, or further
+DATES data sets or keywords may be entered to advance the simulator to the next report date.</p>
+<p>See the OPM Flow manual for further details.</p>
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.DATES._abc_cache">
+<code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.DATES._abc_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.DATES._abc_negative_cache">
+<code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.DATES._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.DATES._abc_negative_cache_version">
+<code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.realization._simulation_keywords.DATES._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.DATES._abc_registry">
+<code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.DATES._abc_registry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.DATES.bhp">
+<code class="sig-name descname">bhp</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.DATES.bhp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.DATES.gas_rate">
+<code class="sig-name descname">gas_rate</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.DATES.gas_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.DATES.oil_rate">
+<code class="sig-name descname">oil_rate</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.DATES.oil_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.DATES.thp">
+<code class="sig-name descname">thp</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.DATES.thp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.DATES.well_name">
+<code class="sig-name descname">well_name</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.DATES.well_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="flownet.realization._simulation_keywords.Keyword">
+<em class="property">class </em><code class="sig-prename descclassname">flownet.realization._simulation_keywords.</code><code class="sig-name descname">Keyword</code><span class="sig-paren">(</span><em class="sig-param">date</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._simulation_keywords.Keyword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Each simulation Keyword is a subclass of the Keyword-class - which enforces that a keyword is always linked
+to a particular date.</p>
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.Keyword._abc_cache">
+<code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.Keyword._abc_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.Keyword._abc_negative_cache">
+<code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.Keyword._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.Keyword._abc_negative_cache_version">
+<code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.realization._simulation_keywords.Keyword._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.Keyword._abc_registry">
+<code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.Keyword._abc_registry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.Keyword.bhp">
+<code class="sig-name descname">bhp</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.Keyword.bhp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flownet.realization._simulation_keywords.Keyword.date">
+<em class="property">property </em><code class="sig-name descname">date</code><a class="headerlink" href="#flownet.realization._simulation_keywords.Keyword.date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.Keyword.gas_rate">
+<code class="sig-name descname">gas_rate</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.Keyword.gas_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.Keyword.oil_rate">
+<code class="sig-name descname">oil_rate</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.Keyword.oil_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.Keyword.thp">
+<code class="sig-name descname">thp</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.Keyword.thp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.Keyword.well_name">
+<code class="sig-name descname">well_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.Keyword.well_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="flownet.realization._simulation_keywords.WCONHIST">
+<em class="property">class </em><code class="sig-prename descclassname">flownet.realization._simulation_keywords.</code><code class="sig-name descname">WCONHIST</code><span class="sig-paren">(</span><em class="sig-param">date: datetime.date</em>, <em class="sig-param">well_name: str</em>, <em class="sig-param">control_mode: str</em>, <em class="sig-param">status: str = '1*'</em>, <em class="sig-param">oil_rate: float = nan</em>, <em class="sig-param">water_rate: float = nan</em>, <em class="sig-param">gas_rate: float = nan</em>, <em class="sig-param">vfp_table: str = '1*'</em>, <em class="sig-param">artificial_lift: str = '1*'</em>, <em class="sig-param">thp: float = nan</em>, <em class="sig-param">bhp: float = nan</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONHIST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flownet.realization._simulation_keywords.Keyword" title="flownet.realization._simulation_keywords.Keyword"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.realization._simulation_keywords.Keyword</span></code></a></p>
+<p>The WCONHIST keyword defines production rates and pressures for wells that have been declared history
+matching wells by the use of this keyword. History matching wells are handled differently than ordinary wells
+that use the WCONPROD keyword for controlling their production targets and constraints. However, the
+wells still need to be defined like ordinary production wells using the WELSPECS keyword in the SCHEDULE
+section.</p>
+<p>See the OPM Flow manual for further details.</p>
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONHIST._abc_cache">
+<code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONHIST._abc_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONHIST._abc_negative_cache">
+<code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONHIST._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONHIST._abc_negative_cache_version">
+<code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONHIST._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONHIST._abc_registry">
+<code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONHIST._abc_registry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONHIST.bhp">
+<code class="sig-name descname">bhp</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONHIST.bhp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONHIST.gas_rate">
+<code class="sig-name descname">gas_rate</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONHIST.gas_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONHIST.oil_rate">
+<code class="sig-name descname">oil_rate</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONHIST.oil_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONHIST.thp">
+<code class="sig-name descname">thp</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONHIST.thp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONHIST.well_name">
+<code class="sig-name descname">well_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONHIST.well_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="flownet.realization._simulation_keywords.WCONINJH">
+<em class="property">class </em><code class="sig-prename descclassname">flownet.realization._simulation_keywords.</code><code class="sig-name descname">WCONINJH</code><span class="sig-paren">(</span><em class="sig-param">date: datetime.date</em>, <em class="sig-param">well_name: str</em>, <em class="sig-param">inj_type: str</em>, <em class="sig-param">status: str = '1*'</em>, <em class="sig-param">rate: float = nan</em>, <em class="sig-param">bhp: float = nan</em>, <em class="sig-param">thp: float = nan</em>, <em class="sig-param">vfp_table: str = '1*'</em>, <em class="sig-param">target: str = '1*'</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONINJH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flownet.realization._simulation_keywords.Keyword" title="flownet.realization._simulation_keywords.Keyword"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.realization._simulation_keywords.Keyword</span></code></a></p>
+<p>The WCONINJH keyword defines injection rates and pressures for wells that have been declared history
+matching wells by the use of this keyword. History matching wells are handled differently then ordinary wells
+that use the WCONINJE keyword for controlling their injection targets and constraints. However, the wells
+still need to be defined like ordinary injection wells using the WELSPECS keyword in the SCHEDULE section.</p>
+<p>See the OPM Flow manual for further details.</p>
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONINJH._abc_cache">
+<code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONINJH._abc_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONINJH._abc_negative_cache">
+<code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONINJH._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONINJH._abc_negative_cache_version">
+<code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONINJH._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONINJH._abc_registry">
+<code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONINJH._abc_registry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONINJH.bhp">
+<code class="sig-name descname">bhp</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONINJH.bhp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONINJH.gas_rate">
+<code class="sig-name descname">gas_rate</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONINJH.gas_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONINJH.oil_rate">
+<code class="sig-name descname">oil_rate</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONINJH.oil_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONINJH.thp">
+<code class="sig-name descname">thp</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONINJH.thp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WCONINJH.well_name">
+<code class="sig-name descname">well_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WCONINJH.well_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="flownet.realization._simulation_keywords.WELSPECS">
+<em class="property">class </em><code class="sig-prename descclassname">flownet.realization._simulation_keywords.</code><code class="sig-name descname">WELSPECS</code><span class="sig-paren">(</span><em class="sig-param">date: datetime.date</em>, <em class="sig-param">well_name: str</em>, <em class="sig-param">group_name: str</em>, <em class="sig-param">i: int</em>, <em class="sig-param">j: int</em>, <em class="sig-param">phase: str</em>, <em class="sig-param">ref_depth_bhp: str = '1*'</em>, <em class="sig-param">drainage_radius: str = '1*'</em>, <em class="sig-param">inflow_equation: str = '1*'</em>, <em class="sig-param">shutin_instruction: str = '1*'</em>, <em class="sig-param">crossflow: str = '1*'</em>, <em class="sig-param">pvt_table: str = '1*'</em>, <em class="sig-param">density_calc: str = '1*'</em>, <em class="sig-param">fip: str = '1*'</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._simulation_keywords.WELSPECS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#flownet.realization._simulation_keywords.Keyword" title="flownet.realization._simulation_keywords.Keyword"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.realization._simulation_keywords.Keyword</span></code></a></p>
+<p>The WELSPECS keyword defines the general well specification data for all well types, and must be used for all
+wells before any other well specification keywords are used in the input file. The keyword declares the name
+of well, the wellhead location and other key parameters.</p>
+<p>See the OPM Flow manual for further details.</p>
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WELSPECS._abc_cache">
+<code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WELSPECS._abc_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WELSPECS._abc_negative_cache">
+<code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WELSPECS._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WELSPECS._abc_negative_cache_version">
+<code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WELSPECS._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WELSPECS._abc_registry">
+<code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WELSPECS._abc_registry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WELSPECS.bhp">
+<code class="sig-name descname">bhp</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WELSPECS.bhp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WELSPECS.gas_rate">
+<code class="sig-name descname">gas_rate</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WELSPECS.gas_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WELSPECS.oil_rate">
+<code class="sig-name descname">oil_rate</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WELSPECS.oil_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WELSPECS.thp">
+<code class="sig-name descname">thp</code><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WELSPECS.thp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.realization._simulation_keywords.WELSPECS.well_name">
+<code class="sig-name descname">well_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#flownet.realization._simulation_keywords.WELSPECS.well_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="flownet.realization._simulation_realization.html" class="btn btn-neutral float-right" title="flownet.realization._simulation_realization module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="flownet.realization._schedule.html" class="btn btn-neutral float-left" title="flownet.realization._schedule module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Equinor
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

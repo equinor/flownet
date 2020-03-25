@@ -1,0 +1,8 @@
+flownet.realization.\_schedule module
+=====================================
+
+.. automodule:: flownet.realization._schedule
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
