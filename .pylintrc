@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 [MESSAGES CONTROL]
 
 disable = bad-continuation, missing-docstring, duplicate-code
@@ -13,7 +12,6 @@ min-public-methods = 1
 [BASIC]
 
 # Variable names which should always be accepted
-=======
 [MASTER]
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
