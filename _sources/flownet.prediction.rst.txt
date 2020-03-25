@@ -1,0 +1,18 @@
+flownet.prediction package
+==========================
+
+Submodules
+----------
+
+.. toctree::
+
+   flownet.prediction._run_pred
+
+Module contents
+---------------
+
+.. automodule:: flownet.prediction
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

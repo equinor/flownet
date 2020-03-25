@@ -1,0 +1,8 @@
+flownet.network\_model.\_mitchell module
+========================================
+
+.. automodule:: flownet.network_model._mitchell
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

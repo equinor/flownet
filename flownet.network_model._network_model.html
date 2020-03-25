@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>flownet.network_model._network_model module &mdash; FlowNet  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="flownet.network_model._one_dimensional_model module" href="flownet.network_model._one_dimensional_model.html" />
+    <link rel="prev" title="flownet.network_model._mitchell module" href="flownet.network_model._mitchell.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> FlowNet
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="flownet.html">flownet package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="flownet.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="flownet.ahm.html">flownet.ahm package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.config_parser.html">flownet.config_parser package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.data.html">flownet.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.ert.html">flownet.ert package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="flownet.network_model.html">flownet.network_model package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="flownet.network_model.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.network_model.html#module-flownet.network_model">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.parameters.html">flownet.parameters package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.prediction.html">flownet.prediction package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.realization.html">flownet.realization package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.utils.html">flownet.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="flownet.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flownet.html#module-flownet">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">FlowNet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="flownet.html">flownet package</a> &raquo;</li>
+        
+          <li><a href="flownet.network_model.html">flownet.network_model package</a> &raquo;</li>
+        
+      <li>flownet.network_model._network_model module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/flownet.network_model._network_model.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-flownet.network_model._network_model">
+<span id="flownet-network-model-network-model-module"></span><h1>flownet.network_model._network_model module<a class="headerlink" href="#module-flownet.network_model._network_model" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="flownet.network_model._network_model.NetworkModel">
+<em class="property">class </em><code class="sig-prename descclassname">flownet.network_model._network_model.</code><code class="sig-name descname">NetworkModel</code><span class="sig-paren">(</span><em class="sig-param">df_entity_connections: pandas.core.frame.DataFrame</em>, <em class="sig-param">cell_length: float</em>, <em class="sig-param">area: float</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel._calculate_grid_corner_points">
+<code class="sig-name descname">_calculate_grid_corner_points</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_grid_corner_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the FlowNet connections, generates the 1D-models and returns
+a DataFrame with grid corner points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>DataFrame of all corner-points needed to generate the grid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel._calculate_nncs">
+<code class="sig-name descname">_calculate_nncs</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[Tuple[int, int]]<a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_nncs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates None-Neighbouring-connections (NNCs) using the following approach:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>The input dataframe is stacked such that all start and
+end points are in the same columns. The information regarding if
+it is a start or end point is saved in an extra column called
+‘source’.</p></li>
+<li><p>The start and end dataframes are concatenated in one dataframe.</p></li>
+<li><p>Binning of (x,y,z) and casting result into floats</p></li>
+<li><p>Group rows based on equal (x,y,z) bin assignments.</p></li>
+<li><p>Calculate all possible combinations of NNCs for the group and
+iterate over them.</p></li>
+<li><p>The last step is to look up which grid cell indices the two
+identified NNCs correspond to.</p></li>
+</ol>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Listing of tuples of NCC connected zero-offset i-coordinates.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel._get_aquifer_i">
+<code class="sig-name descname">_get_aquifer_i</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[List[int]]<a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._get_aquifer_i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to get the aquifer i’s with zero-offset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of lists of zero-offset i’s of aquifers.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel.active_mask">
+<code class="sig-name descname">active_mask</code><span class="sig-paren">(</span><em class="sig-param">model_index</em><span class="sig-paren">)</span> &#x2192; List[bool]<a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.active_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to get out active grid cell indices of
+the one dimensional model in the network with index model_index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model_index</strong> – zero-offset model index</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>booleans representing the active cells in the model with model index <cite>model_index</cite>. Again, with zero-offset.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel.aquifers_i">
+<em class="property">property </em><code class="sig-name descname">aquifers_i</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.aquifers_i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Property that returns a list of list of zero-offset i coordinates for all aquifers in the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of lists of zero-offset i’s of aquifers.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel.aquifers_xyz">
+<em class="property">property </em><code class="sig-name descname">aquifers_xyz</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.aquifers_xyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of zero-offset i,j,k coordinates for all aquifers in the model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of coordinates for the aquifers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel.area">
+<em class="property">property </em><code class="sig-name descname">area</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.area" title="Permalink to this definition">¶</a></dt>
+<dd><p>surface area between to grid cells</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel.cell_length">
+<em class="property">property </em><code class="sig-name descname">cell_length</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.cell_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Desired length of all cells</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel.df_entity_connections">
+<em class="property">property </em><code class="sig-name descname">df_entity_connections</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.df_entity_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>DataFrame containing all connections between entities</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel.grid">
+<em class="property">property </em><code class="sig-name descname">grid</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>DataFrame of all corner-points needed to generate the grid</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel.nncs">
+<em class="property">property </em><code class="sig-name descname">nncs</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.nncs" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of tuples of NNC I-coordinates of connections</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel.total_bulkvolume">
+<em class="property">property </em><code class="sig-name descname">total_bulkvolume</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.total_bulkvolume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the bulk volume of the network. The calculation is done by finding
+the convex hull of the network (using the end points of the input tubes)
+and then calculating the volume of this hull.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Bulk volume of the convex hull.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="flownet.network_model._one_dimensional_model.html" class="btn btn-neutral float-right" title="flownet.network_model._one_dimensional_model module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="flownet.network_model._mitchell.html" class="btn btn-neutral float-left" title="flownet.network_model._mitchell module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Equinor
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

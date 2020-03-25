@@ -1,0 +1,8 @@
+flownet.parameters.\_relative\_permeability module
+==================================================
+
+.. automodule:: flownet.parameters._relative_permeability
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

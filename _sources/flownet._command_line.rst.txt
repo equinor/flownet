@@ -1,0 +1,8 @@
+flownet.\_command\_line module
+==============================
+
+.. automodule:: flownet._command_line
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

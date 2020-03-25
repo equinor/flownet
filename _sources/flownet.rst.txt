@@ -1,0 +1,33 @@
+flownet package
+===============
+
+Subpackages
+-----------
+
+.. toctree::
+
+   flownet.ahm
+   flownet.config_parser
+   flownet.data
+   flownet.ert
+   flownet.network_model
+   flownet.parameters
+   flownet.prediction
+   flownet.realization
+   flownet.utils
+
+Submodules
+----------
+
+.. toctree::
+
+   flownet._command_line
+
+Module contents
+---------------
+
+.. automodule:: flownet
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

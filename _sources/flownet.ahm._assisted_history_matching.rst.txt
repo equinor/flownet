@@ -1,0 +1,8 @@
+flownet.ahm.\_assisted\_history\_matching module
+================================================
+
+.. automodule:: flownet.ahm._assisted_history_matching
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

@@ -1,0 +1,19 @@
+flownet.ert package
+===================
+
+Submodules
+----------
+
+.. toctree::
+
+   flownet.ert._create_ert_setup
+   flownet.ert._create_synthetic_refcase
+
+Module contents
+---------------
+
+.. automodule:: flownet.ert
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

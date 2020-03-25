@@ -1,0 +1,8 @@
+flownet.ert.\_create\_synthetic\_refcase module
+===============================================
+
+.. automodule:: flownet.ert._create_synthetic_refcase
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

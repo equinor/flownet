@@ -1,0 +1,8 @@
+flownet.network\_model.\_one\_dimensional\_model module
+=======================================================
+
+.. automodule:: flownet.network_model._one_dimensional_model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

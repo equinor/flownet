@@ -1,0 +1,8 @@
+flownet.parameters.probability\_distributions module
+====================================================
+
+.. automodule:: flownet.parameters.probability_distributions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

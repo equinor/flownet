@@ -1,0 +1,21 @@
+flownet.utils package
+=====================
+
+Submodules
+----------
+
+.. toctree::
+
+   flownet.utils.constants
+   flownet.utils.raytracing
+   flownet.utils.types
+   flownet.utils.write_grdecl_file
+
+Module contents
+---------------
+
+.. automodule:: flownet.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

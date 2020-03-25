@@ -1,0 +1,8 @@
+flownet.parameters.\_aquifer module
+===================================
+
+.. automodule:: flownet.parameters._aquifer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

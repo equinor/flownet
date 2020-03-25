@@ -1,0 +1,8 @@
+flownet.network\_model.\_create\_egrid module
+=============================================
+
+.. automodule:: flownet.network_model._create_egrid
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

@@ -1,0 +1,8 @@
+flownet.network\_model.\_generate\_connections module
+=====================================================
+
+.. automodule:: flownet.network_model._generate_connections
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
