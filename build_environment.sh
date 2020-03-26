@@ -59,10 +59,9 @@ if [[ ! -d "$INSTALL_ENV" ]]; then
 
     python3 -m venv $INSTALL_ENV
 
-    echo "export PYTHONPATH=''" >> $INSTALL_ENV/bin/activate
-    echo "setenv PYTHONPATH ''" >> $INSTALL_ENV/bin/activate.csh
-
     source $INSTALL_ENV/bin/activate
+    pip install --upgrade pip
+
 fi
 
 ##################
