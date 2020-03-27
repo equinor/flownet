@@ -174,7 +174,7 @@
 <span id="flownet-data-from-eclipse-module"></span><h1>flownet.data.from_eclipse module<a class="headerlink" href="#module-flownet.data.from_eclipse" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="flownet.data.from_eclipse.EclipseData">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.data.from_eclipse.</code><code class="sig-name descname">EclipseData</code><span class="sig-paren">(</span><em class="sig-param">eclipse_case: str</em>, <em class="sig-param">resample: Optional[str] = None</em>, <em class="sig-param">perforation_handling_strategy: str = 'bottom_point'</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_eclipse.EclipseData" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.data.from_eclipse.</code><code class="sig-name descname">EclipseData</code><span class="sig-paren">(</span><em class="sig-param">eclipse_case: Union[pathlib.Path, str], resample: Optional[str] = None, perforation_handling_strategy: str = 'bottom_point'</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_eclipse.EclipseData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flownet.data.from_source.html#flownet.data.from_source.FromSource" title="flownet.data.from_source.FromSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.data.from_source.FromSource</span></code></a></p>
 <p>Eclipse data source class</p>
 <dl class="field-list simple">
@@ -230,6 +230,17 @@ case must have both and EGRID and UNRST file.</p></li>
 </dd></dl>
 
 <dl class="method">
+<dt id="flownet.data.from_eclipse.EclipseData._faults">
+<code class="sig-name descname">_faults</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.from_eclipse.EclipseData._faults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to read fault plane data using ecl2df.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dataframe with columns NAME, X, Y, Z with data for fault planes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="flownet.data.from_eclipse.EclipseData._production_data">
 <code class="sig-name descname">_production_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.from_eclipse.EclipseData._production_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to read production data for all producers and injectors from an
@@ -262,6 +273,12 @@ following vectors to the summary file: WOPR, WGPR, WWPR, WBHP, WTHP, WGIR, WWIR<
 <dt id="flownet.data.from_eclipse.EclipseData.coordinates">
 <em class="property">property </em><code class="sig-name descname">coordinates</code><a class="headerlink" href="#flownet.data.from_eclipse.EclipseData.coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>dataframe with all coordinates</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.data.from_eclipse.EclipseData.faults">
+<em class="property">property </em><code class="sig-name descname">faults</code><a class="headerlink" href="#flownet.data.from_eclipse.EclipseData.faults" title="Permalink to this definition">¶</a></dt>
+<dd><p>dataframe with all fault data</p>
 </dd></dl>
 
 <dl class="method">
