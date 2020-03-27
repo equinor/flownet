@@ -170,8 +170,64 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="flownet-parameters-fault-transmissibility-module">
-<h1>flownet.parameters._fault_transmissibility module<a class="headerlink" href="#flownet-parameters-fault-transmissibility-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-flownet.parameters._fault_transmissibility">
+<span id="flownet-parameters-fault-transmissibility-module"></span><h1>flownet.parameters._fault_transmissibility module<a class="headerlink" href="#module-flownet.parameters._fault_transmissibility" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="flownet.parameters._fault_transmissibility.FaultTransmissibility">
+<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters._fault_transmissibility.</code><code class="sig-name descname">FaultTransmissibility</code><span class="sig-paren">(</span><em class="sig-param">distribution_values: pandas.core.frame.DataFrame</em>, <em class="sig-param">network: flownet.network_model._network_model.NetworkModel</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._fault_transmissibility.FaultTransmissibility" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.parameters._base_parameter.Parameter</span></code></a></p>
+<p>Parameter type which takes care of stochastically drawn fault transmissibility multiplier values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>distribution_values</strong> – <p>A dataframe with five columns (“parameter”, “minimum”, “maximum”,
+“loguniform”) which state:</p>
+<blockquote>
+<div><ul>
+<li><p>The name of the parameter,</p></li>
+<li><p>The minimum value of the parameter,</p></li>
+<li><p>The maximum value of the parameter,</p></li>
+<li><p>Whether the distribution is uniform of loguniform</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>network</strong> – FlowNet network instance.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="flownet.parameters._fault_transmissibility.FaultTransmissibility._abc_cache">
+<code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._fault_transmissibility.FaultTransmissibility._abc_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.parameters._fault_transmissibility.FaultTransmissibility._abc_negative_cache">
+<code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._fault_transmissibility.FaultTransmissibility._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.parameters._fault_transmissibility.FaultTransmissibility._abc_negative_cache_version">
+<code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.parameters._fault_transmissibility.FaultTransmissibility._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="flownet.parameters._fault_transmissibility.FaultTransmissibility._abc_registry">
+<code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._fault_transmissibility.FaultTransmissibility._abc_registry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flownet.parameters._fault_transmissibility.FaultTransmissibility.render_output">
+<code class="sig-name descname">render_output</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#flownet.parameters._fault_transmissibility.FaultTransmissibility.render_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates FAULTS include content - which are given to the RUNSPEC and GRID section.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Include content for aquifers</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

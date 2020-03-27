@@ -174,8 +174,35 @@
 <span id="flownet-network-model-network-model-module"></span><h1>flownet.network_model._network_model module<a class="headerlink" href="#module-flownet.network_model._network_model" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="flownet.network_model._network_model.NetworkModel">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.network_model._network_model.</code><code class="sig-name descname">NetworkModel</code><span class="sig-paren">(</span><em class="sig-param">df_entity_connections: pandas.core.frame.DataFrame</em>, <em class="sig-param">cell_length: float</em>, <em class="sig-param">area: float</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.network_model._network_model.</code><code class="sig-name descname">NetworkModel</code><span class="sig-paren">(</span><em class="sig-param">df_entity_connections: pandas.core.frame.DataFrame</em>, <em class="sig-param">cell_length: float</em>, <em class="sig-param">area: float</em>, <em class="sig-param">fault_planes: Optional[pandas.core.frame.DataFrame] = None</em>, <em class="sig-param">fault_tolerance: float = 1e-05</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel._calculate_faults">
+<code class="sig-name descname">_calculate_faults</code><span class="sig-paren">(</span><em class="sig-param">fault_tolerance: float = 1e-05</em><span class="sig-paren">)</span> &#x2192; Optional[Dict[Any, List[int]]]<a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_faults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates fault definitions using the following approach:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Loop through all faults</p></li>
+<li><p>Perform a triangulation of all points belonging to a fault</p></li>
+<li><p>For each triangle, perform ray tracing using the
+Möller-Trumbore intersection algorithm.</p></li>
+<li><p>If an intersection is found, identify the grid blocks that are
+associated with the intersection.</p></li>
+</ol>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fault_tolerance</strong> – minimum distance between corners of a triangle. This value should be set as low
+as possible to ensure a high resolution fault plane generation. However, this might lead
+to a very slow fault tracing process therefore one might want to increase the tolerance.
+Always check that the resulting lower resolution fault plane still is what you expected.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Listing of tuples of FAULTS entries with zero-offset i-coordinates, or None if no faults are present.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="method">
 <dt id="flownet.network_model._network_model.NetworkModel._calculate_grid_corner_points">
 <code class="sig-name descname">_calculate_grid_corner_points</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_grid_corner_points" title="Permalink to this definition">¶</a></dt>
@@ -278,6 +305,12 @@ the one dimensional model in the network with index model_index.</p>
 <dt id="flownet.network_model._network_model.NetworkModel.df_entity_connections">
 <em class="property">property </em><code class="sig-name descname">df_entity_connections</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.df_entity_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>DataFrame containing all connections between entities</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flownet.network_model._network_model.NetworkModel.faults">
+<em class="property">property </em><code class="sig-name descname">faults</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.faults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary of fault names containing a list of integer zero-offset I-coordinates belonging to a fault</p>
 </dd></dl>
 
 <dl class="method">
