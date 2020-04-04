@@ -286,7 +286,7 @@ def run_flownet_history_mathing(config: ConfigSuite.snapshot, args: argparse.Nam
     # Fault transmissibility                #
     #########################################
 
-    if isinstance(network.faults, Dict):
+    if hasattr(network, 'faults'):
         fault_mult_dist_values = _get_distribution(
             ["fault_mult"], config.model_parameters, list(network.faults.keys()),
         )
