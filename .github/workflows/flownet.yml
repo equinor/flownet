@@ -1,6 +1,9 @@
 name: CI
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
     branches:
       - master
@@ -75,3 +78,23 @@ jobs:
           pushd docs
           make html
           popd
+
+      - name: Update GitHub pages
+        if: github.ref == 'refs/heads/master' && matrix.python-version == '3.6'
+        run: |
+          cp -R ./docs/_build ../_build
+          git config --local user.email "flownet-github-action"
+          git config --local user.name "flownet-github-action"
+          git fetch origin gh-pages
+          git checkout --track origin/gh-pages
+          git clean -f -f -d -x
+          git rm -r *
+        
+          cp -R ../_build/html/* .
+          git add .
+          if git diff-index --quiet HEAD; then
+            echo "No changes in documentation. Skip documentation deploy."
+          else
+            git commit -m "Update Github Pages"
+            git push "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" gh-pages
+          fi
