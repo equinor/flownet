@@ -43,7 +43,7 @@ model_parameters:
   fault_mult:
     min: 1.0e-5
     max: 100
-    logunif: True
+    loguniform: True
   relative_permeability:
     scheme: individual
     swirr:
