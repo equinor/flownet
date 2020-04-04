@@ -36,6 +36,17 @@ def create_schema(_to_abs_path) -> Dict:
                             "resample": {MK.Type: types.String, MK.Required: False},
                         },
                     },
+                    "pvt": {
+                        MK.Type: types.NamedDict,
+                        MK.Required: False,
+                        MK.Content: {
+                            "rsvd": {
+                                MK.Type: types.String,
+                                MK.Required: False,
+                                MK.Transformation: _to_abs_path,
+                            },
+                        },
+                    },
                     "cell_length": {MK.Type: types.Number, MK.Required: False},
                     "training_set_end_date": {MK.Type: types.Date, MK.Required: False},
                     "training_set_fraction": {
@@ -387,6 +398,7 @@ DEFAULT_VALUES = {
         "perforation_handling_strategy": "bottom_point",
         "fast_pyscal": True,
         "fault_tolerance": 1.0e-5,
+        "pvt": {"rsvd": None},
     },
     "ert": {
         "runpath": "output/runpath/realization-%d/iter-%d",

@@ -360,7 +360,12 @@ def run_flownet_history_mathing(config: ConfigSuite.snapshot, args: argparse.Nam
             relperm_dist_values, ti2ci, df_satnum, fast_pyscal=fast_pyscal
         ),
         Equilibration(
-            equil_dist_values, network, ti2ci, df_eqlnum, equil_config.datum_depth
+            equil_dist_values,
+            network,
+            ti2ci,
+            df_eqlnum,
+            equil_config.datum_depth,
+            config.flownet.pvt.rsvd,
         ),
         RockCompressibility(
             config.model_parameters.rock_compressibility.reference_pressure,
