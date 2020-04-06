@@ -174,31 +174,31 @@
 <span id="flownet-parameters-probability-distributions-module"></span><h1>flownet.parameters.probability_distributions module<a class="headerlink" href="#module-flownet.parameters.probability_distributions" title="Permalink to this headline">¶</a></h1>
 <p>Defines the different probability distributions. These are used by the
 parameter class definitions.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="flownet.parameters.probability_distributions.LogUniformDistribution">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters.probability_distributions.</code><code class="sig-name descname">LogUniformDistribution</code><span class="sig-paren">(</span><em class="sig-param">minimum</em>, <em class="sig-param">maximum</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters.probability_distributions.LogUniformDistribution" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters.probability_distributions.</code><code class="sig-name descname">LogUniformDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">minimum</span></em>, <em class="sig-param"><span class="n">maximum</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters.probability_distributions.LogUniformDistribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flownet.parameters.probability_distributions.ProbabilityDistribution" title="flownet.parameters.probability_distributions.ProbabilityDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.parameters.probability_distributions.ProbabilityDistribution</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.LogUniformDistribution._abc_cache">
 <code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.LogUniformDistribution._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.LogUniformDistribution._abc_negative_cache">
 <code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.LogUniformDistribution._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.LogUniformDistribution._abc_negative_cache_version">
 <code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.parameters.probability_distributions.LogUniformDistribution._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.LogUniformDistribution._abc_registry">
 <code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.LogUniformDistribution._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.parameters.probability_distributions.LogUniformDistribution.ert_gen_kw">
 <em class="property">property </em><code class="sig-name descname">ert_gen_kw</code><a class="headerlink" href="#flownet.parameters.probability_distributions.LogUniformDistribution.ert_gen_kw" title="Permalink to this definition">¶</a></dt>
 <dd><p>string representing an ERT “LOGUNIF MIN MAX” distribution keyword for use in GEN_KW</p>
@@ -206,31 +206,31 @@ parameter class definitions.</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="flownet.parameters.probability_distributions.ProbabilityDistribution">
 <em class="property">class </em><code class="sig-prename descclassname">flownet.parameters.probability_distributions.</code><code class="sig-name descname">ProbabilityDistribution</code><a class="headerlink" href="#flownet.parameters.probability_distributions.ProbabilityDistribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.ProbabilityDistribution._abc_cache">
 <code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.ProbabilityDistribution._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.ProbabilityDistribution._abc_negative_cache">
 <code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.ProbabilityDistribution._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.ProbabilityDistribution._abc_negative_cache_version">
 <code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.parameters.probability_distributions.ProbabilityDistribution._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.ProbabilityDistribution._abc_registry">
 <code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.ProbabilityDistribution._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.parameters.probability_distributions.ProbabilityDistribution.ert_gen_kw">
 <em class="property">abstract property </em><code class="sig-name descname">ert_gen_kw</code><a class="headerlink" href="#flownet.parameters.probability_distributions.ProbabilityDistribution.ert_gen_kw" title="Permalink to this definition">¶</a></dt>
 <dd><p>A string representing what ERT needs in GEN_KW</p>
@@ -238,31 +238,31 @@ parameter class definitions.</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="flownet.parameters.probability_distributions.TriangularDistribution">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters.probability_distributions.</code><code class="sig-name descname">TriangularDistribution</code><span class="sig-paren">(</span><em class="sig-param">minimum</em>, <em class="sig-param">maximum</em>, <em class="sig-param">mode</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters.probability_distributions.</code><code class="sig-name descname">TriangularDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">minimum</span></em>, <em class="sig-param"><span class="n">maximum</span></em>, <em class="sig-param"><span class="n">mode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flownet.parameters.probability_distributions.ProbabilityDistribution" title="flownet.parameters.probability_distributions.ProbabilityDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.parameters.probability_distributions.ProbabilityDistribution</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.TriangularDistribution._abc_cache">
 <code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.TriangularDistribution._abc_negative_cache">
 <code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.TriangularDistribution._abc_negative_cache_version">
 <code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.TriangularDistribution._abc_registry">
 <code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.parameters.probability_distributions.TriangularDistribution.ert_gen_kw">
 <em class="property">property </em><code class="sig-name descname">ert_gen_kw</code><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution.ert_gen_kw" title="Permalink to this definition">¶</a></dt>
 <dd><p>string representing an ERT “TRIANGULAR MIN MAX” distribution keyword for use in GEN_KW</p>
@@ -270,31 +270,31 @@ parameter class definitions.</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="flownet.parameters.probability_distributions.UniformDistribution">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters.probability_distributions.</code><code class="sig-name descname">UniformDistribution</code><span class="sig-paren">(</span><em class="sig-param">minimum</em>, <em class="sig-param">maximum</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters.probability_distributions.</code><code class="sig-name descname">UniformDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">minimum</span></em>, <em class="sig-param"><span class="n">maximum</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flownet.parameters.probability_distributions.ProbabilityDistribution" title="flownet.parameters.probability_distributions.ProbabilityDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.parameters.probability_distributions.ProbabilityDistribution</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.UniformDistribution._abc_cache">
 <code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.UniformDistribution._abc_negative_cache">
 <code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.UniformDistribution._abc_negative_cache_version">
 <code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters.probability_distributions.UniformDistribution._abc_registry">
 <code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.parameters.probability_distributions.UniformDistribution.ert_gen_kw">
 <em class="property">property </em><code class="sig-name descname">ert_gen_kw</code><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution.ert_gen_kw" title="Permalink to this definition">¶</a></dt>
 <dd><p>string representing an ERT “UNFIORM MIN MAX” distribution keyword for use in GEN_KW</p>

@@ -172,9 +172,9 @@
             
   <div class="section" id="module-flownet.parameters._relative_permeability">
 <span id="flownet-parameters-relative-permeability-module"></span><h1>flownet.parameters._relative_permeability module<a class="headerlink" href="#module-flownet.parameters._relative_permeability" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="flownet.parameters._relative_permeability.RelativePermeability">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters._relative_permeability.</code><code class="sig-name descname">RelativePermeability</code><span class="sig-paren">(</span><em class="sig-param">distribution_values: pandas.core.frame.DataFrame</em>, <em class="sig-param">ti2ci: pandas.core.frame.DataFrame</em>, <em class="sig-param">satnum: pandas.core.frame.DataFrame</em>, <em class="sig-param">fast_pyscal: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters._relative_permeability.</code><code class="sig-name descname">RelativePermeability</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distribution_values</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">ti2ci</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">satnum</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">fast_pyscal</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.parameters._base_parameter.Parameter</span></code></a></p>
 <p>Parameter type which takes care of stochastically drawn Relative Permeability parameters.</p>
 <p>Required parameters for SWOF generation: “swirr”, “swl”, “swcr”, “sorw”, “nw”, “now”, “krwend”, “krowend”
@@ -200,29 +200,29 @@ Required parameters for SGOF generation: “swirr”, “swl”, “sgcr”, “
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._relative_permeability.RelativePermeability._abc_cache">
 <code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._relative_permeability.RelativePermeability._abc_negative_cache">
 <code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._relative_permeability.RelativePermeability._abc_negative_cache_version">
 <code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._relative_permeability.RelativePermeability._abc_registry">
 <code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.parameters._relative_permeability.RelativePermeability._check_parameters">
-<code class="sig-name descname">_check_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Tuple[bool, bool]<a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability._check_parameters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_check_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>bool<span class="p">, </span>bool<span class="p">]</span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability._check_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to check the user-defined parameters and determination
 of what to generate: SWOF/SGOF.
 It will raise an error if something is wrong.</p>
@@ -233,7 +233,7 @@ It will raise an error if something is wrong.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.parameters._relative_permeability.RelativePermeability.get_dims">
 <code class="sig-name descname">get_dims</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Union[None, Dict[str, int]]<a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability.get_dims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to export the table dimensions used for memory allocation in Eclipse/Flow.</p>
@@ -244,7 +244,7 @@ It will raise an error if something is wrong.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.parameters._relative_permeability.RelativePermeability.render_output">
 <code class="sig-name descname">render_output</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability.render_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates SWOF/SGOF and SATNUM include content - which are given to the PROPS and GRID section.</p>
@@ -257,9 +257,9 @@ It will raise an error if something is wrong.</p>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="flownet.parameters._relative_permeability.gen_og">
-<code class="sig-prename descclassname">flownet.parameters._relative_permeability.</code><code class="sig-name descname">gen_og</code><span class="sig-paren">(</span><em class="sig-param">parameters: pandas.core.frame.DataFrame</em>, <em class="sig-param">fast_pyscal: bool = False</em><span class="sig-paren">)</span> &#x2192; pyscal.gasoil.GasOil<a class="headerlink" href="#flownet.parameters._relative_permeability.gen_og" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.parameters._relative_permeability.</code><code class="sig-name descname">gen_og</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">fast_pyscal</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; pyscal.gasoil.GasOil<a class="headerlink" href="#flownet.parameters._relative_permeability.gen_og" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a PyScal GasOil object based on the input parameters supplied.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -274,9 +274,9 @@ It will raise an error if something is wrong.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="flownet.parameters._relative_permeability.gen_wo">
-<code class="sig-prename descclassname">flownet.parameters._relative_permeability.</code><code class="sig-name descname">gen_wo</code><span class="sig-paren">(</span><em class="sig-param">parameters: pandas.core.frame.DataFrame</em>, <em class="sig-param">fast_pyscal: bool = False</em><span class="sig-paren">)</span> &#x2192; pyscal.wateroil.WaterOil<a class="headerlink" href="#flownet.parameters._relative_permeability.gen_wo" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.parameters._relative_permeability.</code><code class="sig-name descname">gen_wo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">fast_pyscal</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; pyscal.wateroil.WaterOil<a class="headerlink" href="#flownet.parameters._relative_permeability.gen_wo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a PyScal WaterOil object based on the input parameters supplied.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -291,9 +291,9 @@ It will raise an error if something is wrong.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="flownet.parameters._relative_permeability.gen_wog">
-<code class="sig-prename descclassname">flownet.parameters._relative_permeability.</code><code class="sig-name descname">gen_wog</code><span class="sig-paren">(</span><em class="sig-param">parameters: pandas.core.frame.DataFrame</em>, <em class="sig-param">fast_pyscal: bool = False</em><span class="sig-paren">)</span> &#x2192; pyscal.wateroilgas.WaterOilGas<a class="headerlink" href="#flownet.parameters._relative_permeability.gen_wog" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.parameters._relative_permeability.</code><code class="sig-name descname">gen_wog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">fast_pyscal</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; pyscal.wateroilgas.WaterOilGas<a class="headerlink" href="#flownet.parameters._relative_permeability.gen_wog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a PyScal WaterOilGas object based on the input parameters supplied.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

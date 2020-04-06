@@ -5,6 +5,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    flownet.network_model._create_egrid
    flownet.network_model._generate_connections

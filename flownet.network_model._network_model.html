@@ -172,13 +172,13 @@
             
   <div class="section" id="module-flownet.network_model._network_model">
 <span id="flownet-network-model-network-model-module"></span><h1>flownet.network_model._network_model module<a class="headerlink" href="#module-flownet.network_model._network_model" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="flownet.network_model._network_model.NetworkModel">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.network_model._network_model.</code><code class="sig-name descname">NetworkModel</code><span class="sig-paren">(</span><em class="sig-param">df_entity_connections: pandas.core.frame.DataFrame</em>, <em class="sig-param">cell_length: float</em>, <em class="sig-param">area: float</em>, <em class="sig-param">fault_planes: Optional[pandas.core.frame.DataFrame] = None</em>, <em class="sig-param">fault_tolerance: float = 1e-05</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.network_model._network_model.</code><code class="sig-name descname">NetworkModel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_entity_connections</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">cell_length</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">area</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">fault_planes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fault_tolerance</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1e-05</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel._calculate_faults">
-<code class="sig-name descname">_calculate_faults</code><span class="sig-paren">(</span><em class="sig-param">fault_tolerance: float = 1e-05</em><span class="sig-paren">)</span> &#x2192; Optional[Dict[Any, List[int]]]<a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_faults" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_calculate_faults</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fault_tolerance</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1e-05</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Dict<span class="p">[</span>Any<span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_faults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates fault definitions using the following approach:</p>
 <blockquote>
 <div><ol class="arabic simple">
@@ -203,7 +203,7 @@ Always check that the resulting lower resolution fault plane still is what you e
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel._calculate_grid_corner_points">
 <code class="sig-name descname">_calculate_grid_corner_points</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_grid_corner_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the FlowNet connections, generates the 1D-models and returns
@@ -215,9 +215,9 @@ a DataFrame with grid corner points.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel._calculate_nncs">
-<code class="sig-name descname">_calculate_nncs</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[Tuple[int, int]]<a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_nncs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_calculate_nncs</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_nncs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates None-Neighbouring-connections (NNCs) using the following approach:</p>
 <blockquote>
 <div><ol class="arabic simple">
@@ -241,9 +241,9 @@ identified NNCs correspond to.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel._get_aquifer_i">
-<code class="sig-name descname">_get_aquifer_i</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[List[int]]<a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._get_aquifer_i" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_get_aquifer_i</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._get_aquifer_i" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to get the aquifer i’s with zero-offset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -252,9 +252,9 @@ identified NNCs correspond to.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.active_mask">
-<code class="sig-name descname">active_mask</code><span class="sig-paren">(</span><em class="sig-param">model_index</em><span class="sig-paren">)</span> &#x2192; List[bool]<a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.active_mask" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">active_mask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_index</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>bool<span class="p">]</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.active_mask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to get out active grid cell indices of
 the one dimensional model in the network with index model_index.</p>
 <dl class="field-list simple">
@@ -267,7 +267,7 @@ the one dimensional model in the network with index model_index.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.aquifers_i">
 <em class="property">property </em><code class="sig-name descname">aquifers_i</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.aquifers_i" title="Permalink to this definition">¶</a></dt>
 <dd><p>Property that returns a list of list of zero-offset i coordinates for all aquifers in the model.</p>
@@ -278,7 +278,7 @@ the one dimensional model in the network with index model_index.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.aquifers_xyz">
 <em class="property">property </em><code class="sig-name descname">aquifers_xyz</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.aquifers_xyz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of zero-offset i,j,k coordinates for all aquifers in the model</p>
@@ -289,43 +289,43 @@ the one dimensional model in the network with index model_index.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.area">
 <em class="property">property </em><code class="sig-name descname">area</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.area" title="Permalink to this definition">¶</a></dt>
 <dd><p>surface area between to grid cells</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.cell_length">
 <em class="property">property </em><code class="sig-name descname">cell_length</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.cell_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Desired length of all cells</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.df_entity_connections">
 <em class="property">property </em><code class="sig-name descname">df_entity_connections</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.df_entity_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>DataFrame containing all connections between entities</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.faults">
 <em class="property">property </em><code class="sig-name descname">faults</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.faults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary of fault names containing a list of integer zero-offset I-coordinates belonging to a fault</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.grid">
 <em class="property">property </em><code class="sig-name descname">grid</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>DataFrame of all corner-points needed to generate the grid</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.nncs">
 <em class="property">property </em><code class="sig-name descname">nncs</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.nncs" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of tuples of NNC I-coordinates of connections</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.total_bulkvolume">
 <em class="property">property </em><code class="sig-name descname">total_bulkvolume</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.total_bulkvolume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the bulk volume of the network. The calculation is done by finding

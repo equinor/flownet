@@ -172,48 +172,48 @@
             
   <div class="section" id="module-flownet.network_model._one_dimensional_model">
 <span id="flownet-network-model-one-dimensional-model-module"></span><h1>flownet.network_model._one_dimensional_model module<a class="headerlink" href="#module-flownet.network_model._one_dimensional_model" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.network_model._one_dimensional_model.</code><code class="sig-name descname">OneDimensionalModel</code><span class="sig-paren">(</span><em class="sig-param">start: Union[Tuple[float, float, float], List[float], Tuple[Any, ...]], end: Union[Tuple[float, float, float], List[float], Tuple[Any, ...]], cell_length: float, area: float, append_inactive: bool = True</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.network_model._one_dimensional_model.</code><code class="sig-name descname">OneDimensionalModel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start</span><span class="p">:</span> <span class="n">Union[Tuple[float, float, float], List[float], Tuple[Any, …]]</span></em>, <em class="sig-param"><span class="n">end</span><span class="p">:</span> <span class="n">Union[Tuple[float, float, float], List[float], Tuple[Any, …]]</span></em>, <em class="sig-param"><span class="n">cell_length</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">area</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">append_inactive</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.cell_length">
 <em class="property">property </em><code class="sig-name descname">cell_length</code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.cell_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Actual cell length of the grid cells.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.df_coord">
 <em class="property">property </em><code class="sig-name descname">df_coord</code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.df_coord" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a dataframe of the grid cells with corresponding coordinates</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.end">
 <em class="property">property </em><code class="sig-name descname">end</code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.end" title="Permalink to this definition">¶</a></dt>
 <dd><p>End position of model (x, y, z) returned as numpy array.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.length">
 <em class="property">property </em><code class="sig-name descname">length</code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Length of one dimensional model, measured as distance between
 first and last grid cell mid point.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.n">
 <em class="property">property </em><code class="sig-name descname">n</code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.n" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of grid cells in model, counting both active and inactive.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.nactive">
 <em class="property">property </em><code class="sig-name descname">nactive</code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.nactive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number active grid cells in model.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.start">
 <em class="property">property </em><code class="sig-name descname">start</code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start position of model (x, y, z) returned as numpy array.</p>

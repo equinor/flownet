@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    flownet.ahm
    flownet.config_parser
@@ -20,6 +21,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    flownet._command_line
 

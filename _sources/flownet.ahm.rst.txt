@@ -5,6 +5,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    flownet.ahm._assisted_history_matching
    flownet.ahm._run_ahm

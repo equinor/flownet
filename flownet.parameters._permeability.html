@@ -172,9 +172,9 @@
             
   <div class="section" id="module-flownet.parameters._permeability">
 <span id="flownet-parameters-permeability-module"></span><h1>flownet.parameters._permeability module<a class="headerlink" href="#module-flownet.parameters._permeability" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="flownet.parameters._permeability.Permeability">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters._permeability.</code><code class="sig-name descname">Permeability</code><span class="sig-paren">(</span><em class="sig-param">distribution_values: pandas.core.frame.DataFrame</em>, <em class="sig-param">ti2ci: pandas.core.frame.DataFrame</em>, <em class="sig-param">network: flownet.network_model._network_model.NetworkModel</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._permeability.Permeability" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters._permeability.</code><code class="sig-name descname">Permeability</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distribution_values</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">ti2ci</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n"><a class="reference internal" href="flownet.network_model._network_model.html#flownet.network_model._network_model.NetworkModel" title="flownet.network_model._network_model.NetworkModel">flownet.network_model._network_model.NetworkModel</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._permeability.Permeability" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.parameters._base_parameter.Parameter</span></code></a></p>
 <p>Parameter type which takes care of stochastically drawn permeability values.</p>
 <dl class="field-list simple">
@@ -189,27 +189,27 @@ value if it should be loguniform (False implies uniform).</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._permeability.Permeability._abc_cache">
 <code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._permeability.Permeability._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._permeability.Permeability._abc_negative_cache">
 <code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._permeability.Permeability._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._permeability.Permeability._abc_negative_cache_version">
 <code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.parameters._permeability.Permeability._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._permeability.Permeability._abc_registry">
 <code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._permeability.Permeability._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.parameters._permeability.Permeability.render_output">
 <code class="sig-name descname">render_output</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#flownet.parameters._permeability.Permeability.render_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates PERMX, PERMY and PERMZ include content - which are given to the

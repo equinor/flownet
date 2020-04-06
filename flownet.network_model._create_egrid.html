@@ -172,9 +172,9 @@
             
   <div class="section" id="module-flownet.network_model._create_egrid">
 <span id="flownet-network-model-create-egrid-module"></span><h1>flownet.network_model._create_egrid module<a class="headerlink" href="#module-flownet.network_model._create_egrid" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="flownet.network_model._create_egrid.construct_kw">
-<code class="sig-prename descclassname">flownet.network_model._create_egrid.</code><code class="sig-name descname">construct_kw</code><span class="sig-paren">(</span><em class="sig-param">name: str, values: List[Union[int, float]], int_type: bool = False</em><span class="sig-paren">)</span> &#x2192; ecl.eclfile.ecl_kw.EclKW<a class="headerlink" href="#flownet.network_model._create_egrid.construct_kw" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.network_model._create_egrid.</code><code class="sig-name descname">construct_kw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">int_type</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ecl.eclfile.ecl_kw.EclKW<a class="headerlink" href="#flownet.network_model._create_egrid.construct_kw" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function generates an Eclipse-type keyword for a given set of values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -190,9 +190,9 @@
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="flownet.network_model._create_egrid.create_egrid">
-<code class="sig-prename descclassname">flownet.network_model._create_egrid.</code><code class="sig-name descname">create_egrid</code><span class="sig-paren">(</span><em class="sig-param">df_coord: pandas.core.frame.DataFrame</em>, <em class="sig-param">filename: pathlib.Path</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.network_model._create_egrid.create_egrid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.network_model._create_egrid.</code><code class="sig-name descname">create_egrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_coord</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">pathlib.Path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.network_model._create_egrid.create_egrid" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>This function does the following:</dt><dd><ul class="simple">
 <li><p>Takes as input a dataframe with coordinates defining all the grid cells</p></li>
