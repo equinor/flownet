@@ -172,9 +172,9 @@
             
   <div class="section" id="module-flownet.ert._create_ert_setup">
 <span id="flownet-ert-create-ert-setup-module"></span><h1>flownet.ert._create_ert_setup module<a class="headerlink" href="#module-flownet.ert._create_ert_setup" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="flownet.ert._create_ert_setup._create_ert_parameter_file">
-<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">_create_ert_parameter_file</code><span class="sig-paren">(</span><em class="sig-param">parameters: List[flownet.parameters._base_parameter.Parameter], output_folder: pathlib.Path</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#flownet.ert._create_ert_setup._create_ert_parameter_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">_create_ert_parameter_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter">flownet.parameters._base_parameter.Parameter</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">output_folder</span><span class="p">:</span> <span class="n">pathlib.Path</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#flownet.ert._create_ert_setup._create_ert_parameter_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes in the parameters prior distribution as a dataframe,
 and outputs them in an ert parameter definition file</p>
 <dl class="field-list simple">
@@ -190,9 +190,9 @@ and outputs them in an ert parameter definition file</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="flownet.ert._create_ert_setup._create_observation_file">
-<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">_create_observation_file</code><span class="sig-paren">(</span><em class="sig-param">schedule: flownet.realization._schedule.Schedule</em>, <em class="sig-param">obs_file: pathlib.Path</em>, <em class="sig-param">training_set_fraction: float = 1</em>, <em class="sig-param">yaml: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup._create_observation_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">_create_observation_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">schedule</span><span class="p">:</span> <span class="n"><a class="reference internal" href="flownet.realization._schedule.html#flownet.realization._schedule.Schedule" title="flownet.realization._schedule.Schedule">flownet.realization._schedule.Schedule</a></span></em>, <em class="sig-param"><span class="n">obs_file</span><span class="p">:</span> <span class="n">pathlib.Path</span></em>, <em class="sig-param"><span class="n">training_set_fraction</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">yaml</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup._create_observation_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an ERT observation file from a given schedule instance.
 It has not yet been decided if schedule is to be given at creation or should be part
 of self.</p>
@@ -211,9 +211,9 @@ of self.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="flownet.ert._create_ert_setup.create_ert_setup">
-<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">create_ert_setup</code><span class="sig-paren">(</span><em class="sig-param">args: argparse.Namespace</em>, <em class="sig-param">network</em>, <em class="sig-param">schedule: flownet.realization._schedule.Schedule</em>, <em class="sig-param">ert_config: dict</em>, <em class="sig-param">parameters=None</em>, <em class="sig-param">random_seed=None</em>, <em class="sig-param">training_set_fraction: float = 1</em>, <em class="sig-param">prediction_setup: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup.create_ert_setup" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">create_ert_setup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">argparse.Namespace</span></em>, <em class="sig-param"><span class="n">network</span></em>, <em class="sig-param"><span class="n">schedule</span><span class="p">:</span> <span class="n"><a class="reference internal" href="flownet.realization._schedule.html#flownet.realization._schedule.Schedule" title="flownet.realization._schedule.Schedule">flownet.realization._schedule.Schedule</a></span></em>, <em class="sig-param"><span class="n">ert_config</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">parameters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">random_seed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">training_set_fraction</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">prediction_setup</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup.create_ert_setup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a ready-to-go ERT setup in output_folder.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

@@ -172,9 +172,9 @@
             
   <div class="section" id="module-flownet.parameters._porv_poro_trans">
 <span id="flownet-parameters-porv-poro-trans-module"></span><h1>flownet.parameters._porv_poro_trans module<a class="headerlink" href="#module-flownet.parameters._porv_poro_trans" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="flownet.parameters._porv_poro_trans.PorvPoroTrans">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters._porv_poro_trans.</code><code class="sig-name descname">PorvPoroTrans</code><span class="sig-paren">(</span><em class="sig-param">distribution_values: pandas.core.frame.DataFrame</em>, <em class="sig-param">ti2ci: pandas.core.frame.DataFrame</em>, <em class="sig-param">network: flownet.network_model._network_model.NetworkModel</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._porv_poro_trans.PorvPoroTrans" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters._porv_poro_trans.</code><code class="sig-name descname">PorvPoroTrans</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distribution_values</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">ti2ci</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n"><a class="reference internal" href="flownet.network_model._network_model.html#flownet.network_model._network_model.NetworkModel" title="flownet.network_model._network_model.NetworkModel">flownet.network_model._network_model.NetworkModel</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._porv_poro_trans.PorvPoroTrans" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.parameters._base_parameter.Parameter</span></code></a></p>
 <p>Parameter type which takes care of stochastically drawn pore volume, porosity and
 permeability. Also makes consistent NNC transmissibilities.</p>
@@ -217,27 +217,27 @@ specifiying min, max and uniform/loguniform for three different parameters
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._porv_poro_trans.PorvPoroTrans._abc_cache">
 <code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._porv_poro_trans.PorvPoroTrans._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._porv_poro_trans.PorvPoroTrans._abc_negative_cache">
 <code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._porv_poro_trans.PorvPoroTrans._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._porv_poro_trans.PorvPoroTrans._abc_negative_cache_version">
 <code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.parameters._porv_poro_trans.PorvPoroTrans._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._porv_poro_trans.PorvPoroTrans._abc_registry">
 <code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._porv_poro_trans.PorvPoroTrans._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.parameters._porv_poro_trans.PorvPoroTrans.render_output">
 <code class="sig-name descname">render_output</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#flownet.parameters._porv_poro_trans.PorvPoroTrans.render_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates PORO and PORV include content - which are given to
@@ -251,9 +251,9 @@ the GRID and EDIT section respectively.</p>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="flownet.parameters._porv_poro_trans._transmissibility">
-<code class="sig-prename descclassname">flownet.parameters._porv_poro_trans.</code><code class="sig-name descname">_transmissibility</code><span class="sig-paren">(</span><em class="sig-param">area: float</em>, <em class="sig-param">dx_i: float</em>, <em class="sig-param">dx_j: float</em>, <em class="sig-param">z_i: float</em>, <em class="sig-param">z_j: float</em>, <em class="sig-param">k_i: float</em>, <em class="sig-param">k_j: float</em>, <em class="sig-param">multx_i: float</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#flownet.parameters._porv_poro_trans._transmissibility" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.parameters._porv_poro_trans.</code><code class="sig-name descname">_transmissibility</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">area</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">dx_i</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">dx_j</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">z_i</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">z_j</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">k_i</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">k_j</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">multx_i</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#flownet.parameters._porv_poro_trans._transmissibility" title="Permalink to this definition">¶</a></dt>
 <dd><p>The equations here for calculating transmissibilities are taken from
 the simulation manual. The simulator will calculate transmissibilities automatically
 for everything except for NNC definitions.</p>

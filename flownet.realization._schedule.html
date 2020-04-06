@@ -172,12 +172,12 @@
             
   <div class="section" id="module-flownet.realization._schedule">
 <span id="flownet-realization-schedule-module"></span><h1>flownet.realization._schedule module<a class="headerlink" href="#module-flownet.realization._schedule" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="flownet.realization._schedule.Schedule">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.realization._schedule.</code><code class="sig-name descname">Schedule</code><span class="sig-paren">(</span><em class="sig-param">network: flownet.network_model._network_model.NetworkModel</em>, <em class="sig-param">df_production_data: pandas.core.frame.DataFrame</em>, <em class="sig-param">case_name: str</em>, <em class="sig-param">control_mode: str = 'RESV'</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.realization._schedule.</code><code class="sig-name descname">Schedule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n"><a class="reference internal" href="flownet.network_model._network_model.html#flownet.network_model._network_model.NetworkModel" title="flownet.network_model._network_model.NetworkModel">flownet.network_model._network_model.NetworkModel</a></span></em>, <em class="sig-param"><span class="n">df_production_data</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">case_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">control_mode</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'RESV'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Python class to to store all schedule items for the Flownet run.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule._calculate_compdat">
 <code class="sig-name descname">_calculate_compdat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._calculate_compdat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper Function that generates the COMPDAT keywords based on geometrical information from the NetworkModel.</p>
@@ -188,7 +188,7 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule._calculate_entity_dates">
 <code class="sig-name descname">_calculate_entity_dates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._calculate_entity_dates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function that calculate the start dates of all entities.</p>
@@ -199,7 +199,7 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule._calculate_wconhist">
 <code class="sig-name descname">_calculate_wconhist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._calculate_wconhist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function that generates the WCONHIST keywords based on loaded production data.
@@ -213,7 +213,7 @@ Therefore, potential up-sampling needs to be done before the schedule is created
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule._calculate_wconinjh">
 <code class="sig-name descname">_calculate_wconinjh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._calculate_wconinjh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function that generates the WCONINJ keywords based on loaded production data.
@@ -228,7 +228,7 @@ the schedule is created.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule._calculate_welspecs">
 <code class="sig-name descname">_calculate_welspecs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._calculate_welspecs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function that generates the WELSPECS keywords based which wells there are in the production data.</p>
@@ -239,15 +239,15 @@ the schedule is created.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule._create_schedule">
 <code class="sig-name descname">_create_schedule</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._create_schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function that calls all functions involved in creating the schedule for the FlowNet run.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule._retrieve_date_first_non_zero_prodinj">
-<em class="property">static </em><code class="sig-name descname">_retrieve_date_first_non_zero_prodinj</code><span class="sig-paren">(</span><em class="sig-param">df_production_data: pandas.core.frame.DataFrame</em>, <em class="sig-param">well_name: str</em><span class="sig-paren">)</span> &#x2192; Optional[datetime.date]<a class="headerlink" href="#flownet.realization._schedule.Schedule._retrieve_date_first_non_zero_prodinj" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">_retrieve_date_first_non_zero_prodinj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_production_data</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">well_name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>datetime.date<span class="p">]</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._retrieve_date_first_non_zero_prodinj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to retrieve the date of first non-zero production or injection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -262,9 +262,9 @@ the schedule is created.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.append">
-<code class="sig-name descname">append</code><span class="sig-paren">(</span><em class="sig-param">_keyword</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule.append" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">append</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_keyword</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule.append" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to append Keyword’s to the Schedule instance</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -276,9 +276,9 @@ the schedule is created.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.get_compdat">
-<code class="sig-name descname">get_compdat</code><span class="sig-paren">(</span><em class="sig-param">well_name: str = None</em><span class="sig-paren">)</span> &#x2192; List[flownet.realization._simulation_keywords.COMPDAT]<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_compdat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_compdat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">well_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="flownet.realization._simulation_keywords.html#flownet.realization._simulation_keywords.COMPDAT" title="flownet.realization._simulation_keywords.COMPDAT">flownet.realization._simulation_keywords.COMPDAT</a><span class="p">]</span><a class="headerlink" href="#flownet.realization._schedule.Schedule.get_compdat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to retrieve all COMPDAT entries defined for a particular well.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -290,9 +290,9 @@ the schedule is created.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.get_dates">
-<code class="sig-name descname">get_dates</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[datetime.date]<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_dates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_dates</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>datetime.date<span class="p">]</span><a class="headerlink" href="#flownet.realization._schedule.Schedule.get_dates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to retrieve a sorted list of all unique dates in the schedule object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -301,7 +301,7 @@ the schedule is created.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.get_first_date">
 <code class="sig-name descname">get_first_date</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; datetime.date<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_first_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to look-up the first date in the schedule.</p>
@@ -312,9 +312,9 @@ the schedule is created.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.get_keywords">
-<code class="sig-name descname">get_keywords</code><span class="sig-paren">(</span><em class="sig-param">date: datetime.date = None</em>, <em class="sig-param">kw_class: Union[flownet.realization._simulation_keywords.Keyword</em>, <em class="sig-param">str</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">well_name: str = None</em>, <em class="sig-param">ignore_nan: str = None</em><span class="sig-paren">)</span> &#x2192; List[flownet.realization._simulation_keywords.Keyword]<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_keywords" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_keywords</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">date</span><span class="p">:</span> <span class="n">datetime.date</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kw_class</span><span class="p">:</span> <span class="n">Union[flownet.realization._simulation_keywords.Keyword, str, None]</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">well_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ignore_nan</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="flownet.realization._simulation_keywords.html#flownet.realization._simulation_keywords.Keyword" title="flownet.realization._simulation_keywords.Keyword">flownet.realization._simulation_keywords.Keyword</a><span class="p">]</span><a class="headerlink" href="#flownet.realization._schedule.Schedule.get_keywords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of all keywords at a given date and/or of a
 particular keyword class.</p>
 <dl class="field-list simple">
@@ -332,9 +332,9 @@ particular keyword class.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.get_nr_observations">
-<code class="sig-name descname">get_nr_observations</code><span class="sig-paren">(</span><em class="sig-param">training_set_fraction: float</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_nr_observations" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_nr_observations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">training_set_fraction</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_nr_observations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to retrieve the number of unique observations in the training process.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -346,7 +346,7 @@ particular keyword class.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.get_vfp">
 <code class="sig-name descname">get_vfp</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_vfp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to retrieve the VFP tables associated with all wells.</p>
@@ -357,9 +357,9 @@ particular keyword class.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.get_well_start_date">
-<code class="sig-name descname">get_well_start_date</code><span class="sig-paren">(</span><em class="sig-param">well_name: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Optional[datetime.date]<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_well_start_date" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_well_start_date</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">well_name</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>datetime.date<span class="p">]</span><a class="headerlink" href="#flownet.realization._schedule.Schedule.get_well_start_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to retrieve the start date of a well.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -371,9 +371,9 @@ particular keyword class.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.get_wells">
-<code class="sig-name descname">get_wells</code><span class="sig-paren">(</span><em class="sig-param">kw_class: Union[flownet.realization._simulation_keywords.Keyword</em>, <em class="sig-param">str</em>, <em class="sig-param">None] = None</em><span class="sig-paren">)</span> &#x2192; List[str]<a class="headerlink" href="#flownet.realization._schedule.Schedule.get_wells" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_wells</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kw_class</span><span class="p">:</span> <span class="n">Union[flownet.realization._simulation_keywords.Keyword, str, None]</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#flownet.realization._schedule.Schedule.get_wells" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to retrieve all wells that are associated to any keyword
 in the Schedule or associated to a particular kw_class.</p>
 <dl class="field-list simple">
@@ -386,7 +386,7 @@ in the Schedule or associated to a particular kw_class.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.max_connections">
 <code class="sig-name descname">max_connections</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#flownet.realization._schedule.Schedule.max_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to retrieve the maximum number of well connections to the grid
@@ -398,9 +398,9 @@ in any defined well in the Schedule.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.num_connections">
-<code class="sig-name descname">num_connections</code><span class="sig-paren">(</span><em class="sig-param">well_name: str</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#flownet.realization._schedule.Schedule.num_connections" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">num_connections</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">well_name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#flownet.realization._schedule.Schedule.num_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to retrieve the number of well connections to the grid
 in a specific well.</p>
 <dl class="field-list simple">
@@ -413,7 +413,7 @@ in a specific well.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.num_wells">
 <code class="sig-name descname">num_wells</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#flownet.realization._schedule.Schedule.num_wells" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to retrieve the number of unique wells in the Schedule associated
@@ -425,7 +425,7 @@ to any keyword in the Schedule.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.sort">
 <code class="sig-name descname">sort</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule.sort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to return a list if schedule items (keywords) sorted on

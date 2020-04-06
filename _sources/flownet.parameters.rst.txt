@@ -5,6 +5,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    flownet.parameters._aquifer
    flownet.parameters._base_parameter

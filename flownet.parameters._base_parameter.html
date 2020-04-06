@@ -172,7 +172,7 @@
             
   <div class="section" id="module-flownet.parameters._base_parameter">
 <span id="flownet-parameters-base-parameter-module"></span><h1>flownet.parameters._base_parameter module<a class="headerlink" href="#module-flownet.parameters._base_parameter" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="flownet.parameters._base_parameter.Parameter">
 <em class="property">class </em><code class="sig-prename descclassname">flownet.parameters._base_parameter.</code><code class="sig-name descname">Parameter</code><a class="headerlink" href="#flownet.parameters._base_parameter.Parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
@@ -180,46 +180,46 @@
 relative permeability, contact depths, PVT etc.)</p>
 <p>Every class inheriting this abstract base class needs to define an attribute
 <cite>_random_variables</cite> and implement the class method <cite>render_output</cite>.</p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._base_parameter.Parameter._abc_cache">
 <code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._base_parameter.Parameter._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._base_parameter.Parameter._abc_negative_cache">
 <code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._base_parameter.Parameter._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._base_parameter.Parameter._abc_negative_cache_version">
 <code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 49</em><a class="headerlink" href="#flownet.parameters._base_parameter.Parameter._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="flownet.parameters._base_parameter.Parameter._abc_registry">
 <code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters._base_parameter.Parameter._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.parameters._base_parameter.Parameter.get_dims">
 <code class="sig-name descname">get_dims</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Union[None, Dict[str, int]]<a class="headerlink" href="#flownet.parameters._base_parameter.Parameter.get_dims" title="Permalink to this definition">¶</a></dt>
 <dd><p>In case a parameter requires updates in runspec dimensions, a get_dims
 function will need to be implemented.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.parameters._base_parameter.Parameter.random_samples">
 <em class="property">property </em><code class="sig-name descname">random_samples</code><a class="headerlink" href="#flownet.parameters._base_parameter.Parameter.random_samples" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of all random values for each distribution for the Parameter</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.parameters._base_parameter.Parameter.random_variables">
 <em class="property">property </em><code class="sig-name descname">random_variables</code><a class="headerlink" href="#flownet.parameters._base_parameter.Parameter.random_variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of all Probability distributions for the Parameter</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="flownet.parameters._base_parameter.Parameter.render_output">
 <em class="property">abstract </em><code class="sig-name descname">render_output</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#flownet.parameters._base_parameter.Parameter.render_output" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
