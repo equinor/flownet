@@ -50,8 +50,8 @@ class NetworkModel:
         self._fault_planes: Optional[pd.DataFrame] = None
         self._faults: Optional[Dict] = None
         if isinstance(fault_planes, pd.DataFrame):
-            self._fault_planes: Optional[pd.DataFrame] = fault_planes
-            self._faults: Optional[Dict] = self._calculate_faults(fault_tolerance)
+            self._fault_planes = fault_planes
+            self._faults = self._calculate_faults(fault_tolerance)
 
     @property
     def aquifers_xyz(self) -> List[Coordinate]:
