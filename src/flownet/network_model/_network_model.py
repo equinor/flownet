@@ -221,16 +221,10 @@ class NetworkModel:
         """
 
         dict_fault_keyword = {}
-
-        fault_names = self._fault_planes["NAME"].unique().tolist()
-
-        if not fault_names:
-            return None
-        
         if self._fault_planes is not None:
             fault_names = self._fault_planes["NAME"].unique().tolist()
-                if not fault_names:
-                    return None
+        if not fault_names:
+            return None
 
         print("Performing fault ray tracing...")
 
