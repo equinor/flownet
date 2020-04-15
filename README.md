@@ -1,3 +1,4 @@
+[![PyPI version](https://badge.fury.io/py/flownet.svg)](https://badge.fury.io/py/flownet)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/equinor/flownet/CI)](https://github.com/equinor/flownet/actions?query=workflow%3ACI)
 [![Python 3.6 | 3.7](https://img.shields.io/badge/python-3.6%20|%203.7-blue.svg)](https://www.python.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -28,7 +29,7 @@ to get going.
 
 _FlowNet_ uses the open-source reservoir simulator [_OPM-Flow_](https://opm-project.org/?page_id=19). To be able to run _FlowNet_ you will need to have _OPM-Flow_
 installed first. There are also other dependencies like the Python packages [`libecl`](https://github.com/equinor/libecl) and
-[`libres`](https://github.com/equinor/libres) which currently are not easily installable from PyPI.
+[`libres`](https://github.com/equinor/libres) which currently are not easily installable from PyPI (however, things are happening, so hopefully in a not too distant future, dependencies are installable from PyPI, which is already the case for flownet itself: `pip install flownet`).
 
 ##### 1. Clone the _FlowNet_ GitHub repository with SSH:
 ```bash
