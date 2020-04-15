@@ -47,9 +47,11 @@ class NetworkModel:
         self._grid: pd.DataFrame = self._calculate_grid_corner_points()
         self._nncs: List[Tuple[int, int]] = self._calculate_nncs()
 
+        self._fault_planes: Optional[pd.DataFrame] = None
+        self._faults: Optional[Dict] = None
         if isinstance(fault_planes, pd.DataFrame):
-            self._fault_planes: pd.DataFrame = fault_planes
-            self._faults: Optional[Dict] = self._calculate_faults(fault_tolerance)
+            self._fault_planes = fault_planes
+            self._faults = self._calculate_faults(fault_tolerance)
 
     @property
     def aquifers_xyz(self) -> List[Coordinate]:
@@ -219,9 +221,8 @@ class NetworkModel:
         """
 
         dict_fault_keyword = {}
-
-        fault_names = self._fault_planes["NAME"].unique().tolist()
-
+        if self._fault_planes is not None:
+            fault_names = self._fault_planes["NAME"].unique().tolist()
         if not fault_names:
             return None
 
@@ -285,7 +286,6 @@ class NetworkModel:
 
         Returns:
             DataFrame of all corner-points needed to generate the grid.
-
         """
         df_grid = pd.DataFrame()
 
