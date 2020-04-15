@@ -286,7 +286,6 @@ class NetworkModel:
 
         Returns:
             DataFrame of all corner-points needed to generate the grid.
-            
         """
         df_grid = pd.DataFrame()
 
