@@ -1,11 +1,18 @@
-[![PyPI version](https://badge.fury.io/py/flownet.svg)](https://badge.fury.io/py/flownet)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/equinor/flownet/CI)](https://github.com/equinor/flownet/actions?query=workflow%3ACI)
-[![Python 3.6 | 3.7](https://img.shields.io/badge/python-3.6%20|%203.7-blue.svg)](https://www.python.org/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/equinor/flownet.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/equinor/flownet/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/equinor/flownet.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/equinor/flownet/context:python)
+<p align="center">
+  <img height="150" src="https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_logo.png">
+</p>
 
-# _FlowNet_
+<h2 align="center">Simplified training of reservoir simulation models</h2>
+
+<p align="center">
+<a href="https://badge.fury.io/py/flownet"><img src="https://badge.fury.io/py/flownet.svg"></a>
+<a href="https://github.com/equinor/flownet/actions?query=workflow%3ACI"><img src="https://img.shields.io/github/workflow/status/equinor/flownet/CI"></a>
+<a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.6%20|%203.7-blue.svg"></a>
+<a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+<a href="https://lgtm.com/projects/g/equinor/flownet/alerts/"><img alt="Total alerts" src="https://img.shields.io/lgtm/alerts/g/equinor/flownet.svg?logo=lgtm&logoWidth=18"/></a>
+<a href="https://lgtm.com/projects/g/equinor/flownet/context:python"><img src="https://img.shields.io/lgtm/grade/python/g/equinor/flownet.svg?logo=lgtm&logoWidth=18"></a>
+</p>
+<br/>
 
 _FlowNet_ aims at solving the following problems:
 
@@ -13,6 +20,8 @@ _FlowNet_ aims at solving the following problems:
 * Train the model
 * Assure model predictiveness
 * Use the models to efficiently optimize and make decisions
+
+For documentation, see [the GitHub pages](https://equinor.github.io/flownet/) for this repository.
 
 ## Contributing
 
@@ -139,3 +148,4 @@ and then open the generated `./docs/_build/html/index.html` in a browser.
 FlowNet is, with a few exceptions listed below, [GPLv3](./LICENSE).
 
 - The [Norne test data](./tests/data/norne.tar.gz) is available under the [Open Database License](http://opendatacommons.org/licenses/odbl/1.0/)
+- The [FlowNet logo](./docs/_static/flownet_logo.png) is [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)
