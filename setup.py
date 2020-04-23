@@ -15,6 +15,7 @@ REQUIREMENTS = [
     "pyscal~=0.4.1",
     "pyvista~=0.23",
     "pyyaml~=5.2",
+    "scikit-learn~=0.22",
     "scipy~=1.4",
     "tqdm~=4.43",
     "webviz-config>=0.0.42",
@@ -53,6 +54,7 @@ setup(
             "flownet_render_realization=flownet.realization:render_realization",
             "flownet_delete_simulation_output=flownet.ahm:delete_simulation_output",
             "flownet_save_iteration_parameters=flownet.ahm:save_iteration_parameters",
+            "flownet_save_iteration_analytics=flownet.ahm:save_iteration_analytics",
         ]
     },
     zip_safe=False,

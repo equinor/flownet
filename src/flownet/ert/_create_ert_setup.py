@@ -176,6 +176,16 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         else ert_config["static_include_files"]
     )
 
+    shutil.copyfile(
+        _MODULE_FOLDER / ".." / "static" / "SAVE_ITERATION_ANALYTICS_WORKFLOW",
+        output_folder / "SAVE_ITERATION_ANALYTICS_WORKFLOW",
+    )
+
+    shutil.copyfile(
+        _MODULE_FOLDER / ".." / "static" / "SAVE_ITERATION_ANALYTICS_WORKFLOW_JOB",
+        output_folder / "SAVE_ITERATION_ANALYTICS_WORKFLOW_JOB",
+    )
+
     for section in ["RUNSPEC", "PROPS", "SOLUTION", "SCHEDULE"]:
         static_source_path = pathlib.Path(static_path) / f"{section}.inc"
         if static_source_path.is_file():

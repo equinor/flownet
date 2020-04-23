@@ -1,0 +1,97 @@
+name: Brugge
+
+flownet:
+  data_source:
+    eclipse_case: ../tests/data/brugge/BRUGGE60K_FY-SF-KM-1-1_JAN2017/BRUGGE60K_FY-SF-KM-1-1
+    resample: M
+  cell_length: 100
+  additional_flow_nodes: 50
+  additional_node_candidates: 1000
+  hull_factor: 0.9
+  random_seed: 123456
+  perforation_handling_strategy: bottom_point
+  fast_pyscal: True
+  training_set_fraction: 1.0 # Fraction of observations (from 0 to 1) to use as training data
+  training_set_end_date: 2010-01-01 #YYYY-MM-DD. If defined training set fraction is calculated from this date
+  fault_tolerance: 1.0e-5
+
+ert:
+  static_include_files: ./brugge_static
+  realizations:
+    num_realizations: 50
+    required_success_percent: 20
+    max_runtime: 300 # Maximum runtime of on single realization in seconds
+  queue:
+    system: LOCAL # LOCAL or LSF
+    name: mr # ignored when system is LOCAL
+    server: st-grid01 # ignored when system is LOCAL
+    max_running: 10 # Maximum number of simultaneous runs
+  ensemble_weights: [1, 1, 1, 1]
+  yamlobs: ./observations.yamlobs
+  analysis:
+    metric: "[RMSE,MAE]"
+    quantity: "[WOPR:BR-P-,WBHP:BR-P-]"
+    start: "2000-01-01"
+    end: "2006-01-01"
+    outfile: analysis_metrics_iteration
+
+model_parameters:
+  permeability:
+    min: 0.1
+    max: 2000
+  porosity:
+    min: 0.05
+    max: 0.3
+  bulkvolume_mult:
+    mean: 0.17
+    max: 0.68
+  fault_mult:
+    min: 1.0e-9
+    max: 1.0e-8
+    loguniform: True
+  relative_permeability:
+    scheme: global
+    swirr:
+      min: 0.0
+      max: 0.05
+    swl:
+      min: 0.2
+      max: 0.55
+    swcr:
+      min: 0.0
+      max: 0.05
+    sorw:
+      min: 0.1
+      max: 0.2
+    krwend:
+      min: 0.5
+      max: 0.7
+    krowend:
+      min: 0.3
+      max: 0.5
+    nw:
+      min: 1.5
+      max: 3.5
+    now:
+      min: 2.0
+      max: 4.5
+  equil:
+    datum_depth: 1700
+    datum_pressure:
+      min: 160
+      max: 180
+    owc_depth:
+      min: 1600
+      max: 1700
+  rock_compressibility:
+    reference_pressure: 170
+    min: 6.0e-6
+    max: 5.0e-5
+  aquifer:
+    scheme: individual
+    fraction: 0.25
+    delta_depth: 1000
+    size_in_bulkvolumes:
+      min: 1.0e-6
+      max: 2
+      loguniform: True
