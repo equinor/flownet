@@ -410,9 +410,13 @@ DEFAULT_VALUES = {
         "realizations": {"max_runtime": 300, "required_success_percent": 20},
         "simulator": {"name": "flow"},
         "yamlobs": "./observations.yamlobs",
-        "analysis": {"metric": "[RMSE]", "quantity": "[WOPR:BR-P-]",
-                     "start": "2001-04-01", "end": "2006-01-01",
-                     "outfile": "analysis_metrics_iteration"},
+        "analysis": {
+            "metric": "[RMSE]",
+            "quantity": "[WOPR:BR-P-]",
+            "start": "2001-04-01",
+            "end": "2006-01-01",
+            "outfile": "analysis_metrics_iteration",
+        },
     },
     "model_parameters": {
         "permeability": {"loguniform": True},
