@@ -401,7 +401,7 @@ def normalize_data(data_opm_reference, data_ensembles_flownet):
     norm_data_ensembles_flownet = []
     for k in range(len(data_ensembles_flownet)):
         norm_data_ensembles_flownet.append(
-            norm_matrix_data[:, (k + 1) * n: (k + 2) * n]
+            norm_matrix_data[:, (k + 1) * n : (k + 2) * n]
         )
 
     return norm_data_opm_reference, norm_data_ensembles_flownet

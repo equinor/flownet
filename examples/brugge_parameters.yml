@@ -18,7 +18,7 @@ flownet:
 ert:
   static_include_files: ./brugge_static
   realizations:
-    num_realizations: 50
+    num_realizations: 10
     required_success_percent: 20
     max_runtime: 300 # Maximum runtime of on single realization in seconds
   queue:
