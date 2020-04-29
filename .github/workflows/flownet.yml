@@ -45,6 +45,7 @@ jobs:
       - name: 📦 Install FlowNet
         run: |
           source $VENV_PATH/bin/activate
+          pip install "astroid==2.3.3"  # Bugs in 2.4.0, waiting for release of 2.4.1
           pip install .
 
       - name: 📦 Install test dependencies
