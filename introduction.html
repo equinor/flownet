@@ -161,22 +161,25 @@
   <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
 <img alt="_images/flownet_logo.svg" src="_images/flownet_logo.svg" /><p><strong>FlowNet</strong> aims at making predictive subsurface models directly from data. Instead of
-complex simulation grids it uses networks of tubes (with full physics within each tube),
+complex simulation grids, FlowNet uses networks of tubes (with full physics within each tube),
 speeding up simulation models by order of magnitudes, which again makes it possible with
-increased sampling of the uncertainty span compared with traditional models.</p>
+e.g. increased sampling of the uncertainty span compared with traditional workflows.</p>
 <div class="section" id="key-features">
 <h2>Key features<a class="headerlink" href="#key-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p><strong>Fast model building:</strong> Very efficiently get an ensemble of subsurface models.</p></li>
-<li><p><strong>Fast simulation runtime:</strong> Reduce the simulation time per model by order of magnitudes,
-which can be traded for e.g. better sampling of your uncertainty span.</p></li>
+<li><p><strong>Fast model building:</strong> Very efficiently get an ensemble of subsurface models,
+compared to duration of traditional modeling projects.</p></li>
+<li><p><strong>Fast simulation runtime:</strong> Reduce the simulation time per model realization
+by order of magnitudes, which can be traded for e.g. better sampling of your
+uncertainty span.</p></li>
 <li><p><strong>Automatic parametrization:</strong> FlowNet will automatically parametrize typical subsurface
-uncertainties for your.</p></li>
+uncertainties for you.</p></li>
 <li><p><strong>Data driven:</strong> FlowNet will use what typically is considered raw data in a model
 building process directly.</p></li>
-<li><p><strong>Easy:</strong> As user of FlowNet, you only need to adjust a <a class="reference internal" href="configuration_file.html"><span class="doc">high level configuration file</span></a>
-- no Python skills necessary.</p></li>
-<li><p><strong>Standards-based:</strong> Based on and compatible with open standards. FlowNets stands on the shoulders of giants.</p></li>
+<li><p><strong>Easy:</strong> As FlowNet user, you only need to adjust a
+<a class="reference internal" href="configuration_file.html"><span class="doc">high level configuration file</span></a> - no Python
+skills necessary.</p></li>
+<li><p><strong>Standards-based:</strong> Based on and compatible with open standards. FlowNets stands on the shoulders of giants:</p></li>
 </ul>
 <blockquote>
 <div><ul class="simple">
@@ -189,20 +192,20 @@ building process directly.</p></li>
 </div>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>FlowNet aims at being data driven software. I.e. the preferred way is that all
-all input data to FlowNet should arrive from APIs (from other softwares). However,
+<p>FlowNet aims at being data driven software. I.e. the preferred way is that raw
+input data to FlowNet should arrive from APIs (from other softwares). However,
 in order to also facilitate testing and developing FlowNet without an available data API
-framework, FlowNet can also extract necessary data from an existing simulation model.</p>
+framework, FlowNet can also extract necessary input data from an existing simulation model.</p>
 <img alt="_images/flownet-concept.svg" src="_images/flownet-concept.svg" /></div>
 <div class="section" id="automatic-parametrization">
 <h2>Automatic parametrization<a class="headerlink" href="#automatic-parametrization" title="Permalink to this headline">¶</a></h2>
 <p>In traditional modelling workflows, the user has to parametrize the model manually
-when setting it up. This is time consuming routine operations, and can also result
+when setting it up. This is time consuming and routine work, and can also result
 in less parametrization (which again might result in not spanning the real uncertainty span).</p>
 <p>FlowNet will automatically add typical parametrizations, and leave only responsibility
 for high level options (e.g. prior-distribution end-points) to the user,
 which he/she sets through the <a class="reference internal" href="configuration_file.html"><span class="doc">configuration file</span></a>.</p>
-<p>FlowNet currently support the following automatic parametrization:</p>
+<p>FlowNet currently supports the following automatic parametrization:</p>
 <ul class="simple">
 <li><p>Aquifers</p></li>
 <li><p>Equilibration</p></li>
@@ -221,7 +224,7 @@ which he/she sets through the <a class="reference internal" href="configuration_
 </div>
 <div class="section" id="benchmark-models">
 <h2>Benchmark models<a class="headerlink" href="#benchmark-models" title="Permalink to this headline">¶</a></h2>
-<p>The core developers of FlowNet is currently testing on the following open benchmark models:</p>
+<p>The core developers of FlowNet are currently testing on the following open benchmark models:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><a class="reference external" href="https://github.com/OPM/opm-data/tree/master/norne">Norne model</a></p></li>
@@ -229,11 +232,11 @@ which he/she sets through the <a class="reference internal" href="configuration_
 <li><p><a class="reference external" href="https://data.4tu.nl/repository/uuid:916c86cd-3558-4672-829a-105c62985ab2">Egg model</a></p></li>
 </ul>
 </div></blockquote>
-<p>A small Norne example setup is automatically started on each commit to FlowNet
-pull requests, in order verify the code changes.</p>
+<p>A small Norne assisted history matching example using FlowNet is automatically started
+on each commit to FlowNet pull requests, in order verify the code changes.</p>
 <p>Going forward, we will try to aim for having an Azure resource running on merge to <cite>master</cite>,
 and then have the results (profiles, history match profiles etc.) automatically pushed back
-to the FlowNet repository - showing current results.</p>
+to the FlowNet repository - showing current results on the benchmark model.</p>
 </div>
 </div>
 
