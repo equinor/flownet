@@ -1,9 +1,7 @@
 import argparse
 import concurrent.futures
 import glob
-import itertools
 import json
-import math
 import os
 import pathlib
 import re
@@ -12,14 +10,9 @@ import subprocess
 from typing import List, Dict, Optional, Tuple
 
 import jinja2
-import matplotlib.pyplot as plt
-from matplotlib.ticker import ScalarFormatter
 import numpy as np
 import pandas as pd
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-import yaml
 
-from ecl.summary import EclSum
 from ..ert import create_ert_setup
 from ..realization import Schedule
 from ..network_model import NetworkModel
