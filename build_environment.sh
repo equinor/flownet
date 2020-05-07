@@ -121,7 +121,6 @@ git clone https://github.com/equinor/ert
 pushd ert
 git checkout $ERT_VERSION
 
-pip install -r requirements.txt
 pip install .
 
 popd
