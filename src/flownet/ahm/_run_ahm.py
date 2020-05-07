@@ -126,7 +126,7 @@ def _get_distribution(
 
 
 # pylint: disable=too-many-branches
-def run_flownet_history_mathing(config: ConfigSuite.snapshot, args: argparse.Namespace):
+def run_flownet_history_matching(config: ConfigSuite.snapshot, args: argparse.Namespace):
     """
     Creates and runs an ERT setup, given user configuration.
 

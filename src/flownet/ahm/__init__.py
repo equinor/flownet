@@ -4,4 +4,4 @@ from ._assisted_history_matching import (
     save_iteration_parameters,
     save_iteration_analytics,
 )
-from ._run_ahm import run_flownet_history_mathing
+from ._run_ahm import run_flownet_history_matching
