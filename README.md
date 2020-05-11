@@ -47,7 +47,7 @@ git clone git@github.com:equinor/flownet.git
 
 ##### 2. Move into the cloned directory:
 ```bash
-cd ddpd-flownet
+cd flownet
 ```
 
 ##### 3. Run the `build_environment.sh` script containing the building recipe: 
