@@ -105,7 +105,9 @@ class Equilibration(Parameter):
             parameters.append(param_value_dict)
 
         thpres = ""
+        rsvd = ""
         eqlnum_combinations = []
+
         if len(self._unique_eqlnums) > 1:
             for connections_at_node in self._network.connection_at_nodes:
                 eqlnum_combinations.extend(list(combinations(connections_at_node, 2)))
@@ -120,7 +122,6 @@ class Equilibration(Parameter):
                 {"eqlnum1": eqlnum1, "eqlnum2": eqlnum2,}
             )
 
-            rsvd = ""
             if self._rsvd is not None:
                 rsvd = _TEMPLATE_ENVIRONMENT.get_template("RSVD.jinja2").render(
                     {
