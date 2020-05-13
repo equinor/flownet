@@ -1,5 +1,8 @@
 from setuptools import setup, find_packages
 
+with open("README.md", "r") as fh:
+    LONG_DESCRIPTION = fh.read()
+
 REQUIREMENTS = [
     "configsuite~=0.5",
     "cwrap~=1.6",
@@ -9,7 +12,7 @@ REQUIREMENTS = [
     "numpy~=1.17",
     "pandas~=0.25",
     "pyarrow~=0.14",
-    "pyscal~=0.3.1",
+    "pyscal~=0.4.1",
     "pyvista~=0.23",
     "pyyaml~=5.2",
     "scipy~=1.4",
@@ -36,11 +39,13 @@ setup(
     setup_requires=["setuptools_scm~=3.2"],
     extras_require={"tests": TEST_REQUIRES},
     description="Simplified training of reservoir simulation models",
+    long_description=LONG_DESCRIPTION,
+    long_description_content_type="text/markdown",
     url="https://github.com/equinor/flownet",
     author="R&T Equinor",
     use_scm_version=True,
     package_dir={"": "src"},
-    packages=find_packages("src", exclude=["tests"]),
+    packages=find_packages("src"),
     package_data={"flownet": ["templates/*", "static/*"]},
     entry_points={
         "console_scripts": [
@@ -51,4 +56,11 @@ setup(
         ]
     },
     zip_safe=False,
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
+        "Natural Language :: English",
+        "Topic :: Scientific/Engineering",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    ],
 )

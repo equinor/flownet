@@ -1,9 +1,18 @@
-[![Python 3.6 | 3.7](https://img.shields.io/badge/python-3.6%20|%203.7-blue.svg)](https://www.python.org/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/equinor/flownet.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/equinor/flownet/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/equinor/flownet.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/equinor/flownet/context:python)
+<p align="center">
+  <img height="150" src="https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_logo.png">
+</p>
 
-# _FlowNet_
+<h2 align="center">Simplified training of reservoir simulation models</h2>
+
+<p align="center">
+<a href="https://badge.fury.io/py/flownet"><img src="https://badge.fury.io/py/flownet.svg"></a>
+<a href="https://github.com/equinor/flownet/actions?query=workflow%3ACI"><img src="https://img.shields.io/github/workflow/status/equinor/flownet/CI"></a>
+<a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.6%20|%203.7-blue.svg"></a>
+<a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+<a href="https://lgtm.com/projects/g/equinor/flownet/alerts/"><img alt="Total alerts" src="https://img.shields.io/lgtm/alerts/g/equinor/flownet.svg?logo=lgtm&logoWidth=18"/></a>
+<a href="https://lgtm.com/projects/g/equinor/flownet/context:python"><img src="https://img.shields.io/lgtm/grade/python/g/equinor/flownet.svg?logo=lgtm&logoWidth=18"></a>
+</p>
+<br/>
 
 _FlowNet_ aims at solving the following problems:
 
@@ -11,6 +20,8 @@ _FlowNet_ aims at solving the following problems:
 * Train the model
 * Assure model predictiveness
 * Use the models to efficiently optimize and make decisions
+
+For documentation, see [the GitHub pages](https://equinor.github.io/flownet/) for this repository.
 
 ## Contributing
 
@@ -27,7 +38,7 @@ to get going.
 
 _FlowNet_ uses the open-source reservoir simulator [_OPM-Flow_](https://opm-project.org/?page_id=19). To be able to run _FlowNet_ you will need to have _OPM-Flow_
 installed first. There are also other dependencies like the Python packages [`libecl`](https://github.com/equinor/libecl) and
-[`libres`](https://github.com/equinor/libres) which currently are not easily installable from PyPI.
+[`libres`](https://github.com/equinor/libres) which currently are not easily installable from PyPI (however, things are happening, so hopefully in a not too distant future, dependencies are installable from PyPI, which is already the case for flownet itself: `pip install flownet`).
 
 ##### 1. Clone the _FlowNet_ GitHub repository with SSH:
 ```bash
@@ -36,7 +47,7 @@ git clone git@github.com:equinor/flownet.git
 
 ##### 2. Move into the cloned directory:
 ```bash
-cd ddpd-flownet
+cd flownet
 ```
 
 ##### 3. Run the `build_environment.sh` script containing the building recipe: 
@@ -137,3 +148,4 @@ and then open the generated `./docs/_build/html/index.html` in a browser.
 FlowNet is, with a few exceptions listed below, [GPLv3](./LICENSE).
 
 - The [Norne test data](./tests/data/norne.tar.gz) is available under the [Open Database License](http://opendatacommons.org/licenses/odbl/1.0/)
+- The [FlowNet logo](./docs/_static/flownet_logo.png) is [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)

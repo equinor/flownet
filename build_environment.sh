@@ -14,8 +14,8 @@
 # is assumed to be active. If it doesn't exist, a virtual envirnoment is created at
 # the given path.
 
-LIBRES_VERSION="6df5572"
-ERT_VERSION="4447dc92c4"
+LIBRES_VERSION="6d7ac59"
+ERT_VERSION="c74e1e6"
 
 set -e
 
@@ -121,7 +121,6 @@ git clone https://github.com/equinor/ert
 pushd ert
 git checkout $ERT_VERSION
 
-pip install -r requirements.txt
 pip install .
 
 popd
