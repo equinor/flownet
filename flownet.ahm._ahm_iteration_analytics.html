@@ -1,0 +1,468 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>flownet.ahm._ahm_iteration_analytics module &mdash; FlowNet  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="flownet.ahm._assisted_history_matching module" href="flownet.ahm._assisted_history_matching.html" />
+    <link rel="prev" title="flownet.ahm package" href="flownet.ahm.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #eeeeee" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/flownet_logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_file.html">Configuration file example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">FlowNet Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html#flownet-package">flownet package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">FlowNet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="api.html">FlowNet Python API</a> &raquo;</li>
+        
+          <li><a href="flownet.ahm.html">flownet.ahm package</a> &raquo;</li>
+        
+      <li>flownet.ahm._ahm_iteration_analytics module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/flownet.ahm._ahm_iteration_analytics.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-flownet.ahm._ahm_iteration_analytics">
+<span id="flownet-ahm-ahm-iteration-analytics-module"></span><h1>flownet.ahm._ahm_iteration_analytics module<a class="headerlink" href="#module-flownet.ahm._ahm_iteration_analytics" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="flownet.ahm._ahm_iteration_analytics._load_simulations">
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">_load_simulations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">runpath</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">ecl_base</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; ecl.summary.ecl_sum.EclSum<a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics._load_simulations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal helper function to simulation results in parallel.
+:param runpath: Path to where the realization is run.
+:param ecl_base: Path to where the realization is run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>EclSum</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.ahm._ahm_iteration_analytics.accuracy_metric">
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">accuracy_metric</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_reference</span></em>, <em class="sig-param"><span class="n">data_test</span></em>, <em class="sig-param"><span class="n">metric</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.accuracy_metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function computes a score value based on the specified accuracy metric
+by calculating discrepancy between columns of two 2D numpy arrays:
+(1) reference simulation data and (2) ensemble of FlowNet simulations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_reference</strong> – is the 2D numpy array containing normalized data from reference</p></li>
+<li><p><strong>replicated into as many columns as the size of ensemble of</strong> (<em>simulation</em>) – </p></li>
+<li><p><strong>realizations</strong> (<em>FlowNet</em>) – </p></li>
+<li><p><strong>data_test</strong> – is the 2D numpy array containing normalized data from an ensemble of</p></li>
+<li><p><strong>simulations</strong> (<em>FlowNet</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A score value reflecting the accuracy of FlowNet simulations in terms of matching
+data from reference simulation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.ahm._ahm_iteration_analytics.compute_metric_ensemble">
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">compute_metric_ensemble</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obs</span></em>, <em class="sig-param"><span class="n">list_ensembles</span></em>, <em class="sig-param"><span class="n">metrics</span></em>, <em class="sig-param"><span class="n">str_key</span></em>, <em class="sig-param"><span class="n">iteration</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.compute_metric_ensemble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal helper function to generate dataframe containing
+selected observations and respective dates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obs</strong> – numpy array containing normalized data from reference simulation</p></li>
+<li><p><strong>over as many columns as size of ensemble of FlowNet simulations</strong> (<em>replicated</em>) – </p></li>
+<li><p><strong>list_ensembles</strong> – list of ensembles of FlowNet simulations; can be used if</p></li>
+<li><p><strong>of multiple AHM iterations are loaded</strong> (<em>ensembles</em>) – </p></li>
+<li><p><strong>metrics</strong> – list of accuracy metrics to be computed</p></li>
+<li><p><strong>str_key</strong> – name of quantity of interest for accuracy metric calculation</p></li>
+<li><p><strong>iteration</strong> – current AHM iteration number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary containing values of calculated accuracy metrics for selected
+quantity of interest for current iteration of AHM</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.ahm._ahm_iteration_analytics.filter_dataframe">
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">filter_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_in</span></em>, <em class="sig-param"><span class="n">key_filter</span></em>, <em class="sig-param"><span class="n">min_value</span></em>, <em class="sig-param"><span class="n">max_value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.filter_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function filters the rows of a Pandas dataframe
+based on a range of values of a specified column</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_in</strong> – is the Pandas dataframe to be filtered</p></li>
+<li><p><strong>key_filter</strong> – is the key of the specified column</p></li>
+<li><p><strong>which the dataframe is to be filtered</strong> (<em>for</em>) – </p></li>
+<li><p><strong>min_value</strong> – is the minimum value of the range for filtering</p></li>
+<li><p><strong>max_value</strong> – is the maximum value of the range for filtering</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A Pandas dataframe containing only values within the specified range
+for the provided column</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.ahm._ahm_iteration_analytics.load_csv_file">
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">load_csv_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">csv_file</span></em>, <em class="sig-param"><span class="n">csv_columns</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.load_csv_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal helper function to generate dataframe containing
+selected observations and respective dates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> – name of CSV file</p></li>
+<li><p><strong>csv_columns</strong> – name of columns of CSV file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Pandas dataframe containing data from existing CSV file or
+empty dataframe with requested columns if CSV file does not exist</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.ahm._ahm_iteration_analytics.make_dataframe_simulation_data">
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">make_dataframe_simulation_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">eclbase_file</span></em>, <em class="sig-param"><span class="n">keys</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.make_dataframe_simulation_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal helper function to generate dataframe containing
+data from ensemble of simulations from selected simulation keys</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – path to folder containing ensemble of simulations</p></li>
+<li><p><strong>eclbase_file</strong> – name of simulation case file</p></li>
+<li><p><strong>keys</strong> – list of prefix of quantities of interest to be loaded</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Pandas dataframe contained data from ensemble of simulations
+realizations_dict: dictionary containing path to loaded simulations
+key_list_data: list of keys corresponding to selected quantities of interest
+iteration: current AHM iteration number</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>df</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.ahm._ahm_iteration_analytics.make_observation_dataframe">
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">make_observation_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obs</span></em>, <em class="sig-param"><span class="n">key_list_data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.make_observation_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal helper function to generate dataframe containing
+selected observations and respective dates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obs</strong> – data read from ERT observation yaml files</p></li>
+<li><p><strong>key_list_data</strong> – list of selected observations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Pandas dataframe containing selected observations and
+respective dates</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.ahm._ahm_iteration_analytics.normalize_data">
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">normalize_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_opm_reference</span></em>, <em class="sig-param"><span class="n">data_ensembles_flownet</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.normalize_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function normalizes data from a 2D numpy array containing data from the
+reference simulation and multiple ensembles of FlowNet simulations,
+using the MinMaxScaler from sklearn.preprocessing module</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_opm_reference</strong> – is the 2D numpy array containing data from reference</p></li>
+<li><p><strong>replicated into as many columns as the size of ensemble of</strong> (<em>simulation</em>) – </p></li>
+<li><p><strong>realizations</strong> (<em>FlowNet</em>) – </p></li>
+<li><p><strong>data_ensembles_flownet</strong> – is a list of 2D numpy arrays containing data from</p></li>
+<li><p><strong>of FlowNet simulations; each list entry correspond to the ensemble of</strong> (<em>ensembles</em>) – </p></li>
+<li><p><strong>given iteration of ES-MDA</strong> (<em>a</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>is a normalized 2D numpy array for the reference simulation data
+norm_data_ensembles_flownet: a list of normalized 2D numpy arrays for the ensembles of
+lowNet simulations</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>norm_data_opm_reference</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.ahm._ahm_iteration_analytics.prepare_flownet_data">
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">prepare_flownet_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">str_key</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.prepare_flownet_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function extracts data from selected columns of the Pandas dataframe
+containing data from an ensemble of FlowNet simulations, rearranges it into
+a matrix of stacked column-vectors preserving the original order, i.e. one column
+per realization of the ensemble</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – is the Pandas dataframe containing data from ensemble of FlowNet simulations</p></li>
+<li><p><strong>str_key</strong> – is the string to select columns; column names starting with str_key</p></li>
+<li><p><strong>n</strong> – is the size of ensemble of FlowNet simulations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A numpy 2D array [length_data * nb_selected_columns, n] containing data
+from selected columns (i.e., quantity of interest for accuracy metric) for
+an ensemble of FlowNet simulations in a column-vector. Each column correspond
+to one realization of the ensemble</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.ahm._ahm_iteration_analytics.prepare_opm_reference_data">
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">prepare_opm_reference_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">str_key</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.prepare_opm_reference_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function extracts data from selected columns of the Pandas dataframe
+containing data from reference simulation, rearranges it into a stacked
+column vector preserving the original order and repeats it n times to form
+a matrix for comparison with data from ensemble of n FlowNet simulations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – is the Pandas dataframe containing data from reference simulation</p></li>
+<li><p><strong>str_key</strong> – is the string to select columns; column names starting with str_key</p></li>
+<li><p><strong>n</strong> – is the size of ensemble of FlowNet simulations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A numpy 2D array [length_data * nb_selected_columns, n] containing data
+from selected columns (i.e., quantity of interest for accuracy metric) of
+reference simulation stacked in a column-vector and replicated into n columns</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.ahm._ahm_iteration_analytics.save_iteration_analytics">
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">save_iteration_analytics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.save_iteration_analytics" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is called as a post-simulation workflow in ERT, saving all
+accuracy metrics of all iterations to a file and plotting evolution of accuracy
+metrics over iterations. The resulting accuracy metric values are stored in
+a CSV file in the FlowNet output folder, along with the figures</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.ahm._ahm_iteration_analytics.save_plots_metrics">
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">save_plots_metrics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_metrics</span></em>, <em class="sig-param"><span class="n">metrics</span></em>, <em class="sig-param"><span class="n">str_key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.save_plots_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal helper function to generate and save plots of evolution of
+accuracy metrics over iterations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_metrics</strong> – Pandas dataframe containing values of accuracy metrics over iterations</p></li>
+<li><p><strong>metrics</strong> – list containing names of computed accuracy metrics</p></li>
+<li><p><strong>str_key</strong> – name of quantity of interest for accuracy metric calculation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="flownet.ahm._assisted_history_matching.html" class="btn btn-neutral float-right" title="flownet.ahm._assisted_history_matching module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="flownet.ahm.html" class="btn btn-neutral float-left" title="flownet.ahm package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Equinor
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
