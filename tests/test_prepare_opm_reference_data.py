@@ -10,5 +10,5 @@ def test_prepare_opm_reference_data() -> None:
         prepare_opm_reference_data(
             pd.DataFrame(data, columns=["key_1", "key_2"]), "key_", 2
         ),
-        np.array([[1, 1], [2, 2], [3, 3], [4, 4]]),
+        np.array([[1, 1], [3, 3], [2, 2], [4, 4]]),
     )

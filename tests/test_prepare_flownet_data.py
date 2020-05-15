@@ -12,5 +12,5 @@ def test_prepare_flownet_data() -> None:
     }
     assert np.allclose(
         prepare_flownet_data(pd.DataFrame(data, columns=["key_1", "key_2"]), "key_", 2),
-        np.array([[11, 21], [12, 22], [13, 23], [14, 24]]),
+        np.array([[11, 21], [13, 23], [12, 22], [14, 24]]),
     )

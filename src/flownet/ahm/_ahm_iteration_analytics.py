@@ -58,12 +58,14 @@ def prepare_opm_reference_data(df, str_key, n):
 
     keys = df.keys()
     keys = keys[df.keys().str.contains(str_key)]
-    data = np.reshape(
-        df[keys].values,
-        (df[keys].values.shape[0] * df[keys].values.shape[1], 1),
-        order="F",
-    )
-    data = np.tile(data, n)
+    data = df[keys].values
+    data = data.flatten()
+    #data = np.reshape(
+    #    df[keys].values,
+    #    (df[keys].values.shape[0] * df[keys].values.shape[1], 1),
+    #    order="F",
+    #)
+    data = np.transpose(np.tile(data, (n, 1)))
 
     return data
 
