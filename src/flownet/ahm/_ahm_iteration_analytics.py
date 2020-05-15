@@ -155,7 +155,6 @@ def accuracy_metric(data_reference, data_test, metric):
         data from reference simulation
     """
 
-    # if metric == "MSE" or metric == "RMSE" or metric == "NRMSE":
     if metric in ("MSE", "RMSE", "NRMSE"):
         score = mean_squared_error(data_reference, data_test)
         if metric in ("RMSE", "NRMSE"):
@@ -291,17 +290,19 @@ def make_dataframe_simulation_data(path, eclbase_file, keys):
         realizations_dict[runpath] = _load_simulations(runpath, eclbase)
 
     # Prepare dataframe
+    # pylint: disable-msg=too-many-locals
     df_sim = pd.DataFrame()
     for id_real, runpath in enumerate(realizations_dict.keys()):
         df_tmp = pd.DataFrame()
+        dates = realizations_dict[runpath].dates
         if id_real == 0:
-            df_sim["DATE"] = pd.Series(realizations_dict[runpath].dates)
+            df_sim["DATE"] = pd.Series(dates)
             df_sim["REAL_ID"] = pd.Series(
-                id_real * np.ones(len(realizations_dict[runpath].dates)), dtype=int
+                id_real * np.ones(len(dates)), dtype=int
             )
-        df_tmp["DATE"] = pd.Series(realizations_dict[runpath].dates)
+        df_tmp["DATE"] = pd.Series(dates)
         df_tmp["REAL_ID"] = pd.Series(
-            id_real * np.ones(len(realizations_dict[runpath].dates)), dtype=int
+            id_real * np.ones(len(dates)), dtype=int
         )
 
         if id_real == 0:
