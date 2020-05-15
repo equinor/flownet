@@ -128,7 +128,8 @@ def normalize_data(data_opm_reference, data_ensembles_flownet):
         - np.tile(data_opm_reference.min(), matrix_data.shape[0])
     )
     norm_matrix_data = (
-        matrix_data * scale[:, None] - (np.tile(data_opm_reference.min(), matrix_data.shape[0]) * scale)[:, None]
+        matrix_data * scale[:, None]
+        - (np.tile(data_opm_reference.min(), matrix_data.shape[0]) * scale)[:, None]
     )
 
     n = int(norm_matrix_data.shape[1] / (len(data_ensembles_flownet) + 1))
