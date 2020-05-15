@@ -58,9 +58,7 @@ def prepare_opm_reference_data(df_opm, str_key, n_real):
 
     keys = df_opm.keys()
     keys = keys[df_opm.keys().str.contains(str_key)]
-    data = df_opm[keys].values
-    data = data.flatten()
-    data = np.transpose(np.tile(data, (n_real, 1)))
+    data = np.transpose(np.tile(df_opm[keys].values.flatten(), (n_real, 1)))
 
     return data
 
@@ -86,9 +84,8 @@ def prepare_flownet_data(df_flownet, str_key, n_real):
 
     keys = df_flownet.keys()
     keys = keys[df_flownet.keys().str.contains(str_key)]
-    data = df_flownet[keys].values
-    data = data.flatten()
-    data = np.reshape(data, (int(data.shape[0] / n_real), n_real), order="F")
+    data = df_flownet[keys].values.flatten()
+    data = np.reshape(data, (data.shape[0] // n_real, n_real), order="F")
 
     return data
 
