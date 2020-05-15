@@ -124,11 +124,11 @@ def normalize_data(data_opm_reference, data_ensembles_flownet):
 
     matrix_data = np.append(data_opm_reference, tmp, axis=1)
     scale = 1 / (
-        data_opm_reference.max() * np.ones(matrix_data.shape[0])
-        - data_opm_reference.min() * np.ones(matrix_data.shape[0])
+        np.tile(data_opm_reference.max(), matrix_data.shape[0])
+        - np.tile(data_opm_reference.min(), matrix_data.shape[0])
     )
     norm_matrix_data = (
-        matrix_data * scale[:, None] - (matrix_data.min(axis=1) * scale)[:, None]
+        matrix_data * scale[:, None] - (np.tile(data_opm_reference.min(), matrix_data.shape[0]) * scale)[:, None]
     )
 
     n = int(norm_matrix_data.shape[1] / (len(data_ensembles_flownet) + 1))
