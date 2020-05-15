@@ -38,39 +38,34 @@ def filter_dataframe(df_in, key_filter, min_value, max_value):
     ]
 
 
-def prepare_opm_reference_data(df, str_key, n):
+def prepare_opm_reference_data(df_opm, str_key, n_real):
     """
     This function extracts data from selected columns of the Pandas dataframe
     containing data from reference simulation, rearranges it into a stacked
-    column vector preserving the original order and repeats it n times to form
-    a matrix for comparison with data from ensemble of n FlowNet simulations
+    column vector preserving the original order and repeats it n_real times to form
+    a matrix for comparison with data from ensemble of n_real FlowNet simulations
 
     Args:
-        df: is the Pandas dataframe containing data from reference simulation
+        df_opm: is the Pandas dataframe containing data from reference simulation
         str_key: is the string to select columns; column names starting with str_key
-        n: is the size of ensemble of FlowNet simulations
+        n_real: is the size of ensemble of FlowNet simulations
 
     Returns:
-        A numpy 2D array [length_data * nb_selected_columns, n] containing data
+        A numpy 2D array [length_data * nb_selected_columns, n_real] containing data
         from selected columns (i.e., quantity of interest for accuracy metric) of
-        reference simulation stacked in a column-vector and replicated into n columns
+        reference simulation stacked in a column-vector and replicated into n_real columns
     """
 
-    keys = df.keys()
-    keys = keys[df.keys().str.contains(str_key)]
-    data = df[keys].values
+    keys = df_opm.keys()
+    keys = keys[df_opm.keys().str.contains(str_key)]
+    data = df_opm[keys].values
     data = data.flatten()
-    #data = np.reshape(
-    #    df[keys].values,
-    #    (df[keys].values.shape[0] * df[keys].values.shape[1], 1),
-    #    order="F",
-    #)
-    data = np.transpose(np.tile(data, (n, 1)))
+    data = np.transpose(np.tile(data, (n_real, 1)))
 
     return data
 
 
-def prepare_flownet_data(df, str_key, n):
+def prepare_flownet_data(df_flownet, str_key, n_real):
     """
     This function extracts data from selected columns of the Pandas dataframe
     containing data from an ensemble of FlowNet simulations, rearranges it into
@@ -78,22 +73,22 @@ def prepare_flownet_data(df, str_key, n):
     per realization of the ensemble
 
     Args:
-        df: is the Pandas dataframe containing data from ensemble of FlowNet simulations
+        df_flownet: is the Pandas dataframe containing data from ensemble of FlowNet simulations
         str_key: is the string to select columns; column names starting with str_key
-        n: is the size of ensemble of FlowNet simulations
+        n_real: is the size of ensemble of FlowNet simulations
 
     Returns:
-        A numpy 2D array [length_data * nb_selected_columns, n] containing data
+        A numpy 2D array [length_data * nb_selected_columns, n_real] containing data
         from selected columns (i.e., quantity of interest for accuracy metric) for
         an ensemble of FlowNet simulations in a column-vector. Each column correspond
         to one realization of the ensemble
     """
 
-    keys = df.keys()
-    keys = keys[df.keys().str.contains(str_key)]
-    data = df[keys].values
+    keys = df_flownet.keys()
+    keys = keys[df_flownet.keys().str.contains(str_key)]
+    data = df_flownet[keys].values
     data = data.flatten()
-    data = np.reshape(data, (int(data.shape[0] / n), n), order="F")
+    data = np.reshape(data, (int(data.shape[0] / n_real), n_real), order="F")
 
     return data
 
@@ -134,12 +129,12 @@ def normalize_data(data_opm_reference, data_ensembles_flownet):
         - (np.tile(data_opm_reference.min(), matrix_data.shape[0]) * scale)[:, None]
     )
 
-    n = int(norm_matrix_data.shape[1] / (len(data_ensembles_flownet) + 1))
-    norm_data_opm_reference = norm_matrix_data[:, :n]
+    n_data = int(norm_matrix_data.shape[1] / (len(data_ensembles_flownet) + 1))
+    norm_data_opm_reference = norm_matrix_data[:, :n_data]
     norm_data_ensembles_flownet = []
     for k in range(len(data_ensembles_flownet)):
         norm_data_ensembles_flownet.append(
-            norm_matrix_data[:, (k + 1) * n : (k + 2) * n]
+            norm_matrix_data[:, (k + 1) * n_data : (k + 2) * n_data]
         )
 
     return norm_data_opm_reference, norm_data_ensembles_flownet
@@ -238,11 +233,11 @@ def load_csv_file(csv_file, csv_columns):
     """
 
     if os.path.exists(csv_file + ".csv"):
-        df = pd.read_csv(csv_file + ".csv")
+        df_csv = pd.read_csv(csv_file + ".csv")
     else:
-        df = pd.DataFrame(columns=csv_columns)
+        df_csv = pd.DataFrame(columns=csv_columns)
 
-    return df
+    return df_csv
 
 
 def compute_metric_ensemble(obs, list_ensembles, metrics, str_key, iteration):
@@ -283,7 +278,7 @@ def make_dataframe_simulation_data(path, eclbase_file, keys):
         keys: list of prefix of quantities of interest to be loaded
 
     Returns:
-        df: Pandas dataframe contained data from ensemble of simulations
+        df_sim: Pandas dataframe contained data from ensemble of simulations
         realizations_dict: dictionary containing path to loaded simulations
         key_list_data: list of keys corresponding to selected quantities of interest
         iteration: current AHM iteration number
@@ -299,15 +294,18 @@ def make_dataframe_simulation_data(path, eclbase_file, keys):
         realizations_dict[runpath] = _load_simulations(runpath, eclbase)
 
     # Prepare dataframe
-    df = pd.DataFrame()
+    df_sim = pd.DataFrame()
     for id_real, runpath in enumerate(realizations_dict.keys()):
         df_tmp = pd.DataFrame()
-        dates = realizations_dict[runpath].dates
         if id_real == 0:
-            df["DATE"] = pd.Series(dates)
-            df["REAL_ID"] = pd.Series(id_real * np.ones(len(dates)), dtype=int)
-        df_tmp["DATE"] = pd.Series(dates)
-        df_tmp["REAL_ID"] = pd.Series(id_real * np.ones(len(dates)), dtype=int)
+            df_sim["DATE"] = pd.Series(realizations_dict[runpath].dates)
+            df_sim["REAL_ID"] = pd.Series(
+                id_real * np.ones(len(realizations_dict[runpath].dates)), dtype=int
+            )
+        df_tmp["DATE"] = pd.Series(realizations_dict[runpath].dates)
+        df_tmp["REAL_ID"] = pd.Series(
+            id_real * np.ones(len(realizations_dict[runpath].dates)), dtype=int
+        )
 
         if id_real == 0:
             for counter, k in enumerate(keys):
@@ -321,15 +319,14 @@ def make_dataframe_simulation_data(path, eclbase_file, keys):
                     )
 
         for key in key_list_data:
-            data = realizations_dict[runpath].numpy_vector(key)
             if id_real == 0:
-                df[key] = pd.Series(data)
-            df_tmp[key] = pd.Series(data)
+                df_sim[key] = pd.Series(realizations_dict[runpath].numpy_vector(key))
+            df_tmp[key] = pd.Series(realizations_dict[runpath].numpy_vector(key))
 
         if id_real > 0:
-            df = df.append(df_tmp, ignore_index=True)
+            df_sim = df_sim.append(df_tmp, ignore_index=True)
 
-    return df, realizations_dict, key_list_data, iteration
+    return df_sim, realizations_dict, key_list_data, iteration
 
 
 def save_plots_metrics(df_metrics, metrics, str_key):
@@ -403,12 +400,18 @@ def save_iteration_analytics():
     print("Saving iteration analytics...", end=" ")
 
     # Fix list inputs
-    keys = list(args.quantity.replace("[", "").replace("]", "").split(","))
     metrics = list(args.metrics.replace("[", "").replace("]", "").split(","))
 
     # Load ensemble of FlowNet
-    df, realizations_dict, key_list_data, iteration = make_dataframe_simulation_data(
-        args.runpath, args.eclbase, keys
+    (
+        df_sim,
+        realizations_dict,
+        key_list_data,
+        iteration,
+    ) = make_dataframe_simulation_data(
+        args.runpath,
+        args.eclbase,
+        list(args.quantity.replace("[", "").replace("]", "").split(",")),
     )
 
     # Load observation file (OPM reference / truth)
@@ -420,14 +423,12 @@ def save_iteration_analytics():
     df_obs = make_observation_dataframe(obs, key_list_data)
 
     # Filter dataframe base on measurement dates
-    df = df[df["DATE"].isin(df_obs["DATE"])]
-
-    # Compute accuracy over iterations
+    df_sim = df_sim[df_sim["DATE"].isin(df_obs["DATE"])]
 
     # Initiate dataframe with metrics
     df_metrics = load_csv_file(args.outfile, ["quantity", "iteration"] + metrics)
 
-    for str_key in keys:
+    for str_key in list(args.quantity.replace("[", "").replace("]", "").split(",")):
         truth_data = filter_dataframe(
             df_obs, "DATE", np.datetime64(args.start), np.datetime64(args.end)
         )
@@ -439,7 +440,7 @@ def save_iteration_analytics():
         ens_flownet.append(
             prepare_flownet_data(
                 filter_dataframe(
-                    df, "DATE", np.datetime64(args.start), np.datetime64(args.end)
+                    df_sim, "DATE", np.datetime64(args.start), np.datetime64(args.end)
                 ),
                 str_key,
                 len(realizations_dict),
@@ -450,10 +451,10 @@ def save_iteration_analytics():
         obs_opm, ens_flownet = normalize_data(obs_opm, ens_flownet)
 
         # Appending dataframe with accuracy metrics of current iteration
-        dict_metric_tmp = compute_metric_ensemble(
-            obs_opm, ens_flownet, metrics, str_key, iteration
+        df_metrics = df_metrics.append(
+            compute_metric_ensemble(obs_opm, ens_flownet, metrics, str_key, iteration),
+            ignore_index=True,
         )
-        df_metrics = df_metrics.append(dict_metric_tmp, ignore_index=True)
 
         # Plotting accuracy metrics over iterations
         save_plots_metrics(df_metrics, metrics, str_key)
