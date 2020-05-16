@@ -297,13 +297,9 @@ def make_dataframe_simulation_data(path, eclbase_file, keys):
         dates = realizations_dict[runpath].dates
         if id_real == 0:
             df_sim["DATE"] = pd.Series(dates)
-            df_sim["REAL_ID"] = pd.Series(
-                id_real * np.ones(len(dates)), dtype=int
-            )
+            df_sim["REAL_ID"] = pd.Series(id_real * np.ones(len(dates)), dtype=int)
         df_tmp["DATE"] = pd.Series(dates)
-        df_tmp["REAL_ID"] = pd.Series(
-            id_real * np.ones(len(dates)), dtype=int
-        )
+        df_tmp["REAL_ID"] = pd.Series(id_real * np.ones(len(dates)), dtype=int)
 
         if id_real == 0:
             for counter, k in enumerate(keys):
