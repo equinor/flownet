@@ -279,7 +279,7 @@ key_list_data: list of keys corresponding to selected quantities of interest
 iteration: current AHM iteration number</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>df</p>
+<dd class="field-odd"><p>df_sim</p>
 </dd>
 </dl>
 </dd></dl>
@@ -333,7 +333,7 @@ lowNet simulations</p>
 
 <dl class="py function">
 <dt id="flownet.ahm._ahm_iteration_analytics.prepare_flownet_data">
-<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">prepare_flownet_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">str_key</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.prepare_flownet_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">prepare_flownet_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_flownet</span></em>, <em class="sig-param"><span class="n">str_key</span></em>, <em class="sig-param"><span class="n">n_real</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.prepare_flownet_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function extracts data from selected columns of the Pandas dataframe
 containing data from an ensemble of FlowNet simulations, rearranges it into
 a matrix of stacked column-vectors preserving the original order, i.e. one column
@@ -341,13 +341,13 @@ per realization of the ensemble</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> – is the Pandas dataframe containing data from ensemble of FlowNet simulations</p></li>
+<li><p><strong>df_flownet</strong> – is the Pandas dataframe containing data from ensemble of FlowNet simulations</p></li>
 <li><p><strong>str_key</strong> – is the string to select columns; column names starting with str_key</p></li>
-<li><p><strong>n</strong> – is the size of ensemble of FlowNet simulations</p></li>
+<li><p><strong>n_real</strong> – is the size of ensemble of FlowNet simulations</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A numpy 2D array [length_data * nb_selected_columns, n] containing data
+<dd class="field-even"><p>A numpy 2D array [length_data * nb_selected_columns, n_real] containing data
 from selected columns (i.e., quantity of interest for accuracy metric) for
 an ensemble of FlowNet simulations in a column-vector. Each column correspond
 to one realization of the ensemble</p>
@@ -357,23 +357,23 @@ to one realization of the ensemble</p>
 
 <dl class="py function">
 <dt id="flownet.ahm._ahm_iteration_analytics.prepare_opm_reference_data">
-<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">prepare_opm_reference_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">str_key</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.prepare_opm_reference_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">prepare_opm_reference_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_opm</span></em>, <em class="sig-param"><span class="n">str_key</span></em>, <em class="sig-param"><span class="n">n_real</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.prepare_opm_reference_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function extracts data from selected columns of the Pandas dataframe
 containing data from reference simulation, rearranges it into a stacked
-column vector preserving the original order and repeats it n times to form
-a matrix for comparison with data from ensemble of n FlowNet simulations</p>
+column vector preserving the original order and repeats it n_real times to form
+a matrix for comparison with data from ensemble of n_real FlowNet simulations</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> – is the Pandas dataframe containing data from reference simulation</p></li>
+<li><p><strong>df_opm</strong> – is the Pandas dataframe containing data from reference simulation</p></li>
 <li><p><strong>str_key</strong> – is the string to select columns; column names starting with str_key</p></li>
-<li><p><strong>n</strong> – is the size of ensemble of FlowNet simulations</p></li>
+<li><p><strong>n_real</strong> – is the size of ensemble of FlowNet simulations</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A numpy 2D array [length_data * nb_selected_columns, n] containing data
+<dd class="field-even"><p>A numpy 2D array [length_data * nb_selected_columns, n_real] containing data
 from selected columns (i.e., quantity of interest for accuracy metric) of
-reference simulation stacked in a column-vector and replicated into n columns</p>
+reference simulation stacked in a column-vector and replicated into n_real columns</p>
 </dd>
 </dl>
 </dd></dl>
