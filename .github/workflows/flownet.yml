@@ -39,8 +39,11 @@ jobs:
           path: $VENV_PATH
           key: ${{ runner.os }}-${{ hashFiles('setup.py') }}-${{ hashFiles('build_environment.sh') }}
 
-      - name: 🏗️ Build venv and install non-python dependencies
-        run: bash ./build_environment.sh $VENV_PATH ${{ steps.cache-venv.outputs.cache-hit }}
+      - name: 📦 Install non-python dependencies
+        run: sudo bash ./apt_install.sh
+
+      - name: 🏗️ Build Python environment
+        run: bash ./build_environment.sh $VENV_PATH /usr/bin/flow ${{ steps.cache-venv.outputs.cache-hit }}
 
       - name: 📦 Install FlowNet
         run: |

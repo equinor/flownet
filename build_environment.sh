@@ -6,13 +6,11 @@
 #
 # This build script is suitable for being run e.g. in CI pipelines or a VM.
 #
-# Note that there are also some apt-get installs (i.e. there are
-# side effects also outside of your Python environment)
-#
-# The script takes one argument: The path to a Python environment (either a standard
+# The script takes two arguments: The path to a Python environment (either a standard
 # python virtual environment, or a conda environment). If the path exists, the environment
 # is assumed to be active. If it doesn't exist, a virtual envirnoment is created at
-# the given path.
+# the given path. The second argument is the path to your installed flow binary, typically
+# something like /usr/bin/flow
 
 LIBRES_VERSION="6d7ac59"
 ERT_VERSION="c74e1e6"
@@ -25,7 +23,7 @@ if [ -z "$1" ]; then
 fi
 
 INSTALL_ENV=`readlink -f $1`
-ONLY_APT_INSTALL=$2
+FLOW_PATH=`readlink -f $2`
 
 ####################
 # UNPACK TEST DATA #
@@ -36,22 +34,6 @@ gunzip tests/data/norne.tar.gz -c | tar -xvzf - -C tests/data/
 ############################
 # INSTALL apt-get PACKAGES #
 ############################
-
-sudo apt-get install zlib1g-dev  # libecl
-sudo apt-get install libblas-dev liblapack-dev  # libres
-sudo apt-get install libnss3-tools # webviz
-sudo apt-get install libboost-all-dev liblapack-dev # opm-common
-
-# Flow:
-sudo apt-get install software-properties-common -y
-sudo apt-get install libdune-common-dev libdune-geometry-dev -y
-sudo apt-add-repository ppa:opm/ppa -y
-sudo apt-get update
-sudo apt-get install mpi-default-bin libopm-simulators-bin -y
-
-if [ "$ONLY_APT_INSTALL" = "true" ]; then
-  exit 0
-fi
 
 if [[ ! -d "$INSTALL_ENV" ]]; then
     echo "Folder $INSTALL_ENV does not exist."
@@ -116,16 +98,7 @@ echo "Finished installing libres"
 # INSTALL ERT #
 ###############
 
-git clone https://github.com/equinor/ert
-
-pushd ert
-git checkout $ERT_VERSION
-
-pip install .
-
-popd
-
-rm -rf ./ert
+pip install git+https://github.com/equinor/ert@$ERT_VERSION
 
 ######################
 # INSTALL OPM-COMMON #
@@ -153,30 +126,10 @@ python -c "import opm"  # Check able to import
 # CREATE FLOW CONFIG #
 ######################
 
-PACKAGE_FOLDER="dist-packages"
-FLOW_PATH="/usr/bin/flow"
-
-cat >`ls -d $INSTALL_ENV/lib/python3*/$PACKAGE_FOLDER/res/fm/ecl`/flow_config.yml <<EOL
+cat >`ls -d $INSTALL_ENV/lib/python3*/*/res/fm/ecl`/flow_config.yml <<EOL
 default_version: default
 versions:
   'default':
     scalar:
       executable: $FLOW_PATH
 EOL
-
-########################
-# INSTALL FMU-ENSEMBLE #
-########################
-
-git clone https://github.com/equinor/fmu-ensemble
-
-pushd fmu-ensemble
-
-git checkout 'v1.1.0'
-
-pip install -r requirements.txt
-pip install .
-
-popd
-
-rm -rf ./fmu-ensemble

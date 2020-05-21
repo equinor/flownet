@@ -50,9 +50,10 @@ git clone git@github.com:equinor/flownet.git
 cd flownet
 ```
 
-##### 3. Run the `build_environment.sh` script containing the building recipe: 
+##### 3. Run the scripts containing the building recipe: 
 ```bash
-bash ./build_environment.sh ./venv
+bash ./apt_insta.sh
+bash ./build_environment.sh ./venv /usr/bin/flow
 ```
 This will automatically create a simple [Python virtual environment](docs.python.org/3/library/venv.html) `./venv`
 
@@ -70,7 +71,7 @@ source ./venv/bin/activate
 ```
 ##### A.3. Run the build script providing the path to the Python virtual environment:
 ```bash
-./build_environment.sh $VIRTUAL_ENV
+./build_environment.sh $VIRTUAL_ENV /usr/bin/flow
 ```
 or
 #### B. Conda environment
@@ -90,7 +91,7 @@ echo "$CONDA_PREFIX/lib/python3.7/dist-packages" > $CONDA_PREFIX/lib/python3.7/s
 ```
 ##### B.4. Run the build script providing the path to the Conda environment:
 ```bash
-./build_environment.sh $CONDA_PREFIX
+./build_environment.sh $CONDA_PREFIX /usr/bin/flow
 ```
 
 </details>
