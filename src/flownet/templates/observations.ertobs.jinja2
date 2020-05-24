@@ -21,13 +21,13 @@
 SUMMARY_OBSERVATION WOPR_{{ well_name }}_{{ index_name }} { VALUE = {{ oil_rate }}; ERROR = {{ [0.1 * oil_rate, 50] | max }}; DATE = {{ date_formatted  }}; KEY = WOPR:{{ well_name }}; };
 {%- endif %}
 {%- if not isnan(gas_rate): %}
-SUMMARY_OBSERVATION WGPR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ gas_rate }}; ERROR = {{ [0.1 * gas_rate, 100000] | max }}; DATE  = {{ date_formatted  }}; KEY = WGPR:{{ well_name }}; };
+SUMMARY_OBSERVATION WGPR_{{ well_name }}_{{ index_name }} { VALUE = {{ gas_rate }}; ERROR = {{ [0.1 * gas_rate, 100000] | max }}; DATE  = {{ date_formatted  }}; KEY = WGPR:{{ well_name }}; };
 {%- endif %}
 {%- if not isnan(bhp): %}
-SUMMARY_OBSERVATION WBHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ bhp }}; ERROR = {{ [0.05 * bhp, 10] | max }}; DATE = {{ date_formatted  }}; KEY = WBHP:{{ well_name }}; };
+SUMMARY_OBSERVATION WBHP_{{ well_name }}_{{ index_name }} { VALUE = {{ bhp }}; ERROR = {{ [0.05 * bhp, 10] | max }}; DATE = {{ date_formatted  }}; KEY = WBHP:{{ well_name }}; };
 {%- endif %}
 {%- if not isnan(thp): %}
-SUMMARY_OBSERVATION WTHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ thp }}; ERROR = {{ [0.05 * thp, 5] | max }}; DATE = {{ date_formatted  }}; KEY = WTHP:{{ well_name }}; };
+SUMMARY_OBSERVATION WTHP_{{ well_name }}_{{ index_name }} { VALUE = {{ thp }}; ERROR = {{ [0.05 * thp, 5] | max }}; DATE = {{ date_formatted  }}; KEY = WTHP:{{ well_name }}; };
 {%- endif %}
 
 {%- endif %}
