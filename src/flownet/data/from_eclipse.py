@@ -104,6 +104,7 @@ class EclipseData(FromSource):
                 - WTHP          Well Tubing Head Pressure
                 - WGIR          Well Gas Injection Rate
                 - WWIR          Well Water Injection Rate
+                - WSTAT         Well status (OPEN, SHUT, STOP)
                 - TYPE          Well Type: "OP", "GP", "WI", "GI"
                 - PHASE         Main producing/injecting phase fluid: "OIL", "GAS", "WATER"
 
@@ -112,7 +113,7 @@ class EclipseData(FromSource):
             * Improve robustness pf setting of Phase and Type.
 
         """
-        keys = ["WOPR", "WGPR", "WWPR", "WBHP", "WTHP", "WGIR", "WWIR"]
+        keys = ["WOPR", "WGPR", "WWPR", "WBHP", "WTHP", "WGIR", "WWIR", "WSTAT"]
 
         df_production_data = pd.DataFrame()
 
@@ -171,6 +172,18 @@ class EclipseData(FromSource):
         df_production_data.loc[df_production_data["WOPR"] > 0, "PHASE"] = "OIL"
         df_production_data.loc[df_production_data["WWIR"] > 0, "PHASE"] = "WATER"
         df_production_data.loc[df_production_data["WGIR"] > 0, "PHASE"] = "GAS"
+
+        df_production_data["WSTAT"] = df_production_data["WSTAT"].map(
+            {
+                1: "OPEN",  # Producer OPEN
+                2: "OPEN",  # Injector OPEN
+                3: "SHUT",
+                4: "STOP",
+                5: "SHUT",  # PSHUT
+                6: "STOP",  # PSTOP
+                np.nan: "STOP",
+            }
+        )
 
         df_production_data["TYPE"] = None
         df_production_data.loc[df_production_data["WOPR"] > 0, "TYPE"] = "OP"

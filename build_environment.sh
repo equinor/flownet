@@ -29,7 +29,7 @@ FLOW_PATH=`readlink -f $2`
 # UNPACK TEST DATA #
 ####################
 
-gunzip tests/data/norne.tar.gz -c | tar -xvzf - -C tests/data/
+tar -zxvf tests/data/norne.tar.gz -C tests/data/
 
 ############################
 # INSTALL apt-get PACKAGES #
