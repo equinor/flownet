@@ -1,4 +1,4 @@
-{%- set df = schedule.production_data -%}
+{%- set df = schedule.production_data() -%}
 
 {%- for well_name in df["WELL_NAME"].unique(): -%}
 

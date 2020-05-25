@@ -526,7 +526,7 @@ class Schedule:
 
     def production_data(self):
         return self._df_production_data
-   
+
     @staticmethod
     def _retrieve_date_first_non_zero_prodinj(
         df_production_data: pd.DataFrame, well_name: str
