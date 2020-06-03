@@ -4,7 +4,7 @@ import pathlib
 import subprocess
 
 from .config_parser import parse_config, parse_pred_config
-from .ahm import run_flownet_history_mathing
+from .ahm import run_flownet_history_matching
 from .prediction import run_flownet_prediction
 
 
@@ -64,7 +64,7 @@ def flownet_ahm(args: argparse.Namespace) -> None:
             )
 
     config = parse_config(args.config)
-    run_flownet_history_mathing(config, args)
+    run_flownet_history_matching(config, args)
 
     if not args.skip_postprocessing:
         create_webviz(args.output_folder, start_webviz=args.start_webviz)

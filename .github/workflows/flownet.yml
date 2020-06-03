@@ -7,7 +7,13 @@ on:
   pull_request:
     branches:
       - master
-  
+  release:
+    types:
+      - published
+  schedule:
+    # Run CI daily and check that tests are working with latest dependencies
+    - cron:  '0 0 * * *'
+
 jobs:
   FlowNet:
     runs-on: ubuntu-18.04
@@ -18,53 +24,57 @@ jobs:
       VENV_PATH: ${{ github.workspace }}/flownet_venv
       PYTHONPATH: ${{ github.workspace }}/flownet_venv/lib/python${{ matrix.python-version }}/dist-packages
     steps:
-      - name: Checkout commit locally
+      - name: 📖 Checkout commit locally
         uses: actions/checkout@v2
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: 🐍 Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Cache virtual environment
+      - name: 📁 Cache virtual environment
         id: cache-venv
         uses: actions/cache@v1
         with:
           path: $VENV_PATH
           key: ${{ runner.os }}-${{ hashFiles('setup.py') }}-${{ hashFiles('build_environment.sh') }}
 
-      - name: Build venv and install non-python dependencies
-        run: bash ./build_environment.sh $VENV_PATH ${{ steps.cache-venv.outputs.cache-hit }}
+      - name: 📦 Install non-python dependencies
+        run: sudo bash ./apt_install.sh
 
-      - name: Install FlowNet
+      - name: 🏗️ Build Python environment
+        run: bash ./build_environment.sh $VENV_PATH /usr/bin/flow ${{ steps.cache-venv.outputs.cache-hit }}
+
+      - name: 📦 Install FlowNet
         run: |
           source $VENV_PATH/bin/activate
+          pip install "astroid==2.3.3" "pylint==2.4.4"  # Bugs in what is currently the latest releases
           pip install .
 
-      - name: Install test dependencies
+      - name: 📦 Install test dependencies
         run: |
           source $VENV_PATH/bin/activate
           pip install .[tests]
       
-      - name: List all installed packages
+      - name: 🧾 List all installed packages
         run: |
           source $VENV_PATH/bin/activate
           pip freeze
 
-      - name: Check code style & linting
+      - name: 🕵️ Check code style & linting
         run: |
           source $VENV_PATH/bin/activate
           black --check examples/ tests/ src/ setup.py
           pylint src/ tests/ setup.py
           mypy --ignore-missing-imports src/ tests/ setup.py
 
-      - name: Run tests
+      - name: 🤖 Run tests
         run: |
           source $VENV_PATH/bin/activate
           webviz certificate --force
           pytest --cov=flownet --cov-fail-under=50 ./tests
 
-      - name: Run full FlowNet example
+      - name: 🚀 Run full FlowNet example
         run: |
           source $VENV_PATH/bin/activate
           pushd examples
@@ -72,14 +82,24 @@ jobs:
           flownet pred ../tests/configs/norne_pred.yml ./some_pred_run ./some_ahm_run
           popd
 
-      - name: Build documentation
+      - name: 📚 Build documentation
         run: |
           source $VENV_PATH/bin/activate
           pushd docs
           make html
           popd
 
-      - name: Update GitHub pages
+      - name: 🚢 Build and deploy Python package
+        if: github.event_name == 'release' && matrix.python-version == '3.6'
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.pypi_flownet_token }}
+        run: |
+          python -m pip install --upgrade setuptools wheel twine
+          python setup.py bdist_wheel
+          twine upload dist/*
+
+      - name: 📚 Update GitHub pages
         if: github.ref == 'refs/heads/master' && matrix.python-version == '3.6'
         run: |
           cp -R ./docs/_build ../_build
