@@ -272,12 +272,19 @@
 109
 110
 111
-112</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Norne</span>
+112
+113
+114
+115
+116
+117</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Norne</span>
 
 <span class="nt">flownet</span><span class="p">:</span>
   <span class="nt">data_source</span><span class="p">:</span>
     <span class="nt">eclipse_case</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">../tests/data/norne/NORNE_ATW2013</span>
     <span class="nt">resample</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">M</span>
+  <span class="nt">pvt</span><span class="p">:</span>
+    <span class="nt">rsvd</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./examples/norne_static/rsvd.csv</span>
   <span class="nt">cell_length</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
   <span class="nt">additional_flow_nodes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
   <span class="nt">additional_node_candidates</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
@@ -285,9 +292,8 @@
   <span class="nt">random_seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">123456</span>
   <span class="nt">perforation_handling_strategy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">bottom_point</span>
   <span class="nt">fast_pyscal</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
-  <span class="nt">training_set_fraction</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.7</span> <span class="c1"># Fraction of observations (from 0 to 1) to use as training data</span>
   <span class="nt">training_set_end_date</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2005-01-31</span> <span class="c1">#YYYY-MM-DD. If defined training set fraction is calculated from this date</span>
-  <span class="nt">fault_tolerance</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0e-5</span>
+  <span class="nt">fault_tolerance</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
 
 <span class="nt">ert</span><span class="p">:</span>
   <span class="nt">static_include_files</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./norne_static</span>
@@ -298,10 +304,13 @@
   <span class="nt">queue</span><span class="p">:</span>
     <span class="nt">system</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LOCAL</span>   <span class="c1"># LOCAL or LSF</span>
     <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mr</span>   <span class="c1"># ignored when system is LOCAL</span>
-    <span class="nt">max_running</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>   <span class="c1"># Maximum number of simultaneous runs</span>
+    <span class="nt">max_running</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>   <span class="c1"># Maximum number of simultaneous runs</span>
   <span class="nt">ensemble_weights</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
 
 <span class="nt">model_parameters</span><span class="p">:</span>
@@ -309,17 +318,17 @@
     <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
     <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5000</span>
   <span class="nt">porosity</span><span class="p">:</span>
-    <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.05</span>
-    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.3</span>
+    <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.01</span>
+    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.4</span>
   <span class="nt">bulkvolume_mult</span><span class="p">:</span>
-    <span class="nt">mean</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.17</span>
-    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.68</span>
+    <span class="nt">mean</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
   <span class="nt">fault_mult</span><span class="p">:</span>
-    <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0e-5</span>
-    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
+    <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0e-3</span>
+    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
     <span class="nt">loguniform</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
   <span class="nt">relative_permeability</span><span class="p">:</span>
-    <span class="nt">scheme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">individual</span>
+    <span class="nt">scheme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">global</span>
     <span class="nt">swirr</span><span class="p">:</span>
       <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.01</span>
       <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.04</span>
@@ -363,6 +372,7 @@
       <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.5</span>
       <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2.0</span>
   <span class="nt">equil</span><span class="p">:</span>
+    <span class="nt">scheme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">individual</span>
     <span class="nt">datum_pressure</span><span class="p">:</span>
       <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">250</span>
       <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">275</span>
