@@ -119,9 +119,9 @@ class NetworkModel:
             ].index.values
         ]
 
-    def _calculate_nncs(self) -> List[Tuple[int, int]]:
+    def _create_connection_groups(self) -> pd.DataFrame:
         """
-        Calculates None-Neighbouring-connections (NNCs) using the following approach:
+        Create groups of connections at a node.
 
             1) The input dataframe is stacked such that all start and
                end points are in the same columns. The information regarding if
@@ -130,13 +130,8 @@ class NetworkModel:
             2) The start and end dataframes are concatenated in one dataframe.
             3) Binning of (x,y,z) and casting result into floats
             4) Group rows based on equal (x,y,z) bin assignments.
-            5) Calculate all possible combinations of NNCs for the group and
-               iterate over them.
-            6) The last step is to look up which grid cell indices the two
-               identified NNCs correspond to.
 
         Returns:
-            Listing of tuples of NCC connected zero-offset i-coordinates.
 
         """
         start_df = self._df_entity_connections[["xstart", "ystart", "zstart"]].rename(
@@ -179,9 +174,43 @@ class NetworkModel:
             .astype({"x": int, "y": int, "z": int})
         )
 
+        return df_concat.groupby(["x", "y", "z"])
+
+    def _calculate_connections_at_nodes(self) -> List[List[int]]:
+        """
+        Calculates None-Neighbouring-connections (NNCs) using the following approach:
+
+            1) Get connections at a node
+            2) Create a list of tube indices of connected nodes
+
+        Returns:
+            List of lists with tube indices connected to a node
+
+        """
+        connections_at_nodes: List[List[int]] = []
+
+        for _, df_group in self._create_connection_groups():
+            connections_at_nodes.append(df_group.index)
+
+        return connections_at_nodes
+
+    def _calculate_nncs(self) -> List[Tuple[int, int]]:
+        """
+        Calculates None-Neighbouring-connections (NNCs) using the following approach:
+
+            1) Get connections at a node
+            2) Calculate all possible combinations of NNCs for the group and
+               iterate over them.
+            3) The last step is to look up which grid cell indices the two
+               identified NNCs correspond to.
+
+        Returns:
+            Listing of tuples of NCC connected zero-offset i-coordinates.
+
+        """
         nncs: List[Tuple[int, int]] = []
 
-        for _, df_group in df_concat.groupby(["x", "y", "z"]):
+        for _, df_group in self._create_connection_groups():
             connections_to_node = df_group.index
             nnc_combinations = combinations(connections_to_node, 2)
             for nnc_combination in nnc_combinations:
@@ -348,3 +377,8 @@ class NetworkModel:
     def df_entity_connections(self) -> pd.DataFrame:
         """DataFrame containing all connections between entities"""
         return self._df_entity_connections
+
+    @property
+    def connection_at_nodes(self) -> List[List[int]]:
+        """List is lists with tube indices belonging to a node"""
+        return self._calculate_connections_at_nodes()

@@ -1,0 +1,7 @@
+RSVD
+{% for i in range(nr_eqlnum) -%}
+{%- for _, row in rsvd.iterrows() -%}
+{{ row['depth'] }} {{ row['rs'] }}
+{% endfor %}/
+{% endfor %}
+
