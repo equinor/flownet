@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 REQUIREMENTS = [
-    "configsuite~=0.5",
+    "configsuite~=0.5.3",
     "cwrap~=1.6",
     "ecl2df~=0.5.1",
     "jinja2~=2.10",
