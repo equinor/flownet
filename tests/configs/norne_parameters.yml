@@ -4,8 +4,6 @@ flownet:
   data_source:
     eclipse_case: ../data/norne/NORNE_ATW2013
     resample: y
-  pvt:
-    rsvd: ../tests/data/norne/rsvd.csv
   cell_length: 100
   additional_flow_nodes: 100
   additional_node_candidates: 1000
