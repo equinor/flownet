@@ -115,8 +115,6 @@ class Equilibration(Parameter):
             eqlnum_combinations = list(set(eqlnum_combinations))
             eqlnum1 = list(list(zip(*eqlnum_combinations))[0])
             eqlnum2 = list(list(zip(*eqlnum_combinations))[1])
-            print(eqlnum1)
-            print(eqlnum2)
 
             thpres = _TEMPLATE_ENVIRONMENT.get_template("THPRES.jinja2").render(
                 {"eqlnum1": eqlnum1, "eqlnum2": eqlnum2,}
