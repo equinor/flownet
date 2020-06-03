@@ -5,7 +5,7 @@ flownet:
     eclipse_case: ../tests/data/norne/NORNE_ATW2013
     resample: M
   pvt:
-    rsvd: ../tests/data/norne/rsvd.csv
+    rsvd: ./examples/norne_static/rsvd.csv
   cell_length: 100
   additional_flow_nodes: 100
   additional_node_candidates: 1000
@@ -19,8 +19,8 @@ flownet:
 ert:
   static_include_files: ./norne_static
   realizations:
-    num_realizations: 1
-    required_success_percent: 1
+    num_realizations: 10
+    required_success_percent: 70
     max_runtime: 600   # Maximum runtime of on single realization in seconds
   queue:
     system: LOCAL   # LOCAL or LSF
