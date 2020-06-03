@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import Dict
+from typing import Dict, Optional
 
 import yaml
 import configsuite
@@ -456,18 +456,20 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
     input_config = yaml.safe_load(configuration_file.read_text())
 
     @configsuite.transformation_msg("Tries to convert input to absolute path")
-    def _to_abs_path(path: str) -> str:
+    def _to_abs_path(path: Optional[str]) -> str:
         """
         Helper function for the configsuite. Take in a path as a string and
         attempts to convert it to an absolute path.
 
         Args:
-            path: A relative or absolute path
+            path: A relative or absolute path or None
 
         Returns:
-            Absolute path
+            Absolute path or empty string
 
         """
+        if path is None:
+            return ""
         return str((configuration_file.parent / pathlib.Path(path)).resolve())
 
     suite = ConfigSuite(
