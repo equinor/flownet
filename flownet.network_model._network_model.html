@@ -163,6 +163,23 @@
 <em class="property">class </em><code class="sig-prename descclassname">flownet.network_model._network_model.</code><code class="sig-name descname">NetworkModel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_entity_connections</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">cell_length</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">area</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">fault_planes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fault_tolerance</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1e-05</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="flownet.network_model._network_model.NetworkModel._calculate_connections_at_nodes">
+<code class="sig-name descname">_calculate_connections_at_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_connections_at_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates None-Neighbouring-connections (NNCs) using the following approach:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Get connections at a node</p></li>
+<li><p>Create a list of tube indices of connected nodes</p></li>
+</ol>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of lists with tube indices connected to a node</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel._calculate_faults">
 <code class="sig-name descname">_calculate_faults</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fault_tolerance</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1e-05</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Dict<span class="p">[</span>Any<span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_faults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates fault definitions using the following approach:</p>
@@ -207,13 +224,7 @@ a DataFrame with grid corner points.</p>
 <dd><p>Calculates None-Neighbouring-connections (NNCs) using the following approach:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>The input dataframe is stacked such that all start and
-end points are in the same columns. The information regarding if
-it is a start or end point is saved in an extra column called
-‘source’.</p></li>
-<li><p>The start and end dataframes are concatenated in one dataframe.</p></li>
-<li><p>Binning of (x,y,z) and casting result into floats</p></li>
-<li><p>Group rows based on equal (x,y,z) bin assignments.</p></li>
+<li><p>Get connections at a node</p></li>
 <li><p>Calculate all possible combinations of NNCs for the group and
 iterate over them.</p></li>
 <li><p>The last step is to look up which grid cell indices the two
@@ -225,6 +236,24 @@ identified NNCs correspond to.</p></li>
 <dd class="field-odd"><p>Listing of tuples of NCC connected zero-offset i-coordinates.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="flownet.network_model._network_model.NetworkModel._create_connection_groups">
+<code class="sig-name descname">_create_connection_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._create_connection_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create groups of connections at a node.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>The input dataframe is stacked such that all start and
+end points are in the same columns. The information regarding if
+it is a start or end point is saved in an extra column called
+‘source’.</p></li>
+<li><p>The start and end dataframes are concatenated in one dataframe.</p></li>
+<li><p>Binning of (x,y,z) and casting result into floats</p></li>
+<li><p>Group rows based on equal (x,y,z) bin assignments.</p></li>
+</ol>
+</div></blockquote>
+<p>Returns:</p>
 </dd></dl>
 
 <dl class="py method">
@@ -285,6 +314,12 @@ the one dimensional model in the network with index model_index.</p>
 <dt id="flownet.network_model._network_model.NetworkModel.cell_length">
 <em class="property">property </em><code class="sig-name descname">cell_length</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.cell_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Desired length of all cells</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="flownet.network_model._network_model.NetworkModel.connection_at_nodes">
+<em class="property">property </em><code class="sig-name descname">connection_at_nodes</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.connection_at_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>List is lists with tube indices belonging to a node</p>
 </dd></dl>
 
 <dl class="py method">
