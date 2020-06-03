@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     LONG_DESCRIPTION = fh.read()
 
 REQUIREMENTS = [
-    "configsuite>=0.5",
+    "configsuite~=0.5.3",
     "cwrap>=1.6",
     "ecl2df>=0.5",
     "fmu-ensemble>=1.2",
