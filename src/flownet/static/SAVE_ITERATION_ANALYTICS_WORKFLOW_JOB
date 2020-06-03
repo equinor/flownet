@@ -1,0 +1,13 @@
+INTERNAL      FALSE
+EXECUTABLE    flownet_save_iteration_analytics
+MIN_ARG       8
+MAX_ARG       8
+ARG_TYPE      0 STRING
+ARG_TYPE      1 STRING
+ARG_TYPE      2 STRING
+ARG_TYPE      3 STRING
+ARG_TYPE      4 STRING
+ARG_TYPE      5 STRING
+ARG_TYPE      6 STRING
+ARG_TYPE      7 STRING
+

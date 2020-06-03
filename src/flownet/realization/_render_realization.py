@@ -36,7 +36,7 @@ def _ert_samples2simulation_input(
         df = pd.read_parquet(random_samples)
         unsorted_random_samples = json.loads(
             df[df.index == realization_index].transpose().to_json()
-        )["0"]
+        )[str(realization_index)]
     else:
         raise ValueError(f"Unknown file type {random_samples}")
 
