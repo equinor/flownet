@@ -165,6 +165,9 @@ class EclipseData(FromSource):
                 # Set columns that have only exact zero values to np.nan
                 df.loc[:, (df == 0).all(axis=0)] = np.nan
 
+                if self._resample is not None:
+                    df = df.resample(self._resample).mean().interpolate(method="linear")
+
                 df["WELL_NAME"] = well_name
                 df_production_data = df_production_data.append(df)
 
