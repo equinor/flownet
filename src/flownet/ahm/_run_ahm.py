@@ -19,7 +19,7 @@ from ..parameters import (
     Equilibration,
     FaultTransmissibility,
 )
-from ..data import EclipseData
+from ..data import FlowData
 
 
 def _find_training_set_fraction(
@@ -148,8 +148,8 @@ def run_flownet_history_matching(
     fast_pyscal = config.flownet.fast_pyscal
 
     # Load production and well coordinate data
-    field_data = EclipseData(
-        config.flownet.data_source.eclipse_case,
+    field_data = FlowData(
+        config.flownet.data_source.input_case,
         perforation_handling_strategy=config.flownet.perforation_handling_strategy,
     )
     df_production_data: pd.DataFrame = field_data.production

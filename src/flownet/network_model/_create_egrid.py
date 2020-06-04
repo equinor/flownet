@@ -12,11 +12,11 @@ def construct_kw(
     name: str, values: List[Union[int, float]], int_type: bool = False
 ) -> EclKW:
     """
-    This function generates an Eclipse-type keyword for a given set of values.
+    This function generates a Flow-type keyword for a given set of values.
 
     Args:
         name: Name for the EclKW to be generated
-        values: List of values to transform to an EclipseKW
+        values: List of values to transform to an EclKW
         int_type: Use integer (True) or floating point (False) values
 
     Returns:
@@ -37,13 +37,13 @@ def create_egrid(df_coord: pd.DataFrame, filename: pathlib.Path):
     """
     This function does the following:
       - Takes as input a dataframe with coordinates defining all the grid cells
-      - Store it as an Eclipse/Flow .EGRID file called `filename`
+      - Store it as a Flow .EGRID file called `filename`
 
     The mandatory dataframe columns are xi, yi, zi (where i is the
     integers 0-7). An optional column name is ACTNUM.
 
     A grid cell is defined by 8 corner points (4 in the bottom plane, 4 in the
-    top plane). The ordering is following the Eclipse definition):
+    top plane). The ordering is following the Flow definition):
 
          2---3           6---7
          |   |           |   |
@@ -58,7 +58,7 @@ def create_egrid(df_coord: pd.DataFrame, filename: pathlib.Path):
 
     The grid cells are assumed to correspond to one or more one dimensional
     flow models. Between two one dimensional models there should always be
-    one inactice cell. Grid cells can be set to be inactive or active using
+    one inactive cell. Grid cells can be set to be inactive or active using
     0 and 1 respectively in the optional ACTNUM column.
 
     Args:
@@ -72,7 +72,7 @@ def create_egrid(df_coord: pd.DataFrame, filename: pathlib.Path):
     if "ACTNUM" not in df_coord.columns:
         df_coord["ACTNUM"] = 1
 
-    # See Eclipse/Flow manual for details on input order definition of ZCORN.
+    # See Flow manual for details on input order definition of ZCORN.
     zcorn = (
         df_coord[["z0", "z1"]].values.flatten().tolist()
         + df_coord[["z2", "z3"]].values.flatten().tolist()
@@ -80,7 +80,7 @@ def create_egrid(df_coord: pd.DataFrame, filename: pathlib.Path):
         + df_coord[["z6", "z7"]].values.flatten().tolist()
     )
 
-    # See Eclipse/Flow manual for details on input order definition of COORD.
+    # See Flow manual for details on input order definition of COORD.
     coord = (
         df_coord[["x0", "y0", "z0", "x4", "y4", "z4"]].values.flatten().tolist()
         + df_coord.tail(1)[["x1", "y1", "z1", "x5", "y5", "z5"]]

@@ -15,8 +15,8 @@ def write_grdecl_file(
     int_type: bool = False,
 ) -> Optional[str]:
     """
-    Writes a list of values as an Eclipse grid file. The values need to be ordered in the
-    "Eclipse way" (e.g. looping over X then Y then Z).
+    Writes a list of values as a Flow grid file. The values need to be ordered in the
+    "Flow way" (e.g. looping over X then Y then Z).
 
     Args:
         df_prop: A dataframe with as many rows as there are grid cells.

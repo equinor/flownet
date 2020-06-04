@@ -51,7 +51,7 @@ class OneDimensionalModel:
 
         # Move displacement in x direction by 1 m if completely vertical,
         # in order to not break the numerical grid model definition used by
-        # e.g. Eclipse and ResInsight:
+        # e.g. Flow and ResInsight:
         displacement[0] += 1
 
         # Calculation of perpendicular unit vector (in IJ) plane wrt.
