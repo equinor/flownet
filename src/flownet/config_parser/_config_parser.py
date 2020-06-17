@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import Dict
+from typing import Dict, Optional
 
 import yaml
 import configsuite
@@ -34,6 +34,17 @@ def create_schema(_to_abs_path) -> Dict:
                                 MK.Transformation: _to_abs_path,
                             },
                             "resample": {MK.Type: types.String, MK.Required: False},
+                        },
+                    },
+                    "pvt": {
+                        MK.Type: types.NamedDict,
+                        MK.Required: False,
+                        MK.Content: {
+                            "rsvd": {
+                                MK.Type: types.String,
+                                MK.Required: False,
+                                MK.Transformation: _to_abs_path,
+                            },
                         },
                     },
                     "cell_length": {MK.Type: types.Number, MK.Required: False},
@@ -105,6 +116,17 @@ def create_schema(_to_abs_path) -> Dict:
                     "ensemble_weights": {
                         MK.Type: types.List,
                         MK.Content: {MK.Item: {MK.Type: types.Number}},
+                    },
+                    "yamlobs": {MK.Type: types.String, MK.Required: False},
+                    "analysis": {
+                        MK.Type: types.NamedDict,
+                        MK.Content: {
+                            "metric": {MK.Type: types.String, MK.Required: False},
+                            "quantity": {MK.Type: types.String, MK.Required: False},
+                            "start": {MK.Type: types.String, MK.Required: False},
+                            "end": {MK.Type: types.String, MK.Required: False},
+                            "outfile": {MK.Type: types.String, MK.Required: False},
+                        },
                     },
                 },
             },
@@ -313,6 +335,7 @@ def create_schema(_to_abs_path) -> Dict:
                     "equil": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
+                            "scheme": {MK.Type: types.String, MK.Required: False},
                             "datum_depth": {MK.Type: types.Number, MK.Required: False},
                             "datum_pressure": {
                                 MK.Type: types.NamedDict,
@@ -386,6 +409,7 @@ DEFAULT_VALUES = {
         "perforation_handling_strategy": "bottom_point",
         "fast_pyscal": True,
         "fault_tolerance": 1.0e-5,
+        "pvt": {"rsvd": None},
     },
     "ert": {
         "runpath": "output/runpath/realization-%d/iter-%d",
@@ -398,11 +422,20 @@ DEFAULT_VALUES = {
         / "static",
         "realizations": {"max_runtime": 300, "required_success_percent": 20},
         "simulator": {"name": "flow"},
+        "yamlobs": "./observations.yamlobs",
+        "analysis": {
+            "metric": "[RMSE]",
+            "quantity": "[WOPR:BR-P-]",
+            "start": "2001-04-01",
+            "end": "2006-01-01",
+            "outfile": "analysis_metrics_iteration",
+        },
     },
     "model_parameters": {
         "permeability": {"loguniform": True},
         "porosity": {"loguniform": False},
         "bulkvolume_mult": {"loguniform": True},
+        "equil": {"scheme": "global"},
     },
 }
 
@@ -423,18 +456,20 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
     input_config = yaml.safe_load(configuration_file.read_text())
 
     @configsuite.transformation_msg("Tries to convert input to absolute path")
-    def _to_abs_path(path: str) -> str:
+    def _to_abs_path(path: Optional[str]) -> str:
         """
         Helper function for the configsuite. Take in a path as a string and
         attempts to convert it to an absolute path.
 
         Args:
-            path: A relative or absolute path
+            path: A relative or absolute path or None
 
         Returns:
-            Absolute path
+            Absolute path or empty string
 
         """
+        if path is None:
+            return ""
         return str((configuration_file.parent / pathlib.Path(path)).resolve())
 
     suite = ConfigSuite(

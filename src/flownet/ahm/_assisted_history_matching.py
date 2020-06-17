@@ -1,12 +1,12 @@
-import os
-import json
-import re
-import glob
-import subprocess
-import pathlib
 import argparse
-import shutil
 import concurrent.futures
+import glob
+import json
+import os
+import pathlib
+import re
+import shutil
+import subprocess
 from typing import List, Dict, Optional, Tuple
 
 import jinja2

@@ -8,5 +8,5 @@ EQUIL
 {{ parameters[i].get("goc_depth", "1*") }} {{ parameters[i].get("datum_pressure") }} {{ parameters[i].get("owc_depth") }} 1* {{ parameters[i].get("goc_depth", "1*") }} 1* 1* 1* /
 {% else -%}
 {{ datum_depth }} {{ parameters[i].get("datum_pressure") }} {{ parameters[i].get("owc_depth") }} 1* {{ parameters[i].get("goc_depth", "1*") }} 1* 1* 1* /
-{%- endif %}
+{%- endif -%}
 {% endfor -%}

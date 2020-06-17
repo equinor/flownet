@@ -1,16 +1,15 @@
 .. Flownet documentation master file
 
-
-Welcome to Flownet's documentation!
-===================================
+=====================
+FlowNet documentation
+=====================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-
-.. include:: modules.rst
-
+   introduction
+   configuration_file
+   api
 
 Indices and tables
 ==================

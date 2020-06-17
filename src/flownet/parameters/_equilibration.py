@@ -1,8 +1,11 @@
 from typing import Dict, Union, List, Optional
+from itertools import combinations
+import pathlib
 
 import jinja2
 import pandas as pd
 
+from ..network_model import NetworkModel
 from ..utils import write_grdecl_file
 from .probability_distributions import UniformDistribution, LogUniformDistribution
 from ._base_parameter import Parameter
@@ -27,20 +30,28 @@ class Equilibration(Parameter):
                 * The maximum value of the parameter,
                 * Whether the distribution is uniform of loguniform,
                 * To which EQLNUM this applies.
+        network: FlowNet network instance.
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
         eqlnum: A dataframe defining the EQLNUM for each flow tube.
         datum_depth: Depth of the datum (m).
+        rsvd: Pandas dataframe with a single rsvd table.
 
     """
 
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         distribution_values: pd.DataFrame,
+        network: NetworkModel,
         ti2ci: pd.DataFrame,
         eqlnum: pd.DataFrame,
         datum_depth: Optional[float] = None,
+        rsvd: Optional[pd.DataFrame] = None,
     ):
         self._datum_depth: Union[float, None] = datum_depth
+        self._rsvd: Union[pathlib.Path, None] = rsvd
+        self._network: NetworkModel = network
+
         self._ti2ci: pd.DataFrame = ti2ci
 
         self._random_variables = [
@@ -93,7 +104,32 @@ class Equilibration(Parameter):
             )
             parameters.append(param_value_dict)
 
+        thpres = ""
+        rsvd = ""
+        eqlnum_combinations = []
+
+        if len(self._unique_eqlnums) > 1:
+            for connections_at_node in self._network.connection_at_nodes:
+                eqlnum_combinations.extend(list(combinations(connections_at_node, 2)))
+
+            eqlnum_combinations = list(set(eqlnum_combinations))
+            eqlnum1 = list(list(zip(*eqlnum_combinations))[0])
+            eqlnum2 = list(list(zip(*eqlnum_combinations))[1])
+
+            thpres = _TEMPLATE_ENVIRONMENT.get_template("THPRES.jinja2").render(
+                {"eqlnum1": eqlnum1, "eqlnum2": eqlnum2,}
+            )
+
+            if self._rsvd is not None:
+                rsvd = _TEMPLATE_ENVIRONMENT.get_template("RSVD.jinja2").render(
+                    {
+                        "nr_eqlnum": len(self._unique_eqlnums),
+                        "rsvd": pd.read_csv(self._rsvd, names=["depth", "rs"]),
+                    }
+                )
+
         return {
+            "RUNSPEC": f"EQLDIMS\n{len(self._unique_eqlnums)} /\n",
             "REGIONS": write_grdecl_file(merged_df_eqlnum, "EQLNUM", int_type=True),
             "SOLUTION": _TEMPLATE_ENVIRONMENT.get_template("EQUIL.jinja2").render(
                 {
@@ -101,5 +137,7 @@ class Equilibration(Parameter):
                     "datum_depth": self._datum_depth,
                     "parameters": parameters,
                 }
-            ),
+            )
+            + rsvd
+            + f"\n{thpres}",
         }

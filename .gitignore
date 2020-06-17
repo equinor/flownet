@@ -69,6 +69,9 @@ instance/
 docs/_build/
 docs/*.rst
 !docs/index.rst
+!docs/api.rst
+!docs/introduction.rst
+!docs/configuration_file.rst
 
 # PyBuilder
 target/

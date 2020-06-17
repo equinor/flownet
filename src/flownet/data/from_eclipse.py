@@ -104,6 +104,7 @@ class EclipseData(FromSource):
                 - WTHP          Well Tubing Head Pressure
                 - WGIR          Well Gas Injection Rate
                 - WWIR          Well Water Injection Rate
+                - WSTAT         Well status (OPEN, SHUT, STOP)
                 - TYPE          Well Type: "OP", "GP", "WI", "GI"
                 - PHASE         Main producing/injecting phase fluid: "OIL", "GAS", "WATER"
 
@@ -112,9 +113,11 @@ class EclipseData(FromSource):
             * Improve robustness pf setting of Phase and Type.
 
         """
-        keys = ["WOPR", "WGPR", "WWPR", "WBHP", "WTHP", "WGIR", "WWIR"]
+        keys = ["WOPR", "WGPR", "WWPR", "WBHP", "WTHP", "WGIR", "WWIR", "WSTAT"]
 
         df_production_data = pd.DataFrame()
+
+        start_date = self._get_start_date()
 
         # Suppress a depreciation warning inside LibEcl
         warnings.simplefilter("ignore", category=DeprecationWarning)
@@ -135,14 +138,32 @@ class EclipseData(FromSource):
                     except KeyError:
                         df[f"{prod_key}"] = np.nan
 
-                # Remove rows that have no data
-                df = df.loc[((df != 0) & (~df.isnull())).any(axis=1), :]
+                # Find number of leading empty rows (with only nan or 0 values)
+                zero = df.fillna(0).eq(0).all(1).sum()
+
+                if zero < df.shape[0]:
+                    # If there are no empty rows, prepend one for the start date
+                    if zero == 0:
+                        df1 = df.head(1)
+                        as_list = df1.index.tolist()
+                        idx = as_list.index(df1.index)
+                        as_list[idx] = pd.to_datetime(start_date)
+                        df1.index = as_list
+                        df = pd.concat([df1, df])
+                        for col in df.columns:
+                            df[col].values[0] = 0
+                        zero = 1
+
+                    # Keep only the last empty row (well activation date)
+                    df = df.iloc[max(zero - 1, 0) :]
+
+                    # Assign well targets to the correct schedule dates
+                    df = df.shift(-1)
+                    # Make sure the row for the final date is not empty
+                    df.iloc[-1] = df.iloc[-2]
 
                 # Set columns that have only exact zero values to np.nan
                 df.loc[:, (df == 0).all(axis=0)] = np.nan
-
-                if self._resample is not None:
-                    df = df.resample(self._resample).mean().interpolate(method="linear")
 
                 df["WELL_NAME"] = well_name
                 df_production_data = df_production_data.append(df)
@@ -151,6 +172,18 @@ class EclipseData(FromSource):
         df_production_data.loc[df_production_data["WOPR"] > 0, "PHASE"] = "OIL"
         df_production_data.loc[df_production_data["WWIR"] > 0, "PHASE"] = "WATER"
         df_production_data.loc[df_production_data["WGIR"] > 0, "PHASE"] = "GAS"
+
+        df_production_data["WSTAT"] = df_production_data["WSTAT"].map(
+            {
+                1: "OPEN",  # Producer OPEN
+                2: "OPEN",  # Injector OPEN
+                3: "SHUT",
+                4: "STOP",
+                5: "SHUT",  # PSHUT
+                6: "STOP",  # PSTOP
+                np.nan: "STOP",
+            }
+        )
 
         df_production_data["TYPE"] = None
         df_production_data.loc[df_production_data["WOPR"] > 0, "TYPE"] = "OP"
@@ -216,6 +249,9 @@ class EclipseData(FromSource):
             )
 
         return df_faults.drop(["I", "J", "K"], axis=1)
+
+    def _get_start_date(self):
+        return self._eclsum.start_date
 
     @property
     def faults(self) -> pd.DataFrame:
