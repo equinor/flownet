@@ -104,23 +104,7 @@ pip install git+https://github.com/equinor/ert@$ERT_VERSION
 # INSTALL OPM-COMMON #
 ######################
 
-git clone --recursive https://github.com/OPM/opm-common.git
-pushd opm-common
-git checkout tags/testing/2020.3/rc1
-mkdir build
-pushd build
-cmake .. -DCMAKE_PREFIX_PATH=$INSTALL_ENV \
-         -DCMAKE_INSTALL_PREFIX=$INSTALL_ENV \
-         -DBUILD_TESTING=OFF \
-         -DBUILD_SHARED_LIBS=ON \
-         -DOPM_ENABLE_PYTHON=ON \
-         -DOPM_INSTALL_PYTHON=ON
-make -j4 install
-popd # build
-popd # opm-common
-
-rm -rf ./opm-common
-python -c "import opm"  # Check able to import
+pip install -i https://test.pypi.org/simple/ CeeSolOpm
 
 ######################
 # CREATE FLOW CONFIG #
