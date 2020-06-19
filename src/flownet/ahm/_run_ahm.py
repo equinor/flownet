@@ -306,7 +306,6 @@ def run_flownet_history_matching(
             ["fault_mult"], config.model_parameters, list(network.faults.keys()),
         )
 
-
     #########################################
     # Aquifer                               #
     #########################################
