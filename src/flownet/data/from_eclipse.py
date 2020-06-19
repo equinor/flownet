@@ -126,15 +126,15 @@ class EclipseData(FromSource):
             for well_name in self._eclsum.wells():
                 df = pd.DataFrame()
 
-                df["date"] = self._eclsum.dates
+                df["date"] = self._eclsum.report_dates
                 df["date"] = pd.to_datetime(df["date"])
                 df.set_index("date", inplace=True)
 
                 for prod_key in keys:
                     try:
-                        df[f"{prod_key}"] = self._eclsum[
-                            f"{prod_key}:{well_name}"
-                        ].values
+                        df[f"{prod_key}"] = self._eclsum.get_values(
+                            f"{prod_key}:{well_name}", report_only=True
+                        )
                     except KeyError:
                         df[f"{prod_key}"] = np.nan
 
