@@ -101,12 +101,6 @@ echo "Finished installing libres"
 pip install git+https://github.com/equinor/ert@$ERT_VERSION
 
 ######################
-# INSTALL OPM-COMMON #
-######################
-
-pip install -i https://test.pypi.org/simple/ CeeSolOpm
-
-######################
 # CREATE FLOW CONFIG #
 ######################
 
