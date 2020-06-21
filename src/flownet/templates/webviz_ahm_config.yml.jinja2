@@ -4,7 +4,7 @@ title: Flownet
 
 shared_settings:
   scratch_ensembles: 
-  {%- for iteration in [iterations[0] , iterations[-1]] %}
+  {%- for iteration in [iterations[0], iterations[-1]] %}
     iter-{{ iteration }}: {{ runpath[:-2] | replace("%d","*") }}{{ iteration }}
   {%- endfor %}
 
