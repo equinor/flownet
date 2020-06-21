@@ -22,7 +22,7 @@ pages:
    content: 
     - ParameterDistribution:
         ensembles:
-        {%- for iteration in [iterations[0] , iterations[-1]] %}
+        {%- for iteration in [iterations[0], iterations[-1]] %}
          - iter-{{ iteration }}
         {%- endfor %}
  - title: Reservoir simulation time series
