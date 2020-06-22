@@ -387,16 +387,7 @@ def _get_distribution(
 
 def create_parameter_distributions(
     config: ConfigSuite.snapshot, network: NetworkModel
-) -> List[
-    Union[
-        PorvPoroTrans,
-        RockCompressibility,
-        RelativePermeability,
-        Aquifer,
-        Equilibration,
-        FaultTransmissibility,
-    ]
-]:
+) -> List[Parameter]:
     """
     Creates the parameter distribution dataframe used in history matching.
 

@@ -98,18 +98,22 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     prediction_setup: bool = False,
 ):
     """
-        Create a ready-to-go ERT setup in output_folder.
+    Create a ready-to-go ERT setup in output_folder.
 
-        Args:
-            schedule: FlowNet Schedule instance to create ERT setup from
-            args: Arguments given to FlowNet at execution
-            training_set_fraction: Fraction of observations to be used for model training (default = 1)
+    Args:
+        args: Arguments given to FlowNet at execution
+        network:
+        schedule: FlowNet Schedule instance to create ERT setup from
+        ert_config:
+        parameters:
+        random_seed:
+        training_set_fraction: Fraction of observations to be used for model training (default = 1)
+        prediction_setup:
 
-        Returns:
-            Nothing
+    Returns:
+        Nothing
 
-        """
-
+    """
     # Create output folders if they don't exist
     output_folder = pathlib.Path(args.output_folder)
     os.makedirs(output_folder, exist_ok=True)
@@ -125,7 +129,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     with open(output_folder / "network.pickled", "wb") as fh:
         pickle.dump(network, fh)
 
-    # Pickle schdule
+    # Pickle schedule
     with open(output_folder / "schedule.pickled", "wb") as fh:
         pickle.dump(schedule, fh)
 

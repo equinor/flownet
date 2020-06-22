@@ -166,7 +166,8 @@ def main():
 
     # Add assisted history matching esmda argument parser:
     parser_esmda = subparsers_ahm.add_parser(
-        "esmda", help="Run flownet in an assisted history matching setting."
+        "esmda",
+        help="Run flownet in an assisted history matching setting using ES-MDA via ERT.",
     )
 
     parser_esmda.add_argument(
@@ -200,7 +201,8 @@ def main():
 
     # Add assisted history matching hyperopt argument parser:
     parser_hyperopt = subparsers_ahm.add_parser(
-        "esmda", help="Run flownet in an assisted history matching setting."
+        "hyperopt",
+        help="Run flownet in an assisted history matching setting using a direct hyperopt approach.",
     )
 
     parser_hyperopt.add_argument(

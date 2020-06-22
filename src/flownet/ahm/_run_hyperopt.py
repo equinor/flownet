@@ -1,16 +1,16 @@
 import argparse
+import pathlib
 from typing import Optional
 
 import pandas as pd
 from configsuite import ConfigSuite
-from hyperopt import hp, fmin, tpe
+from hyperopt import fmin, tpe
 
 from ..realization import Schedule
 from ..network_model import NetworkModel
 from ..network_model import create_connections
 from ._assisted_history_matching import (
     AssistedHistoryMatching,
-    find_training_set_fraction,
     create_parameter_distributions,
 )
 
@@ -72,14 +72,29 @@ def run_hyperopt(config: ConfigSuite.snapshot, args: argparse.Namespace):
 
     ahm.report()
 
-    # Todo: this sequences needs to be written still
+    # Define hyperopt search space
+    space = []
+    index = 0
+    for parameter in parameters:
+        for random_variable in parameter.random_variables:
+            variable_name = str(index) + "_" + parameter.__class__.__name__.lower()
+            index += 1
+            space.append(random_variable.hyperopt_distribution(variable_name))
+
+    output_folder = pathlib.Path(args.output_folder)
 
     # define an objective function
-    def objective(args):
+    def objective(x):
         # Create ertparam file
-        ahm.create_ert_setup(
-            args=args, training_set_fraction=find_training_set_fraction(schedule, config),
-        )
+        with open(output_folder / "parameters.ertparam", "w") as fh:
+            index = 0  # Prepend index in parameter name to enforce uniqueness in ERT
+            for parameter in parameters:
+                for i, _ in enumerate(parameter.random_variables):
+                    variable_name = (
+                        str(index) + "_" + parameter.__class__.__name__.lower()
+                    )
+                    fh.write(f"{variable_name} CONST {x[i]}\n")
+                    index += 1
 
         # Start simulation
         ahm.run_ert(weights=config.ert.ensemble_weights)
@@ -89,11 +104,5 @@ def run_hyperopt(config: ConfigSuite.snapshot, args: argparse.Namespace):
         # Extract RMSE
         return 0
 
-    space = hp.choice('a',
-                      [
-                          ('case 1', 1 + hp.lognormal('c1', 0, 1)),
-                          ('case 2', hp.uniform('c2', -10, 10))
-                      ])
-
     # minimize the objective over the space
-    best = fmin(objective, space, algo=tpe.suggest, max_evals=100)
+    fmin(objective, space, algo=tpe.suggest, max_evals=100)

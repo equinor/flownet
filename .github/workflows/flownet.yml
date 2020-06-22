@@ -78,7 +78,7 @@ jobs:
         run: |
           source $VENV_PATH/bin/activate
           pushd examples
-          flownet ahm ../tests/configs/norne_parameters.yml ./some_ahm_run
+          flownet ahm esmda ../tests/configs/norne_parameters.yml ./some_ahm_run
           flownet pred ../tests/configs/norne_pred.yml ./some_pred_run ./some_ahm_run
           popd
 
