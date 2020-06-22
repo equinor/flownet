@@ -8,6 +8,7 @@ REQUIREMENTS = [
     "cwrap>=1.6",
     "ecl2df>=0.5",
     "fmu-ensemble>=1.2",
+    "hyperopt>=0.2.4",
     "jinja2~=2.10",
     "matplotlib>=3.1",
     "numpy>=1.17",
