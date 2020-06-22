@@ -9,7 +9,6 @@ from ..network_model import NetworkModel
 from ..network_model import create_connections
 from ._assisted_history_matching import (
     AssistedHistoryMatching,
-    find_training_set_fraction,
     create_parameter_distributions,
 )
 
@@ -61,17 +60,15 @@ def run_esmda(config: ConfigSuite.snapshot, args: argparse.Namespace):
     parameters = create_parameter_distributions(config, network)
 
     ahm = AssistedHistoryMatching(
+        config,
         network,
         schedule,
         parameters,
         case_name=config.name,
-        ert_config=config.ert._asdict(),
         random_seed=config.flownet.random_seed,
     )
 
-    ahm.create_ert_setup(
-        args=args, training_set_fraction=find_training_set_fraction(schedule, config),
-    )
+    ahm.create_ert_setup(args=args)
 
     ahm.report()
 

@@ -3,8 +3,8 @@ import pathlib
 from typing import Optional
 
 import pandas as pd
+import hyperopt
 from configsuite import ConfigSuite
-from hyperopt import fmin, tpe
 
 from ..realization import Schedule
 from ..network_model import NetworkModel
@@ -62,11 +62,11 @@ def run_hyperopt(config: ConfigSuite.snapshot, args: argparse.Namespace):
     parameters = create_parameter_distributions(config, network)
 
     ahm = AssistedHistoryMatching(
+        config,
         network,
         schedule,
         parameters,
         case_name=config.name,
-        ert_config=config.ert._asdict(),
         random_seed=config.flownet.random_seed,
     )
 
@@ -83,26 +83,33 @@ def run_hyperopt(config: ConfigSuite.snapshot, args: argparse.Namespace):
 
     output_folder = pathlib.Path(args.output_folder)
 
+    ahm.create_ert_setup(args=args)
+
     # define an objective function
     def objective(x):
         # Create ertparam file
         with open(output_folder / "parameters.ertparam", "w") as fh:
             index = 0  # Prepend index in parameter name to enforce uniqueness in ERT
             for parameter in parameters:
-                for i, _ in enumerate(parameter.random_variables):
+                for _ in parameter.random_variables:
                     variable_name = (
                         str(index) + "_" + parameter.__class__.__name__.lower()
                     )
-                    fh.write(f"{variable_name} CONST {x[i]}\n")
+                    fh.write(f"{variable_name} CONST {x[index]}\n")
+
                     index += 1
 
-        # Start simulation
-        ahm.run_ert(weights=config.ert.ensemble_weights)
+        # pylint: disable=broad-except
+        try:
+            # Start simulation
+            ahm.run_ert(weights=config.ert.ensemble_weights)
 
-        # Wait.....
-
-        # Extract RMSE
-        return 0
+            return {
+                "loss": 1,
+                "status": hyperopt.STATUS_OK,
+            }
+        except (ValueError, Exception):
+            return {"status": hyperopt.STATUS_FAIL}
 
     # minimize the objective over the space
-    fmin(objective, space, algo=tpe.suggest, max_evals=100)
+    hyperopt.fmin(objective, space, algo=hyperopt.tpe.suggest, max_evals=100)

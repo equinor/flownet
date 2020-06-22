@@ -19,19 +19,14 @@ flownet:
 ert:
   static_include_files: ./norne_static
   realizations:
-    num_realizations: 10
+    num_realizations: 1
     required_success_percent: 70
     max_runtime: 600   # Maximum runtime of on single realization in seconds
   queue:
     system: LOCAL   # LOCAL or LSF
     name: mr   # ignored when system is LOCAL
-    max_running: 10   # Maximum number of simultaneous runs
+    max_running: 1   # Maximum number of simultaneous runs
   ensemble_weights:
-    - 4
-    - 3
-    - 2
-    - 1
-    - 1
     - 1
 
 model_parameters:

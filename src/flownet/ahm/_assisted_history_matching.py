@@ -45,47 +45,46 @@ class AssistedHistoryMatching:
     # pylint: disable=too-many-arguments
     def __init__(
         self,
+        config: ConfigSuite.snapshot,
         network: NetworkModel,
         schedule: Schedule,
         parameters: List[Parameter],
         case_name: str,
-        ert_config: Dict,
         random_seed: Optional[int] = None,
     ):
         """
         Initialize an Assisted History Matching Class
 
         Args:
+            config: Snapshot of the configuration file
             network: NetworkModel instance
             schedule: Schedule instance
             parameters: List of Parameter objects
             case_name: Name of simulation case
-            ert_config: Dictionary containing information about queue (system, name, server and max_running)
-                and realizations (num_realizations, required_success_percent and max_runtime)
             random_seed: Random seed to control reproducibility of FlowNet
 
         """
+        self._config: ConfigSuite.snapshot = config
         self._network: NetworkModel = network
         self._schedule: Schedule = schedule
         self._parameters: List[Parameter] = parameters
-        self._ert_config: dict = ert_config
+        self._ert_config: dict = config.ert._asdict()
         self._case_name: str = case_name
         self._random_seed: Optional[int] = random_seed
+        self._training_set_fraction = find_training_set_fraction(schedule, config)
 
-    def create_ert_setup(self, args: argparse.Namespace, training_set_fraction: float):
+    def create_ert_setup(self, args: argparse.Namespace):
         # pylint: disable=attribute-defined-outside-init
         """
         Creates an ERT setup, for the assisted history matching method.
 
         Args:
             args: The input argparse namespace
-            training_set_fraction: Fraction of observations in schedule to use in training set
 
         Returns:
             Nothing
 
         """
-        self._training_set_fraction = training_set_fraction
         self.output_folder = args.output_folder
 
         create_ert_setup(
@@ -95,7 +94,7 @@ class AssistedHistoryMatching:
             ert_config=self._ert_config,
             parameters=self._parameters,
             random_seed=self._random_seed,
-            training_set_fraction=training_set_fraction,
+            training_set_fraction=self._training_set_fraction,
         )
 
     def run_ert(self, weights: List[float]):

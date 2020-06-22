@@ -4,6 +4,7 @@ parameter class definitions.
 
 import abc
 
+import numpy as np
 from hyperopt import hp
 
 
@@ -56,12 +57,12 @@ class LogUniformDistribution(ProbabilityDistribution):
         Hyperopt distribution for a "LOGUNIF MIN MAX" distribution
 
         Args:
-            label: name of the paramters
+            label: name of the parameters
 
         Returns:
             Hyperopt uniform object
         """
-        return hp.loguniform(label, self.minimum, self.maximum)
+        return hp.loguniform(label, np.log(self.minimum), np.log(self.maximum))
 
 
 class TriangularDistribution(ProbabilityDistribution):
