@@ -171,7 +171,7 @@ class EclipseData(FromSource):
         df_production_data.loc[df_production_data["WGIR"] > 0, "PHASE"] = "GAS"
 
         if df_production_data["WSTAT"].isna().any():
-            warnings.warn(f'Wells without well status WSTAT are set OPEN by default.') 
+            warnings.warn(f"Wells without well status WSTAT are set OPEN by default.")
 
         df_production_data["WSTAT"] = df_production_data["WSTAT"].map(
             {
