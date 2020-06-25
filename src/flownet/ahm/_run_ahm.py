@@ -151,7 +151,6 @@ def run_flownet_history_matching(
     field_data = EclipseData(
         config.flownet.data_source.eclipse_case,
         perforation_handling_strategy=config.flownet.perforation_handling_strategy,
-        resample=config.flownet.data_source.resample,
     )
     df_production_data: pd.DataFrame = field_data.production
     df_coordinates: pd.DataFrame = field_data.coordinates
