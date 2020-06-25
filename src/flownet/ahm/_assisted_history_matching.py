@@ -120,15 +120,25 @@ class AssistedHistoryMatching:
                 )
             )
 
-        # Ignore deprecation warnings (ERT as of August 2019 has a lot of them
-        # due to transition to Python3)
-        subprocess.run(
-            "export PYTHONWARNINGS=ignore::DeprecationWarning;"
-            f"ert es_mda --weights {','.join(map(str, weights))!r} ahm_config.ert",
-            cwd=self.output_folder,
-            shell=True,
-            check=True,
-        )
+        try:
+            # Ignore deprecation warnings (ERT as of August 2019 has a lot of them
+            # due to transition to Python3)
+            subprocess.run(
+                "export PYTHONWARNINGS=ignore::DeprecationWarning;"
+                f"ert es_mda --weights {','.join(map(str, weights))!r} ahm_config.ert",
+                cwd=self.output_folder,
+                shell=True,
+                check=True,
+            )
+        except subprocess.CalledProcessError:
+            error_files = glob.glob(
+                str(
+                    self.output_folder
+                    / self._ert_config["runpath"].replace("%d", "*")
+                    / "ERROR"
+                )
+            )
+            raise RuntimeError(pathlib.Path(error_files[0]).read_text())
 
     def report(self):
         """
