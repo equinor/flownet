@@ -170,6 +170,9 @@ class EclipseData(FromSource):
         df_production_data.loc[df_production_data["WWIR"] > 0, "PHASE"] = "WATER"
         df_production_data.loc[df_production_data["WGIR"] > 0, "PHASE"] = "GAS"
 
+        if df_production_data["WSTAT"].isna().any():
+            warnings.warn(f'The status of each well must be define (OPEN, SHUT, STOP), otherwise they will be defainf as OPEN by default. Please add keyword WSTAT in the SUMMARY section in case of an Eclipse simulation.') 
+
         df_production_data["WSTAT"] = df_production_data["WSTAT"].map(
             {
                 1: "OPEN",  # Producer OPEN
@@ -178,7 +181,7 @@ class EclipseData(FromSource):
                 4: "STOP",
                 5: "SHUT",  # PSHUT
                 6: "STOP",  # PSTOP
-                np.nan: "STOP",
+                np.nan: "OPEN",
             }
         )
 
