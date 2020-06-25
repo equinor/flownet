@@ -154,7 +154,7 @@ class Schedule:
         for _, value in self._df_production_data.iterrows():
             start_date = self.get_well_start_date(value["WELL_NAME"])
 
-            if value["TYPE"] == "OP" and start_date and value["date"] >= start_date:
+            if (value["TYPE"] == "OP" or value["TYPE"] == "SHUT") and start_date and value["date"] >= start_date:
                 self.append(
                     WCONHIST(
                         date=value["date"],
