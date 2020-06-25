@@ -4,11 +4,7 @@ title: Flownet
 
 shared_settings:
   scratch_ensembles: 
-<<<<<<< HEAD
-  {%- for iteration in [iterations[0] , iterations[-1]] %}
-=======
   {%- for iteration in [iterations[0], iterations[-1]] %}
->>>>>>> upstream/master
     iter-{{ iteration }}: {{ runpath[:-2] | replace("%d","*") }}{{ iteration }}
   {%- endfor %}
 
@@ -18,11 +14,7 @@ pages:
     - The plot below show the results of the run for the different ensembles
     - HistoryMatch:
         ensembles:
-<<<<<<< HEAD
-        {%- for iteration in [iterations[0] , iterations[-1]] %}
-=======
         {%- for iteration in [iterations[0], iterations[-1]] %}
->>>>>>> upstream/master
          - iter-{{ iteration }}
         {%- endfor %}
         observation_file: ./observations.yamlobs
@@ -30,22 +22,14 @@ pages:
    content: 
     - ParameterDistribution:
         ensembles:
-<<<<<<< HEAD
-        {%- for iteration in [iterations[0] , iterations[-1]] %}
-=======
         {%- for iteration in [iterations[0], iterations[-1]] %}
->>>>>>> upstream/master
          - iter-{{ iteration }}
         {%- endfor %}
  - title: Reservoir simulation time series
    content:
     - ReservoirSimulationTimeSeries:
         ensembles:
-<<<<<<< HEAD
-        {%- for iteration in [iterations[0] , iterations[-1]] %}
-=======
         {%- for iteration in [iterations[0], iterations[-1]] %}
->>>>>>> upstream/master
          - iter-{{ iteration }}
         {%- endfor %}
         obsfile: ./observations.yamlobs
