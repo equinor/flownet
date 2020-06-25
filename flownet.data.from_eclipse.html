@@ -163,14 +163,13 @@
 <span id="flownet-data-from-eclipse-module"></span><h1>flownet.data.from_eclipse module<a class="headerlink" href="#module-flownet.data.from_eclipse" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="flownet.data.from_eclipse.EclipseData">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.data.from_eclipse.</code><code class="sig-name descname">EclipseData</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">eclipse_case</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>pathlib.Path<span class="p">, </span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">resample</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">perforation_handling_strategy</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'bottom_point'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_eclipse.EclipseData" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.data.from_eclipse.</code><code class="sig-name descname">EclipseData</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">eclipse_case</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>pathlib.Path<span class="p">, </span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">perforation_handling_strategy</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'bottom_point'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_eclipse.EclipseData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flownet.data.from_source.html#flownet.data.from_source.FromSource" title="flownet.data.from_source.FromSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.data.from_source.FromSource</span></code></a></p>
 <p>Eclipse data source class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>eclipse_case</strong> – Full path to eclipse case to load data from</p></li>
-<li><p><strong>resample</strong> – Pandas resampling string</p></li>
 <li><p><strong>perforation_handling_strategy</strong> – How to deal with perforations per well.
 (‘bottom_point’, ‘top_point’, ‘multiple’)</p></li>
 </ul>
