@@ -151,10 +151,17 @@ class Schedule:
         """
         vfp_tables = self.get_vfp()
 
+        well_name = []
         for _, value in self._df_production_data.iterrows():
             start_date = self.get_well_start_date(value["WELL_NAME"])
 
-            if (value["TYPE"] == "OP" or value["TYPE"] == "SHUT") and start_date and value["date"] >= start_date:
+            if value["WELL_NAME"] != well_name:
+                well_name = value["WELL_NAME"]
+                well_type = None
+            if (value["TYPE"] is not None) and value["TYPE"] != "SHUT":
+                well_type = value["TYPE"]
+
+            if well_type == "OP" and start_date and value["date"] >= start_date:
                 self.append(
                     WCONHIST(
                         date=value["date"],
