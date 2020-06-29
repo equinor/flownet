@@ -551,6 +551,6 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             .with_suffix(suffix)
             .is_file()
         ):
-            raise ValueError(f"The ECLIPSE {suffix} file does not exixst")
+            raise ValueError(f"The ECLIPSE {suffix} file does not exist")
 
     return config
