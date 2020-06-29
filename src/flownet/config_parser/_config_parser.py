@@ -548,10 +548,11 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
 
     for suffix in [".DATA", ".EGRID", ".UNRST", ".UNSMRY", ".SMSPEC"]:
         if (
-            not pathlib.Path(config.flownet.data_source.eclipse_case).with_suffix('').with_suffix(suffix).is_file()
+            not pathlib.Path(config.flownet.data_source.eclipse_case)
+            .with_suffix("")
+            .with_suffix(suffix)
+            .is_file()
         ):
-            raise ValueError(
-                f"The ECLIPSE {suffix} file does not exixst"
-            )
+            raise ValueError(f"The ECLIPSE {suffix} file does not exixst")
 
     return config
