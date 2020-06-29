@@ -470,10 +470,9 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         """
         if path is None:
             return ""
-        elif pathlib.Path(path).is_absolute():
+        if pathlib.Path(path).is_absolute():
             return pathlib.Path(path).resolve()
-        else:
-            return str((configuration_file.parent / pathlib.Path(path)).resolve())
+        return str((configuration_file.parent / pathlib.Path(path)).resolve())
 
     suite = ConfigSuite(
         input_config, create_schema(_to_abs_path=_to_abs_path), layers=(DEFAULT_VALUES,)
