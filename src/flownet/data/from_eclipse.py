@@ -1,6 +1,6 @@
 import warnings
 from pathlib import Path
-from typing import Union, List, Optional
+from typing import Union, List
 
 import numpy as np
 import pandas as pd
@@ -20,7 +20,6 @@ class EclipseData(FromSource):
 
     Args:
          eclipse_case: Full path to eclipse case to load data from
-         resample: Pandas resampling string
          perforation_handling_strategy: How to deal with perforations per well.
                                                  ('bottom_point', 'top_point', 'multiple')
 
@@ -29,7 +28,6 @@ class EclipseData(FromSource):
     def __init__(
         self,
         eclipse_case: Union[Path, str],
-        resample: Optional[str] = None,
         perforation_handling_strategy: str = "bottom_point",
     ):
         super().__init__()
@@ -42,7 +40,6 @@ class EclipseData(FromSource):
             self._grid, rst_file=self._restart, load_segment_information=True
         )
 
-        self._resample: Union[str, None] = resample
         self._perforation_handling_strategy: str = perforation_handling_strategy
 
     def _coordinates(self) -> pd.DataFrame:
