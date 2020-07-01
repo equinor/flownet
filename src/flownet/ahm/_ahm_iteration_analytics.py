@@ -11,9 +11,11 @@ from matplotlib.ticker import ScalarFormatter
 import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-import yaml
 
 from ecl.summary import EclSum
+
+from ..config_parser import parse_config
+from ..data import EclipseData
 
 
 def filter_dataframe(df_in, key_filter, min_value, max_value):
@@ -33,9 +35,7 @@ def filter_dataframe(df_in, key_filter, min_value, max_value):
         for the provided column
     """
 
-    return df_in[
-        (df_in[key_filter].values >= min_value) & (df_in[key_filter].values < max_value)
-    ]
+    return df_in[(df_in[key_filter] >= min_value) & (df_in[key_filter] < max_value)]
 
 
 def prepare_opm_reference_data(df_opm, str_key, n_real):
@@ -186,34 +186,6 @@ def _load_simulations(runpath: str, ecl_base: str) -> EclSum:
     return EclSum(str(pathlib.Path(runpath) / pathlib.Path(ecl_base)))
 
 
-def make_observation_dataframe(obs, key_list_data):
-    """
-    Internal helper function to generate dataframe containing
-    selected observations and respective dates
-
-    Args:
-        obs: data read from ERT observation yaml files
-        key_list_data: list of selected observations
-
-    Returns:
-        Pandas dataframe containing selected observations and
-        respective dates
-    """
-
-    df_obs = pd.DataFrame()
-    for id_key, key in enumerate(key_list_data):
-        obs_dates = []
-        obs_values = []
-        for value in obs.get(key)["observations"]:
-            obs_dates.append(np.datetime64(value.get("date")))
-            obs_values.append(value.get("value"))
-        if id_key == 0:
-            df_obs["DATE"] = pd.Series(obs_dates)
-        df_obs[key] = pd.Series(obs_values)
-
-    return df_obs
-
-
 def load_csv_file(csv_file, csv_columns):
     """
     Internal helper function to generate dataframe containing
@@ -276,7 +248,6 @@ def make_dataframe_simulation_data(path, eclbase_file, keys):
     Returns:
         df_sim: Pandas dataframe contained data from ensemble of simulations
         realizations_dict: dictionary containing path to loaded simulations
-        key_list_data: list of keys corresponding to selected quantities of interest
         iteration: current AHM iteration number
     """
 
@@ -287,6 +258,7 @@ def make_dataframe_simulation_data(path, eclbase_file, keys):
     # Load summary files of latest iteration
     # with concurrent.futures.ProcessPoolExecutor() as executor:
     for runpath, eclbase in list(zip(runpath_list, itertools.repeat(eclbase_file))):
+        print(runpath, eclbase)
         realizations_dict[runpath] = _load_simulations(runpath, eclbase)
 
     # Prepare dataframe
@@ -320,7 +292,7 @@ def make_dataframe_simulation_data(path, eclbase_file, keys):
         if id_real > 0:
             df_sim = df_sim.append(df_tmp, ignore_index=True)
 
-    return df_sim, realizations_dict, key_list_data, iteration
+    return df_sim, realizations_dict, iteration
 
 
 def save_plots_metrics(df_metrics, metrics, str_key):
@@ -366,6 +338,7 @@ def save_iteration_analytics():
     """
 
     parser = argparse.ArgumentParser(prog=("Save iteration parameters to a file."))
+    parser.add_argument("config", type=str, help="Path to the ERT config file.")
     parser.add_argument("runpath", type=str, help="Path to the ERT runpath.")
     parser.add_argument(
         "eclbase", type=str, help="Path to the simulation from runpath."
@@ -397,39 +370,55 @@ def save_iteration_analytics():
     metrics = list(args.metrics.replace("[", "").replace("]", "").split(","))
 
     # Load ensemble of FlowNet
-    (
-        df_sim,
-        realizations_dict,
-        key_list_data,
-        iteration,
-    ) = make_dataframe_simulation_data(
+    (df_sim, realizations_dict, iteration,) = make_dataframe_simulation_data(
         args.runpath,
         args.eclbase,
         list(args.quantity.replace("[", "").replace("]", "").split(",")),
     )
 
-    # Load observation file (OPM reference / truth)
-    with open(args.yamlobs) as stream:
-        obs = {
-            item.pop("key"): item
-            for item in yaml.safe_load(stream).get("smry", [dict()])
-        }
-    df_obs = make_observation_dataframe(obs, key_list_data)
+    # Load reference simulation (OPM-Flow/Eclipse)
+    config = parse_config(pathlib.Path(args.config))
+
+    field_data = EclipseData(
+        config.flownet.data_source.eclipse_case,
+        perforation_handling_strategy=config.flownet.perforation_handling_strategy,
+    )
+    df_obs: pd.DataFrame = field_data.production
+    df_obs["DATE"] = df_obs["date"]
+
+    df_obs["DATE"] = pd.to_datetime(df_obs["DATE"])
+    df_sim["DATE"] = pd.to_datetime(df_sim["DATE"], format="%Y-%m-%dT%H:%M:%S")
 
     # Filter dataframe base on measurement dates
+    df_obs = df_obs[df_obs["DATE"].isin(df_sim["DATE"])]
     df_sim = df_sim[df_sim["DATE"].isin(df_obs["DATE"])]
+
+    print(df_obs["DATE"].values)
+    print(df_sim["DATE"].values)
+    print("compare!\n")
 
     # Initiate dataframe with metrics
     df_metrics = load_csv_file(args.outfile, ["quantity", "iteration"] + metrics)
 
     for str_key in list(args.quantity.replace("[", "").replace("]", "").split(",")):
-        truth_data = filter_dataframe(
+        # Prepare data from reference simulation
+        tmp_data = filter_dataframe(
             df_obs, "DATE", np.datetime64(args.start), np.datetime64(args.end)
         )
+
+        truth_data = pd.DataFrame()
+        truth_data["DATE"] = np.unique(tmp_data["DATE"].values)
+        for well in np.unique(tmp_data["WELL_NAME"]):
+            truth_data[str_key[:5] + well] = tmp_data[tmp_data["WELL_NAME"] == well][
+                str_key[:4]
+            ].values
+        truth_data.to_csv("truth_data.csv", index=False)
+
         obs_opm = prepare_opm_reference_data(
             truth_data, str_key, len(realizations_dict)
         )
 
+        # Prepare data from ensemble of FlowNet
         ens_flownet = []
         ens_flownet.append(
             prepare_flownet_data(
@@ -440,6 +429,10 @@ def save_iteration_analytics():
                 len(realizations_dict),
             )
         )
+
+        filter_dataframe(
+            df_sim, "DATE", np.datetime64(args.start), np.datetime64(args.end)
+        ).to_csv("ens_flownet_data.csv", index=False)
 
         # Normalizing data
         obs_opm, ens_flownet = normalize_data(obs_opm, ens_flownet)
