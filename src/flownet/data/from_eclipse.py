@@ -170,20 +170,31 @@ class EclipseData(FromSource):
         df_production_data.loc[df_production_data["WWIR"] > 0, "PHASE"] = "WATER"
         df_production_data.loc[df_production_data["WGIR"] > 0, "PHASE"] = "GAS"
 
-        if df_production_data["WSTAT"].isna().any():
-            warnings.warn(f"Wells without well status WSTAT are set OPEN by default.")
-
-        df_production_data["WSTAT"] = df_production_data["WSTAT"].map(
-            {
-                1: "OPEN",  # Producer OPEN
-                2: "OPEN",  # Injector OPEN
-                3: "SHUT",
-                4: "STOP",
-                5: "SHUT",  # PSHUT
-                6: "STOP",  # PSTOP
-                np.nan: "OPEN",
-            }
-        )
+        if df_production_data["WSTAT"].isna().all():
+            warnings.warn(f"All wells has not well status WSTAT, setting well status for all wells to OPEN.")
+            df_production_data["WSTAT"] = df_production_data["WSTAT"].map(
+                {
+                    1: "OPEN",  # Producer OPEN
+                    2: "OPEN",  # Injector OPEN
+                    3: "SHUT",
+                    4: "STOP",
+                    5: "SHUT",  # PSHUT
+                    6: "STOP",  # PSTOP
+                    np.nan: "OPEN",
+                }
+            )
+        else
+            df_production_data["WSTAT"] = df_production_data["WSTAT"].map(
+                {
+                    1: "OPEN",  # Producer OPEN
+                    2: "OPEN",  # Injector OPEN
+                    3: "SHUT",
+                    4: "STOP",
+                    5: "SHUT",  # PSHUT
+                    6: "STOP",  # PSTOP
+                    np.nan: "STOP",
+                }
+            )
 
         df_production_data["TYPE"] = None
         df_production_data.loc[df_production_data["WOPR"] > 0, "TYPE"] = "OP"
