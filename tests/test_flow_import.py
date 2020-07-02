@@ -12,14 +12,14 @@ from flownet.config_parser import parse_config
 CONFIG_FOLDER = pathlib.Path(__file__).resolve().parent / "configs"
 
 
-def test_eclipse_import(tmp_path: pathlib.Path) -> None:
+def test_flow_import(tmp_path: pathlib.Path) -> None:
 
     config = parse_config(CONFIG_FOLDER / "norne_parameters.yml")
     model_cross_section_area = 40  # m^2
 
     # Load production and well coordinate data
-    field_data = data.EclipseData(
-        config.flownet.data_source.eclipse_case,
+    field_data = data.FlowData(
+        config.flownet.data_source.input_case,
         perforation_handling_strategy="bottom_point",
     )
     df_production_data: pd.DataFrame = field_data.production

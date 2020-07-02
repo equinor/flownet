@@ -125,7 +125,7 @@ class Schedule:
                         date=date,
                         well_name=well_name,
                         group_name="WELLS",  # Wells directly connected to FIELD gives
-                        # segmentation fault in flow and error in Eclipse
+                        # segmentation fault in Flow
                         i=self.get_compdat(well_name)[0].i,
                         j=self.get_compdat(well_name)[0].j,
                         phase=phase,

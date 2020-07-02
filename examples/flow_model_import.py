@@ -16,12 +16,10 @@ additional_flow_nodes = 100
 additional_node_candidates = 1000
 random_seed = 123456
 hull_factor = 1.1
-eclipse_case = "../tests/data/norne/NORNE_ATW2013"
+input_case = "../tests/data/norne/NORNE_ATW2013"
 
 # Load production and well coordinate data
-field_data = data.EclipseData(
-    eclipse_case, perforation_handling_strategy="bottom_point"
-)
+field_data = data.FlowData(input_case, perforation_handling_strategy="bottom_point")
 df_production_data: pd.DataFrame = field_data.production
 df_coordinates: pd.DataFrame = field_data.coordinates
 
@@ -61,4 +59,4 @@ includes = {
 realization = SimulationRealization(network, schedule, includes)
 
 # Build the model
-realization.create_model("./from_eclipse/")
+realization.create_model("./from_input_case")
