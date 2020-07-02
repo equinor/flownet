@@ -172,10 +172,9 @@ class EclipseData(FromSource):
 
         if df_production_data["WSTAT"].isna().all():
             warnings.warn(
-                f"All wells has not well status WSTAT, setting well status for all wells to OPEN."
+                f"No WSTAT:* summary vectors in input case - setting default well status to OPEN."
             )
             wstat_default = "OPEN"
-
         else:
             wstat_default = "STOP"
 
