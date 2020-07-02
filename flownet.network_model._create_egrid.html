@@ -164,12 +164,12 @@
 <dl class="py function">
 <dt id="flownet.network_model._create_egrid.construct_kw">
 <code class="sig-prename descclassname">flownet.network_model._create_egrid.</code><code class="sig-name descname">construct_kw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">int_type</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ecl.eclfile.ecl_kw.EclKW<a class="headerlink" href="#flownet.network_model._create_egrid.construct_kw" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function generates an Eclipse-type keyword for a given set of values.</p>
+<dd><p>This function generates a Flow-type keyword for a given set of values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> – Name for the EclKW to be generated</p></li>
-<li><p><strong>values</strong> – List of values to transform to an EclipseKW</p></li>
+<li><p><strong>values</strong> – List of values to transform to an EclKW</p></li>
 <li><p><strong>int_type</strong> – Use integer (True) or floating point (False) values</p></li>
 </ul>
 </dd>
@@ -185,14 +185,14 @@
 <dd><dl class="simple">
 <dt>This function does the following:</dt><dd><ul class="simple">
 <li><p>Takes as input a dataframe with coordinates defining all the grid cells</p></li>
-<li><p>Store it as an Eclipse/Flow .EGRID file called <cite>filename</cite></p></li>
+<li><p>Store it as a Flow .EGRID file called <cite>filename</cite></p></li>
 </ul>
 </dd>
 </dl>
 <p>The mandatory dataframe columns are xi, yi, zi (where i is the
 integers 0-7). An optional column name is ACTNUM.</p>
 <p>A grid cell is defined by 8 corner points (4 in the bottom plane, 4 in the
-top plane). The ordering is following the Eclipse definition):</p>
+top plane). The ordering is following the Flow definition):</p>
 <blockquote>
 <div><p>2—3           6—7
 |   |           |   |
@@ -211,7 +211,7 @@ top plane). The ordering is following the Eclipse definition):</p>
 </div></blockquote>
 <p>The grid cells are assumed to correspond to one or more one dimensional
 flow models. Between two one dimensional models there should always be
-one inactice cell. Grid cells can be set to be inactive or active using
+one inactive cell. Grid cells can be set to be inactive or active using
 0 and 1 respectively in the optional ACTNUM column.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

@@ -1,8 +1,0 @@
-flownet.data.from\_eclipse module
-=================================
-
-.. automodule:: flownet.data.from_eclipse
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :private-members:

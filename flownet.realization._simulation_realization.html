@@ -162,12 +162,12 @@
   <div class="section" id="module-flownet.realization._simulation_realization">
 <span id="flownet-realization-simulation-realization-module"></span><h1>flownet.realization._simulation_realization module<a class="headerlink" href="#module-flownet.realization._simulation_realization" title="Permalink to this headline">¶</a></h1>
 <p>This module helps with the creation of single simulation model, which later can be simulated
-using Eclipse or Flow</p>
+using OPM Flow or a commercial reservoir simulator</p>
 <dl class="py class">
 <dt id="flownet.realization._simulation_realization.SimulationRealization">
 <em class="property">class </em><code class="sig-prename descclassname">flownet.realization._simulation_realization.</code><code class="sig-name descname">SimulationRealization</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n"><a class="reference internal" href="flownet.network_model._network_model.html#flownet.network_model._network_model.NetworkModel" title="flownet.network_model._network_model.NetworkModel">flownet.network_model._network_model.NetworkModel</a></span></em>, <em class="sig-param"><span class="n">schedule</span><span class="p">:</span> <span class="n"><a class="reference internal" href="flownet.realization._schedule.html#flownet.realization._schedule.Schedule" title="flownet.realization._schedule.Schedule">flownet.realization._schedule.Schedule</a></span></em>, <em class="sig-param"><span class="n">simulation_input</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">pred_schedule_file</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>pathlib.Path<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._simulation_realization.SimulationRealization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class which facilitates creating a valid Eclipse/Flow simulation case
+<p>Class which facilitates creating a valid Flow simulation case
 that can be run within the flownet framework.</p>
 <dl class="py method">
 <dt id="flownet.realization._simulation_realization.SimulationRealization.create_model">
