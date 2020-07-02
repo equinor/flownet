@@ -7,7 +7,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   flownet.data.from_eclipse
+   flownet.data.from_flow
    flownet.data.from_pdm
    flownet.data.from_source
 
