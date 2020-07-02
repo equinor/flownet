@@ -33,7 +33,6 @@ def create_schema(_to_abs_path) -> Dict:
                                 MK.Type: types.String,
                                 MK.Transformation: _to_abs_path,
                             },
-                            "resample": {MK.Type: types.String, MK.Required: False},
                         },
                     },
                     "pvt": {
