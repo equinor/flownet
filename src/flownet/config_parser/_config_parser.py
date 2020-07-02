@@ -469,6 +469,8 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         """
         if path is None:
             return ""
+        if pathlib.Path(path).is_absolute():
+            return str(pathlib.Path(path).resolve())
         return str((configuration_file.parent / pathlib.Path(path)).resolve())
 
     suite = ConfigSuite(
@@ -541,5 +543,13 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         raise ValueError(
             "GOC and gas relative permeability must both be specified (or none of them)."
         )
+
+    for suffix in [".DATA", ".EGRID", ".UNRST", ".UNSMRY", ".SMSPEC"]:
+        if (
+            not pathlib.Path(config.flownet.data_source.eclipse_case)
+            .with_suffix(suffix)
+            .is_file()
+        ):
+            raise ValueError(f"The ECLIPSE {suffix} file does not exist")
 
     return config
