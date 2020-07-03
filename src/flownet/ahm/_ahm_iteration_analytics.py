@@ -15,7 +15,11 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from ecl.summary import EclSum
 
 from ..config_parser import parse_config
+<<<<<<< HEAD
 from ..data import FlowData
+=======
+from ..data import EclipseData
+>>>>>>> 440b407881044fa8fa97415c310997532d62707e
 
 
 def filter_dataframe(df_in, key_filter, min_value, max_value):
@@ -378,8 +382,13 @@ def save_iteration_analytics():
     # Load reference simulation (OPM-Flow/Eclipse)
     config = parse_config(pathlib.Path(args.config))
 
+<<<<<<< HEAD
     field_data = FlowData(
         config.flownet.data_source.input_case,
+=======
+    field_data = EclipseData(
+        config.flownet.data_source.eclipse_case,
+>>>>>>> 440b407881044fa8fa97415c310997532d62707e
         perforation_handling_strategy=config.flownet.perforation_handling_strategy,
     )
     df_obs: pd.DataFrame = field_data.production
