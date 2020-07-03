@@ -336,13 +336,12 @@ def save_iteration_analytics():
         Nothing
     """
 
-    parser = argparse.ArgumentParser(prog=("Save iteration parameters to a file."))
-    parser.add_argument("config", type=str, help="Path to the ERT config file.")
+    parser = argparse.ArgumentParser(prog=("Save iteration analytics to a file."))
+    parser.add_argument("config", type=str, help="Path to the FlowNet config file.")
     parser.add_argument("runpath", type=str, help="Path to the ERT runpath.")
     parser.add_argument(
         "eclbase", type=str, help="Path to the simulation from runpath."
     )
-    parser.add_argument("yamlobs", type=str, help="Path to the yaml observation file.")
     parser.add_argument(
         "start", type=str, help="Start date (YYYY-MM-DD) for accuracy analysis."
     )
