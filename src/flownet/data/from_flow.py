@@ -14,12 +14,12 @@ from ecl2df.eclfiles import EclFiles
 from .from_source import FromSource
 
 
-class EclipseData(FromSource):
+class FlowData(FromSource):
     """
-    Eclipse data source class
+    Flow data source class
 
     Args:
-         eclipse_case: Full path to eclipse case to load data from
+         input_case: Full path to eclipse case to load data from
          perforation_handling_strategy: How to deal with perforations per well.
                                                  ('bottom_point', 'top_point', 'multiple')
 
@@ -27,15 +27,15 @@ class EclipseData(FromSource):
 
     def __init__(
         self,
-        eclipse_case: Union[Path, str],
+        input_case: Union[Path, str],
         perforation_handling_strategy: str = "bottom_point",
     ):
         super().__init__()
 
-        self._eclipse_case: Path = Path(eclipse_case)
-        self._eclsum = EclSum(str(self._eclipse_case))
-        self._grid = EclGrid(str(self._eclipse_case.with_suffix(".EGRID")))
-        self._restart = EclFile(str(self._eclipse_case.with_suffix(".UNRST")))
+        self._input_case: Path = Path(input_case)
+        self._eclsum = EclSum(str(self._input_case))
+        self._grid = EclGrid(str(self._input_case.with_suffix(".EGRID")))
+        self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
         self._wells = WellInfo(
             self._grid, rst_file=self._restart, load_segment_information=True
         )
@@ -44,7 +44,7 @@ class EclipseData(FromSource):
 
     def _coordinates(self) -> pd.DataFrame:
         """
-        Function to extract well coordinates from an Flow/Eclipse simulation.
+        Function to extract well coordinates from an Flow simulation.
 
         Args:
             filename: Entire path to the simulated simulation case. This
@@ -87,13 +87,13 @@ class EclipseData(FromSource):
     def _production_data(self) -> pd.DataFrame:
         """
         Function to read production data for all producers and injectors from an
-        Flow/Eclipse simulation. The simulation is required to write out the
+        Flow simulation. The simulation is required to write out the
         following vectors to the summary file: WOPR, WGPR, WWPR, WBHP, WTHP, WGIR, WWIR
 
         Returns:
             A DataFrame with a DateTimeIndex and the following columns:
                 - date          equal to index
-                - WELL_NAME     Well name as used in Eclipse
+                - WELL_NAME     Well name as used in Flow
                 - WOPR          Well Oil Production Rate
                 - WGPR          Well Gas Production Rate
                 - WWPR          Well Water Production Rate
@@ -170,6 +170,14 @@ class EclipseData(FromSource):
         df_production_data.loc[df_production_data["WWIR"] > 0, "PHASE"] = "WATER"
         df_production_data.loc[df_production_data["WGIR"] > 0, "PHASE"] = "GAS"
 
+        if df_production_data["WSTAT"].isna().all():
+            warnings.warn(
+                f"No WSTAT:* summary vectors in input case - setting default well status to OPEN."
+            )
+            wstat_default = "OPEN"
+        else:
+            wstat_default = "STOP"
+
         df_production_data["WSTAT"] = df_production_data["WSTAT"].map(
             {
                 1: "OPEN",  # Producer OPEN
@@ -178,7 +186,7 @@ class EclipseData(FromSource):
                 4: "STOP",
                 5: "SHUT",  # PSHUT
                 6: "STOP",  # PSTOP
-                np.nan: "STOP",
+                np.nan: wstat_default,
             }
         )
 
@@ -204,7 +212,7 @@ class EclipseData(FromSource):
             A dataframe with columns NAME, X, Y, Z with data for fault planes
 
         """
-        eclfile = EclFiles(self._eclipse_case)
+        eclfile = EclFiles(self._input_case)
         df_fault_keyword = faults.df(eclfile)
 
         points = []

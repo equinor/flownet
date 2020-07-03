@@ -29,7 +29,7 @@ def create_schema(_to_abs_path) -> Dict:
                     "data_source": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "eclipse_case": {
+                            "input_case": {
                                 MK.Type: types.String,
                                 MK.Transformation: _to_abs_path,
                             },
@@ -469,6 +469,8 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         """
         if path is None:
             return ""
+        if pathlib.Path(path).is_absolute():
+            return str(pathlib.Path(path).resolve())
         return str((configuration_file.parent / pathlib.Path(path)).resolve())
 
     suite = ConfigSuite(
@@ -541,5 +543,13 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         raise ValueError(
             "GOC and gas relative permeability must both be specified (or none of them)."
         )
+
+    for suffix in [".DATA", ".EGRID", ".UNRST", ".UNSMRY", ".SMSPEC"]:
+        if (
+            not pathlib.Path(config.flownet.data_source.input_case)
+            .with_suffix(suffix)
+            .is_file()
+        ):
+            raise ValueError(f"The input case {suffix} file does not exist")
 
     return config

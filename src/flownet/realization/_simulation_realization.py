@@ -1,5 +1,5 @@
 """This module helps with the creation of single simulation model, which later can be simulated
-using Eclipse or Flow
+using OPM Flow or a commercial reservoir simulator
 """
 
 import os
@@ -21,7 +21,7 @@ MODULE_FOLDER = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
 
 class SimulationRealization:
     """
-    Class which facilitates creating a valid Eclipse/Flow simulation case
+    Class which facilitates creating a valid Flow simulation case
     that can be run within the flownet framework.
 
     """
@@ -139,7 +139,7 @@ class SimulationRealization:
             "pred_schedule_file": self._pred_schedule_file,
         }
 
-        # Render main Eclipse/Flow .DATA file
+        # Render main Flow .DATA file
         template = template_environment.get_template("TEMPLATE_MODEL.DATA.jinja2")
         with open(output_folder_path / "FLOWNET_REALIZATION.DATA", "w") as fh:
             fh.write(template.render(configuration))
