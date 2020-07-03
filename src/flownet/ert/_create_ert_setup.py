@@ -125,7 +125,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     with open(output_folder / "network.pickled", "wb") as fh:
         pickle.dump(network, fh)
 
-    # Pickle schdule
+    # Pickle schedule
     with open(output_folder / "schedule.pickled", "wb") as fh:
         pickle.dump(schedule, fh)
 

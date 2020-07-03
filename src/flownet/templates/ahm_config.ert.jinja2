@@ -3,15 +3,19 @@
 INSTALL_JOB DELETE_IN_CURRENT_ITERATION ./DELETE_IN_CURRENT_ITERATION
 
 REFCASE <CONFIG_PATH>/SYNTHETIC_REFCASE
+{%- if ert_config.analysis: %}
+DEFINE <CONFIG_FILE>  ../brugge_parameters.yml
+{%- endif %}
 DEFINE <RUN_PATH> {{ ert_config.runpath }}
 DEFINE <ECL_BASE> {{ ert_config.eclbase }}
 DEFINE <RANDOM_SAMPLES> ./parameters.json
-DEFINE <YAML_OBS> {{ ert_config.yamlobs }}
+{%- if ert_config.analysis: %}
 DEFINE <ANALYSIS_METRIC> {{ ert_config.analysis.metric }}
 DEFINE <ANALYSIS_QUANTITY> {{ ert_config.analysis.quantity }}
 DEFINE <ANALYSIS_START> {{ ert_config.analysis.start }}
 DEFINE <ANALYSIS_END> {{ ert_config.analysis.end }}
 DEFINE <ANALYSIS_OUTFILE> {{ ert_config.analysis.outfile }}
+{%- endif %}
 
 INSTALL_JOB CREATE_FLOWNET_MODEL ./CREATE_FLOWNET_MODEL
 {%- if not debug: %}
@@ -19,11 +23,17 @@ INSTALL_JOB DELETE_IN_CURRENT_ITERATION ./DELETE_IN_CURRENT_ITERATION
 {%- endif %}
 
 LOAD_WORKFLOW_JOB ./SAVE_ITERATION_PARAMETERS_WORKFLOW_JOB
+{%- if ert_config.analysis: %}
 LOAD_WORKFLOW_JOB ./SAVE_ITERATION_ANALYTICS_WORKFLOW_JOB
+{%- endif %}
 LOAD_WORKFLOW SAVE_ITERATION_PARAMETERS_WORKFLOW
+{%- if ert_config.analysis: %}
 LOAD_WORKFLOW SAVE_ITERATION_ANALYTICS_WORKFLOW
+{%- endif %}
 HOOK_WORKFLOW SAVE_ITERATION_PARAMETERS_WORKFLOW PRE_SIMULATION
+{%- if ert_config.analysis: %}
 HOOK_WORKFLOW SAVE_ITERATION_ANALYTICS_WORKFLOW POST_SIMULATION
+{%- endif %}
 
 GEN_KW FLOWNET_PARAMETERS ./EMPTYFILE ./EMPTYFILE ./parameters.ertparam
 
