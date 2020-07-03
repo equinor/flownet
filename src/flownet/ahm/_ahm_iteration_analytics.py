@@ -258,7 +258,6 @@ def make_dataframe_simulation_data(path, eclbase_file, keys):
     # Load summary files of latest iteration
     # with concurrent.futures.ProcessPoolExecutor() as executor:
     for runpath, eclbase in list(zip(runpath_list, itertools.repeat(eclbase_file))):
-        print(runpath, eclbase)
         realizations_dict[runpath] = _load_simulations(runpath, eclbase)
 
     # Prepare dataframe
@@ -392,10 +391,6 @@ def save_iteration_analytics():
     # Filter dataframe base on measurement dates
     df_obs = df_obs[df_obs["DATE"].isin(df_sim["DATE"])]
     df_sim = df_sim[df_sim["DATE"].isin(df_obs["DATE"])]
-
-    print(df_obs["DATE"].values)
-    print(df_sim["DATE"].values)
-    print("compare!\n")
 
     # Initiate dataframe with metrics
     df_metrics = load_csv_file(args.outfile, ["quantity", "iteration"] + metrics)
