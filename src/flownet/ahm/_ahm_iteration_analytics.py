@@ -379,7 +379,7 @@ def save_iteration_analytics():
     config = parse_config(pathlib.Path(args.config))
 
     field_data = FlowData(
-        config.flownet.data_source.eclipse_case,
+        config.flownet.data_source.input_case,
         perforation_handling_strategy=config.flownet.perforation_handling_strategy,
     )
     df_obs: pd.DataFrame = field_data.production
