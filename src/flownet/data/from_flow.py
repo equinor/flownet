@@ -190,7 +190,6 @@ class FlowData(FromSource):
             }
         )
 
-        #df_production_data["TYPE"] = "SHUT"
         df_production_data["TYPE"] = None
         df_production_data.loc[df_production_data["WOPR"] > 0, "TYPE"] = "OP"
         df_production_data.loc[df_production_data["WWIR"] > 0, "TYPE"] = "WI"
