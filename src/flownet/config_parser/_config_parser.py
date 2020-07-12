@@ -37,49 +37,53 @@ def create_schema(_to_abs_path) -> Dict:
                     },
                     "pvt": {
                         MK.Type: types.NamedDict,
-                        MK.Required: False,
                         MK.Content: {
                             "rsvd": {
                                 MK.Type: types.String,
-                                MK.Required: False,
                                 MK.Transformation: _to_abs_path,
+                                MK.AllowNone: True,
                             },
                         },
                     },
-                    "cell_length": {MK.Type: types.Number, MK.Required: False},
-                    "training_set_end_date": {MK.Type: types.Date, MK.Required: False},
-                    "training_set_fraction": {
-                        MK.Type: types.Number,
-                        MK.Required: False,
-                    },
-                    "additional_flow_nodes": {
-                        MK.Type: types.Integer,
-                        MK.Required: False,
-                    },
+                    "cell_length": {MK.Type: types.Number},
+                    "training_set_end_date": {MK.Type: types.Date},
+                    "training_set_fraction": {MK.Type: types.Number,},
+                    "additional_flow_nodes": {MK.Type: types.Integer, MK.Default: 100},
                     "additional_node_candidates": {
                         MK.Type: types.Integer,
-                        MK.Required: False,
+                        MK.Default: 1000,
                     },
-                    "hull_factor": {MK.Type: types.Number, MK.Required: False},
+                    "hull_factor": {MK.Type: types.Number, MK.Default: 1.2},
                     "random_seed": {MK.Type: types.Number},
                     "perforation_handling_strategy": {
                         MK.Type: types.String,
-                        MK.Required: False,
+                        MK.Default: "bottom_point",
                     },
-                    "fast_pyscal": {MK.Type: types.Bool, MK.Required: False},
-                    "fault_tolerance": {MK.Type: types.Number, MK.Required: False,},
+                    "fast_pyscal": {MK.Type: types.Bool, MK.Default: True},
+                    "fault_tolerance": {MK.Type: types.Number, MK.Default: 1.0e-5},
                 },
             },
             "ert": {
                 MK.Type: types.NamedDict,
                 MK.Content: {
-                    "runpath": {MK.Type: types.String, MK.Required: False},
-                    "enspath": {MK.Type: types.String, MK.Required: False},
-                    "eclbase": {MK.Type: types.String, MK.Required: False},
+                    "runpath": {
+                        MK.Type: types.String,
+                        MK.Default: "output/runpath/realization-%d/iter-%d",
+                    },
+                    "enspath": {MK.Type: types.String, MK.Default: "output/storage"},
+                    "eclbase": {
+                        MK.Type: types.String,
+                        MK.Default: "./eclipse/model/FLOWNET_REALIZATION",
+                    },
                     "static_include_files": {
                         MK.Type: types.String,
                         MK.Transformation: _to_abs_path,
-                        MK.Required: False,
+                        MK.Default: pathlib.Path(
+                            os.path.dirname(os.path.realpath(__file__))
+                        )
+                        / "static_include_files"
+                        / ".."
+                        / "static",
                     },
                     "realizations": {
                         MK.Type: types.NamedDict,
@@ -87,9 +91,9 @@ def create_schema(_to_abs_path) -> Dict:
                             "num_realizations": {MK.Type: types.Integer},
                             "required_success_percent": {
                                 MK.Type: types.Number,
-                                MK.Required: False,
+                                MK.Default: 20,
                             },
-                            "max_runtime": {MK.Type: types.Integer, MK.Required: False},
+                            "max_runtime": {MK.Type: types.Integer, MK.Default: 300},
                         },
                     },
                     "simulator": {
@@ -97,18 +101,18 @@ def create_schema(_to_abs_path) -> Dict:
                         MK.Content: {
                             "name": {
                                 MK.Type: types.String,
-                                MK.Required: False,
                                 MK.Transformation: lambda name: name.lower(),
+                                MK.Default: "flow",
                             },
-                            "version": {MK.Type: types.String, MK.Required: False},
+                            "version": {MK.Type: types.String, MK.AllowNone: True},
                         },
                     },
                     "queue": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
                             "system": {MK.Type: types.String},
-                            "name": {MK.Type: types.String, MK.Required: False},
-                            "server": {MK.Type: types.String, MK.Required: False},
+                            "name": {MK.Type: types.String},
+                            "server": {MK.Type: types.String, MK.AllowNone: True},
                             "max_running": {MK.Type: types.Integer},
                         },
                     },
@@ -116,15 +120,24 @@ def create_schema(_to_abs_path) -> Dict:
                         MK.Type: types.List,
                         MK.Content: {MK.Item: {MK.Type: types.Number}},
                     },
-                    "yamlobs": {MK.Type: types.String, MK.Required: False},
+                    "yamlobs": {
+                        MK.Type: types.String,
+                        MK.Default: "./observations.yamlobs",
+                    },
                     "analysis": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "metric": {MK.Type: types.String, MK.Required: False},
-                            "quantity": {MK.Type: types.String, MK.Required: False},
-                            "start": {MK.Type: types.String, MK.Required: False},
-                            "end": {MK.Type: types.String, MK.Required: False},
-                            "outfile": {MK.Type: types.String, MK.Required: False},
+                            "metric": {MK.Type: types.String, MK.Default: "[RMSE]"},
+                            "quantity": {
+                                MK.Type: types.String,
+                                MK.Default: "[WOPR:BR-P-]",
+                            },
+                            "start": {MK.Type: types.String, MK.Default: "2001-04-01"},
+                            "end": {MK.Type: types.String, MK.Default: "2006-01-01"},
+                            "outfile": {
+                                MK.Type: types.String,
+                                MK.Default: "analysis_metrics_iteration",
+                            },
                         },
                     },
                 },
@@ -135,38 +148,37 @@ def create_schema(_to_abs_path) -> Dict:
                     "permeability": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "min": {MK.Type: types.Number, MK.Required: False},
-                            "mean": {MK.Type: types.Number, MK.Required: False},
+                            "min": {MK.Type: types.Number, MK.AllowNone: True},
+                            "mean": {MK.Type: types.Number, MK.AllowNone: True},
                             "max": {MK.Type: types.Number},
-                            "loguniform": {MK.Type: types.Bool, MK.Required: False},
+                            "loguniform": {MK.Type: types.Bool, MK.Default: True},
                         },
                     },
                     "porosity": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "min": {MK.Type: types.Number, MK.Required: False},
-                            "mean": {MK.Type: types.Number, MK.Required: False},
+                            "min": {MK.Type: types.Number, MK.AllowNone: True},
+                            "mean": {MK.Type: types.Number, MK.AllowNone: True},
                             "max": {MK.Type: types.Number},
-                            "loguniform": {MK.Type: types.Bool, MK.Required: False},
+                            "loguniform": {MK.Type: types.Bool, MK.Default: False},
                         },
                     },
                     "bulkvolume_mult": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "min": {MK.Type: types.Number, MK.Required: False},
-                            "mean": {MK.Type: types.Number, MK.Required: False},
+                            "min": {MK.Type: types.Number, MK.AllowNone: True},
+                            "mean": {MK.Type: types.Number, MK.AllowNone: True},
                             "max": {MK.Type: types.Number},
-                            "loguniform": {MK.Type: types.Bool, MK.Required: False},
+                            "loguniform": {MK.Type: types.Bool, MK.Default: True},
                         },
                     },
                     "fault_mult": {
                         MK.Type: types.NamedDict,
-                        MK.Required: False,
                         MK.Content: {
-                            "min": {MK.Type: types.Number, MK.Required: False},
-                            "mean": {MK.Type: types.Number, MK.Required: False},
-                            "max": {MK.Type: types.Number, MK.Required: False},
-                            "loguniform": {MK.Type: types.Bool, MK.Required: False},
+                            "min": {MK.Type: types.Number, MK.AllowNone: True},
+                            "mean": {MK.Type: types.Number, MK.AllowNone: True},
+                            "max": {MK.Type: types.Number, MK.AllowNone: True},
+                            "loguniform": {MK.Type: types.Bool, MK.AllowNone: True},
                         },
                     },
                     "relative_permeability": {
@@ -180,7 +192,7 @@ def create_schema(_to_abs_path) -> Dict:
                                     "max": {MK.Type: types.Number},
                                     "loguniform": {
                                         MK.Type: types.Bool,
-                                        MK.Required: False,
+                                        MK.AllowNone: True,
                                     },
                                 },
                             },
@@ -191,7 +203,7 @@ def create_schema(_to_abs_path) -> Dict:
                                     "max": {MK.Type: types.Number},
                                     "loguniform": {
                                         MK.Type: types.Bool,
-                                        MK.Required: False,
+                                        MK.AllowNone: True,
                                     },
                                 },
                             },
@@ -202,7 +214,7 @@ def create_schema(_to_abs_path) -> Dict:
                                     "max": {MK.Type: types.Number},
                                     "loguniform": {
                                         MK.Type: types.Bool,
-                                        MK.Required: False,
+                                        MK.AllowNone: True,
                                     },
                                 },
                             },
@@ -213,7 +225,7 @@ def create_schema(_to_abs_path) -> Dict:
                                     "max": {MK.Type: types.Number},
                                     "loguniform": {
                                         MK.Type: types.Bool,
-                                        MK.Required: False,
+                                        MK.AllowNone: True,
                                     },
                                 },
                             },
@@ -224,7 +236,7 @@ def create_schema(_to_abs_path) -> Dict:
                                     "max": {MK.Type: types.Number},
                                     "loguniform": {
                                         MK.Type: types.Bool,
-                                        MK.Required: False,
+                                        MK.AllowNone: True,
                                     },
                                 },
                             },
@@ -235,7 +247,7 @@ def create_schema(_to_abs_path) -> Dict:
                                     "max": {MK.Type: types.Number},
                                     "loguniform": {
                                         MK.Type: types.Bool,
-                                        MK.Required: False,
+                                        MK.AllowNone: True,
                                     },
                                 },
                             },
@@ -246,7 +258,7 @@ def create_schema(_to_abs_path) -> Dict:
                                     "max": {MK.Type: types.Number},
                                     "loguniform": {
                                         MK.Type: types.Bool,
-                                        MK.Required: False,
+                                        MK.AllowNone: True,
                                     },
                                 },
                             },
@@ -257,37 +269,34 @@ def create_schema(_to_abs_path) -> Dict:
                                     "max": {MK.Type: types.Number},
                                     "loguniform": {
                                         MK.Type: types.Bool,
-                                        MK.Required: False,
+                                        MK.AllowNone: True,
                                     },
                                 },
                             },
                             "sorg": {
                                 MK.Type: types.NamedDict,
-                                MK.Required: False,
                                 MK.Content: {
                                     "min": {MK.Type: types.Number},
                                     "max": {MK.Type: types.Number},
                                     "loguniform": {
                                         MK.Type: types.Bool,
-                                        MK.Required: False,
+                                        MK.AllowNone: True,
                                     },
                                 },
                             },
                             "sgcr": {
                                 MK.Type: types.NamedDict,
-                                MK.Required: False,
                                 MK.Content: {
                                     "min": {MK.Type: types.Number},
                                     "max": {MK.Type: types.Number},
                                     "loguniform": {
                                         MK.Type: types.Bool,
-                                        MK.Required: False,
+                                        MK.AllowNone: True,
                                     },
                                 },
                             },
                             "ng": {
                                 MK.Type: types.NamedDict,
-                                MK.Required: False,
                                 MK.Content: {
                                     "min": {MK.Type: types.Number},
                                     "max": {MK.Type: types.Number},
@@ -295,37 +304,34 @@ def create_schema(_to_abs_path) -> Dict:
                             },
                             "nog": {
                                 MK.Type: types.NamedDict,
-                                MK.Required: False,
                                 MK.Content: {
                                     "min": {MK.Type: types.Number},
                                     "max": {MK.Type: types.Number},
                                     "loguniform": {
                                         MK.Type: types.Bool,
-                                        MK.Required: False,
+                                        MK.AllowNone: True,
                                     },
                                 },
                             },
                             "krgend": {
                                 MK.Type: types.NamedDict,
-                                MK.Required: False,
                                 MK.Content: {
                                     "min": {MK.Type: types.Number},
                                     "max": {MK.Type: types.Number},
                                     "loguniform": {
                                         MK.Type: types.Bool,
-                                        MK.Required: False,
+                                        MK.AllowNone: True,
                                     },
                                 },
                             },
                             "krogend": {
                                 MK.Type: types.NamedDict,
-                                MK.Required: False,
                                 MK.Content: {
                                     "min": {MK.Type: types.Number},
                                     "max": {MK.Type: types.Number},
                                     "loguniform": {
                                         MK.Type: types.Bool,
-                                        MK.Required: False,
+                                        MK.AllowNone: True,
                                     },
                                 },
                             },
@@ -334,8 +340,8 @@ def create_schema(_to_abs_path) -> Dict:
                     "equil": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "scheme": {MK.Type: types.String, MK.Required: False},
-                            "datum_depth": {MK.Type: types.Number, MK.Required: False},
+                            "scheme": {MK.Type: types.String, MK.Default: "global"},
+                            "datum_depth": {MK.Type: types.Number},
                             "datum_pressure": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
@@ -345,26 +351,23 @@ def create_schema(_to_abs_path) -> Dict:
                             },
                             "owc_depth": {
                                 MK.Type: types.NamedDict,
-                                MK.Required: False,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                 },
                             },
                             "gwc_depth": {
                                 MK.Type: types.NamedDict,
-                                MK.Required: False,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                 },
                             },
                             "goc_depth": {
                                 MK.Type: types.NamedDict,
-                                MK.Required: False,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                 },
                             },
                         },
@@ -379,7 +382,6 @@ def create_schema(_to_abs_path) -> Dict:
                     },
                     "aquifer": {
                         MK.Type: types.NamedDict,
-                        MK.Required: False,
                         MK.Content: {
                             "scheme": {MK.Type: types.String},
                             "fraction": {MK.Type: types.Number},
@@ -398,45 +400,6 @@ def create_schema(_to_abs_path) -> Dict:
             },
         },
     }
-
-
-DEFAULT_VALUES = {
-    "flownet": {
-        "additional_flow_nodes": 100,
-        "additional_node_candidates": 1000,
-        "hull_factor": 1.2,
-        "perforation_handling_strategy": "bottom_point",
-        "fast_pyscal": True,
-        "fault_tolerance": 1.0e-5,
-        "pvt": {"rsvd": None},
-    },
-    "ert": {
-        "runpath": "output/runpath/realization-%d/iter-%d",
-        "enspath": "output/storage",
-        "eclbase": "./eclipse/model/FLOWNET_REALIZATION",
-        "static_include_files": pathlib.Path(
-            os.path.dirname(os.path.realpath(__file__))
-        )
-        / ".."
-        / "static",
-        "realizations": {"max_runtime": 300, "required_success_percent": 20},
-        "simulator": {"name": "flow"},
-        "yamlobs": "./observations.yamlobs",
-        "analysis": {
-            "metric": "[RMSE]",
-            "quantity": "[WOPR:BR-P-]",
-            "start": "2001-04-01",
-            "end": "2006-01-01",
-            "outfile": "analysis_metrics_iteration",
-        },
-    },
-    "model_parameters": {
-        "permeability": {"loguniform": True},
-        "porosity": {"loguniform": False},
-        "bulkvolume_mult": {"loguniform": True},
-        "equil": {"scheme": "global"},
-    },
-}
 
 
 def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
@@ -474,7 +437,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         return str((configuration_file.parent / pathlib.Path(path)).resolve())
 
     suite = ConfigSuite(
-        input_config, create_schema(_to_abs_path=_to_abs_path), layers=(DEFAULT_VALUES,)
+        input_config, create_schema(_to_abs_path=_to_abs_path), deduce_required=True
     )
 
     if not suite.valid:
