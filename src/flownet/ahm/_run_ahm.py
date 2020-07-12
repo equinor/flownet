@@ -1,5 +1,5 @@
 import argparse
-from typing import Dict, Union, List, Optional
+from typing import Union, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -62,7 +62,7 @@ def _find_training_set_fraction(
 
 
 def _get_distribution(
-    parameters: Union[str, List[str]], parameters_config: Dict, index: list
+    parameters: Union[str, List[str]], parameters_config: dict, index: list
 ) -> pd.DataFrame:
     """
     Create the distribution min-max for one or more parameters
@@ -300,7 +300,7 @@ def run_flownet_history_matching(
     # Fault transmissibility                #
     #########################################
 
-    if isinstance(network.faults, Dict):
+    if isinstance(network.faults, dict):
         fault_mult_dist_values = _get_distribution(
             ["fault_mult"], config.model_parameters, list(network.faults.keys()),
         )
