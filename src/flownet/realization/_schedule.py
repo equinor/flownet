@@ -50,7 +50,7 @@ class Schedule:
             Nothing
 
         """
-        self._df_production_data["ent_date"] = pd.np.nan
+        self._df_production_data["ent_date"] = np.nan
         for _, row in self._network.df_entity_connections.iterrows():
             for entity in ["start_entity", "end_entity"]:
                 date = None
