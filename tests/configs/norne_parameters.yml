@@ -2,8 +2,7 @@ name: Norne
 
 flownet:
   data_source:
-    eclipse_case: ../data/norne/NORNE_ATW2013
-    resample: y
+    input_case: ../data/norne/NORNE_ATW2013
   cell_length: 100
   additional_flow_nodes: 100
   additional_node_candidates: 1000
