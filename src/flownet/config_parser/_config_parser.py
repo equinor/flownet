@@ -46,8 +46,8 @@ def create_schema(_to_abs_path) -> Dict:
                         },
                     },
                     "cell_length": {MK.Type: types.Number},
-                    "training_set_end_date": {MK.Type: types.Date},
-                    "training_set_fraction": {MK.Type: types.Number,},
+                    "training_set_end_date": {MK.Type: types.Date, MK.AllowNone: True},
+                    "training_set_fraction": {MK.Type: types.Number, MK.AllowNone: True},
                     "additional_flow_nodes": {MK.Type: types.Integer, MK.Default: 100},
                     "additional_node_candidates": {
                         MK.Type: types.Integer,
@@ -341,7 +341,7 @@ def create_schema(_to_abs_path) -> Dict:
                         MK.Type: types.NamedDict,
                         MK.Content: {
                             "scheme": {MK.Type: types.String, MK.Default: "global"},
-                            "datum_depth": {MK.Type: types.Number},
+                            "datum_depth": {MK.Type: types.Number, MK.AllowNone: True},
                             "datum_pressure": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
