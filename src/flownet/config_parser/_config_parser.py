@@ -515,4 +515,10 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         ):
             raise ValueError(f"The input case {suffix} file does not exist")
 
+    if config.flownet.training_set_end_date and config.flownet.training_set_fraction:
+        raise ValueError(
+            "Ambiguous configuration input: 'training_set_fraction' and 'training_set_end_date' are "
+            "mutually exclusive but are currently both defined in the configuration file."
+        )
+
     return config

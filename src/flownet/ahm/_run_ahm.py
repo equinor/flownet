@@ -37,10 +37,8 @@ def _find_training_set_fraction(
 
     if config.flownet.training_set_end_date is not None:
         if config.flownet.training_set_fraction is not None:
-            print(
+            raise ValueError(
                 "\nTraining set fraction and training set end date are both defined in config file.\n"
-                "The input given for training set fraction will be ignored.\n"
-                "The training set end date will be used to calculate the training set fraction.\n"
             )
         if (
             not schedule.get_first_date()
