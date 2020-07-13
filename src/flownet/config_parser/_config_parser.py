@@ -46,8 +46,11 @@ def create_schema(_to_abs_path) -> Dict:
                         },
                     },
                     "cell_length": {MK.Type: types.Number},
-                    "training_set_end_date": {MK.Type: types.Date},
-                    "training_set_fraction": {MK.Type: types.Number,},
+                    "training_set_end_date": {MK.Type: types.Date, MK.AllowNone: True},
+                    "training_set_fraction": {
+                        MK.Type: types.Number,
+                        MK.AllowNone: True,
+                    },
                     "additional_flow_nodes": {MK.Type: types.Integer, MK.Default: 100},
                     "additional_node_candidates": {
                         MK.Type: types.Integer,
@@ -188,8 +191,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "swirr": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -199,8 +202,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "swl": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -210,8 +213,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "swcr": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -232,8 +235,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "krwend": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -243,8 +246,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "krowend": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -254,8 +257,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "nw": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -265,8 +268,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "now": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -276,8 +279,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "sorg": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -287,8 +290,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "sgcr": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -298,15 +301,15 @@ def create_schema(_to_abs_path) -> Dict:
                             "ng": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                 },
                             },
                             "nog": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -316,8 +319,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "krgend": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -327,8 +330,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "krogend": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
