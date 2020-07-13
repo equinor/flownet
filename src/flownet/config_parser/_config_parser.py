@@ -47,7 +47,10 @@ def create_schema(_to_abs_path) -> Dict:
                     },
                     "cell_length": {MK.Type: types.Number},
                     "training_set_end_date": {MK.Type: types.Date, MK.AllowNone: True},
-                    "training_set_fraction": {MK.Type: types.Number, MK.AllowNone: True},
+                    "training_set_fraction": {
+                        MK.Type: types.Number,
+                        MK.AllowNone: True,
+                    },
                     "additional_flow_nodes": {MK.Type: types.Integer, MK.Default: 100},
                     "additional_node_candidates": {
                         MK.Type: types.Integer,
