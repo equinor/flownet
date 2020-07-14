@@ -172,7 +172,7 @@ class FlowData(FromSource):
 
         if df_production_data["WSTAT"].isna().all():
             warnings.warn(
-                f"No WSTAT:* summary vectors in input case - setting default well status to OPEN."
+                "No WSTAT:* summary vectors in input case - setting default well status to OPEN."
             )
             wstat_default = "OPEN"
         else:

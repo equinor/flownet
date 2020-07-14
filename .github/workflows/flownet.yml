@@ -28,27 +28,31 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 🐍 Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: 📁 Cache virtual environment
         id: cache-venv
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
-          path: $VENV_PATH
-          key: ${{ runner.os }}-${{ hashFiles('setup.py') }}-${{ hashFiles('build_environment.sh') }}
+          path: ${{ env.VENV_PATH }}
+          key: ${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('build_environment.sh') }}-${{ hashFiles('setup.py') }}
 
       - name: 📦 Install non-python dependencies
         run: sudo bash ./apt_install.sh
 
       - name: 🏗️ Build Python environment
-        run: bash ./build_environment.sh $VENV_PATH /usr/bin/flow ${{ steps.cache-venv.outputs.cache-hit }}
+        if: steps.cache-venv.outputs.cache-hit != 'true'
+        run: bash ./build_environment.sh $VENV_PATH /usr/bin/flow
+
+      - name: 🏗️ Extract Norne Dataset
+        if: steps.cache-venv.outputs.cache-hit == 'true'
+        run: tar -zxvf tests/data/norne.tar.gz -C tests/data/
 
       - name: 📦 Install FlowNet
         run: |
           source $VENV_PATH/bin/activate
-          pip install "astroid==2.3.3" "pylint==2.4.4"  # Bugs in what is currently the latest releases
           pip install .
 
       - name: 📦 Install test dependencies
