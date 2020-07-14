@@ -303,49 +303,53 @@ def run_flownet_history_matching(
     # Aquifer                               #
     #########################################
 
-    aquifer_config = config.model_parameters.aquifer
+    if all(config.model_parameters.aquifer) and all(
+        config.model_parameters.aquifer.size_in_bulkvolumes
+    ):
 
-    # Create a Pandas dataframe with parameters for all aquifers, based on the chosen scheme
-    if aquifer_config.scheme == "individual":
-        df_aquid = pd.DataFrame(
-            range(1, len(network.aquifers_xyz) + 1), columns=["AQUID"]
+        aquifer_config = config.model_parameters.aquifer
+
+        # Create a Pandas dataframe with parameters for all aquifers, based on the chosen scheme
+        if aquifer_config.scheme == "individual":
+            df_aquid = pd.DataFrame(
+                range(1, len(network.aquifers_xyz) + 1), columns=["AQUID"]
+            )
+        elif aquifer_config.scheme == "global":
+            df_aquid = pd.DataFrame([1] * len(network.aquifers_xyz), columns=["AQUID"])
+        else:
+            raise ValueError(
+                f"The aquifer scheme "
+                f"'{aquifer_config['scheme']}' is not valid.\n"
+                f"Valid options are 'global' or 'individual'."
+            )
+
+        # Create a pandas dataframe with all parameter definition for each individual tube
+        aquifer_dist_values = pd.DataFrame(
+            columns=["parameter", "minimum", "maximum", "loguniform", "aquid"]
         )
-    elif aquifer_config.scheme == "global":
-        df_aquid = pd.DataFrame([1] * len(network.aquifers_xyz), columns=["AQUID"])
-    else:
-        raise ValueError(
-            f"The aquifer scheme "
-            f"'{aquifer_config['scheme']}' is not valid.\n"
-            f"Valid options are 'global' or 'individual'."
-        )
 
-    # Create a pandas dataframe with all parameter definition for each individual tube
-    aquifer_dist_values = pd.DataFrame(
-        columns=["parameter", "minimum", "maximum", "loguniform", "aquid"]
-    )
+        aquifer_parameters = {
+            key: value
+            for key, value in aquifer_config._asdict().items()
+            if key not in ("scheme", "type", "fraction", "delta_depth", "datum_depth")
+        }
 
-    aquifer_parameters = {
-        key: value
-        for key, value in aquifer_config._asdict().items()
-        if key not in ("scheme", "type", "fraction", "delta_depth", "datum_depth")
-    }
+        for i in df_aquid["AQUID"].unique():
+            info = [
+                aquifer_parameters.keys(),
+                [param.min for param in aquifer_parameters.values()],
+                [param.max for param in aquifer_parameters.values()],
+                [param.loguniform for param in aquifer_parameters.values()],
+                [i] * len(aquifer_parameters),
+            ]
 
-    for i in df_aquid["AQUID"].unique():
-        info = [
-            aquifer_parameters.keys(),
-            [param.min for param in aquifer_parameters.values()],
-            [param.max for param in aquifer_parameters.values()],
-            [param.loguniform for param in aquifer_parameters.values()],
-            [i] * len(aquifer_parameters),
-        ]
-
-        aquifer_dist_values = aquifer_dist_values.append(
-            pd.DataFrame(
-                list(map(list, zip(*info))),
-                columns=["parameter", "minimum", "maximum", "loguniform", "aquid"],
-            ),
-            ignore_index=True,
-        )
+            aquifer_dist_values = aquifer_dist_values.append(
+                pd.DataFrame(
+                    list(map(list, zip(*info))),
+                    columns=["parameter", "minimum", "maximum", "loguniform", "aquid"],
+                ),
+                ignore_index=True,
+            )
 
     # ******************************************************************************
 
@@ -373,7 +377,9 @@ def run_flownet_history_matching(
             ),
         )
 
-    if config.model_parameters.aquifer.fraction > 0:
+    if all(config.model_parameters.aquifer) and all(
+        config.model_parameters.aquifer.size_in_bulkvolumes
+    ):
         parameters.append(
             Aquifer(aquifer_dist_values, network, scheme=aquifer_config.scheme)
         )
