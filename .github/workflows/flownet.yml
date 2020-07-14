@@ -46,6 +46,10 @@ jobs:
         if: steps.cache-venv.outputs.cache-hit != 'true'
         run: bash ./build_environment.sh $VENV_PATH /usr/bin/flow
 
+      - name: 🏗️ Extract Norne Dataset
+          if: steps.cache-venv.outputs.cache-hit == 'true'
+          run: tar -zxvf tests/data/norne.tar.gz -C tests/data/
+
       - name: 📦 Install FlowNet
         run: |
           source $VENV_PATH/bin/activate
