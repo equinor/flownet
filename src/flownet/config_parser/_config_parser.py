@@ -344,7 +344,7 @@ def create_schema(_to_abs_path) -> Dict:
                         MK.Type: types.NamedDict,
                         MK.Content: {
                             "scheme": {MK.Type: types.String, MK.Default: "global"},
-                            "datum_depth": {MK.Type: types.Number},
+                            "datum_depth": {MK.Type: types.Number, MK.AllowNone: True},
                             "datum_pressure": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
@@ -517,5 +517,11 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             .is_file()
         ):
             raise ValueError(f"The input case {suffix} file does not exist")
+
+    if config.flownet.training_set_end_date and config.flownet.training_set_fraction:
+        raise ValueError(
+            "Ambiguous configuration input: 'training_set_fraction' and 'training_set_end_date' are "
+            "both defined in the configuration file."
+        )
 
     return config
