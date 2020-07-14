@@ -378,9 +378,12 @@ def create_schema(_to_abs_path) -> Dict:
                     "rock_compressibility": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "reference_pressure": {MK.Type: types.Number},
-                            "min": {MK.Type: types.Number},
-                            "max": {MK.Type: types.Number},
+                            "reference_pressure": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                            },
+                            "min": {MK.Type: types.Number, MK.AllowNone: True},
+                            "max": {MK.Type: types.Number, MK.AllowNone: True},
                         },
                     },
                     "aquifer": {
@@ -522,6 +525,12 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         raise ValueError(
             "Ambiguous configuration input: 'training_set_fraction' and 'training_set_end_date' are "
             "both defined in the configuration file."
+        )
+
+    if any(config.model_parameters.rock_compressibility) and not all(config.model_parameters.rock_compressibility):
+        raise ValueError(
+            "Ambiguous configuration input: 'rock_compressibility' needs to be defined using "
+            "'reference_pressure', 'min' and 'max'. Currently one or more parameters are missing."
         )
 
     return config

@@ -362,12 +362,16 @@ def run_flownet_history_matching(
             equil_config.datum_depth,
             config.flownet.pvt.rsvd,
         ),
-        RockCompressibility(
-            config.model_parameters.rock_compressibility.reference_pressure,
-            config.model_parameters.rock_compressibility.min,
-            config.model_parameters.rock_compressibility.max,
-        ),
     ]
+
+    if all(config.model_parameters.rock_compressibility):
+        parameters.append(
+            RockCompressibility(
+                config.model_parameters.rock_compressibility.reference_pressure,
+                config.model_parameters.rock_compressibility.min,
+                config.model_parameters.rock_compressibility.max,
+            ),
+        )
 
     if config.model_parameters.aquifer.fraction > 0:
         parameters.append(
