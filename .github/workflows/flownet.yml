@@ -32,12 +32,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-          #      - name: 📁 Cache virtual environment
-          #        id: cache-venv
-          #        uses: actions/cache@v1
-          #        with:
-          #          path: $VENV_PATH
-          #          key: ${{ runner.os }}-${{ hashFiles('setup.py') }}-${{ hashFiles('build_environment.sh') }}
+      - name: 📁 Cache virtual environment
+        id: cache-venv
+        uses: actions/cache@v1
+        with:
+          path: $VENV_PATH
+          key: ${{ runner.os }}-${{ hashFiles('setup.py') }}-${{ hashFiles('build_environment.sh') }}
 
       - name: 📦 Install non-python dependencies
         run: sudo bash ./apt_install.sh
