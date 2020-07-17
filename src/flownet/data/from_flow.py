@@ -163,12 +163,20 @@ class FlowData(FromSource):
                 df.loc[:, (df == 0).all(axis=0)] = np.nan
 
                 df["WELL_NAME"] = well_name
-                df_production_data = df_production_data.append(df)
 
-        df_production_data["PHASE"] = None
-        df_production_data.loc[df_production_data["WOPR"] > 0, "PHASE"] = "OIL"
-        df_production_data.loc[df_production_data["WWIR"] > 0, "PHASE"] = "WATER"
-        df_production_data.loc[df_production_data["WGIR"] > 0, "PHASE"] = "GAS"
+                df["PHASE"] = None
+                df.loc[df["WOPR"] > 0, "PHASE"] = "OIL"
+                df.loc[df["WWIR"] > 0, "PHASE"] = "WATER"
+                df.loc[df["WGIR"] > 0, "PHASE"] = "GAS"
+                df["TYPE"] = None
+                df.loc[df["WOPR"] > 0, "TYPE"] = "OP"
+                df.loc[df["WWIR"] > 0, "TYPE"] = "WI"
+                df.loc[df["WGIR"] > 0, "TYPE"] = "GI"
+                # make sure the correct well type is set also when the well is shut in
+                df[["PHASE", "TYPE"]] = df[["PHASE", "TYPE"]].fillna(method="backfill")
+                df[["PHASE", "TYPE"]] = df[["PHASE", "TYPE"]].fillna(method="ffill")
+
+                df_production_data = df_production_data.append(df)
 
         if df_production_data["WSTAT"].isna().all():
             warnings.warn(
@@ -190,14 +198,13 @@ class FlowData(FromSource):
             }
         )
 
-        df_production_data["TYPE"] = None
-        df_production_data.loc[df_production_data["WOPR"] > 0, "TYPE"] = "OP"
-        df_production_data.loc[df_production_data["WWIR"] > 0, "TYPE"] = "WI"
-        df_production_data.loc[df_production_data["WGIR"] > 0, "TYPE"] = "GI"
-
+        # ensure that a type is assigned also if a well is never activated
         df_production_data[["PHASE", "TYPE"]] = df_production_data[
             ["PHASE", "TYPE"]
         ].fillna(method="backfill")
+        df_production_data[["PHASE", "TYPE"]] = df_production_data[
+            ["PHASE", "TYPE"]
+        ].fillna(method="ffill")
 
         df_production_data["date"] = df_production_data.index
         df_production_data["date"] = pd.to_datetime(df_production_data["date"]).dt.date
