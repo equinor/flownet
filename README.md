@@ -113,6 +113,7 @@ virtual environment.
 
 To be able to run examples that are dependent on the Norne field simulation,
 you need to extract the [OPM-data](https://github.com/OPM/opm-data).
+For convenience, a pre-simulated case is included in the FlowNet test dataset.
 
 ```bash
 tar -zxvf tests/data/norne.tar.gz -C tests/data/
