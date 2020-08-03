@@ -109,15 +109,14 @@ configuration file (`.cshrc` or `.bashrc`) to automatically source your
 virtual environment.
 > 
 
-### Install OPM-data (optional)
+### OPM-data (optional)
 
 To be able to run examples that are dependent on the Norne field simulation,
-you need to download the [OPM-data](https://github.com/OPM/opm-data) repository.
-The preferred installation location is in the home directory, e.g. `~/opm-data`:
+you need to extract the [OPM-data](https://github.com/OPM/opm-data).
+For convenience, a pre-simulated case is included in the FlowNet test dataset.
 
 ```bash
-cd
-git clone https://github.com/OPM/opm-data.git
+tar -zxvf tests/data/norne.tar.gz -C tests/data/
 ```
 
 ### Running FlowNet

@@ -32,23 +32,22 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      #- name: 📁 Cache virtual environment
-      #  id: cache-venv
-      #  uses: actions/cache@v2
-      #  with:
-      #    path: ${{ env.VENV_PATH }}
-      #    key: ${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('build_environment.sh') }}-${{ hashFiles('setup.py') }}
+      - name: 📁 Cache virtual environment
+        id: cache-venv
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.VENV_PATH }}
+          key: ${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('build_environment.sh') }}-${{ hashFiles('setup.py') }}
 
       - name: 📦 Install non-python dependencies
         run: sudo bash ./apt_install.sh
 
       - name: 🏗️ Build Python environment
-      #  if: steps.cache-venv.outputs.cache-hit != 'true'
+        if: steps.cache-venv.outputs.cache-hit != 'true'
         run: bash ./build_environment.sh $VENV_PATH /usr/bin/flow
 
-      #- name: 🏗️ Extract Norne Dataset
-      #  if: steps.cache-venv.outputs.cache-hit == 'true'
-      #  run: tar -zxvf tests/data/norne.tar.gz -C tests/data/
+      - name: 🏗️ Extract Norne Dataset
+        run: tar -zxvf tests/data/norne.tar.gz -C tests/data/
 
       - name: 📦 Install FlowNet
         run: |
@@ -104,7 +103,7 @@ jobs:
           twine upload dist/*
 
       - name: 📚 Update GitHub pages
-        if: github.ref == 'refs/heads/master' && matrix.python-version == '3.6'
+        if: github.event_name == 'release' && matrix.python-version == '3.6'
         run: |
           cp -R ./docs/_build ../_build
           git config --local user.email "flownet-github-action"
