@@ -378,23 +378,29 @@ def create_schema(_to_abs_path) -> Dict:
                     "rock_compressibility": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "reference_pressure": {MK.Type: types.Number},
-                            "min": {MK.Type: types.Number},
-                            "max": {MK.Type: types.Number},
+                            "reference_pressure": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                            },
+                            "min": {MK.Type: types.Number, MK.AllowNone: True},
+                            "max": {MK.Type: types.Number, MK.AllowNone: True},
                         },
                     },
                     "aquifer": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "scheme": {MK.Type: types.String},
-                            "fraction": {MK.Type: types.Number},
-                            "delta_depth": {MK.Type: types.Number},
+                            "scheme": {MK.Type: types.String, MK.AllowNone: True},
+                            "fraction": {MK.Type: types.Number, MK.AllowNone: True},
+                            "delta_depth": {MK.Type: types.Number, MK.AllowNone: True},
                             "size_in_bulkvolumes": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
-                                    "loguniform": {MK.Type: types.Bool},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "loguniform": {
+                                        MK.Type: types.Bool,
+                                        MK.AllowNone: True,
+                                    },
                                 },
                             },
                         },
@@ -418,6 +424,8 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         Parsed config, where values can be extracted like e.g. 'config.ert.queue.system'.
 
     """
+    # pylint: disable=too-many-branches
+
     input_config = yaml.safe_load(configuration_file.read_text())
 
     @configsuite.transformation_msg("Tries to convert input to absolute path")
@@ -522,6 +530,32 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         raise ValueError(
             "Ambiguous configuration input: 'training_set_fraction' and 'training_set_end_date' are "
             "both defined in the configuration file."
+        )
+
+    if any(config.model_parameters.rock_compressibility) and not all(
+        config.model_parameters.rock_compressibility
+    ):
+        raise ValueError(
+            "Ambiguous configuration input: 'rock_compressibility' needs to be defined using "
+            "'reference_pressure', 'min' and 'max'. Currently one or more parameters are missing."
+        )
+
+    if (
+        any(config.model_parameters.aquifer[0:3])
+        or any(config.model_parameters.aquifer.size_in_bulkvolumes)
+    ) and not (
+        all(config.model_parameters.aquifer[0:3])
+        and all(config.model_parameters.aquifer.size_in_bulkvolumes)
+    ):
+        raise ValueError(
+            "Ambiguous configuration input: 'aquifer' needs to be defined using "
+            "'scheme', 'fraction', 'delta_depth' and a 'size_in_bulkvolumes' distribution ('min', 'max', 'logunif')."
+            "Currently one or more parameters are missing."
+        )
+    if not all(config.model_parameters.aquifer.size_in_bulkvolumes):
+        raise ValueError(
+            "Ambiguous configuration input: 'size_in_bulkvolumes' in 'aquifer' needs to be defined using "
+            "'min', 'max' and 'log_unif'. Currently one or more parameters are missing."
         )
 
     return config
