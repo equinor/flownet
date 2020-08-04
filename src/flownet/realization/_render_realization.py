@@ -17,7 +17,7 @@ def _ert_samples2simulation_input(
     """
     Reads an ERT made json file with parameter values, or a previously stored parquet file
     for a whole ensemble. The parameter values are then plugged into the corresponding parameter,
-    and finally the render method is called on the different parameters, returning the Eclipse
+    and finally the render method is called on the different parameters, returning the Flow
     INCLUDEs to ad to the simulation model.
 
     Args:
@@ -84,7 +84,7 @@ def _dims2simulation_input(parameters: List[Parameter]) -> Dict:
 
     if len(merged_dims_dict) != len(set(merged_dims_dict.keys())):
         raise AssertionError(
-            "Some memory allocation dimensions for Eclipse/FLow have been defined more than once."
+            "Some memory allocation dimensions for Flow have been defined more than once."
         )
 
     return merged_dims_dict

@@ -50,7 +50,7 @@ class Schedule:
             Nothing
 
         """
-        self._df_production_data["ent_date"] = pd.np.nan
+        self._df_production_data["ent_date"] = np.nan
         for _, row in self._network.df_entity_connections.iterrows():
             for entity in ["start_entity", "end_entity"]:
                 date = None
@@ -125,7 +125,7 @@ class Schedule:
                         date=date,
                         well_name=well_name,
                         group_name="WELLS",  # Wells directly connected to FIELD gives
-                        # segmentation fault in flow and error in Eclipse
+                        # segmentation fault in Flow
                         i=self.get_compdat(well_name)[0].i,
                         j=self.get_compdat(well_name)[0].j,
                         phase=phase,

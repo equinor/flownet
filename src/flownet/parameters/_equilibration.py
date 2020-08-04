@@ -69,7 +69,7 @@ class Equilibration(Parameter):
 
     def get_dims(self) -> Dict:
         """
-        Function to export the table dimensions used for memory allocation in Eclipse/Flow.
+        Function to export the table dimensions used for memory allocation in Flow.
 
         Returns:
             Dictionary containing all dimensions to set.

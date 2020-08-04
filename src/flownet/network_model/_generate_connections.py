@@ -314,7 +314,7 @@ def _create_entity_connection_matrix(
         aquifer_ends: List of coordinates of all aquifer ends
 
     Returns:
-        Connection coordinate DataFrame on eclipse desired format.
+        Connection coordinate DataFrame on Flow desired format.
 
     """
     print("Creating entity connection DataFrame...", end="")
@@ -437,7 +437,7 @@ def create_connections(
     Creates additional flow nodes to increase complexity of field simulation structure so that history-matching can
     be performed.
 
-    Takes in field-entity-coordinates and desired added complexity arguments and returns eclipse format coordinate
+    Takes in field-entity-coordinates and desired added complexity arguments and returns Flow format coordinate
     DataFrame.
 
     Args:
@@ -445,7 +445,7 @@ def create_connections(
         configuration: FlowNet configuration yaml as dictionary
 
     Returns:
-        Desired restructuring of start-end coordinates into separate columns, as per eclipse needs.
+        Desired restructuring of start-end coordinates into separate columns, as per Flow needs.
 
     """
     starts, ends = _generate_connections(df_coordinates, configuration)

@@ -26,7 +26,10 @@ def create_schema(_to_abs_path) -> Dict:
             "ert": {
                 MK.Type: types.NamedDict,
                 MK.Content: {
-                    "runpath": {MK.Type: types.String, MK.Required: False},
+                    "runpath": {
+                        MK.Type: types.String,
+                        MK.Default: "output/runpath/realization-%d/pred",
+                    },
                     "pred_schedule_file": {
                         MK.Type: types.String,
                         MK.Transformation: _to_abs_path,
@@ -34,19 +37,26 @@ def create_schema(_to_abs_path) -> Dict:
                     "static_include_files": {
                         MK.Type: types.String,
                         MK.Transformation: _to_abs_path,
-                        MK.Required: False,
+                        MK.Default: pathlib.Path(
+                            os.path.dirname(os.path.realpath(__file__))
+                        )
+                        / ".."
+                        / "static",
                     },
-                    "enspath": {MK.Type: types.String, MK.Required: False},
-                    "eclbase": {MK.Type: types.String, MK.Required: False},
+                    "enspath": {MK.Type: types.String, MK.Default: "output/storage"},
+                    "eclbase": {
+                        MK.Type: types.String,
+                        MK.Default: "./eclipse/model/FLOWNET_REALIZATION",
+                    },
                     "realizations": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
                             "num_realizations": {MK.Type: types.Integer},
                             "required_success_percent": {
                                 MK.Type: types.Number,
-                                MK.Required: False,
+                                MK.Default: 20,
                             },
-                            "max_runtime": {MK.Type: types.Integer, MK.Required: False},
+                            "max_runtime": {MK.Type: types.Integer, MK.Default: 300},
                         },
                     },
                     "simulator": {
@@ -54,18 +64,18 @@ def create_schema(_to_abs_path) -> Dict:
                         MK.Content: {
                             "name": {
                                 MK.Type: types.String,
-                                MK.Required: False,
                                 MK.Transformation: lambda name: name.lower(),
+                                MK.Default: "flow",
                             },
-                            "version": {MK.Type: types.String, MK.Required: False},
+                            "version": {MK.Type: types.String, MK.AllowNone: True},
                         },
                     },
                     "queue": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
                             "system": {MK.Type: types.String},
-                            "name": {MK.Type: types.String, MK.Required: False},
-                            "server": {MK.Type: types.String, MK.Required: False},
+                            "name": {MK.Type: types.String},
+                            "server": {MK.Type: types.String, MK.AllowNone: True},
                             "max_running": {MK.Type: types.Integer},
                         },
                     },
@@ -73,22 +83,6 @@ def create_schema(_to_abs_path) -> Dict:
             },
         },
     }
-
-
-DEFAULT_VALUES = {
-    "ert": {
-        "runpath": "output/runpath/realization-%d/pred",
-        "enspath": "output/storage",
-        "eclbase": "./eclipse/model/FLOWNET_REALIZATION",
-        "static_include_files": pathlib.Path(
-            os.path.dirname(os.path.realpath(__file__))
-        )
-        / ".."
-        / "static",
-        "realizations": {"max_runtime": 300, "required_success_percent": 20},
-        "simulator": {"name": "flow"},
-    },
-}
 
 
 def parse_pred_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
@@ -119,10 +113,14 @@ def parse_pred_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             Absolute path
 
         """
+        if path is None:
+            return ""
+        if pathlib.Path(path).is_absolute():
+            return str(pathlib.Path(path).resolve())
         return str((configuration_file.parent / pathlib.Path(path)).resolve())
 
     suite = ConfigSuite(
-        input_config, create_schema(_to_abs_path=_to_abs_path), layers=(DEFAULT_VALUES,)
+        input_config, create_schema(_to_abs_path=_to_abs_path), deduce_required=True
     )
 
     if not suite.valid:

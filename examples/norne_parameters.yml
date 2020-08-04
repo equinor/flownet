@@ -2,7 +2,7 @@ name: Norne
 
 flownet:
   data_source:
-    eclipse_case: ../tests/data/norne/NORNE_ATW2013
+    input_case: ../tests/data/norne/NORNE_ATW2013
   pvt:
     rsvd: ./examples/norne_static/rsvd.csv
   cell_length: 100
