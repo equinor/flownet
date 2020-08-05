@@ -1,8 +1,8 @@
 <p align="center">
-  <img height="150" src="https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_logo.png">
+  <img height="150" src="https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_logo_512.png">
 </p>
 
-<h2 align="center">Simplified training of reservoir simulation models</h2>
+<h2 align="center">Data-driven reservoir simulation models</h2>
 
 <p align="center">
 <a href="https://badge.fury.io/py/flownet"><img src="https://badge.fury.io/py/flownet.svg"></a>
