@@ -1,10 +1,10 @@
-<p align="center">
-  <img height="150" src="https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_logo_512.png">
+<p align="left">
+  <img src="https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_logo.svg">
 </p>
 
-<h2 align="center">Data-driven reservoir simulation models</h2>
+<h2 align="left">Data-driven reservoir simulation models</h2>
 
-<p align="center">
+<p align="left">
 <a href="https://badge.fury.io/py/flownet"><img src="https://badge.fury.io/py/flownet.svg"></a>
 <a href="https://github.com/equinor/flownet/actions?query=workflow%3ACI"><img src="https://img.shields.io/github/workflow/status/equinor/flownet/CI"></a>
 <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.6%20|%203.7-blue.svg"></a>
@@ -20,6 +20,10 @@ _FlowNet_ aims at solving the following problems:
 * Train the model
 * Assure model predictiveness
 * Use the models to efficiently optimize and make decisions
+
+<p align="left">
+  <img width="512" src="https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_model.svg">
+</p>
 
 For documentation, see [the GitHub pages](https://equinor.github.io/flownet/) for this repository.
 
