@@ -2,7 +2,7 @@
 Introduction
 ============
 
-.. image:: ./_static/flownet_logo.svg
+.. image:: ./_static/flownet_model.svg
 
 **FlowNet** aims at making predictive subsurface models directly from data. Instead of
 complex simulation grids, FlowNet uses networks of tubes (with full physics within each tube),
