@@ -8,13 +8,16 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:export-ydpi="96"
+   inkscape:export-xdpi="96"
+   inkscape:export-filename="C:\Users\wjb\Desktop\flownet_logo_1920.png"
    sodipodi:docname="flownet_logo.svg"
    inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
    id="svg8"
    version="1.1"
-   viewBox="0 0 563.56248 279.4"
-   height="1056"
-   width="2130">
+   viewBox="0 0 508 285.75"
+   height="1080"
+   width="1920">
   <defs
      id="defs2">
     <linearGradient
@@ -54,7 +57,7 @@
        xlink:href="#linearGradient3356"
        inkscape:collect="always" />
     <linearGradient
-       gradientTransform="matrix(2.3112253,0,0,2.3112253,-11.068207,-25.882755)"
+       gradientTransform="matrix(2.0688311,0,0,2.0688311,-2.6518331,-5.9301785)"
        gradientUnits="userSpaceOnUse"
        y2="75.665504"
        x2="95.342079"
@@ -354,7 +357,7 @@
      inkscape:document-rotation="0"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="416.9368"
+     inkscape:cy="495.42007"
      inkscape:cx="920.44545"
      inkscape:zoom="0.49497475"
      inkscape:pageshadow="2"
@@ -379,34 +382,60 @@
      id="layer1"
      inkscape:groupmode="layer"
      inkscape:label="Layer 1">
-    <text
+    <g
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:84.4253px;line-height:1.25;font-family:Delicious;-inkscape-font-specification:'Delicious, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#0c55b6;fill-opacity:1;stroke:none;stroke-width:2.11064;image-rendering:auto"
        id="text12"
-       y="157.23015"
-       x="227.44238"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:94.3171px;line-height:1.25;font-family:Delicious;-inkscape-font-specification:'Delicious, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#0c55b6;fill-opacity:1;stroke:none;stroke-width:2.35794;image-rendering:auto"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:94.3171px;font-family:Delicious;-inkscape-font-specification:'Delicious, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#0c55b6;fill-opacity:1;stroke-width:2.35794"
-         y="157.23015"
-         x="227.44238"
-         id="tspan10"
-         sodipodi:role="line">FlowNet</tspan></text>
+       aria-label="FlowNet">
+      <path
+         id="path4540"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:84.4253px;font-family:Delicious;-inkscape-font-specification:'Delicious, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#0c55b6;fill-opacity:1;stroke-width:2.11064"
+         d="m 242.58843,104.79047 h -24.98989 v 53.18794 h 6.75402 v -24.82104 h 14.43673 v -5.82535 h -14.43673 v -16.96948 h 18.23587 z" />
+      <path
+         id="path4542"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:84.4253px;font-family:Delicious;-inkscape-font-specification:'Delicious, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#0c55b6;fill-opacity:1;stroke-width:2.11064"
+         d="m 258.30077,99.38725 h -6.24748 v 41.95937 c 0,4.81225 0.42213,12.07282 2.11064,16.63179 h 6.66959 c -1.6885,-5.48765 -2.53275,-10.80644 -2.53275,-16.63179 z" />
+      <path
+         id="path4544"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:84.4253px;font-family:Delicious;-inkscape-font-specification:'Delicious, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#0c55b6;fill-opacity:1;stroke-width:2.11064"
+         d="m 286.18882,120.40915 c 7.0073,0 10.04661,10.63759 10.04661,16.96949 0,6.33189 -3.03931,16.80063 -10.04661,16.80063 -7.0073,0 -10.04661,-10.46874 -10.04661,-16.80063 0,-6.3319 3.03931,-16.96949 10.04661,-16.96949 z m 0,-5.06552 c -11.39742,0 -16.46294,12.3261 -16.46294,22.03501 0,9.70891 5.14995,21.86615 16.46294,21.86615 11.31299,0 16.46293,-12.15724 16.46293,-21.86615 0,-9.70891 -5.06552,-22.03501 -16.46293,-22.03501 z" />
+      <path
+         id="path4546"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:84.4253px;font-family:Delicious;-inkscape-font-specification:'Delicious, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#0c55b6;fill-opacity:1;stroke-width:2.11064"
+         d="m 362.02648,116.61001 h -6.16305 c -2.02621,11.39742 -4.72782,22.62598 -8.3581,33.60127 l -8.78023,-33.60127 h -6.6696 l -8.02041,33.60127 -9.45563,-33.60127 h -6.75402 l 12.57937,41.3684 h 7.09172 l 5.6565,-21.10633 c 1.3508,-5.14994 2.3639,-12.66379 2.3639,-12.66379 0,0 1.18196,7.6827 2.53276,12.66379 0,0 3.79914,14.09903 5.74092,21.10633 h 6.83845 c 5.23437,-13.3392 9.03351,-27.18495 11.39742,-41.3684 z" />
+      <path
+         id="path4548"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:84.4253px;font-family:Delicious;-inkscape-font-specification:'Delicious, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#0c55b6;fill-opacity:1;stroke-width:2.11064"
+         d="m 403.38829,157.97841 v -53.18794 h -6.75402 v 33.26357 c 0,2.44833 0.16885,4.98109 0.42212,7.42942 L 379.0738,104.79047 h -8.94908 v 53.18794 h 6.75403 v -36.13403 c 0,-2.44833 -0.16886,-4.89667 -0.42213,-7.26058 l 20.00879,43.39461 z" />
+      <path
+         id="path4550"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:84.4253px;font-family:Delicious;-inkscape-font-specification:'Delicious, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#0c55b6;fill-opacity:1;stroke-width:2.11064"
+         d="m 439.66478,130.45576 h -17.98259 c 1.0131,-4.64339 4.30569,-10.04661 9.62448,-10.04661 5.3188,0 8.35811,5.31879 8.35811,10.04661 z m 6.75402,4.81224 c -0.0844,-1.43523 -0.0844,-2.87046 -0.16885,-4.30569 -0.50655,-7.76713 -5.9942,-15.61868 -14.3523,-15.61868 -11.05971,0 -17.56046,10.72202 -17.56046,20.85305 0,9.87776 3.88356,23.04811 15.95638,23.04811 4.81224,0 10.80644,-3.12374 14.43673,-6.24747 l -2.02621,-4.05242 c -2.70161,1.85736 -8.52696,5.23437 -11.73512,5.23437 -7.6827,0 -10.04661,-11.39742 -10.04661,-17.30719 0,-0.59097 0,-1.09753 0,-1.60408 z" />
+      <path
+         id="path4552"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:84.4253px;font-family:Delicious;-inkscape-font-specification:'Delicious, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#0c55b6;fill-opacity:1;stroke-width:2.11064"
+         d="m 473.66312,156.88088 -1.43523,-3.96799 c 0,0 -2.78604,1.18195 -4.89667,1.18195 -1.94178,0 -3.29259,-1.0131 -3.29259,-4.64339 v -27.94477 h 8.18926 v -4.89667 h -8.35811 v -7.345 h -5.90977 v 7.345 h -5.90977 v 4.13684 l 5.57207,0.75983 v 28.28247 c 0,7.09173 3.46144,9.45564 7.42942,9.45564 4.89667,0 8.61139,-2.36391 8.61139,-2.36391 z" />
+    </g>
     <text
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect16);fill:#000000;fill-opacity:1;stroke:none;"
        id="text14"
        xml:space="preserve" />
     <text
+       inkscape:export-ydpi="19.445087"
+       inkscape:export-xdpi="19.445087"
        id="text947"
-       y="253.94443"
-       x="43.43137"
-       style="font-style:normal;font-weight:normal;font-size:288.693px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:none;fill-opacity:1;stroke:url(#linearGradient3398);stroke-width:7.21735;stroke-opacity:1"
+       y="244.54959"
+       x="46.131996"
+       style="font-style:normal;font-weight:normal;font-size:258.416px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:none;fill-opacity:1;stroke:url(#linearGradient3398);stroke-width:6.46041;stroke-opacity:1"
        xml:space="preserve"><tspan
-         style="fill:none;fill-opacity:1;stroke:url(#linearGradient3398);stroke-width:7.21735;stroke-opacity:1"
-         y="253.94443"
-         x="43.43137"
+         style="fill:none;fill-opacity:1;stroke:url(#linearGradient3398);stroke-width:6.46041;stroke-opacity:1"
+         y="244.54959"
+         x="46.131996"
          id="tspan945"
          sodipodi:role="line">F</tspan></text>
     <g
-       transform="matrix(2.3112253,0,0,2.3112253,-11.068208,-25.882755)"
+       inkscape:export-ydpi="19.445087"
+       inkscape:export-xdpi="19.445087"
+       transform="matrix(2.0688312,0,0,2.0688312,-2.6518341,-5.9301781)"
        style="fill:none;fill-opacity:1;stroke:url(#linearGradient4538);stroke-opacity:1"
        id="g1383">
       <path
@@ -451,7 +480,9 @@
          style="fill:none;stroke:url(#linearGradient4124);stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     </g>
     <g
-       transform="matrix(2.3112253,0,0,2.3112253,-11.068208,-25.882755)"
+       inkscape:export-ydpi="19.445087"
+       inkscape:export-xdpi="19.445087"
+       transform="matrix(2.0688312,0,0,2.0688312,-2.6518341,-5.9301781)"
        style="fill:url(#linearGradient3382);fill-opacity:1;stroke:none"
        id="g1331">
       <circle
