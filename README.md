@@ -1,18 +1,13 @@
-<p align="left">
-  <img src="https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_logo.svg">
-</p>
+![FlowNet Logo](https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_logo.svg)
 
-<h2 align="left">Data-driven reservoir simulation models</h2>
+# FlowNet: Data-driven reservoir simulation models
 
-<p align="left">
-<a href="https://badge.fury.io/py/flownet"><img src="https://badge.fury.io/py/flownet.svg"></a>
-<a href="https://github.com/equinor/flownet/actions?query=workflow%3ACI"><img src="https://img.shields.io/github/workflow/status/equinor/flownet/CI"></a>
-<a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.6%20|%203.7-blue.svg"></a>
-<a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://lgtm.com/projects/g/equinor/flownet/alerts/"><img alt="Total alerts" src="https://img.shields.io/lgtm/alerts/g/equinor/flownet.svg?logo=lgtm&logoWidth=18"/></a>
-<a href="https://lgtm.com/projects/g/equinor/flownet/context:python"><img src="https://img.shields.io/lgtm/grade/python/g/equinor/flownet.svg?logo=lgtm&logoWidth=18"></a>
-</p>
-<br/>
+[![pypi](https://badge.fury.io/py/flownet.svg)](https://badge.fury.io/py/flownet)
+[![build status](https://img.shields.io/github/workflow/status/equinor/flownet/CI)](https://github.com/equinor/flownet/actions?query=workflow%3ACI)
+[![supported python versions](https://img.shields.io/badge/python-3.6%20|%203.7-blue.svg)](https://www.python.org/)
+[![black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![lgtm](https://img.shields.io/lgtm/alerts/g/equinor/flownet.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/equinor/flownet/alerts/)
+[![code quality](https://img.shields.io/lgtm/grade/python/g/equinor/flownet.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/equinor/flownet/context:python)
 
 _FlowNet_ aims at solving the following problems:
 
@@ -21,9 +16,7 @@ _FlowNet_ aims at solving the following problems:
 * Assure model predictiveness
 * Use the models to efficiently optimize and make decisions
 
-<p align="left">
-  <img width="512" src="https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_model.svg">
-</p>
+![FlowNet Model](https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_model.svg)
 
 For documentation, see [the GitHub pages](https://equinor.github.io/flownet/) for this repository.
 
