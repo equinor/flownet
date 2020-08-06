@@ -211,7 +211,7 @@ def run_flownet_history_matching(
     relperm_dict = {
         key: value
         for key, value in config.model_parameters.relative_permeability._asdict().items()
-        if value is not None
+        if any(value) is True
     }
 
     relperm_parameters = {
