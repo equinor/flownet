@@ -453,7 +453,7 @@ def create_connections(
     aquifer_ends: List[Coordinate] = []
 
     aquifer_config = configuration.model_parameters.aquifer
-    if aquifer_config is not None:
+    if all(aquifer_config[0:3]) and all(aquifer_config.size_in_bulkvolumes):
         scheme = aquifer_config.scheme
         fraction = aquifer_config.fraction
         delta_depth = aquifer_config.delta_depth
