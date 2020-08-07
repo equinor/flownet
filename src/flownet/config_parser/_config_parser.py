@@ -481,20 +481,22 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         )
 
     if all(x in [y.lower() for y in config.flownet.phases] for x in ["oil", "water"]):
-        for elem in [
-            "scheme",
-            "swirr",
-            "swl",
-            "swcr",
-            "sorw",
-            "nw",
-            "now",
-            "krwend",
-            "krowend",
-        ]:
-            req_relp_parameters.append(
-                elem
-            ) if elem not in req_relp_parameters else req_relp_parameters
+        req_relp_parameters = list(
+            set().union(
+                [
+                    "scheme",
+                    "swirr",
+                    "swl",
+                    "swcr",
+                    "sorw",
+                    "nw",
+                    "now",
+                    "krwend",
+                    "krowend",
+                ],
+                req_relp_parameters,
+            )
+        )
         if (
             config.model_parameters.equil.owc_depth.min is None
             or config.model_parameters.equil.owc_depth.max is None
@@ -505,20 +507,22 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 "OWC not properly specified.\n" "Min or max missing, or max < min."
             )
     if all(x in [y.lower() for y in config.flownet.phases] for x in ["oil", "gas"]):
-        for elem in [
-            "scheme",
-            "swirr",
-            "swl",
-            "sorg",
-            "sgcr",
-            "ng",
-            "nog",
-            "krgend",
-            "krogend",
-        ]:
-            req_relp_parameters.append(
-                elem
-            ) if elem not in req_relp_parameters else req_relp_parameters
+        req_relp_parameters = list(
+            set().union(
+                [
+                    "scheme",
+                    "swirr",
+                    "swl",
+                    "sgcr",
+                    "sorg",
+                    "ng",
+                    "nog",
+                    "krgend",
+                    "krogend",
+                ],
+                req_relp_parameters,
+            )
+        )
         if (
             config.model_parameters.equil.goc_depth.min is None
             or config.model_parameters.equil.goc_depth.max is None
