@@ -209,9 +209,9 @@ def run_flownet_history_matching(
     )
 
     relperm_dict = {
-        key: value
-        for key, value in config.model_parameters.relative_permeability._asdict().items()
-        if value is not None
+        key: values
+        for key, values in config.model_parameters.relative_permeability._asdict().items()
+        if not all(value is None for value in values)
     }
 
     relperm_parameters = {
@@ -352,7 +352,7 @@ def run_flownet_history_matching(
     parameters = [
         PorvPoroTrans(porv_poro_trans_dist_values, ti2ci, network),
         RelativePermeability(
-            relperm_dist_values, ti2ci, df_satnum, fast_pyscal=fast_pyscal
+            relperm_dist_values, ti2ci, df_satnum, config.flownet.phases, fast_pyscal=fast_pyscal
         ),
         Equilibration(
             equil_dist_values,

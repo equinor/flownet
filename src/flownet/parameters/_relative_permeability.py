@@ -134,6 +134,7 @@ class RelativePermeability(Parameter):
         distribution_values: pd.DataFrame,
         ti2ci: pd.DataFrame,
         satnum: pd.DataFrame,
+        phases: List,
         fast_pyscal: bool = False,
     ):
         self._ti2ci: pd.DataFrame = ti2ci
@@ -151,6 +152,7 @@ class RelativePermeability(Parameter):
         )
         self._satnum: pd.DataFrame = satnum
         self._swof, self._sgof = self._check_parameters()
+        self._phases = phases
         self._fast_pyscal: bool = fast_pyscal
 
     def _check_parameters(self) -> Tuple[bool, bool]:
@@ -168,6 +170,8 @@ class RelativePermeability(Parameter):
             raise AssertionError(
                 "Please specify the correct number of relative permeability "
                 "parameters to model SWOF and/or SGOF. (8 or 14 parameters)\n"
+                "Required parameters for SWOF generation: swirr, swl, swcr, sorw, nw, now, krwend, krowend\n"
+                "Required parameters for SGOF generation: swirr, swl, sgcr, sorg, ng, nog, kroend, krogend\n"
                 "See the documentation for more information."
             )
 
@@ -284,12 +288,7 @@ class RelativePermeability(Parameter):
         str_props_section = f"SWOF\n{str_swofs}\n" if self._swof else ""
         str_props_section += f"SGOF\n{str_sgofs}\n" if self._sgof else ""
 
-        if self._swof and self._sgof:
-            str_runspec_section = "OIL\nWATER\nGAS\nDISGAS\nVAPOIL\n"
-        elif self._swof:
-            str_runspec_section = "OIL\nWATER\n"
-        elif self._sgof:
-            str_runspec_section = "OIL\nGAS\n"
+        str_runspec_section = "\n".join(self._phases).upper()+"\n"
 
         return {
             "RUNSPEC": str_runspec_section,
