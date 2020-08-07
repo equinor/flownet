@@ -356,7 +356,11 @@ def run_flownet_history_matching(
     parameters = [
         PorvPoroTrans(porv_poro_trans_dist_values, ti2ci, network),
         RelativePermeability(
-            relperm_dist_values, ti2ci, df_satnum, config.flownet.phases, fast_pyscal=fast_pyscal
+            relperm_dist_values,
+            ti2ci,
+            df_satnum,
+            config.flownet.phases,
+            fast_pyscal=fast_pyscal,
         ),
         Equilibration(
             equil_dist_values,

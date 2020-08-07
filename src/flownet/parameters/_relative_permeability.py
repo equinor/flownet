@@ -288,7 +288,7 @@ class RelativePermeability(Parameter):
         str_props_section = f"SWOF\n{str_swofs}\n" if self._swof else ""
         str_props_section += f"SGOF\n{str_sgofs}\n" if self._sgof else ""
 
-        str_runspec_section = "\n".join(self._phases).upper()+"\n"
+        str_runspec_section = "\n".join(self._phases).upper() + "\n"
 
         return {
             "RUNSPEC": str_runspec_section,

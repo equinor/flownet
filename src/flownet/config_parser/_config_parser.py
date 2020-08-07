@@ -471,42 +471,71 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 f"The {phase} phase is not a valid phase\n"
                 f"The valid phases are 'oil', 'gas', 'water', 'disgas' and 'vapoil'"
             )
-    if any(x in [y.lower() for y in config.flownet.phases] for x in ["vapoil", "disgas"]) \
-            and not all(x in [y.lower() for y in config.flownet.phases] for x in ["oil", "gas"]):
+    if any(
+        x in [y.lower() for y in config.flownet.phases] for x in ["vapoil", "disgas"]
+    ) and not all(
+        x in [y.lower() for y in config.flownet.phases] for x in ["oil", "gas"]
+    ):
         raise ValueError(
             "The phases 'vapoil' and 'disgas' can not be defined without the phases 'oil' and 'gas'"
         )
 
     if all(x in [y.lower() for y in config.flownet.phases] for x in ["oil", "water"]):
-        for elem in ["scheme", "swirr", "swl", "swcr", "sorw", "nw", "now", "krwend", "krowend"]:
-            req_relp_parameters.append(elem) if elem not in req_relp_parameters else req_relp_parameters
+        for elem in [
+            "scheme",
+            "swirr",
+            "swl",
+            "swcr",
+            "sorw",
+            "nw",
+            "now",
+            "krwend",
+            "krowend",
+        ]:
+            req_relp_parameters.append(
+                elem
+            ) if elem not in req_relp_parameters else req_relp_parameters
         if (
             config.model_parameters.equil.owc_depth.min is None
             or config.model_parameters.equil.owc_depth.max is None
-            or config.model_parameters.equil.owc_depth.max < config.model_parameters.equil.owc_depth.min
+            or config.model_parameters.equil.owc_depth.max
+            < config.model_parameters.equil.owc_depth.min
         ):
             raise ValueError(
-                "OWC not properly specified.\n"
-                "Min or max missing, or max < min."
+                "OWC not properly specified.\n" "Min or max missing, or max < min."
             )
     if all(x in [y.lower() for y in config.flownet.phases] for x in ["oil", "gas"]):
-        for elem in ["scheme", "swirr", "swl", "sorg", "sgcr", "ng", "nog", "krgend", "krogend"]:
-            req_relp_parameters.append(elem) if elem not in req_relp_parameters else req_relp_parameters
+        for elem in [
+            "scheme",
+            "swirr",
+            "swl",
+            "sorg",
+            "sgcr",
+            "ng",
+            "nog",
+            "krgend",
+            "krogend",
+        ]:
+            req_relp_parameters.append(
+                elem
+            ) if elem not in req_relp_parameters else req_relp_parameters
         if (
-                config.model_parameters.equil.goc_depth.min is None
-                or config.model_parameters.equil.goc_depth.max is None
-                or config.model_parameters.equil.goc_depth.max < config.model_parameters.equil.goc_depth.min
+            config.model_parameters.equil.goc_depth.min is None
+            or config.model_parameters.equil.goc_depth.max is None
+            or config.model_parameters.equil.goc_depth.max
+            < config.model_parameters.equil.goc_depth.min
         ):
             raise ValueError(
-                "GOC not properly specified.\n"
-                "Min or max missing, or max < min."
+                "GOC not properly specified.\n" "Min or max missing, or max < min."
             )
 
     for parameter in req_relp_parameters:
         if parameter == "scheme":
             if (
-                getattr(config.model_parameters.relative_permeability, parameter) != "global"
-                and getattr(config.model_parameters.relative_permeability, parameter) != "individual"
+                getattr(config.model_parameters.relative_permeability, parameter)
+                != "global"
+                and getattr(config.model_parameters.relative_permeability, parameter)
+                != "individual"
             ):
                 raise ValueError(
                     f"The relative permeability scheme "
@@ -515,8 +544,10 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 )
         else:
             if (
-                getattr(config.model_parameters.relative_permeability, parameter).min is None
-                or getattr(config.model_parameters.relative_permeability, parameter).max is None
+                getattr(config.model_parameters.relative_permeability, parameter).min
+                is None
+                or getattr(config.model_parameters.relative_permeability, parameter).max
+                is None
             ):
                 raise ValueError(
                     f"Water/Oil system. The {parameter} parameter is missing or not properly defined."
@@ -529,10 +560,14 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                     f"The {parameter} setting 'max' is higher than the 'min'"
                 )
 
-    for parameter in (set(config.model_parameters.relative_permeability._fields) - set(req_relp_parameters)):
+    for parameter in set(config.model_parameters.relative_permeability._fields) - set(
+        req_relp_parameters
+    ):
         if (
-            getattr(config.model_parameters.relative_permeability, parameter).min is not None
-            and getattr(config.model_parameters.relative_permeability, parameter).max is not None
+            getattr(config.model_parameters.relative_permeability, parameter).min
+            is not None
+            and getattr(config.model_parameters.relative_permeability, parameter).max
+            is not None
         ):
             raise ValueError(
                 f"Water/Oil system. The {parameter} parameter should not be specified."
