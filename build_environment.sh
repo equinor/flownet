@@ -25,16 +25,6 @@ fi
 INSTALL_ENV=`readlink -f $1`
 FLOW_PATH=`readlink -f $2`
 
-####################
-# UNPACK TEST DATA #
-####################
-
-tar -zxvf tests/data/norne.tar.gz -C tests/data/
-
-############################
-# INSTALL apt-get PACKAGES #
-############################
-
 if [[ ! -d "$INSTALL_ENV" ]]; then
     echo "Folder $INSTALL_ENV does not exist."
     echo "Building a virtual environment at $INSTALL_ENV"

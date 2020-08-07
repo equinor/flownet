@@ -25,7 +25,7 @@ def _run_ert(output_folder: pathlib.Path) -> None:
 
     """
     subprocess.run(
-        f"ert ensemble_experiment pred_config.ert",
+        "ert ensemble_experiment pred_config.ert",
         cwd=output_folder,
         shell=True,
         check=True,
