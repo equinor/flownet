@@ -463,7 +463,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
 
     config = suite.snapshot
 
-    req_relp_parameters = []
+    req_relp_parameters: List=[]
 
     for phase in config.flownet.phases:
         if phase.lower() not in ["oil", "gas", "water", "disgas", "vapoil"]:
