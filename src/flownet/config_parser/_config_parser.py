@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import Dict, Optional, List, Set
+from typing import Dict, Optional, List
 
 import yaml
 import configsuite
