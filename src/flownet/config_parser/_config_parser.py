@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Set
 
 import yaml
 import configsuite
@@ -463,7 +463,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
 
     config = suite.snapshot
 
-    req_relp_parameters: List[str] = list()
+    req_relp_parameters: List[str] = []
 
     for phase in config.flownet.phases:
         if phase.lower() not in ["oil", "gas", "water", "disgas", "vapoil"]:
@@ -481,22 +481,19 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         )
 
     if all(x in [y.lower() for y in config.flownet.phases] for x in ["oil", "water"]):
-        req_relp_parameters = list(
-            set().union(
-                [
-                    "scheme",
-                    "swirr",
-                    "swl",
-                    "swcr",
-                    "sorw",
-                    "nw",
-                    "now",
-                    "krwend",
-                    "krowend",
-                ],
-                req_relp_parameters,
-            )
-        )
+        for elem in [
+            "scheme",
+            "swirr",
+            "swl",
+            "swcr",
+            "sorw",
+            "nw",
+            "now",
+            "krwend",
+            "krowend",
+        ]:
+            if elem not in req_relp_parameters:
+                req_relp_parameters.append(elem)
         if (
             config.model_parameters.equil.owc_depth.min is None
             or config.model_parameters.equil.owc_depth.max is None
@@ -507,22 +504,19 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 "OWC not properly specified.\n" "Min or max missing, or max < min."
             )
     if all(x in [y.lower() for y in config.flownet.phases] for x in ["oil", "gas"]):
-        req_relp_parameters = list(
-            set().union(
-                [
-                    "scheme",
-                    "swirr",
-                    "swl",
-                    "sgcr",
-                    "sorg",
-                    "ng",
-                    "nog",
-                    "krgend",
-                    "krogend",
-                ],
-                req_relp_parameters,
-            )
-        )
+        for elem in [
+            "scheme",
+            "swirr",
+            "swl",
+            "sgcr",
+            "sorg",
+            "ng",
+            "nog",
+            "krgend",
+            "krogend",
+        ]:
+            if elem not in req_relp_parameters:
+                req_relp_parameters.append(elem)
         if (
             config.model_parameters.equil.goc_depth.min is None
             or config.model_parameters.equil.goc_depth.max is None
