@@ -1,5 +1,5 @@
 ==========================
-The Egg model example
+The Egg model case
 ==========================
 
 The "Egg Model" is a synthetic reservoir model.
