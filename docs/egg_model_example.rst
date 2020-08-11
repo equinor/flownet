@@ -14,7 +14,7 @@ Simulations settup pre-processing
 =================================
 
 1. All vertical wells in the egg model has the same depth. This creates degenerates 3D triangles in the triangulation algorithim used to generate the flow network.
-This can be solved by changing the depth of he wells in COMPAT section of the egg model simulaiton fila: `Egg_Model_ECL.DATA`. 
+This can be solved by changing the depth of the wells in COMPAT section of the egg model simulation file: `Egg_Model_ECL.DATA`. 
 
 ::
 
@@ -98,11 +98,29 @@ This can be solved by changing the depth of he wells in COMPAT section of the eg
     
     
     
-The configuration files follows the `YAML standard <https://yaml.org/>`_.
+
 
 Assisted history matching example
 =================================
 
+The configuration files follows the `YAML standard <https://yaml.org/>`_.
+
 .. literalinclude:: ../examples/egg_parameters.yml
    :language: yaml
    :linenos:
+   
+   
+To run the assisted history matching in flownet type:
+   ``$ flowet ahm /config_file_directory/egg_parameters_Wouter.yml  output_directory``
+   
+   
+
+Webiz visualization
+===================
+
+    ``$ python output_directory/generated_app/webviz_app.py``
+
+
+.. image:: ./_static/webiz_results_egg_model.png
+   
+   
