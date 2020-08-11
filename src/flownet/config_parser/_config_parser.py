@@ -548,7 +548,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 is None
             ):
                 raise ValueError(
-                    f"Water/Oil system. The {parameter} parameter is missing or not properly defined."
+                    f"The {parameter} parameter is missing or not properly defined."
                 )
             if (
                 getattr(config.model_parameters.relative_permeability, parameter).max
@@ -568,7 +568,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             is not None
         ):
             raise ValueError(
-                f"Water/Oil system. The {parameter} parameter should not be specified."
+                f"The {parameter} parameter should not be specified."
             )
 
     if config.ert.queue.system.upper() != "LOCAL" and (
