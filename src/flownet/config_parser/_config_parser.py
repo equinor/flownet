@@ -567,9 +567,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             and getattr(config.model_parameters.relative_permeability, parameter).max
             is not None
         ):
-            raise ValueError(
-                f"The {parameter} parameter should not be specified."
-            )
+            raise ValueError(f"The {parameter} parameter should not be specified.")
 
     if config.ert.queue.system.upper() != "LOCAL" and (
         config.ert.queue.name is None or config.ert.queue.server is None
