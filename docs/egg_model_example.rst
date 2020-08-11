@@ -10,10 +10,10 @@ Data files
 - `The Egg Model - data files <https://data.4tu.nl/articles/The_Egg_Model_-_data_files/12707642>`_
 
 
-Simulations settup pre-processing
+Simulations setup pre-processing
 =================================
 
-1. All vertical wells in the egg model has the same depth. This creates degenerates 3D triangles in the triangulation algorithim used to generate the flow network.
+1. All vertical wells in the egg model have the same depth. This creates degenerates 3D triangles in the triangulation algorithm used to generate the flow network.
 This can be solved by changing the depth of the wells in COMPAT section of the egg model simulation file: `Egg_Model_ECL.DATA`. 
 
 ::
@@ -35,7 +35,7 @@ This can be solved by changing the depth of the wells in COMPAT section of the e
         
         
 
-2. The section PROPS should be save as a indepedend file call PROPS.inc.
+2. The section PROPS should be saved as a indepedent file with file-name `PROPS.inc`.
 
 ::
 
@@ -47,7 +47,7 @@ This can be solved by changing the depth of the wells in COMPAT section of the e
                 400          1 1.000E-05        1        0/
 
                 
-3. Output variables of interest must be specify in this regards we add in the SUMMARY section
+3. Output variables of interest must be specified. For instance, we add in the SUMMARY section the following
 
 ::
 
@@ -92,7 +92,7 @@ This can be solved by changing the depth of the wells in COMPAT section of the e
             /
 
 
-4. Then you can run OPM FLOW to update
+4. Then you can run OPM FLOW to update output files that flownet requires
 
     ``$ flow Egg_Model_ECL.DATA``
     
@@ -103,7 +103,7 @@ This can be solved by changing the depth of the wells in COMPAT section of the e
 Assisted history matching example
 =================================
 
-The configuration files follows the `YAML standard <https://yaml.org/>`_.
+The configuration files follow the `YAML standard <https://yaml.org/>`_.
 
 .. literalinclude:: ../examples/egg_parameters.yml
    :language: yaml
