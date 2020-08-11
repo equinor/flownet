@@ -552,7 +552,9 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             "'scheme', 'fraction', 'delta_depth' and a 'size_in_bulkvolumes' distribution ('min', 'max', 'logunif')."
             "Currently one or more parameters are missing."
         )
-    if not all(config.model_parameters.aquifer.size_in_bulkvolumes):
+    if all(config.model_parameters.aquifer[0:3]) and not all(
+        config.model_parameters.aquifer.size_in_bulkvolumes
+    ):
         raise ValueError(
             "Ambiguous configuration input: 'size_in_bulkvolumes' in 'aquifer' needs to be defined using "
             "'min', 'max' and 'log_unif'. Currently one or more parameters are missing."

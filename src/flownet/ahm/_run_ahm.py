@@ -211,7 +211,7 @@ def run_flownet_history_matching(
     relperm_dict = {
         key: value
         for key, value in config.model_parameters.relative_permeability._asdict().items()
-        if value is not None
+        if any(value) is True
     }
 
     relperm_parameters = {
@@ -384,7 +384,7 @@ def run_flownet_history_matching(
             Aquifer(aquifer_dist_values, network, scheme=aquifer_config.scheme)
         )
 
-    if config.model_parameters.fault_mult:
+    if isinstance(network.faults, dict):
         parameters.append(FaultTransmissibility(fault_mult_dist_values, network))
 
     ahm = AssistedHistoryMatching(
