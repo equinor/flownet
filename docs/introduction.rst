@@ -80,7 +80,7 @@ The core developers of FlowNet are currently testing on the following open bench
 
  - `Norne model <https://github.com/OPM/opm-data/tree/master/norne>`_
  - `Brugge model <https://www.isapp2.com/data-sharepoint/brugge-data-set.html>`_ (soon to be available on GitHub)
- - `Egg model <https://data.4tu.nl/repository/uuid:916c86cd-3558-4672-829a-105c62985ab2>`_
+ - `Egg model <https://data.4tu.nl/articles/The_Egg_Model_-_data_files/12707642>`_
 
 A small Norne assisted history matching example using FlowNet is automatically started
 on each commit to FlowNet pull requests, in order verify the code changes.
