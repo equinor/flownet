@@ -605,12 +605,11 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             )
 
     for suffix in [".DATA", ".EGRID", ".UNRST", ".UNSMRY", ".SMSPEC"]:
-        if (
-            not pathlib.Path(config.flownet.data_source.input_case)
-            .with_suffix(suffix)
-            .is_file()
-        ):
-            raise ValueError(f"The input case {suffix} file does not exist")
+        input_file = pathlib.Path(config.flownet.data_source.input_case).with_suffix(
+            suffix
+        )
+        if not input_file.is_file():
+            raise ValueError(f"The file {input_file} does not exist")
 
     if config.flownet.training_set_end_date and config.flownet.training_set_fraction:
         raise ValueError(
