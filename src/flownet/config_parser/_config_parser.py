@@ -501,7 +501,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             < config.model_parameters.equil.owc_depth.min
         ):
             raise ValueError(
-                "OWC not properly specified.\n" "Min or max missing, or max < min."
+                "Ambiguous configuration input: OWC not properly specified. Min or max missing, or max < min."
             )
     if all(x in [y.lower() for y in config.flownet.phases] for x in ["oil", "gas"]):
         for elem in [
@@ -524,7 +524,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             < config.model_parameters.equil.goc_depth.min
         ):
             raise ValueError(
-                "GOC not properly specified.\n" "Min or max missing, or max < min."
+                "Ambiguous configuration input: GOC not properly specified. Min or max missing, or max < min."
             )
 
     for parameter in req_relp_parameters:
@@ -548,14 +548,14 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 is None
             ):
                 raise ValueError(
-                    f"The {parameter} parameter is missing or not properly defined."
+                    f"Ambiguous configuration input: The {parameter} parameter is missing or not properly defined."
                 )
             if (
                 getattr(config.model_parameters.relative_permeability, parameter).max
                 < getattr(config.model_parameters.relative_permeability, parameter).min
             ):
                 raise ValueError(
-                    f"The {parameter} setting 'max' is higher than the 'min'"
+                    f"Ambiguous configuration input: The {parameter} setting 'max' is higher than the 'min'"
                 )
 
     for parameter in set(config.model_parameters.relative_permeability._fields) - set(
