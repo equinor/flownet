@@ -10,7 +10,7 @@ FlowNet documentation
    introduction
    configuration_file
    api
-   egg_model_example
+   examples
 
 Indices and tables
 ==================
