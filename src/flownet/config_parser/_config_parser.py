@@ -64,6 +64,7 @@ def create_schema(_to_abs_path) -> Dict:
                     },
                     "fast_pyscal": {MK.Type: types.Bool, MK.Default: True},
                     "fault_tolerance": {MK.Type: types.Number, MK.Default: 1.0e-5},
+                    "cloud_engine": {MK.Type: types.String, MK.AllowNone: True},
                 },
             },
             "ert": {

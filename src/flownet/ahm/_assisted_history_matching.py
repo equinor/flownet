@@ -12,6 +12,8 @@ from typing import List, Dict, Optional, Tuple
 import jinja2
 import numpy as np
 import pandas as pd
+import requests
+from configsuite import ConfigSuite
 
 from ..ert import create_ert_setup
 from ..realization import Schedule
@@ -39,7 +41,7 @@ class AssistedHistoryMatching:
         schedule: Schedule,
         parameters: List[Parameter],
         case_name: str,
-        ert_config: Dict,
+        config: Dict,
         random_seed: Optional[int] = None,
     ):
         """
@@ -50,15 +52,14 @@ class AssistedHistoryMatching:
             schedule: Schedule instance
             parameters: List of Parameter objects
             case_name: Name of simulation case
-            ert_config: Dictionary containing information about queue (system, name, server and max_running)
-                and realizations (num_realizations, required_success_percent and max_runtime)
+            config: FlowNet config
             random_seed: Random seed to control reproducibility of FlowNet
 
         """
         self._network: NetworkModel = network
         self._schedule: Schedule = schedule
         self._parameters: List[Parameter] = parameters
-        self._ert_config: dict = ert_config
+        self._config: ConfigSuite.snapshot = config
         self._case_name: str = case_name
         self._random_seed: Optional[int] = random_seed
 
@@ -82,7 +83,7 @@ class AssistedHistoryMatching:
             args,
             self._network,
             self._schedule,
-            ert_config=self._ert_config,
+            config=self._config,
             parameters=self._parameters,
             random_seed=self._random_seed,
             training_set_fraction=training_set_fraction,
@@ -115,7 +116,7 @@ class AssistedHistoryMatching:
                     {
                         "output_folder": self.output_folder,
                         "iterations": range(len(weights) + 1),
-                        "runpath": self._ert_config["runpath"],
+                        "runpath": self._config.ert.runpath,
                     }
                 )
             )
@@ -134,7 +135,7 @@ class AssistedHistoryMatching:
             error_files = glob.glob(
                 str(
                     self.output_folder
-                    / self._ert_config["runpath"].replace("%d", "*")
+                    / self._config.ert.runpath.replace("%d", "*")
                     / "ERROR"
                 )
             )
@@ -157,7 +158,7 @@ class AssistedHistoryMatching:
             f"Number of observations: {self._schedule.get_nr_observations(self._training_set_fraction):>20}"
         )
         print(
-            f"Number of realizations: {self._ert_config['realizations'].num_realizations:>20}"
+            f"Number of realizations: {self._config.ert.realizations.num_realizations:>20}"
         )
 
         distributions = {
@@ -279,4 +280,42 @@ def save_iteration_parameters():
         f"parameters_iteration-{iteration}.parquet.gzip",
         "parameters_iteration-latest.parquet.gzip",
     )
+    print("[Done]")
+
+
+def run_via_cloud_engine():
+    """
+    This function can be called to outsource forward models to a cloud compute engine.
+
+    Returns:
+        Nothing
+    """
+    parser = argparse.ArgumentParser(
+        prog=("Run FlowNet forward models via a cloud engine.")
+    )
+    parser.add_argument("cloud_api_url", type=str, help="Path to the ERT runpath.")
+    parser.add_argument(
+        "ecl_base", type=str, help="Base name of the simulation DATA file."
+    )
+    args = parser.parse_args()
+
+    print("Running forward models on the cloud...", end=" ", flush=True)
+
+    # Pack Results
+    simulation_runpath = str(pathlib.Path(args.ecl_base + ".DATA").parents[0])
+    subprocess.check_output(["tar", "-czvf", "model.tar.gz", simulation_runpath])
+
+    # Send request
+    files = {"upload_file": open("model.tar.gz", "rb")}
+    values = {"ecl_base": args.ecl_base}
+    response = requests.post(args.cloud_api_url, data=values, files=files)
+
+    # Unpack results
+    open("result.tar.gz", "wb").write(response.content)
+    subprocess.check_output(["tar", "-xzf", "result.tar.gz", "-C", simulation_runpath])
+
+    # Remove tar.gz's
+    pathlib.Path("model.tar.gz").unlink()
+    pathlib.Path("result.tar.gz").unlink()
+
     print("[Done]")

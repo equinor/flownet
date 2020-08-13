@@ -91,7 +91,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     args: argparse.Namespace,
     network,
     schedule: Schedule,
-    ert_config: dict,
+    config,
     parameters=None,
     random_seed=None,
     training_set_fraction: float = 1,
@@ -101,9 +101,14 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         Create a ready-to-go ERT setup in output_folder.
 
         Args:
-            schedule: FlowNet Schedule instance to create ERT setup from
             args: Arguments given to FlowNet at execution
+            network:
+            schedule: FlowNet Schedule instance to create ERT setup from
+            config: FlowNet configuration
+            parameters:
+            random_seed:
             training_set_fraction: Fraction of observations to be used for model training (default = 1)
+            prediction_setup:
 
         Returns:
             Nothing
@@ -141,10 +146,10 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                     "pickled_parameters": output_folder.resolve()
                     / "parameters.pickled",
                     "random_seed": random_seed,
-                    "ert_config": ert_config,
+                    "config": config,
                     "debug": args.debug if hasattr(args, "debug") else False,
                     "pred_schedule_file": getattr(
-                        ert_config, "pred_schedule_file", None
+                        config.ert, "pred_schedule_file", None
                     ),
                 }
             )
@@ -161,6 +166,11 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     )
 
     shutil.copyfile(
+        _MODULE_FOLDER / ".." / "static" / "RUN_VIA_CLOUD_ENGINE",
+        output_folder / "RUN_VIA_CLOUD_ENGINE",
+    )
+
+    shutil.copyfile(
         _MODULE_FOLDER / ".." / "static" / "SAVE_ITERATION_PARAMETERS_WORKFLOW",
         output_folder / "SAVE_ITERATION_PARAMETERS_WORKFLOW",
     )
@@ -171,9 +181,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     )
 
     static_path = (
-        getattr(ert_config, "static_include_files")
-        if hasattr(ert_config, "static_include_files")
-        else ert_config["static_include_files"]
+        getattr(config.ert, "static_include_files")
+        if hasattr(config.ert, "static_include_files")
+        else config.ert["static_include_files"]
     )
 
     shutil.copyfile(

@@ -58,6 +58,7 @@ setup(
             "flownet_delete_simulation_output=flownet.ahm:delete_simulation_output",
             "flownet_save_iteration_parameters=flownet.ahm:save_iteration_parameters",
             "flownet_save_iteration_analytics=flownet.ahm:save_iteration_analytics",
+            "flownet_run_via_cloud_engine=flownet.ahm:run_via_cloud_engine",
         ]
     },
     zip_safe=False,

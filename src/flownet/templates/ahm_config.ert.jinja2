@@ -3,15 +3,15 @@
 INSTALL_JOB DELETE_IN_CURRENT_ITERATION ./DELETE_IN_CURRENT_ITERATION
 
 REFCASE <CONFIG_PATH>/SYNTHETIC_REFCASE
-DEFINE <RUN_PATH> {{ ert_config.runpath }}
-DEFINE <ECL_BASE> {{ ert_config.eclbase }}
+DEFINE <RUN_PATH> {{ config.ert.runpath }}
+DEFINE <ECL_BASE> {{ config.ert.eclbase }}
 DEFINE <RANDOM_SAMPLES> ./parameters.json
-DEFINE <YAML_OBS> {{ ert_config.yamlobs }}
-DEFINE <ANALYSIS_METRIC> {{ ert_config.analysis.metric }}
-DEFINE <ANALYSIS_QUANTITY> {{ ert_config.analysis.quantity }}
-DEFINE <ANALYSIS_START> {{ ert_config.analysis.start }}
-DEFINE <ANALYSIS_END> {{ ert_config.analysis.end }}
-DEFINE <ANALYSIS_OUTFILE> {{ ert_config.analysis.outfile }}
+DEFINE <YAML_OBS> {{ config.ert.yamlobs }}
+DEFINE <ANALYSIS_METRIC> {{ config.ert.analysis.metric }}
+DEFINE <ANALYSIS_QUANTITY> {{ config.ert.analysis.quantity }}
+DEFINE <ANALYSIS_START> {{ config.ert.analysis.start }}
+DEFINE <ANALYSIS_END> {{ config.ert.analysis.end }}
+DEFINE <ANALYSIS_OUTFILE> {{ config.ert.analysis.outfile }}
 
 INSTALL_JOB CREATE_FLOWNET_MODEL ./CREATE_FLOWNET_MODEL
 {%- if not debug: %}

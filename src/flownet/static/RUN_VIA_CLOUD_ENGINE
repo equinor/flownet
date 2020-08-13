@@ -1,0 +1,5 @@
+STDERR    RUN_VIA_CLOUD_ENGINE.stderr
+STDOUT    RUN_VIA_CLOUD_ENGINE.stdout
+
+PORTABLE_EXE  flownet_run_via_cloud_engine
+ARGLIST       <CLOUD_API_URL> <ECL_BASE>

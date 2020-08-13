@@ -392,7 +392,7 @@ def run_flownet_history_matching(
         schedule,
         parameters,
         case_name=config.name,
-        ert_config=config.ert._asdict(),
+        config=config,
         random_seed=config.flownet.random_seed,
     )
 
