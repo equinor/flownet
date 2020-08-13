@@ -100,7 +100,9 @@ We have modified the Egg model input file `Egg_Model_ECL.DATA` in order to follo
 
 4. Then you can run OPM FLOW to update input files to FlowNet
 
-    ``$ flow Egg_Model_ECL.DATA``
+.. code-block:: bash
+
+    flow /egg_model/input_file/Egg_Model_ECL.DATA
     
     
     
@@ -116,15 +118,21 @@ The configuration files follow the `YAML standard <https://yaml.org/>`_.
    :linenos:
    
    
-To run the assisted history matching in flownet type:
-   ``$ flowet ahm /config_file_directory/egg_parameters.yml  output_directory``
+To run the assisted history matching in flownet:
+
+
+.. code-block:: bash
+
+   flowet ahm /config_file_directory/egg_parameters.yml  output_directory
    
    
 
 Webiz visualization
 ===================
 
-    ``$ python output_directory/generated_app/webviz_app.py``
+.. code-block:: bash
+
+    python output_directory/generated_app/webviz_app.py
 
 
 .. image:: ./_static/webviz_results_egg_model.png
