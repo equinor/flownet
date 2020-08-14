@@ -117,7 +117,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     os.makedirs(output_folder, exist_ok=True)
 
     # Derive absolute path to reference simulation case
-    reference_simulation = pathlib.Path(reference_simulation).resolve()
+    if reference_simulation:
+        reference_simulation = pathlib.Path(reference_simulation).resolve()
 
     if prediction_setup:
         ert_config_file = output_folder / "pred_config.ert"
