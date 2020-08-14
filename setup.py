@@ -4,15 +4,15 @@ with open("README.md", "r") as fh:
     LONG_DESCRIPTION = fh.read()
 
 REQUIREMENTS = [
-    "configsuite~=0.5.3",
+    "configsuite>=0.6",
     "cwrap>=1.6",
     "ecl2df>=0.5",
     "fmu-ensemble>=1.2",
-    "jinja2~=2.10",
+    "jinja2>=2.10",
     "matplotlib>=3.1",
     "numpy>=1.17",
     "opm>=2020.10",
-    "pandas~=0.25",
+    "pandas~=1.0",
     "pyarrow>=0.14",
     "pyscal>=0.4.1",
     "pyvista>=0.23",
@@ -40,6 +40,7 @@ setup(
     install_requires=REQUIREMENTS,
     tests_require=TEST_REQUIRES,
     setup_requires=["setuptools_scm~=3.2"],
+    python_requires="~=3.6",
     extras_require={"tests": TEST_REQUIRES},
     description="Simplified training of reservoir simulation models",
     long_description=LONG_DESCRIPTION,

@@ -157,17 +157,23 @@ class NetworkModel:
 
         df_concat = (
             df_concat.apply(
-                lambda x: np.rint((x - minx) * 1000 / (maxx - minx))
+                lambda x: np.rint(
+                    np.array((x - minx) * 1000 / (maxx - minx), dtype=np.float)
+                )
                 if x.name in ["x"]
                 else x
             )
             .apply(
-                lambda y: np.rint((y - miny) * 1000 / (maxy - miny))
+                lambda y: np.rint(
+                    np.array((y - miny) * 1000 / (maxy - miny), dtype=np.float)
+                )
                 if y.name in ["y"]
                 else y
             )
             .apply(
-                lambda z: np.rint((z - minz) * 1000 / (maxz - minz))
+                lambda z: np.rint(
+                    np.array((z - minz) * 1000 / (maxz - minz), dtype=np.float)
+                )
                 if z.name in ["z"]
                 else z
             )

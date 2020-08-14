@@ -174,7 +174,7 @@ class AssistedHistoryMatching:
             for distribution in parameter.random_variables
         }
 
-        print(f"Unique parameter distributions:")
+        print("Unique parameter distributions:")
         print("\nDistribution             Minimum             Mean              Max")
         print("------------------------------------------------------------------")
 

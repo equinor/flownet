@@ -1,8 +1,8 @@
 <p align="center">
-  <img height="150" src="https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_logo.png">
+  <img height="175" src="https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_logo.svg">
 </p>
 
-<h2 align="center">Simplified training of reservoir simulation models</h2>
+<h2 align="center">FlowNet: Data-Driven Reservoir Predictions</h2>
 
 <p align="center">
 <a href="https://badge.fury.io/py/flownet"><img src="https://badge.fury.io/py/flownet.svg"></a>
@@ -20,6 +20,10 @@ _FlowNet_ aims at solving the following problems:
 * Train the model
 * Assure model predictiveness
 * Use the models to efficiently optimize and make decisions
+
+<p align="center">
+  <img height="150" src="https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_model.svg">
+</p>
 
 For documentation, see [the GitHub pages](https://equinor.github.io/flownet/) for this repository.
 
@@ -109,15 +113,14 @@ configuration file (`.cshrc` or `.bashrc`) to automatically source your
 virtual environment.
 > 
 
-### Install OPM-data (optional)
+### OPM-data (optional)
 
 To be able to run examples that are dependent on the Norne field simulation,
-you need to download the [OPM-data](https://github.com/OPM/opm-data) repository.
-The preferred installation location is in the home directory, e.g. `~/opm-data`:
+you need to extract the [OPM-data](https://github.com/OPM/opm-data).
+For convenience, a pre-simulated case is included in the FlowNet test dataset.
 
 ```bash
-cd
-git clone https://github.com/OPM/opm-data.git
+tar -zxvf tests/data/norne.tar.gz -C tests/data/
 ```
 
 ### Running FlowNet
