@@ -131,10 +131,7 @@ def render_realization():
         help="Path to an (optional) prediction schedule file",
     )
     parser.add_argument(
-        "-c","--cloud_api_url",
-        type=str,
-        help="Cloud API URL",
-        default=None
+        "-c", "--cloud_api_url", type=str, help="Cloud API URL", default=None
     )
 
     args = parser.parse_args()
@@ -143,27 +140,33 @@ def render_realization():
         print("Running RenderFlownetRealization the cloud...", end=" ", flush=True)
 
         # Gather files
-        files = {"pickled_network": open(args.pickled_network, "rb"),
-                 "pickled_schedule": open(args.pickled_schedule, "rb"),
-                 "pickled_parameters": open(args.pickled_parameters, "rb"),
-                 "random_samples": open(args.random_samples, "rb")
-                 }
-        if not str(args.pred_schedule_file) == "None":
+        files = {
+            "pickled_network": open(args.pickled_network, "rb"),
+            "pickled_schedule": open(args.pickled_schedule, "rb"),
+            "pickled_parameters": open(args.pickled_parameters, "rb"),
+            "random_samples": open(args.random_samples, "rb"),
+        }
+        if str(args.pred_schedule_file) != "None":
             files["pred_schedule_file"] = open(args.pred_schedule_file, "rb")
 
-        values = {"pickled_network": args.pickled_network.name,
-                  "pickled_schedule": args.pickled_schedule.name,
-                  "pickled_parameters": args.pickled_parameters.name,
-                  "output_folder": str(args.output_folder),
-                  "random_samples": args.random_samples.name,
-                  "realization_index": str(args.realization_index),
-                  }
+        values = {
+            "pickled_network": args.pickled_network.name,
+            "pickled_schedule": args.pickled_schedule.name,
+            "pickled_parameters": args.pickled_parameters.name,
+            "output_folder": str(args.output_folder),
+            "random_samples": args.random_samples.name,
+            "realization_index": str(args.realization_index),
+        }
         if str(args.pred_schedule_file) == "None":
             values["pred_schedule_file"] = "None"
         else:
             values["pred_schedule_file"] = args.pickled_parameters.name
 
-        response = requests.post(args.cloud_api_url.strip("/") + "/RenderFlownetRealization/", data=values, files=files)
+        response = requests.post(
+            args.cloud_api_url.strip("/") + "/RenderFlownetRealization/",
+            data=values,
+            files=files,
+        )
 
         # Unpack results
         open("results.tar.gz", "wb").write(response.content)
