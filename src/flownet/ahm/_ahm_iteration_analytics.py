@@ -14,7 +14,6 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 from ecl.summary import EclSum
 
-from ..config_parser import parse_config
 from ..data import FlowData
 
 
