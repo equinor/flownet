@@ -118,7 +118,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
 
     # Derive absolute path to reference simulation case
     if reference_simulation:
-        reference_simulation = pathlib.Path(reference_simulation).resolve()
+        path_ref_sim = pathlib.Path(reference_simulation).resolve()
+    else:
+        path_ref_sim = None
 
     if prediction_setup:
         ert_config_file = output_folder / "pred_config.ert"
@@ -148,7 +150,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                     / "parameters.pickled",
                     "random_seed": random_seed,
                     "perforation_strategy": perforation_strategy,
-                    "reference_simulation": reference_simulation,
+                    "reference_simulation": path_ref_sim,
                     "ert_config": ert_config,
                     "debug": args.debug if hasattr(args, "debug") else False,
                     "pred_schedule_file": getattr(
