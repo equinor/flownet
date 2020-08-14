@@ -337,35 +337,52 @@ def save_iteration_analytics():
     """
 
     parser = argparse.ArgumentParser(prog=("Save iteration analytics to a file."))
-    parser.add_argument("config", type=str, help="Path to the FlowNet config file.")
+    parser.add_argument(
+        "reference_simulation", type=str, help="Path to the reference simulation case"
+    )
+    parser.add_argument(
+        "perforation_strategy", type=str, help="Perforation handling strategy"
+    )
     parser.add_argument("runpath", type=str, help="Path to the ERT runpath.")
     parser.add_argument(
         "eclbase", type=str, help="Path to the simulation from runpath."
+    )
+    parser.add_argument(
+        "start", type=str, help="Start date (YYYY-MM-DD) for accuracy analysis."
+    )
+    parser.add_argument(
+        "end", type=str, help="End date (YYYY-MM-DD) for accuracy analysis."
+    )
+    parser.add_argument(
+        "quantity",
+        type=str,
+        help="List of names of quantities of interest for accuracy analysis.",
+    )
+    parser.add_argument("metrics", type=str, help="List of names of accuracy metrics.")
+    parser.add_argument(
+        "outfile",
+        type=str,
+        help="Name of output file containing metrics over iterations.",
     )
     args = parser.parse_args()
     args.runpath = args.runpath.replace("%d", "*")
 
     print("Saving iteration analytics...", end=" ")
 
-    # Load FlowNet config file
-    config = parse_config(pathlib.Path(args.config))
-
     # Fix list inputs
-    metrics = list(
-        config.ert.analysis.metric.replace("[", "").replace("]", "").split(",")
-    )
+    metrics = list(args.metrics.replace("[", "").replace("]", "").split(","))
 
     # Load ensemble of FlowNet
     (df_sim, realizations_dict, iteration,) = make_dataframe_simulation_data(
         args.runpath,
         args.eclbase,
-        list(config.ert.analysis.quantity.replace("[", "").replace("]", "").split(",")),
+        list(args.quantity.replace("[", "").replace("]", "").split(",")),
     )
 
     # Load reference simulation (OPM-Flow/Eclipse)
     field_data = FlowData(
-        config.flownet.data_source.input_case,
-        perforation_handling_strategy=config.flownet.perforation_handling_strategy,
+        args.reference_simulation,
+        perforation_handling_strategy=args.perforation_strategy,
     )
     df_obs: pd.DataFrame = field_data.production
     df_obs["DATE"] = df_obs["date"]
@@ -378,19 +395,12 @@ def save_iteration_analytics():
     df_sim = df_sim[df_sim["DATE"].isin(df_obs["DATE"])]
 
     # Initiate dataframe with metrics
-    df_metrics = load_csv_file(
-        config.ert.analysis.outfile, ["quantity", "iteration"] + metrics
-    )
+    df_metrics = load_csv_file(args.outfile, ["quantity", "iteration"] + metrics)
 
-    for str_key in list(
-        config.ert.analysis.quantity.replace("[", "").replace("]", "").split(",")
-    ):
+    for str_key in list(args.quantity.replace("[", "").replace("]", "").split(",")):
         # Prepare data from reference simulation
         tmp_data = filter_dataframe(
-            df_obs,
-            "DATE",
-            np.datetime64(config.ert.analysis.start),
-            np.datetime64(config.ert.analysis.end),
+            df_obs, "DATE", np.datetime64(args.start), np.datetime64(args.end),
         )
 
         truth_data = pd.DataFrame()
@@ -409,10 +419,7 @@ def save_iteration_analytics():
         ens_flownet.append(
             prepare_flownet_data(
                 filter_dataframe(
-                    df_sim,
-                    "DATE",
-                    np.datetime64(config.ert.analysis.start),
-                    np.datetime64(config.ert.analysis.end),
+                    df_sim, "DATE", np.datetime64(args.start), np.datetime64(args.end),
                 ),
                 str_key,
                 len(realizations_dict),
@@ -420,10 +427,7 @@ def save_iteration_analytics():
         )
 
         filter_dataframe(
-            df_sim,
-            "DATE",
-            np.datetime64(config.ert.analysis.start),
-            np.datetime64(config.ert.analysis.end),
+            df_sim, "DATE", np.datetime64(args.start), np.datetime64(args.end),
         ).to_csv("ens_flownet_data.csv", index=False)
 
         # Normalizing data
@@ -439,6 +443,6 @@ def save_iteration_analytics():
         save_plots_metrics(df_metrics, metrics, str_key)
 
     # Saving accuracy metrics to CSV file
-    df_metrics.to_csv(config.ert.analysis.outfile + ".csv", index=False)
+    df_metrics.to_csv(args.outfile + ".csv", index=False)
 
     print("[Done]")

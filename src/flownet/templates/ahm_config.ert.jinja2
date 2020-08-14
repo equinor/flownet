@@ -4,7 +4,13 @@ INSTALL_JOB DELETE_IN_CURRENT_ITERATION ./DELETE_IN_CURRENT_ITERATION
 
 REFCASE <CONFIG_PATH>/SYNTHETIC_REFCASE
 {%- if ert_config.analysis: %}
-DEFINE <CONFIG_FILE>  ../brugge_parameters.yml
+DEFINE <ANALYSIS_METRIC> {{ ert_config.analysis.metric }}
+DEFINE <ANALYSIS_QUANTITY> {{ ert_config.analysis.quantity }}
+DEFINE <ANALYSIS_START> {{ ert_config.analysis.start }}
+DEFINE <ANALYSIS_END> {{ ert_config.analysis.end }}
+DEFINE <ANALYSIS_OUTFILE> {{ ert_config.analysis.outfile }}
+DEFINE <PERFORATION_STRATEGY> {{ perforation_strategy }}
+DEFINE <REFERENCE_SIMULATION> {{ reference_simulation }}
 {%- endif %}
 DEFINE <RUN_PATH> {{ ert_config.runpath }}
 DEFINE <ECL_BASE> {{ ert_config.eclbase }}

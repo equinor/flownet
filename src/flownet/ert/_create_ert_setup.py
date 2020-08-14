@@ -91,6 +91,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     args: argparse.Namespace,
     network,
     schedule: Schedule,
+    perforation_strategy: str,
+    reference_simulation: str,
     ert_config: dict,
     parameters=None,
     random_seed=None,
@@ -113,6 +115,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     # Create output folders if they don't exist
     output_folder = pathlib.Path(args.output_folder)
     os.makedirs(output_folder, exist_ok=True)
+
+    # Derive absolute path to reference simulation case
+    reference_simulation = pathlib.Path(reference_simulation).resolve()
 
     if prediction_setup:
         ert_config_file = output_folder / "pred_config.ert"
@@ -141,6 +146,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                     "pickled_parameters": output_folder.resolve()
                     / "parameters.pickled",
                     "random_seed": random_seed,
+                    "perforation_strategy": perforation_strategy,
+                    "reference_simulation": reference_simulation,
                     "ert_config": ert_config,
                     "debug": args.debug if hasattr(args, "debug") else False,
                     "pred_schedule_file": getattr(

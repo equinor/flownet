@@ -388,6 +388,8 @@ def run_flownet_history_matching(
         schedule,
         parameters,
         case_name=config.name,
+        perforation_strategy=config.flownet.perforation_handling_strategy,
+        reference_simulation=config.flownet.data_source.input_case,
         ert_config=config.ert._asdict(),
         random_seed=config.flownet.random_seed,
     )
