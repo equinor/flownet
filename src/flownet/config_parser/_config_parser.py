@@ -479,9 +479,9 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 f"The {phase} phase is not a valid phase\n"
                 f"The valid phases are 'oil', 'gas', 'water', 'disgas' and 'vapoil'"
             )
-    if any(
-        x in config.flownet.phases for x in ["vapoil", "disgas"]
-    ) and not all(x in config.flownet.phases for x in ["oil", "gas"]):
+    if any(x in config.flownet.phases for x in ["vapoil", "disgas"]) and not all(
+        x in config.flownet.phases for x in ["oil", "gas"]
+    ):
         raise ValueError(
             "The phases 'vapoil' and 'disgas' can not be defined without the phases 'oil' and 'gas'"
         )
