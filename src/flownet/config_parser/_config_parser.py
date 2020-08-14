@@ -48,6 +48,7 @@ def create_schema(_to_abs_path) -> Dict:
                     "phases": {
                         MK.Type: types.List,
                         MK.Content: {MK.Item: {MK.Type: types.String}},
+                        MK.Transformation: lambda names: [x.lower() for x in names],
                     },
                     "cell_length": {MK.Type: types.Number},
                     "training_set_end_date": {MK.Type: types.Date, MK.AllowNone: True},
@@ -191,7 +192,10 @@ def create_schema(_to_abs_path) -> Dict:
                     "relative_permeability": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "scheme": {MK.Type: types.String},
+                            "scheme": {
+                                MK.Type: types.String,
+                                MK.Transformation: lambda name: name.lower(),
+                            },
                             "swirr": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
@@ -347,7 +351,11 @@ def create_schema(_to_abs_path) -> Dict:
                     "equil": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "scheme": {MK.Type: types.String, MK.Default: "global"},
+                            "scheme": {
+                                MK.Type: types.String,
+                                MK.Default: "global",
+                                MK.Transformation: lambda name: name.lower(),
+                            },
                             "datum_depth": {MK.Type: types.Number, MK.AllowNone: True},
                             "datum_pressure": {
                                 MK.Type: types.NamedDict,
@@ -466,21 +474,21 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
     req_relp_parameters: List[str] = []
 
     for phase in config.flownet.phases:
-        if phase.lower() not in ["oil", "gas", "water", "disgas", "vapoil"]:
+        if phase not in ["oil", "gas", "water", "disgas", "vapoil"]:
             raise ValueError(
                 f"The {phase} phase is not a valid phase\n"
                 f"The valid phases are 'oil', 'gas', 'water', 'disgas' and 'vapoil'"
             )
     if any(
-        x in [y.lower() for y in config.flownet.phases] for x in ["vapoil", "disgas"]
+        x in [y for y in config.flownet.phases] for x in ["vapoil", "disgas"]
     ) and not all(
-        x in [y.lower() for y in config.flownet.phases] for x in ["oil", "gas"]
+        x in [y for y in config.flownet.phases] for x in ["oil", "gas"]
     ):
         raise ValueError(
             "The phases 'vapoil' and 'disgas' can not be defined without the phases 'oil' and 'gas'"
         )
 
-    if all(x in [y.lower() for y in config.flownet.phases] for x in ["oil", "water"]):
+    if all(x in [y for y in config.flownet.phases] for x in ["oil", "water"]):
         for elem in [
             "scheme",
             "swirr",
@@ -503,7 +511,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             raise ValueError(
                 "Ambiguous configuration input: OWC not properly specified. Min or max missing, or max < min."
             )
-    if all(x in [y.lower() for y in config.flownet.phases] for x in ["oil", "gas"]):
+    if all(x in [y for y in config.flownet.phases] for x in ["oil", "gas"]):
         for elem in [
             "scheme",
             "swirr",
