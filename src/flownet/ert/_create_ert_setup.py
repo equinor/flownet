@@ -120,7 +120,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     if reference_simulation:
         path_ref_sim = pathlib.Path(reference_simulation).resolve()
     else:
-        path_ref_sim = None
+        path_ref_sim = pathlib.Path('.').resolve()
 
     if prediction_setup:
         ert_config_file = output_folder / "pred_config.ert"
