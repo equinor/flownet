@@ -93,7 +93,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     schedule: Schedule,
     ert_config: dict,
     perforation_strategy: str = None,
-    reference_simulation: pathlib.Path = None,
+    reference_simulation: str = None,
     parameters=None,
     random_seed=None,
     training_set_fraction: float = 1,
