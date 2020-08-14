@@ -308,7 +308,7 @@ def run_via_cloud_engine():
     # Send request
     files = {"upload_file": open("model.tar.gz", "rb")}
     values = {"ecl_base": args.ecl_base}
-    response = requests.post(args.cloud_api_url, data=values, files=files)
+    response = requests.post(args.cloud_api_url.strip("/") + "/RunFlowSimulation/", data=values, files=files)
 
     # Unpack results
     open("result.tar.gz", "wb").write(response.content)

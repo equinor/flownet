@@ -49,10 +49,11 @@ Not described yet. This solution is preferred to publish an official FlowNet Azu
 ## Create the Azure Function App
 
 1. Create a new Azure Function App, and give it a name (eg, "my_function")
-2. Choose "Docker Container" in the wizzard
-3. Finalize the wizzard
-4. Open your newly created Azure Function App and goto container settings.
-5. Locate the published container and save.
+1. Choose "Docker Container" in the wizzard
+1. Finalize the wizzard
+1. Open your newly created Azure Function App and goto container settings.
+1. Locate the published container and save.
+1. Set "FUNCTIONS_WORKER_PROCESS_COUNT" to 10.
 
 Check that your new Azure Function App is up and running by going to: 
 ```

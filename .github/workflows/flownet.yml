@@ -67,8 +67,8 @@ jobs:
       - name: 🕵️ Check code style & linting
         run: |
           source $VENV_PATH/bin/activate
-          black --check examples/ tests/ src/ setup.py
-          pylint src/ tests/ setup.py
+          black --check examples/ tests/ src/ cloud/ setup.py
+          pylint src/ tests/ cloud/ setup.py
           mypy --ignore-missing-imports src/ tests/ setup.py
 
       - name: 🤖 Run tests

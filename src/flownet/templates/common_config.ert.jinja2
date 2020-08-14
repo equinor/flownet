@@ -27,15 +27,15 @@ DEFINE <REALIZATION_INDEX> <IENS>
 INSTALL_JOB CREATE_FLOWNET_MODEL ./CREATE_FLOWNET_MODEL
 INSTALL_JOB RUN_VIA_CLOUD_ENGINE ./RUN_VIA_CLOUD_ENGINE
 
-SIMULATION_JOB CREATE_FLOWNET_MODEL <PICKLED_NETWORK> <PICKLED_SCHEDULE> <PICKLED_PARAMETERS> ./eclipse/model <RANDOM_SAMPLES> <REALIZATION_INDEX> {{ pred_schedule_file }}
+SIMULATION_JOB CREATE_FLOWNET_MODEL <PICKLED_NETWORK> <PICKLED_SCHEDULE> <PICKLED_PARAMETERS> ./eclipse/model <RANDOM_SAMPLES> <REALIZATION_INDEX> {{ pred_schedule_file }} {% if not config.flownet.cloud_api_url is none: -%}-c {{ config.flownet.cloud_api_url }}{%- endif %}
 
 FORWARD_MODEL COPY_FILE(<FROM>=<CONFIG_PATH>/RUNSPEC.inc, <TO>=./eclipse/model/include/RUNSPEC.inc)
 FORWARD_MODEL COPY_FILE(<FROM>=<CONFIG_PATH>/PROPS.inc, <TO>=./eclipse/model/include/PROPS.inc)
 FORWARD_MODEL COPY_FILE(<FROM>=<CONFIG_PATH>/SOLUTION.inc, <TO>=./eclipse/model/include/SOLUTION.inc)
 FORWARD_MODEL COPY_FILE(<FROM>=<CONFIG_PATH>/SCHEDULE.inc, <TO>=./eclipse/model/include/SCHEDULE.inc)
 
-{% if config.flownet.cloud_engine is none: -%}
+{% if config.flownet.cloud_api_url is none: -%}
 SIMULATION_JOB {{ config.ert.simulator.name.upper() }} <ECLBASE> {%- if config.ert.simulator.version is not none: -%}"--version={{ config.ert.simulator.version }}"{%- endif %}
 {% else -%}
-SIMULATION_JOB RUN_VIA_CLOUD_ENGINE "{{ config.flownet.cloud_engine }}" <ECLBASE>
+SIMULATION_JOB RUN_VIA_CLOUD_ENGINE "{{ config.flownet.cloud_api_url }}" <ECLBASE>
 {%- endif -%}

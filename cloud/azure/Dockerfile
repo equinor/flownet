@@ -19,6 +19,9 @@ RUN apt-get install git -y
 COPY build_opm_flow.sh build_opm_flow.sh
 RUN bash build_opm_flow.sh
 
+# Install additional requirements
+RUN apt install libgl1-mesa-glx -y
+
 # Install python requirements
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt

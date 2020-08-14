@@ -2,10 +2,12 @@ import json
 import argparse
 import pickle
 import collections
+import subprocess
 from pathlib import Path
 from typing import List, Dict
 
 import pandas as pd
+import requests
 
 from ..parameters import Parameter
 from ..realization import SimulationRealization
@@ -128,31 +130,74 @@ def render_realization():
         type=Path,
         help="Path to an (optional) prediction schedule file",
     )
+    parser.add_argument(
+        "-c","--cloud_api_url",
+        type=str,
+        help="Cloud API URL",
+        default=None
+    )
 
     args = parser.parse_args()
 
-    with open(args.pickled_network, "rb") as fh:
-        network = pickle.load(fh)
+    if args.cloud_api_url:
+        print("Running RenderFlownetRealization the cloud...", end=" ", flush=True)
 
-    with open(args.pickled_schedule, "rb") as fh:
-        schedule = pickle.load(fh)
+        # Gather files
+        files = {"pickled_network": open(args.pickled_network, "rb"),
+                 "pickled_schedule": open(args.pickled_schedule, "rb"),
+                 "pickled_parameters": open(args.pickled_parameters, "rb"),
+                 "random_samples": open(args.random_samples, "rb")
+                 }
+        if not str(args.pred_schedule_file) == "None":
+            files["pred_schedule_file"] = open(args.pred_schedule_file, "rb")
 
-    with open(args.pickled_parameters, "rb") as fh:
-        parameters = pickle.load(fh)
+        values = {"pickled_network": args.pickled_network.name,
+                  "pickled_schedule": args.pickled_schedule.name,
+                  "pickled_parameters": args.pickled_parameters.name,
+                  "output_folder": str(args.output_folder),
+                  "random_samples": args.random_samples.name,
+                  "realization_index": str(args.realization_index),
+                  }
+        if str(args.pred_schedule_file) == "None":
+            values["pred_schedule_file"] = "None"
+        else:
+            values["pred_schedule_file"] = args.pickled_parameters.name
 
-    simulation_input = {
-        "DIMS": _dims2simulation_input(parameters),
-        "INCLUDES": _ert_samples2simulation_input(
-            args.random_samples, parameters, args.realization_index
-        ),
-    }
+        response = requests.post(args.cloud_api_url.strip("/") + "/RenderFlownetRealization/", data=values, files=files)
 
-    pred_schedule_file = (
-        None if str(args.pred_schedule_file) == "None" else args.pred_schedule_file
-    )
+        # Unpack results
+        open("results.tar.gz", "wb").write(response.content)
+        subprocess.check_output(["tar", "-xzf", "results.tar.gz"])
 
-    realization = SimulationRealization(
-        network, schedule, simulation_input, pred_schedule_file=pred_schedule_file
-    )
+        # Remove tar.gz's
+        Path("results.tar.gz").unlink()
 
-    realization.create_model(args.output_folder)
+        print("[Done]")
+
+    else:
+
+        with open(args.pickled_network, "rb") as fh:
+            network = pickle.load(fh)
+
+        with open(args.pickled_schedule, "rb") as fh:
+            schedule = pickle.load(fh)
+
+        with open(args.pickled_parameters, "rb") as fh:
+            parameters = pickle.load(fh)
+
+        simulation_input = {
+            "DIMS": _dims2simulation_input(parameters),
+            "INCLUDES": _ert_samples2simulation_input(
+                args.random_samples, parameters, args.realization_index
+            ),
+        }
+
+        pred_schedule_file = (
+            None if str(args.pred_schedule_file) == "None" else args.pred_schedule_file
+        )
+
+        realization = SimulationRealization(
+            network, schedule, simulation_input, pred_schedule_file=pred_schedule_file
+        )
+
+        realization.create_model(args.output_folder)
