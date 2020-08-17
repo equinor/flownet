@@ -479,14 +479,14 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 f"The {phase} phase is not a valid phase\n"
                 f"The valid phases are 'oil', 'gas', 'water', 'disgas' and 'vapoil'"
             )
-    if any(x in config.flownet.phases for x in ["vapoil", "disgas"]) and not all(
-        x in config.flownet.phases for x in ["oil", "gas"]
-    ):
+    if not set(["vapoil", "disgas"]).isdisjoint(config.flownet.phases) and not set(
+        ["oil", "gas"]
+    ).issubset(config.flownet.phases):
         raise ValueError(
             "The phases 'vapoil' and 'disgas' can not be defined without the phases 'oil' and 'gas'"
         )
 
-    if all(x in config.flownet.phases for x in ["oil", "water"]):
+    if set(["oil", "water"]).issubset(config.flownet.phases):
         for elem in [
             "scheme",
             "swirr",
@@ -509,7 +509,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             raise ValueError(
                 "Ambiguous configuration input: OWC not properly specified. Min or max missing, or max < min."
             )
-    if all(x in config.flownet.phases for x in ["oil", "gas"]):
+    if set(["oil", "gas"]).issubset(config.flownet.phases):
         for elem in [
             "scheme",
             "swirr",
