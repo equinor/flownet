@@ -20,7 +20,7 @@ Modifications to the simulations setup
 
 A few modifications to the original Egg model input file `Egg_Model_ECL.DATA` are required in order run Flownet.
 
-1. COMPAT section is changed to have differences in depth between injectors and producers. With this, we avoid problems related to degenerate tetrahedron that we obtain in the triangulation procedure for the network generation.
+1. The COMPAT section is changed to have differences in depth between injectors and producers. With this, we avoid problems related to degenerate tetrahedrons that we would otherwise obtain in the triangulation procedure for the network generation.
 
 ::
 
