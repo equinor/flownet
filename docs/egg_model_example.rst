@@ -118,7 +118,7 @@ The following  `YAML <https://yaml.org/>`_ configuration file for FlowNet was us
    :linenos:
    
    
-To run the assisted history matching in flownet:
+To run the assisted history matching in FlowNet:
 
 
 .. code-block:: bash
