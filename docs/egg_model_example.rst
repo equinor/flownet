@@ -102,7 +102,7 @@ A few modifications to the original Egg model input file `Egg_Model_ECL.DATA` ar
 
 .. code-block:: bash
 
-    flow /egg_model/input_file/Egg_Model_ECL.DATA
+    flow Egg_Model_ECL.DATA
     
     
     
