@@ -18,7 +18,7 @@ Data files
 Modifications to the simulations setup
 ======================================
 
-We have modified the Egg model input file `Egg_Model_ECL.DATA` in order to follows Flownet workflow.
+A few modifications to the original Egg model input file `Egg_Model_ECL.DATA` are required in order run Flownet.
 
 1. COMPAT section is changed to have differences in depth between injectors and producers. With this, we avoid problems related to degenerate tetrahedron that we obtain in the triangulation procedure for the network generation.
 
@@ -146,4 +146,3 @@ References
 
 [2] J.D. Jansen (2013): The Egg Model - data files. 4TU.ResearchData. Dataset.
     https://doi.org/10.4121/uuid:916c86cd-3558-4672-829a-105c62985ab2
-
