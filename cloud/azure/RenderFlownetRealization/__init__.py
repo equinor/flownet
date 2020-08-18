@@ -6,10 +6,9 @@ from subprocess import check_output
 import mimetypes
 import uuid
 
-import azure.functions as func
 
-
-def main(req: func.HttpRequest) -> func.HttpResponse:
+def main(realization: int) -> str:
+    return f"Hello {realization}!"
 
     # Create tmp storage location
     unique_folder = pathlib.Path("/tmp/" + str(uuid.uuid4()))

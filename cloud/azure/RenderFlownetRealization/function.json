@@ -1,16 +1,10 @@
 {
-  "scriptFile": "main.py",
+  "scriptFile": "__init__.py",
   "bindings": [
     {
-      "authLevel": "anonymous",
-      "type": "httpTrigger",
-      "direction": "in",
-      "name": "req"
-    },
-    {
-      "type": "http",
-      "direction": "out",
-      "name": "$return"
+      "name": "name",
+      "type": "activityTrigger",
+      "direction": "in"
     }
   ]
 }

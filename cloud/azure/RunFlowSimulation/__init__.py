@@ -6,10 +6,9 @@ import pathlib
 from subprocess import check_output
 import mimetypes
 
-import azure.functions as func
 
-
-def main(req: func.HttpRequest) -> func.HttpResponse:
+def main(realization: int) -> str:
+    return f"Hello {realization}!"
 
     unique_folder = pathlib.Path("/tmp/" + str(uuid.uuid4()))
     os.mkdir(unique_folder)
