@@ -9,8 +9,8 @@ FlowNet documentation
 
    introduction
    configuration_file
-   api
    examples
+   api
 
 Indices and tables
 ==================
