@@ -487,7 +487,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         )
 
     if set(["oil", "water"]).issubset(config.flownet.phases):
-        for elem in [
+        req_relp_parameters = req_relp_parameters + [
             "scheme",
             "swirr",
             "swl",
@@ -497,9 +497,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             "now",
             "krwend",
             "krowend",
-        ]:
-            if elem not in req_relp_parameters:
-                req_relp_parameters.append(elem)
+        ]
         if (
             config.model_parameters.equil.owc_depth.min is None
             or config.model_parameters.equil.owc_depth.max is None
@@ -510,7 +508,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 "Ambiguous configuration input: OWC not properly specified. Min or max missing, or max < min."
             )
     if set(["oil", "gas"]).issubset(config.flownet.phases):
-        for elem in [
+        req_relp_parameters = req_relp_parameters + [
             "scheme",
             "swirr",
             "swl",
@@ -520,9 +518,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             "nog",
             "krgend",
             "krogend",
-        ]:
-            if elem not in req_relp_parameters:
-                req_relp_parameters.append(elem)
+        ]
         if (
             config.model_parameters.equil.goc_depth.min is None
             or config.model_parameters.equil.goc_depth.max is None
@@ -533,7 +529,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 "Ambiguous configuration input: GOC not properly specified. Min or max missing, or max < min."
             )
 
-    for parameter in req_relp_parameters:
+    for parameter in set(req_relp_parameters):
         if parameter == "scheme":
             if (
                 getattr(config.model_parameters.relative_permeability, parameter)
