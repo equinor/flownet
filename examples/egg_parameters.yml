@@ -20,7 +20,6 @@ ert:
     max_runtime: 600
   queue:
     system: LOCAL
-    name: mr
     max_running: 4
   ensemble_weights:
     - 4
