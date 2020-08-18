@@ -98,7 +98,7 @@ A few modifications to the original Egg model input file `Egg_Model_ECL.DATA` ar
             /
 
 
-4. Then you can run OPM FLOW to update input files to FlowNet
+4. Then you can run - `OPM Flow <https://opm-project.org/?page_id=19>`_ to update input files to FlowNet
 
 .. code-block:: bash
 
