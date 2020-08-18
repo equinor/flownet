@@ -41,7 +41,7 @@ A few modifications to the original Egg model input file `Egg_Model_ECL.DATA` ar
         
         
 
-2. The section PROPS is saved as an independent file `PROPS.inc`.  
+2. The section PROPS simulation keyword is saved as an independent file `PROPS.inc`.  
 
 ::
 
