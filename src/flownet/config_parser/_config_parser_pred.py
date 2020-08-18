@@ -23,6 +23,12 @@ def create_schema(_to_abs_path) -> Dict:
         MK.Type: types.NamedDict,
         MK.Content: {
             "name": {MK.Type: types.String},
+            "flownet": {
+                MK.Type: types.NamedDict,
+                MK.Content: {
+                    "cloud_api_url": {MK.Type: types.String, MK.AllowNone: True},
+                },
+            },
             "ert": {
                 MK.Type: types.NamedDict,
                 MK.Content: {
