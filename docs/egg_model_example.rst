@@ -111,7 +111,7 @@ A few modifications to the original Egg model input file `Egg_Model_ECL.DATA` ar
 Assisted history matching example
 =================================
 
-The configuration files follow the `YAML standard <https://yaml.org/>`_.
+The following  `YAML <https://yaml.org/>`_ configuration file for FlowNet was used to train the data-driven version of the Egg model:
 
 .. literalinclude:: ../examples/egg_parameters.yml
    :language: yaml
