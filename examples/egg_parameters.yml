@@ -10,7 +10,7 @@ flownet:
   random_seed: 999
   perforation_handling_strategy: bottom_point #bottom_point #multiple
   fast_pyscal: True
-  training_set_fraction: 0.8 # Fraction of observations (from 0 to 1) to use as training data
+  training_set_fraction: 0.8
   fault_tolerance: 0.1
 ert:
   static_include_files: ../input_model/
