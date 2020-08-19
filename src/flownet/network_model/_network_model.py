@@ -237,8 +237,8 @@ class NetworkModel:
         Calculates fault definitions using the following approach:
 
             1) Loop through all faults
-            2) Perform a triangulation of all points belonging to a fault
-            3) For each triangle, perform ray tracing using the
+            2) Perform a triangulation of all points belonging to a fault plane and store the triangles
+            3) For each connection, find all triangles in its bounding box, perform ray tracing using the
                Möller-Trumbore intersection algorithm.
             4) If an intersection is found, identify the grid blocks that are
                associated with the intersection.
@@ -253,7 +253,6 @@ class NetworkModel:
             Listing of tuples of FAULTS entries with zero-offset i-coordinates, or None if no faults are present.
 
         """
-
         dict_fault_keyword: Dict[str, List[int]] = {}
         if self._fault_planes is not None:
             fault_names = self._fault_planes["NAME"].unique().tolist()
@@ -353,7 +352,9 @@ class NetworkModel:
             if not dict_fault_keyword[fault_name]:
                 dict_fault_keyword.pop(fault_name)
             else:
-                dict_fault_keyword[fault_name] = list(set(dict_fault_keyword[fault_name]))
+                dict_fault_keyword[fault_name] = list(
+                    set(dict_fault_keyword[fault_name])
+                )
 
         print("done.")
 
