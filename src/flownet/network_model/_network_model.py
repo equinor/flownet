@@ -348,9 +348,12 @@ class NetworkModel:
             if len(cells_in_fault) > 0:
                 dict_fault_keyword[fault_name].extend(cells_in_fault)
 
-        # Remove double entries
+        # Remove empty and double entries
         for fault_name in fault_names:
-            dict_fault_keyword[fault_name] = list(set(dict_fault_keyword[fault_name]))
+            if not dict_fault_keyword[fault_name]:
+                dict_fault_keyword.pop(fault_name)
+            else:
+                dict_fault_keyword[fault_name] = list(set(dict_fault_keyword[fault_name]))
 
         print("done.")
 
