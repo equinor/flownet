@@ -1,11 +1,10 @@
 from typing import List, Tuple, Optional, Dict, Any
-from itertools import combinations
+from itertools import combinations, repeat, compress
 
 import numpy as np
 import pandas as pd
 import scipy.spatial
 import pyvista as pv
-from tqdm import tqdm
 
 from ._one_dimensional_model import OneDimensionalModel
 from ..utils.types import Coordinate
@@ -263,8 +262,11 @@ class NetworkModel:
 
         print("Performing fault ray tracing...")
 
-        for fault_name in list(tqdm(fault_names, total=len(fault_names))):
+        # Gather all triangles for all faults and keep track of fault names
+        all_triangles_fault_names: List = []
+        all_triangles = np.empty(shape=[0, 9])
 
+        for fault_name in fault_names:
             data = self._fault_planes.loc[self._fault_planes["NAME"] == fault_name][
                 ["X", "Y", "Z"]
             ].values
@@ -275,28 +277,61 @@ class NetworkModel:
             vertices = surf.points[surf.faces.reshape(-1, 4)[:, 1:4].ravel()]
 
             triangles = np.array(vertices).reshape(-1, 9)
-            connections = np.hstack(
-                (
-                    np.arange(len(self._df_entity_connections)).reshape(-1, 1),
-                    self._df_entity_connections[
-                        ["xstart", "ystart", "zstart", "xend", "yend", "zend"]
-                    ].values,
-                )
+
+            all_triangles_fault_names.extend(repeat(fault_name, np.shape(triangles)[0]))
+            all_triangles = np.append(all_triangles, triangles, axis=0)
+
+        # Loop through all connections and select all triangles inside of the bounding box of the connection
+        # Perform ray tracing on all resulting triangles.
+        for index, row in self._df_entity_connections.iterrows():
+            bx1, bx2 = sorted([row["xstart"], row["xend"]])
+            by1, by2 = sorted([row["ystart"], row["yend"]])
+            bz1, bz2 = sorted([row["zstart"], row["zend"]])
+
+            corner1 = np.array([bx1, by1, bz1])
+            corner2 = np.array([bx2, by2, bz2])
+
+            vertex1_in_box = np.all(
+                np.logical_and(
+                    corner1 <= all_triangles[:, 0:3], all_triangles[:, 0:3] <= corner2
+                ),
+                axis=1,
+            )
+            vertex2_in_box = np.all(
+                np.logical_and(
+                    corner1 <= all_triangles[:, 3:6], all_triangles[:, 3:6] <= corner2
+                ),
+                axis=1,
+            )
+            vertex3_in_box = np.all(
+                np.logical_and(
+                    corner1 <= all_triangles[:, 6:9], all_triangles[:, 6:9] <= corner2
+                ),
+                axis=1,
+            )
+            triangle_in_box = vertex1_in_box | vertex2_in_box | vertex3_in_box
+
+            triangles_in_bounding_box = all_triangles[triangle_in_box]
+            fault_names_in_bounding_box = list(
+                compress(all_triangles_fault_names, triangle_in_box)
             )
 
-            combinations_triangles = np.array(triangles).repeat(
-                len(connections), axis=0
-            )
-            connections_connections = np.tile(connections, (len(triangles), 1))
-
-            parameters = list(
-                map(tuple, np.hstack((connections_connections, combinations_triangles)))
-            )
-
+            # Loop through all triangles inside of the bounding box and perform ray tracing
             cells_in_fault = []
+            for (triangle, fault_name) in list(
+                zip(triangles_in_bounding_box, fault_names_in_bounding_box)
+            ):
 
-            for row in list(tqdm(parameters, total=len(parameters), desc=fault_name)):
-                distance, index = moller_trumbore(*row)
+                distance, index = moller_trumbore(
+                    index,
+                    row["xstart"],
+                    row["ystart"],
+                    row["zstart"],
+                    row["xend"],
+                    row["yend"],
+                    row["zend"],
+                    *triangle
+                )
 
                 if distance is not False:
                     indices = self._grid.index[self.active_mask(index)].tolist()
