@@ -3,8 +3,14 @@ name: Norne
 flownet:
   data_source:
     input_case: ../tests/data/norne/NORNE_ATW2013
+  phases:
+    - oil
+    - gas
+    - vapoil
+    - disgas
+    - water
   pvt:
-    rsvd: ./examples/norne_static/rsvd.csv
+    rsvd: ./norne_static/rsvd.csv
   cell_length: 100
   additional_flow_nodes: 100
   additional_node_candidates: 1000
