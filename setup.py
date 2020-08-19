@@ -19,7 +19,6 @@ REQUIREMENTS = [
     "pyyaml>=5.2",
     "scikit-learn>=0.22",
     "scipy>=1.4",
-    "tqdm>=4.43",
     "webviz-config>=0.0.42",
     "webviz-config-equinor>=0.0.9",
     "webviz-subsurface>=0.0.24",

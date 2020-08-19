@@ -1,11 +1,10 @@
-from typing import Tuple, Any
+from typing import Optional
 
 import numpy as np
 
 
 # pylint: disable=too-many-arguments,too-many-locals
 def moller_trumbore(
-    index: int,
     xstart: float,
     ystart: float,
     zstart: float,
@@ -21,7 +20,7 @@ def moller_trumbore(
     v31: float,
     v32: float,
     v33: float,
-) -> Tuple[Any, Any]:
+) -> Optional[float]:
     """
     The Möller–Trumbore ray-triangle intersection algorithm, named after its inventors Tomas Möller and Ben Trumbore,
     is a fast method for calculating the intersection of a ray and a triangle in three dimensions without
@@ -31,7 +30,6 @@ def moller_trumbore(
     (a collection of triangles).
 
     Args:
-        index: Tube index
         xstart: X-coordinate of the start point of the tube
         ystart: Y-coordinate of the start point of the tube
         zstart: Z-coordinate of the start point of the tube
@@ -49,8 +47,7 @@ def moller_trumbore(
         v33: Triangle corner 3 Z-coordinate
 
     Returns:
-        Tuple of the float representing the fraction of the tube where the intersection happened as well as
-        the tube index it happened in, otherwise False, False
+        Either a float representing the fraction of the tube where the intersection happened or None
 
     """
     eps = 0.000001
@@ -64,27 +61,27 @@ def moller_trumbore(
     det = edge1.dot(pvec)
 
     if abs(det) < eps:
-        return False, False
+        return None
 
     inv_det = 1.0 / det
     t_vector = ray_start - triangle[0]
     u_value = t_vector.dot(pvec) * inv_det
 
     if u_value < 0.0 or u_value > 1.0:
-        return False, False
+        return None
 
     q_vector = np.cross(t_vector, edge1)
     v_value = ray_direction.dot(q_vector) * inv_det
 
     if v_value < 0.0 or u_value + v_value > 1.0:
-        return False, False
+        return None
 
     ray_fraction = edge2.dot(q_vector) * inv_det
 
     if ray_fraction < eps:
-        return False, False
+        return None
 
     if ray_fraction > 1:
-        return False, False
+        return None
 
-    return ray_fraction, index
+    return ray_fraction
