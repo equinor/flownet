@@ -232,7 +232,7 @@ class NetworkModel:
     # pylint: disable=too-many-locals
     def _calculate_faults(
         self, fault_tolerance: float = 1.0e-05
-    ) -> Optional[Dict[Any, List[int]]]:
+    ) -> Optional[Dict[str, List[int]]]:
         """
         Calculates fault definitions using the following approach:
 
@@ -254,13 +254,13 @@ class NetworkModel:
 
         """
 
-        dict_fault_keyword = {}
+        dict_fault_keyword: Dict[str, List[int]] = {}
         if self._fault_planes is not None:
             fault_names = self._fault_planes["NAME"].unique().tolist()
         if not fault_names:
             return None
 
-        print("Performing fault ray tracing...")
+        print("Performing fault ray tracing...", end=" ", flush=True)
 
         # Gather all triangles for all faults and keep track of fault names
         all_triangles_fault_names: List = []
@@ -280,6 +280,7 @@ class NetworkModel:
 
             all_triangles_fault_names.extend(repeat(fault_name, np.shape(triangles)[0]))
             all_triangles = np.append(all_triangles, triangles, axis=0)
+            dict_fault_keyword[fault_name] = []
 
         # Loop through all connections and select all triangles inside of the bounding box of the connection
         # Perform ray tracing on all resulting triangles.
@@ -309,7 +310,10 @@ class NetworkModel:
                 ),
                 axis=1,
             )
-            triangle_in_box = vertex1_in_box | vertex2_in_box | vertex3_in_box
+            triangle_in_box = np.any(
+                np.column_stack((vertex1_in_box, vertex2_in_box, vertex3_in_box)),
+                axis=1,
+            )
 
             triangles_in_bounding_box = all_triangles[triangle_in_box]
             fault_names_in_bounding_box = list(
@@ -322,8 +326,7 @@ class NetworkModel:
                 zip(triangles_in_bounding_box, fault_names_in_bounding_box)
             ):
 
-                distance, index = moller_trumbore(
-                    index,
+                distance = moller_trumbore(
                     row["xstart"],
                     row["ystart"],
                     row["zstart"],
@@ -333,7 +336,7 @@ class NetworkModel:
                     *triangle
                 )
 
-                if distance is not False:
+                if distance:
                     indices = self._grid.index[self.active_mask(index)].tolist()
                     tube_cell_index = min(
                         max(0, int(distance * len(indices)) - 1), len(indices) - 2
@@ -343,7 +346,11 @@ class NetworkModel:
                     cells_in_fault.append(cell_i_index)
 
             if len(cells_in_fault) > 0:
-                dict_fault_keyword[fault_name] = list(set(cells_in_fault))
+                dict_fault_keyword[fault_name].extend(cells_in_fault)
+
+        # Remove double entries
+        for fault_name in fault_names:
+            dict_fault_keyword[fault_name] = list(set(dict_fault_keyword[fault_name]))
 
         print("done.")
 
