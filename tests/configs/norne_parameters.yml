@@ -3,6 +3,12 @@ name: Norne
 flownet:
   data_source:
     input_case: ../data/norne/NORNE_ATW2013
+  phases:
+    - oil
+    - gas
+    - vapoil
+    - disgas
+    - water
   cell_length: 100
   additional_flow_nodes: 100
   additional_node_candidates: 1000
