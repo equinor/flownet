@@ -1,11 +1,10 @@
 from typing import List, Tuple, Optional, Dict, Any
-from itertools import combinations
+from itertools import combinations, repeat, compress
 
 import numpy as np
 import pandas as pd
 import scipy.spatial
 import pyvista as pv
-from tqdm import tqdm
 
 from ._one_dimensional_model import OneDimensionalModel
 from ..utils.types import Coordinate
@@ -233,13 +232,13 @@ class NetworkModel:
     # pylint: disable=too-many-locals
     def _calculate_faults(
         self, fault_tolerance: float = 1.0e-05
-    ) -> Optional[Dict[Any, List[int]]]:
+    ) -> Optional[Dict[str, List[int]]]:
         """
         Calculates fault definitions using the following approach:
 
             1) Loop through all faults
-            2) Perform a triangulation of all points belonging to a fault
-            3) For each triangle, perform ray tracing using the
+            2) Perform a triangulation of all points belonging to a fault plane and store the triangles
+            3) For each connection, find all triangles in its bounding box, perform ray tracing using the
                Möller-Trumbore intersection algorithm.
             4) If an intersection is found, identify the grid blocks that are
                associated with the intersection.
@@ -254,17 +253,19 @@ class NetworkModel:
             Listing of tuples of FAULTS entries with zero-offset i-coordinates, or None if no faults are present.
 
         """
-
-        dict_fault_keyword = {}
+        dict_fault_keyword: Dict[str, List[int]] = {}
         if self._fault_planes is not None:
             fault_names = self._fault_planes["NAME"].unique().tolist()
         if not fault_names:
             return None
 
-        print("Performing fault ray tracing...")
+        print("Performing fault ray tracing...", end=" ", flush=True)
 
-        for fault_name in list(tqdm(fault_names, total=len(fault_names))):
+        # Gather all triangles for all faults and keep track of fault names
+        all_triangles_fault_names: List = []
+        all_triangles = np.empty(shape=[0, 9])
 
+        for fault_name in fault_names:
             data = self._fault_planes.loc[self._fault_planes["NAME"] == fault_name][
                 ["X", "Y", "Z"]
             ].values
@@ -275,30 +276,66 @@ class NetworkModel:
             vertices = surf.points[surf.faces.reshape(-1, 4)[:, 1:4].ravel()]
 
             triangles = np.array(vertices).reshape(-1, 9)
-            connections = np.hstack(
-                (
-                    np.arange(len(self._df_entity_connections)).reshape(-1, 1),
-                    self._df_entity_connections[
-                        ["xstart", "ystart", "zstart", "xend", "yend", "zend"]
-                    ].values,
-                )
+
+            all_triangles_fault_names.extend(repeat(fault_name, np.shape(triangles)[0]))
+            all_triangles = np.append(all_triangles, triangles, axis=0)
+            dict_fault_keyword[fault_name] = []
+
+        # Loop through all connections and select all triangles inside of the bounding box of the connection
+        # Perform ray tracing on all resulting triangles.
+        for index, row in self._df_entity_connections.iterrows():
+            bx1, bx2 = sorted([row["xstart"], row["xend"]])
+            by1, by2 = sorted([row["ystart"], row["yend"]])
+            bz1, bz2 = sorted([row["zstart"], row["zend"]])
+
+            corner1 = np.array([bx1, by1, bz1])
+            corner2 = np.array([bx2, by2, bz2])
+
+            vertex1_in_box = np.all(
+                np.logical_and(
+                    corner1 <= all_triangles[:, 0:3], all_triangles[:, 0:3] <= corner2
+                ),
+                axis=1,
+            )
+            vertex2_in_box = np.all(
+                np.logical_and(
+                    corner1 <= all_triangles[:, 3:6], all_triangles[:, 3:6] <= corner2
+                ),
+                axis=1,
+            )
+            vertex3_in_box = np.all(
+                np.logical_and(
+                    corner1 <= all_triangles[:, 6:9], all_triangles[:, 6:9] <= corner2
+                ),
+                axis=1,
+            )
+            triangle_in_box = np.any(
+                np.column_stack((vertex1_in_box, vertex2_in_box, vertex3_in_box)),
+                axis=1,
             )
 
-            combinations_triangles = np.array(triangles).repeat(
-                len(connections), axis=0
-            )
-            connections_connections = np.tile(connections, (len(triangles), 1))
-
-            parameters = list(
-                map(tuple, np.hstack((connections_connections, combinations_triangles)))
+            triangles_in_bounding_box = all_triangles[triangle_in_box]
+            fault_names_in_bounding_box = list(
+                compress(all_triangles_fault_names, triangle_in_box)
             )
 
+            # Loop through all triangles inside of the bounding box and perform ray tracing
             cells_in_fault = []
+            for (triangle, fault_name) in list(
+                zip(triangles_in_bounding_box, fault_names_in_bounding_box)
+            ):
 
-            for row in list(tqdm(parameters, total=len(parameters), desc=fault_name)):
-                distance, index = moller_trumbore(*row)
+                distance = moller_trumbore(
+                    row["xstart"],
+                    row["ystart"],
+                    row["zstart"],
+                    row["xend"],
+                    row["yend"],
+                    row["zend"],
+                    *triangle
+                )
 
-                if distance is not False:
+                if distance:
                     indices = self._grid.index[self.active_mask(index)].tolist()
                     tube_cell_index = min(
                         max(0, int(distance * len(indices)) - 1), len(indices) - 2
@@ -308,7 +345,16 @@ class NetworkModel:
                     cells_in_fault.append(cell_i_index)
 
             if len(cells_in_fault) > 0:
-                dict_fault_keyword[fault_name] = list(set(cells_in_fault))
+                dict_fault_keyword[fault_name].extend(cells_in_fault)
+
+        # Remove empty and double entries
+        for fault_name in fault_names:
+            if not dict_fault_keyword[fault_name]:
+                dict_fault_keyword.pop(fault_name)
+            else:
+                dict_fault_keyword[fault_name] = list(
+                    set(dict_fault_keyword[fault_name])
+                )
 
         print("done.")
 
