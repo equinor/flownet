@@ -12,7 +12,6 @@ from ecl2df import faults
 from ecl2df.eclfiles import EclFiles
 
 from .from_source import FromSource
-from ..utils.types import Coordinate
 
 
 class FlowData(FromSource):

@@ -402,7 +402,7 @@ def _remove_long_connections(
 
     def __calculate_distance(row: Any) -> float:
         """
-        Helper function that calculate the distance between two nodes.
+        Helper function that calculates the distance between two nodes.
 
         Args:
             row: Pandas dataframe row object
