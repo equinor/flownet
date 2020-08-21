@@ -56,7 +56,7 @@ cd flownet
 
 ##### 3. Run the scripts containing the building recipe: 
 ```bash
-bash ./apt_insta.sh
+bash ./apt_install.sh
 bash ./build_environment.sh ./venv /usr/bin/flow
 ```
 This will automatically create a simple [Python virtual environment](docs.python.org/3/library/venv.html) `./venv`
@@ -113,16 +113,6 @@ configuration file (`.cshrc` or `.bashrc`) to automatically source your
 virtual environment.
 > 
 
-### OPM-data (optional)
-
-To be able to run examples that are dependent on the Norne field simulation,
-you need to extract the [OPM-data](https://github.com/OPM/opm-data).
-For convenience, a pre-simulated case is included in the FlowNet test dataset.
-
-```bash
-tar -zxvf tests/data/norne.tar.gz -C tests/data/
-```
-
 ### Running FlowNet
 
 You can run _FlowNet_ as a single command line:
@@ -137,15 +127,6 @@ Before running `webviz` for the first time on your machine, you will need to to 
 ```bash
 webviz certificate --auto-install --force
 ```
-
-### Build documentation
-
-You can build the documentation after installation by running
-```bash
-cd ./docs
-make html
-```
-and then open the generated `./docs/_build/html/index.html` in a browser.
 
 ### License
 
