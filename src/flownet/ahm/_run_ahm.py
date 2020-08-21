@@ -137,11 +137,11 @@ def update_distribution(parameters, ahm_case):
 
     """
 
-    df = pd.read_parquet(ahm_case + '/parameters_iteration-latest.parquet.gzip')
+    df = pd.read_parquet(ahm_case + "/parameters_iteration-latest.parquet.gzip")
 
-    nr = 0
+    count_index = 0
     for realization_index in df.index.values.tolist():
-        nr += 1
+        count_index += 1
         unsorted_random_samples = json.loads(
             df[df.index == realization_index].transpose().to_json()
         )[str(realization_index)]
@@ -155,14 +155,18 @@ def update_distribution(parameters, ahm_case):
             n = len(parameter.random_variables)
             random_samples = sorted_random_samples[:n]
             del sorted_random_samples[:n]
-            if nr == 1:
+            if count_index == 1:
                 parameter.mean_values = random_samples
             else:
-                parameter.mean_values = list(map(add, parameter.mean_values, random_samples))
+                parameter.mean_values = list(
+                    map(add, parameter.mean_values, random_samples)
+                )
 
     # compute ensemble-mean values
     for parameter in parameters:
-        parameter.mean_values = [value / float(df.shape[0]) for value in parameter.mean_values]
+        parameter.mean_values = [
+            value / float(df.shape[0]) for value in parameter.mean_values
+        ]
 
     # update the distributions
     for parameter in parameters:
@@ -171,7 +175,7 @@ def update_distribution(parameters, ahm_case):
         for i, var in enumerate(parameter.random_variables):
             mean = parameter.mean_values[i]
 
-            loguniform = var.ert_gen_kw.split()[0] == 'LOGUNIF'
+            loguniform = var.ert_gen_kw.split()[0] == "LOGUNIF"
             dist_min0 = var.minimum
             dist_max0 = var.maximum
 
@@ -481,7 +485,7 @@ def run_flownet_history_matching(
         parameters.append(FaultTransmissibility(fault_mult_dist_values, network))
 
     if config.model_parameters.ahm_case is not None:
-        update_distribution(parameters, config.model_parameters.ahm_case)
+        parameters = update_distribution(parameters, config.model_parameters.ahm_case)
 
     ahm = AssistedHistoryMatching(network, schedule, parameters, config,)
 
