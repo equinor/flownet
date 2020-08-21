@@ -1,35 +1,14 @@
 import pickle
-import subprocess
 import shutil
-import pathlib
 
 import jinja2
 
-from ..ert import create_ert_setup
+from ..ert import create_ert_setup, run_ert_subprocess
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
     undefined=jinja2.StrictUndefined,
 )
-
-
-def _run_ert(output_folder: pathlib.Path) -> None:
-    """
-    Helper function to run the ERT prediction setup.
-
-    Args:
-        output_folder: Path to the output folder.
-
-    Returns:
-        Nothing
-
-    """
-    subprocess.run(
-        "ert ensemble_experiment pred_config.ert",
-        cwd=output_folder,
-        shell=True,
-        check=True,
-    )
 
 
 def run_flownet_prediction(config, args):
@@ -68,4 +47,8 @@ def run_flownet_prediction(config, args):
             )
         )
 
-    _run_ert(args.output_folder)
+    run_ert_subprocess(
+        "ert ensemble_experiment pred_config.ert",
+        cwd=args.output_folder,
+        runpath=config.ert.runpath,
+    )

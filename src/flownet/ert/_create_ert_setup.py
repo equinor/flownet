@@ -94,6 +94,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     ert_config: dict,
     parameters=None,
     random_seed=None,
+    perforation_strategy: str = None,
+    reference_simulation: str = None,
     training_set_fraction: float = 1,
     prediction_setup: bool = False,
 ):
@@ -114,6 +116,12 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     output_folder = pathlib.Path(args.output_folder)
     os.makedirs(output_folder, exist_ok=True)
 
+    # Derive absolute path to reference simulation case
+    if reference_simulation:
+        path_ref_sim = pathlib.Path(reference_simulation).resolve()
+    else:
+        path_ref_sim = pathlib.Path(".").resolve()
+
     if prediction_setup:
         ert_config_file = output_folder / "pred_config.ert"
         template = _TEMPLATE_ENVIRONMENT.get_template("pred_config.ert.jinja2")
@@ -125,7 +133,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     with open(output_folder / "network.pickled", "wb") as fh:
         pickle.dump(network, fh)
 
-    # Pickle schdule
+    # Pickle schedule
     with open(output_folder / "schedule.pickled", "wb") as fh:
         pickle.dump(schedule, fh)
 
@@ -141,6 +149,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                     "pickled_parameters": output_folder.resolve()
                     / "parameters.pickled",
                     "random_seed": random_seed,
+                    "perforation_strategy": perforation_strategy,
+                    "reference_simulation": path_ref_sim,
                     "ert_config": ert_config,
                     "debug": args.debug if hasattr(args, "debug") else False,
                     "pred_schedule_file": getattr(

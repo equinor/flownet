@@ -6,14 +6,13 @@ import os
 import pathlib
 import re
 import shutil
-import subprocess
 from typing import List, Dict, Optional, Tuple
 
 import jinja2
 import numpy as np
 import pandas as pd
 
-from ..ert import create_ert_setup
+from ..ert import create_ert_setup, run_ert_subprocess
 from ..realization import Schedule
 from ..network_model import NetworkModel
 from ..parameters import Parameter
@@ -39,6 +38,8 @@ class AssistedHistoryMatching:
         schedule: Schedule,
         parameters: List[Parameter],
         case_name: str,
+        perforation_strategy: str,
+        reference_simulation: str,
         ert_config: Dict,
         random_seed: Optional[int] = None,
     ):
@@ -50,6 +51,8 @@ class AssistedHistoryMatching:
             schedule: Schedule instance
             parameters: List of Parameter objects
             case_name: Name of simulation case
+            perforation_strategy: String indicating perforation handling strategy
+            reference_simulation: String indicating path to reference simulation case
             ert_config: Dictionary containing information about queue (system, name, server and max_running)
                 and realizations (num_realizations, required_success_percent and max_runtime)
             random_seed: Random seed to control reproducibility of FlowNet
@@ -58,6 +61,8 @@ class AssistedHistoryMatching:
         self._network: NetworkModel = network
         self._schedule: Schedule = schedule
         self._parameters: List[Parameter] = parameters
+        self._perforation_strategy: str = perforation_strategy
+        self._reference_simulation: str = reference_simulation
         self._ert_config: dict = ert_config
         self._case_name: str = case_name
         self._random_seed: Optional[int] = random_seed
@@ -82,6 +87,8 @@ class AssistedHistoryMatching:
             args,
             self._network,
             self._schedule,
+            perforation_strategy=self._perforation_strategy,
+            reference_simulation=self._reference_simulation,
             ert_config=self._ert_config,
             parameters=self._parameters,
             random_seed=self._random_seed,
@@ -120,25 +127,11 @@ class AssistedHistoryMatching:
                 )
             )
 
-        try:
-            # Ignore deprecation warnings (ERT as of August 2019 has a lot of them
-            # due to transition to Python3)
-            subprocess.run(
-                "export PYTHONWARNINGS=ignore::DeprecationWarning;"
-                f"ert es_mda --weights {','.join(map(str, weights))!r} ahm_config.ert",
-                cwd=self.output_folder,
-                shell=True,
-                check=True,
-            )
-        except subprocess.CalledProcessError:
-            error_files = glob.glob(
-                str(
-                    self.output_folder
-                    / self._ert_config["runpath"].replace("%d", "*")
-                    / "ERROR"
-                )
-            )
-            raise RuntimeError(pathlib.Path(error_files[0]).read_text())
+        run_ert_subprocess(
+            f"ert es_mda --weights {','.join(map(str, weights))!r} ahm_config.ert",
+            cwd=self.output_folder,
+            runpath=self._ert_config["runpath"],
+        )
 
     def report(self):
         """
