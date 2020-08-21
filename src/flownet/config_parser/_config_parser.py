@@ -135,17 +135,11 @@ def create_schema(_to_abs_path) -> Dict:
                     "analysis": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "metric": {MK.Type: types.String, MK.Default: "[RMSE]"},
-                            "quantity": {
-                                MK.Type: types.String,
-                                MK.Default: "[WOPR:BR-P-]",
-                            },
-                            "start": {MK.Type: types.String, MK.Default: "2001-04-01"},
-                            "end": {MK.Type: types.String, MK.Default: "2006-01-01"},
-                            "outfile": {
-                                MK.Type: types.String,
-                                MK.Default: "analysis_metrics_iteration",
-                            },
+                            "metric": {MK.Type: types.String, MK.AllowNone: True},
+                            "quantity": {MK.Type: types.String, MK.AllowNone: True,},
+                            "start": {MK.Type: types.String, MK.AllowNone: True},
+                            "end": {MK.Type: types.String, MK.AllowNone: True},
+                            "outfile": {MK.Type: types.String, MK.AllowNone: True,},
                         },
                     },
                 },
