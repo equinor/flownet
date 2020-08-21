@@ -14,7 +14,6 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 from ecl.summary import EclSum
 
-from ..config_parser import parse_config
 from ..data import FlowData
 
 
@@ -336,13 +335,17 @@ def save_iteration_analytics():
         Nothing
     """
 
-    parser = argparse.ArgumentParser(prog=("Save iteration parameters to a file."))
-    parser.add_argument("config", type=str, help="Path to the ERT config file.")
+    parser = argparse.ArgumentParser(prog=("Save iteration analytics to a file."))
+    parser.add_argument(
+        "reference_simulation", type=str, help="Path to the reference simulation case"
+    )
+    parser.add_argument(
+        "perforation_strategy", type=str, help="Perforation handling strategy"
+    )
     parser.add_argument("runpath", type=str, help="Path to the ERT runpath.")
     parser.add_argument(
         "eclbase", type=str, help="Path to the simulation from runpath."
     )
-    parser.add_argument("yamlobs", type=str, help="Path to the yaml observation file.")
     parser.add_argument(
         "start", type=str, help="Start date (YYYY-MM-DD) for accuracy analysis."
     )
@@ -376,11 +379,9 @@ def save_iteration_analytics():
     )
 
     # Load reference simulation (OPM-Flow/Eclipse)
-    config = parse_config(pathlib.Path(args.config))
-
     field_data = FlowData(
-        config.flownet.data_source.input_case,
-        perforation_handling_strategy=config.flownet.perforation_handling_strategy,
+        args.reference_simulation,
+        perforation_handling_strategy=args.perforation_strategy,
     )
     df_obs: pd.DataFrame = field_data.production
     df_obs["DATE"] = df_obs["date"]
@@ -398,7 +399,7 @@ def save_iteration_analytics():
     for str_key in list(args.quantity.replace("[", "").replace("]", "").split(",")):
         # Prepare data from reference simulation
         tmp_data = filter_dataframe(
-            df_obs, "DATE", np.datetime64(args.start), np.datetime64(args.end)
+            df_obs, "DATE", np.datetime64(args.start), np.datetime64(args.end),
         )
 
         truth_data = pd.DataFrame()
@@ -407,7 +408,6 @@ def save_iteration_analytics():
             truth_data[str_key[:5] + well] = tmp_data[tmp_data["WELL_NAME"] == well][
                 str_key[:4]
             ].values
-        truth_data.to_csv("truth_data.csv", index=False)
 
         obs_opm = prepare_opm_reference_data(
             truth_data, str_key, len(realizations_dict)
@@ -418,7 +418,7 @@ def save_iteration_analytics():
         ens_flownet.append(
             prepare_flownet_data(
                 filter_dataframe(
-                    df_sim, "DATE", np.datetime64(args.start), np.datetime64(args.end)
+                    df_sim, "DATE", np.datetime64(args.start), np.datetime64(args.end),
                 ),
                 str_key,
                 len(realizations_dict),
@@ -426,7 +426,7 @@ def save_iteration_analytics():
         )
 
         filter_dataframe(
-            df_sim, "DATE", np.datetime64(args.start), np.datetime64(args.end)
+            df_sim, "DATE", np.datetime64(args.start), np.datetime64(args.end),
         ).to_csv("ens_flownet_data.csv", index=False)
 
         # Normalizing data

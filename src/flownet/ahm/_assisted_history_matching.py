@@ -38,6 +38,8 @@ class AssistedHistoryMatching:
         schedule: Schedule,
         parameters: List[Parameter],
         case_name: str,
+        perforation_strategy: str,
+        reference_simulation: str,
         ert_config: Dict,
         random_seed: Optional[int] = None,
     ):
@@ -49,6 +51,8 @@ class AssistedHistoryMatching:
             schedule: Schedule instance
             parameters: List of Parameter objects
             case_name: Name of simulation case
+            perforation_strategy: String indicating perforation handling strategy
+            reference_simulation: String indicating path to reference simulation case
             ert_config: Dictionary containing information about queue (system, name, server and max_running)
                 and realizations (num_realizations, required_success_percent and max_runtime)
             random_seed: Random seed to control reproducibility of FlowNet
@@ -57,6 +61,8 @@ class AssistedHistoryMatching:
         self._network: NetworkModel = network
         self._schedule: Schedule = schedule
         self._parameters: List[Parameter] = parameters
+        self._perforation_strategy: str = perforation_strategy
+        self._reference_simulation: str = reference_simulation
         self._ert_config: dict = ert_config
         self._case_name: str = case_name
         self._random_seed: Optional[int] = random_seed
@@ -81,6 +87,8 @@ class AssistedHistoryMatching:
             args,
             self._network,
             self._schedule,
+            perforation_strategy=self._perforation_strategy,
+            reference_simulation=self._reference_simulation,
             ert_config=self._ert_config,
             parameters=self._parameters,
             random_seed=self._random_seed,
