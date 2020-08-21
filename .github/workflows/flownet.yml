@@ -83,7 +83,7 @@ jobs:
           source $VENV_PATH/bin/activate
           black --check examples/ tests/ src/ setup.py
           pylint src/ tests/ setup.py
-          mypy --ignore-missing-imports src/ tests/ setup.py
+          mypy --ignore-missing-imports src/ setup.py
 
       - name: 🤖 Run tests
         run: |

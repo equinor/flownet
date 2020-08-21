@@ -59,7 +59,7 @@ ENDS = [
 def test_generate_connections() -> None:
 
     config = collections.namedtuple("configuration", "flownet")
-    config.flownet = collections.namedtuple("flownet", "additional_flow_nodes")  # type: ignore
+    config.flownet = collections.namedtuple("flownet", "additional_flow_nodes")
     config.flownet.additional_flow_nodes = 2
     config.flownet.additional_node_candidates = 2
     config.flownet.hull_factor = 1
@@ -90,7 +90,7 @@ def test_create_entity_connection_matrix() -> None:
         DF_COORDINATES, STARTS, ENDS, [], [], max_distance=10, max_distance_fraction=0
     )
     assert len(df) == 16
-    for well in DATA["WELL_NAME"]:  # type: ignore
+    for well in DATA["WELL_NAME"]:
         assert df["start_entity"].str.contains(well).any()
 
     df = _create_entity_connection_matrix(
