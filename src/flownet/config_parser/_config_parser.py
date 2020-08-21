@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 import yaml
 import configsuite
@@ -44,6 +44,11 @@ def create_schema(_to_abs_path) -> Dict:
                                 MK.AllowNone: True,
                             },
                         },
+                    },
+                    "phases": {
+                        MK.Type: types.List,
+                        MK.Content: {MK.Item: {MK.Type: types.String}},
+                        MK.Transformation: lambda names: [x.lower() for x in names],
                     },
                     "cell_length": {MK.Type: types.Number},
                     "training_set_end_date": {MK.Type: types.Date, MK.AllowNone: True},
@@ -181,7 +186,10 @@ def create_schema(_to_abs_path) -> Dict:
                     "relative_permeability": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "scheme": {MK.Type: types.String},
+                            "scheme": {
+                                MK.Type: types.String,
+                                MK.Transformation: lambda name: name.lower(),
+                            },
                             "swirr": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
@@ -337,7 +345,11 @@ def create_schema(_to_abs_path) -> Dict:
                     "equil": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "scheme": {MK.Type: types.String, MK.Default: "global"},
+                            "scheme": {
+                                MK.Type: types.String,
+                                MK.Default: "global",
+                                MK.Transformation: lambda name: name.lower(),
+                            },
                             "datum_depth": {MK.Type: types.Number, MK.AllowNone: True},
                             "datum_pressure": {
                                 MK.Type: types.NamedDict,
@@ -453,6 +465,106 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
 
     config = suite.snapshot
 
+    req_relp_parameters: List[str] = []
+
+    for phase in config.flownet.phases:
+        if phase not in ["oil", "gas", "water", "disgas", "vapoil"]:
+            raise ValueError(
+                f"The {phase} phase is not a valid phase\n"
+                f"The valid phases are 'oil', 'gas', 'water', 'disgas' and 'vapoil'"
+            )
+    if not set(["vapoil", "disgas"]).isdisjoint(config.flownet.phases) and not set(
+        ["oil", "gas"]
+    ).issubset(config.flownet.phases):
+        raise ValueError(
+            "The phases 'vapoil' and 'disgas' can not be defined without the phases 'oil' and 'gas'"
+        )
+
+    if set(["oil", "water"]).issubset(config.flownet.phases):
+        req_relp_parameters = req_relp_parameters + [
+            "scheme",
+            "swirr",
+            "swl",
+            "swcr",
+            "sorw",
+            "nw",
+            "now",
+            "krwend",
+            "krowend",
+        ]
+        if (
+            config.model_parameters.equil.owc_depth.min is None
+            or config.model_parameters.equil.owc_depth.max is None
+            or config.model_parameters.equil.owc_depth.max
+            < config.model_parameters.equil.owc_depth.min
+        ):
+            raise ValueError(
+                "Ambiguous configuration input: OWC not properly specified. Min or max missing, or max < min."
+            )
+    if set(["oil", "gas"]).issubset(config.flownet.phases):
+        req_relp_parameters = req_relp_parameters + [
+            "scheme",
+            "swirr",
+            "swl",
+            "sgcr",
+            "sorg",
+            "ng",
+            "nog",
+            "krgend",
+            "krogend",
+        ]
+        if (
+            config.model_parameters.equil.goc_depth.min is None
+            or config.model_parameters.equil.goc_depth.max is None
+            or config.model_parameters.equil.goc_depth.max
+            < config.model_parameters.equil.goc_depth.min
+        ):
+            raise ValueError(
+                "Ambiguous configuration input: GOC not properly specified. Min or max missing, or max < min."
+            )
+
+    for parameter in set(req_relp_parameters):
+        if parameter == "scheme":
+            if (
+                getattr(config.model_parameters.relative_permeability, parameter)
+                != "global"
+                and getattr(config.model_parameters.relative_permeability, parameter)
+                != "individual"
+            ):
+                raise ValueError(
+                    f"The relative permeability scheme "
+                    f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
+                    f"Valid options are 'global' or 'individual'."
+                )
+        else:
+            if (
+                getattr(config.model_parameters.relative_permeability, parameter).min
+                is None
+                or getattr(config.model_parameters.relative_permeability, parameter).max
+                is None
+            ):
+                raise ValueError(
+                    f"Ambiguous configuration input: The {parameter} parameter is missing or not properly defined."
+                )
+            if (
+                getattr(config.model_parameters.relative_permeability, parameter).max
+                < getattr(config.model_parameters.relative_permeability, parameter).min
+            ):
+                raise ValueError(
+                    f"Ambiguous configuration input: The {parameter} setting 'max' is higher than the 'min'"
+                )
+
+    for parameter in set(config.model_parameters.relative_permeability._fields) - set(
+        req_relp_parameters
+    ):
+        if (
+            getattr(config.model_parameters.relative_permeability, parameter).min
+            is not None
+            and getattr(config.model_parameters.relative_permeability, parameter).max
+            is not None
+        ):
+            raise ValueError(f"The {parameter} parameter should not be specified.")
+
     if config.ert.queue.system.upper() != "LOCAL" and (
         config.ert.queue.name is None or config.ert.queue.server is None
     ):
@@ -491,26 +603,6 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 f"({getattr(config.model_parameters, parameter).max}) which is smaller than the value "
                 f"set as 'min' ({getattr(config.model_parameters, parameter).min})."
             )
-
-    if (
-        config.model_parameters.equil.goc_depth
-        is None
-        != config.model_parameters.relative_permeability.sorg
-        is None
-        != config.model_parameters.relative_permeability.sgcr
-        is None
-        != config.model_parameters.relative_permeability.ng
-        is None
-        != config.model_parameters.relative_permeability.nog
-        is None
-        != config.model_parameters.relative_permeability.krgend
-        is None
-        != config.model_parameters.relative_permeability.krogend
-        is None
-    ):
-        raise ValueError(
-            "GOC and gas relative permeability must both be specified (or none of them)."
-        )
 
     for suffix in [".DATA", ".EGRID", ".UNRST", ".UNSMRY", ".SMSPEC"]:
         if (
