@@ -235,6 +235,11 @@ def create_schema(_to_abs_path) -> Dict:
             "model_parameters": {
                 MK.Type: types.NamedDict,
                 MK.Content: {
+                    "ahm_case": {
+                        MK.Type: types.String,
+                        MK.Transformation: _to_abs_path,
+                        MK.AllowNone: True,
+                    },
                     "permeability": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
