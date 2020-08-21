@@ -1,5 +1,6 @@
 import collections
 
+import numpy as np
 import pandas as pd
 
 from flownet.network_model._generate_connections import (
@@ -71,6 +72,16 @@ def test_generate_connections() -> None:
     assert len(starts) == len(ends)
     assert starts == STARTS
     assert ends == ENDS
+
+    starts, ends = _generate_connections(
+        df_coordinates=DF_COORDINATES,
+        configuration=config,
+        concave_hull_bounding_boxes=np.array([0, 2, 0, 2, 0, 2]).reshape(-1, 6),
+    )
+
+    assert len(starts) == len(ends)
+    assert starts is not STARTS
+    assert ends is not ENDS
 
 
 def test_create_entity_connection_matrix() -> None:
