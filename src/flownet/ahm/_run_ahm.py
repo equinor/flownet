@@ -1,6 +1,9 @@
 import argparse
 from typing import Union, List, Optional
 
+import json
+from operator import add
+
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
@@ -118,6 +121,89 @@ def _get_distribution(
 
     return df
 
+
+def update_distribution(parameters, ahm_case):
+    """
+    Update the prior distribution min-max for one or more parameters based on
+    the mean of the posterior distribution. It is assumed that the prior min
+    and max values cannot be exceeded.
+
+    Args:
+        parameters: which parameter(s) should be updated
+        ahm_case: path to a previous HM experiment folder
+
+    Returns:
+        The parameters list with updated distributions.
+
+    """
+
+    df = pd.read_parquet(ahm_case + '/parameters_iteration-latest.parquet.gzip')
+
+    nr = 0
+    for realization_index in df.index.values.tolist():
+        nr += 1
+        unsorted_random_samples = json.loads(
+            df[df.index == realization_index].transpose().to_json()
+        )[str(realization_index)]
+
+        sorted_names = sorted(
+            list(unsorted_random_samples.keys()), key=lambda x: int(x.split("_")[0])
+        )
+        sorted_random_samples = [unsorted_random_samples[name] for name in sorted_names]
+
+        for parameter in parameters:
+            n = len(parameter.random_variables)
+            random_samples = sorted_random_samples[:n]
+            del sorted_random_samples[:n]
+            if nr == 1:
+                parameter.mean_values = random_samples
+            else:
+                parameter.mean_values = list(map(add, parameter.mean_values, random_samples))
+
+    # compute ensemble-mean values
+    for parameter in parameters:
+        parameter.mean_values = [value / float(df.shape[0]) for value in parameter.mean_values]
+
+    # update the distributions
+    for parameter in parameters:
+        n = len(parameter.random_variables)
+
+        for i, var in enumerate(parameter.random_variables):
+            mean = parameter.mean_values[i]
+
+            loguniform = var.ert_gen_kw.split()[0] == 'LOGUNIF'
+            dist_min0 = var.minimum
+            dist_max0 = var.maximum
+
+            if loguniform is True:
+                # pylint: disable=cell-var-from-loop
+                dist_max = dist_max0
+                dist_min = minimize(
+                    lambda x: (mean - ((dist_max - x) / np.log(dist_max / x))) ** 2,
+                    x0=mean,
+                    tol=1e-9,
+                    method="L-BFGS-B",
+                    bounds=[(1e-9, mean)],
+                ).x[0]
+                if dist_min < dist_min0:
+                    dist_min = dist_min0
+                    dist_max = minimize(
+                        lambda x: (mean - ((x - dist_min) / np.log(x / dist_min))) ** 2,
+                        x0=mean,
+                        tol=1e-9,
+                        method="L-BFGS-B",
+                        bounds=[(mean, None)],
+                    ).x[0]
+            else:
+                dist_max = dist_max0
+                dist_min = mean - (dist_max - mean)
+                if dist_min < dist_min0:
+                    dist_min = dist_min0
+                    dist_max = mean + (mean - dist_min)
+            var.minimum = dist_min
+            var.maximum = dist_max
+
+    return parameters
 
 # pylint: disable=too-many-branches
 def run_flownet_history_matching(
@@ -386,6 +472,9 @@ def run_flownet_history_matching(
 
     if isinstance(network.faults, dict):
         parameters.append(FaultTransmissibility(fault_mult_dist_values, network))
+
+    if config.model_parameters.ahm_case is not None:
+        update_distribution(parameters, config.model_parameters.ahm_case)
 
     ahm = AssistedHistoryMatching(
         network,
