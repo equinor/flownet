@@ -12,6 +12,7 @@ from ecl2df import faults
 from ecl2df.eclfiles import EclFiles
 
 from .from_source import FromSource
+from ..utils.types import Coordinate
 
 
 class FlowData(FromSource):
@@ -45,12 +46,6 @@ class FlowData(FromSource):
     def _coordinates(self) -> pd.DataFrame:
         """
         Function to extract well coordinates from an Flow simulation.
-
-        Args:
-            filename: Entire path to the simulated simulation case. This
-                            case must have both and EGRID and UNRST file.
-            perforation_handling_strategy: How to deal with perforations per well.
-                                                ('bottom_point', 'top_point', 'multiple')
 
         Returns:
             columns: WELL_NAME, X, Y, Z
@@ -262,8 +257,36 @@ class FlowData(FromSource):
 
         return df_faults.drop(["I", "J", "K"], axis=1)
 
+    def _grid_cell_bounding_boxes(self) -> np.ndarray:
+        """
+        Function to get the bounding box (x, y and z min + max) for all grid cells
+
+        Returns:
+            A (active grid cells x 6) numpy array with columns [ xmin, xmax, ymin, ymax, zmin, zmax ]
+        """
+        xyz = np.empty((8 * self._grid.get_num_active(), 3))
+        for active_index in range(self._grid.get_num_active()):
+            for corner in range(0, 8):
+                xyz[active_index * 8 + corner, :] = self._grid.get_cell_corner(
+                    corner, active_index=active_index
+                )
+
+        xmin = xyz[:, 0].reshape(-1, 8).min(axis=1)
+        xmax = xyz[:, 0].reshape(-1, 8).max(axis=1)
+        ymin = xyz[:, 1].reshape(-1, 8).min(axis=1)
+        ymax = xyz[:, 1].reshape(-1, 8).max(axis=1)
+        zmin = xyz[:, 2].reshape(-1, 8).min(axis=1)
+        zmax = xyz[:, 2].reshape(-1, 8).max(axis=1)
+
+        return np.vstack([xmin, xmax, ymin, ymax, zmin, zmax]).T
+
     def _get_start_date(self):
         return self._eclsum.start_date
+
+    @property
+    def grid_cell_bounding_boxes(self) -> np.ndarray:
+        """Boundingboxes for all gridcells"""
+        return self._grid_cell_bounding_boxes()
 
     @property
     def faults(self) -> pd.DataFrame:

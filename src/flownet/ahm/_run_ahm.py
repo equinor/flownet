@@ -119,7 +119,7 @@ def _get_distribution(
     return df
 
 
-# pylint: disable=too-many-branches
+# pylint: disable=too-many-branches,too-many-statements
 def run_flownet_history_matching(
     config: ConfigSuite.snapshot, args: argparse.Namespace
 ):
@@ -154,7 +154,13 @@ def run_flownet_history_matching(
         pd.DataFrame
     ] = field_data.faults if config.model_parameters.fault_mult else None
 
-    df_connections: pd.DataFrame = create_connections(df_coordinates, config)
+    concave_hull_bounding_boxes: Optional[np.ndarray] = None
+    if config.flownet.data_source.concave_hull:
+        concave_hull_bounding_boxes = field_data.grid_cell_bounding_boxes
+
+    df_connections: pd.DataFrame = create_connections(
+        df_coordinates, config, concave_hull_bounding_boxes=concave_hull_bounding_boxes,
+    )
 
     network = NetworkModel(
         df_connections,
