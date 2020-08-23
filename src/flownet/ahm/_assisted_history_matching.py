@@ -13,7 +13,7 @@ import jinja2
 import numpy as np
 import pandas as pd
 
-from ..ert import create_ert_setup
+from ..ert import create_ert_setup, run_ert_subprocess
 from ..realization import Schedule
 from ..network_model import NetworkModel
 from ..parameters import Parameter
@@ -48,12 +48,11 @@ class AssistedHistoryMatching:
             schedule: Schedule instance
             parameters: List of Parameter objects
             config: Dictionary containing information about queue (system, name, server and max_running)
-                and realizations (num_realizations, required_success_percent and max_runtime)
-
         """
         self._network: NetworkModel = network
         self._schedule: Schedule = schedule
         self._parameters: List[Parameter] = parameters
+
         self._config: dict = config
 
     def create_ert_setup(self, args: argparse.Namespace, training_set_fraction: float):
@@ -108,30 +107,16 @@ class AssistedHistoryMatching:
                     {
                         "output_folder": self.output_folder,
                         "iterations": range(len(weights) + 1),
-                        "runpath": self._config["ert"]["runpath"],
+                        "runpath": self._config["ert"].runpath,
                     }
                 )
             )
 
-        try:
-            # Ignore deprecation warnings (ERT as of August 2019 has a lot of them
-            # due to transition to Python3)
-            subprocess.run(
-                "export PYTHONWARNINGS=ignore::DeprecationWarning;"
-                f"ert es_mda --weights {','.join(map(str, weights))!r} ahm_config.ert",
-                cwd=self.output_folder,
-                shell=True,
-                check=True,
-            )
-        except subprocess.CalledProcessError:
-            error_files = glob.glob(
-                str(
-                    self.output_folder
-                    / self._config["ert"]["runpath"].replace("%d", "*")
-                    / "ERROR"
-                )
-            )
-            raise RuntimeError(pathlib.Path(error_files[0]).read_text())
+        run_ert_subprocess(
+            f"ert es_mda --weights {','.join(map(str, weights))!r} ahm_config.ert",
+            cwd=self.output_folder,
+            runpath=self._config["ert"].runpath,
+        )
 
     def report(self):
         """
@@ -150,7 +135,7 @@ class AssistedHistoryMatching:
             f"Number of observations: {self._schedule.get_nr_observations(self._training_set_fraction):>20}"
         )
         print(
-            f"Number of realizations: {self._config['ert']['realizations'].num_realizations:>20}"
+            f"Number of realizations: {self._config["ert"].realizations.num_realizations:>20}"
         )
 
         distributions = {

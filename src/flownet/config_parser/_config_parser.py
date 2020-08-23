@@ -220,17 +220,11 @@ def create_schema(_to_abs_path) -> Dict:
                     "analysis": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "metric": {MK.Type: types.String, MK.Default: "[RMSE]"},
-                            "quantity": {
-                                MK.Type: types.String,
-                                MK.Default: "[WOPR:BR-P-]",
-                            },
-                            "start": {MK.Type: types.String, MK.Default: "2001-04-01",},
-                            "end": {MK.Type: types.String, MK.Default: "2006-01-01",},
-                            "outfile": {
-                                MK.Type: types.String,
-                                MK.Default: "analysis_metrics_iteration",
-                            },
+                            "metric": {MK.Type: types.String, MK.AllowNone: True},
+                            "quantity": {MK.Type: types.String, MK.AllowNone: True,},
+                            "start": {MK.Type: types.String, MK.AllowNone: True},
+                            "end": {MK.Type: types.String, MK.AllowNone: True},
+                            "outfile": {MK.Type: types.String, MK.AllowNone: True,},
                         },
                     },
                 },
@@ -697,12 +691,11 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             )
 
     for suffix in [".DATA", ".EGRID", ".UNRST", ".UNSMRY", ".SMSPEC"]:
-        if (
-            not pathlib.Path(config.flownet.data_source.simulation.input_case)
-            .with_suffix(suffix)
-            .is_file()
-        ):
-            raise ValueError(f"The input case {suffix} file does not exist")
+        input_file = pathlib.Path(config.flownet.data_source.simulation.input_case).with_suffix(
+            suffix
+        )
+        if not input_file.is_file():
+            raise ValueError(f"The file {input_file} does not exist")
 
     if config.flownet.training_set_end_date and config.flownet.training_set_fraction:
         raise ValueError(
