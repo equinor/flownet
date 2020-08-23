@@ -24,6 +24,7 @@ _MODULE_FOLDER = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
 def _create_observation_file(
     schedule: Schedule,
     obs_file: pathlib.Path,
+    config: dict,
     training_set_fraction: float = 1,
     yaml: bool = False,
 ):
@@ -36,6 +37,7 @@ def _create_observation_file(
     Args:
         schedule: FlowNet Schedule instance to create observations from.
         obs_file: Path to store the observation file.
+        config: Dictionary of config information
         training_set_fraction: Fraction of observations in schedule to use in training set
         yaml: Flag to indicate whether a yaml observation file is to be stored. False means ertobs.
 
@@ -48,13 +50,28 @@ def _create_observation_file(
     if yaml:
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
         with open(obs_file, "w") as fh:
-            fh.write(template.render({"schedule": schedule}))
+            fh.write(
+                template.render(
+                    {
+                        "schedule": schedule,
+                        "error_config": config[
+                            "flownet"
+                        ].data_source.simulation.vectors,
+                    }
+                )
+            )
     else:
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
         with open(obs_file, "w") as fh:
             fh.write(
                 template.render(
-                    {"schedule": schedule, "num_training_dates": num_training_dates}
+                    {
+                        "schedule": schedule,
+                        "error_config": config[
+                            "flownet"
+                        ].data_source.simulation.vectors,
+                        "num_training_dates": num_training_dates,
+                    }
                 )
             )
 
@@ -91,9 +108,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     args: argparse.Namespace,
     network,
     schedule: Schedule,
-    ert_config: dict,
+    config: dict,
     parameters=None,
-    random_seed=None,
     training_set_fraction: float = 1,
     prediction_setup: bool = False,
 ):
@@ -140,12 +156,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                     "pickled_schedule": output_folder.resolve() / "schedule.pickled",
                     "pickled_parameters": output_folder.resolve()
                     / "parameters.pickled",
-                    "random_seed": random_seed,
-                    "ert_config": ert_config,
+                    "config": config,
                     "debug": args.debug if hasattr(args, "debug") else False,
-                    "pred_schedule_file": getattr(
-                        ert_config, "pred_schedule_file", None
-                    ),
+                    "pred_schedule_file": getattr(config, "pred_schedule_file", None),
                 }
             )
         )
@@ -171,9 +184,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     )
 
     static_path = (
-        getattr(ert_config, "static_include_files")
-        if hasattr(ert_config, "static_include_files")
-        else ert_config["static_include_files"]
+        getattr(config["ert"], "static_include_files")
+        if hasattr(config["ert"], "static_include_files")
+        else config["ert"]["static_include_files"]
     )
 
     shutil.copyfile(
@@ -197,11 +210,14 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
 
     if parameters is not None:
         _create_observation_file(
-            schedule, output_folder / "observations.ertobs", training_set_fraction,
+            schedule,
+            output_folder / "observations.ertobs",
+            config,
+            training_set_fraction,
         )
 
         _create_observation_file(
-            schedule, output_folder / "observations.yamlobs", yaml=True
+            schedule, output_folder / "observations.yamlobs", config, yaml=True
         )
 
         _create_ert_parameter_file(parameters, output_folder)

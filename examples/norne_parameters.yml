@@ -2,7 +2,24 @@ name: Norne
 
 flownet:
   data_source:
-    input_case: ../tests/data/norne/NORNE_ATW2013
+    simulation:
+      input_case: ../tests/data/norne/NORNE_ATW2013
+      vectors:
+        WTHP:
+          rel_error: 0.05
+          min_error: 5
+        WBHP:
+          rel_error: 0.05
+          min_error: 10
+        WOPR:
+          rel_error: 0.1
+          min_error: 50
+        WGPR:
+          rel_error: 0.1
+          min_error: 100000
+        WWPR:
+          rel_error: 0.1
+          min_error: 50
   phases:
     - oil
     - gas
