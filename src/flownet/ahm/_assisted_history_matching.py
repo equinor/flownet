@@ -6,7 +6,6 @@ import os
 import pathlib
 import re
 import shutil
-import subprocess
 from typing import List, Dict, Tuple
 
 import jinja2
