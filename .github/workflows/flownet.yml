@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.6', '3.7']
-        flownet-model: ['norne'] 
+        flownet-model: ['norne','egg']
 
     env:
       VENV_PATH: ${{ github.workspace }}/flownet_venv
@@ -83,7 +83,7 @@ jobs:
           source $VENV_PATH/bin/activate
           black --check examples/ tests/ src/ setup.py
           pylint src/ tests/ setup.py
-          mypy --ignore-missing-imports src/ tests/ setup.py
+          mypy --ignore-missing-imports src/ setup.py
 
       - name: 🤖 Run tests
         run: |

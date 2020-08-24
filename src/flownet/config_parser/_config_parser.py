@@ -118,6 +118,7 @@ def create_schema(_to_abs_path) -> Dict:
                                     },
                                 },
                             },
+                            "concave_hull": {MK.Type: types.Bool, MK.AllowNone: True},
                         },
                     },
                     "pvt": {
@@ -154,6 +155,8 @@ def create_schema(_to_abs_path) -> Dict:
                     },
                     "fast_pyscal": {MK.Type: types.Bool, MK.Default: True},
                     "fault_tolerance": {MK.Type: types.Number, MK.Default: 1.0e-5},
+                    "max_distance": {MK.Type: types.Number, MK.Default: 1e12},
+                    "max_distance_fraction": {MK.Type: types.Number, MK.Default: 0},
                 },
             },
             "ert": {
@@ -204,7 +207,7 @@ def create_schema(_to_abs_path) -> Dict:
                         MK.Type: types.NamedDict,
                         MK.Content: {
                             "system": {MK.Type: types.String},
-                            "name": {MK.Type: types.String},
+                            "name": {MK.Type: types.String, MK.AllowNone: True},
                             "server": {MK.Type: types.String, MK.AllowNone: True},
                             "max_running": {MK.Type: types.Integer},
                         },
