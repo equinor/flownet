@@ -122,7 +122,7 @@ def create_schema(_to_abs_path) -> Dict:
                         MK.Type: types.NamedDict,
                         MK.Content: {
                             "system": {MK.Type: types.String},
-                            "name": {MK.Type: types.String},
+                            "name": {MK.Type: types.String, MK.AllowNone: True},
                             "server": {MK.Type: types.String, MK.AllowNone: True},
                             "max_running": {MK.Type: types.Integer},
                         },
