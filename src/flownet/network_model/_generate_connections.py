@@ -1,6 +1,6 @@
 import math
 import time
-from typing import List, Tuple, Any
+from typing import List, Tuple, Any, Optional
 from operator import itemgetter
 
 import numpy as np
@@ -89,7 +89,9 @@ def _remove_recorded_connections(
 
 
 def _generate_connections(
-    df_coordinates: pd.DataFrame, configuration: Any
+    df_coordinates: pd.DataFrame,
+    configuration: Any,
+    concave_hull_bounding_boxes: Optional[np.ndarray] = None,
 ) -> Tuple[List[Coordinate], List[Coordinate]]:
     """
     Uses MitchellBestCandidate and Delaunay triangulation to populate the reservoir
@@ -99,6 +101,7 @@ def _generate_connections(
     Args:
         df_coordinates: coordinates on original DataFrame format
         configuration: FlowNet configuration yaml
+        concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
 
     Returns:
         The tuple consisting of the start_coords and end_coords for connections.
@@ -122,6 +125,7 @@ def _generate_connections(
             num_added_flow_nodes=configuration.flownet.additional_flow_nodes,
             num_candidates=configuration.flownet.additional_node_candidates,
             hull_factor=configuration.flownet.hull_factor,
+            concave_hull_bounding_boxes=concave_hull_bounding_boxes,
             random_seed=configuration.flownet.random_seed,
         )
     ]
@@ -188,7 +192,7 @@ def _generate_connections(
         )
     print("done.")
 
-    # Are there nodes in the connection matrix that has no connections? Definately a problem
+    # Are there nodes in the connection matrix that has no connections? Definitely a problem
     # it is one of the original well perforations
     print("Checking connectivity of well-perforations...")
     _check_for_none_connectivity_amongst_entities(conn_matrix)
@@ -296,12 +300,15 @@ def __get_entity_str(df_coordinates: pd.DataFrame, coordinate: Coordinate) -> st
     return entity
 
 
+# pylint: disable=too-many-arguments
 def _create_entity_connection_matrix(
     df_coordinates: pd.DataFrame,
     starts: List[Coordinate],
     ends: List[Coordinate],
     aquifer_starts: List[Coordinate],
     aquifer_ends: List[Coordinate],
+    max_distance_fraction: float,
+    max_distance: float,
 ) -> pd.DataFrame:
     """
     Converts the the coordinates given for starts and ends to the desired DataFrame format for simulation input.
@@ -312,6 +319,8 @@ def _create_entity_connection_matrix(
         ends: List of coordinates of all the end entities
         aquifer_starts: List of coordinates for all aquifer starts
         aquifer_ends: List of coordinates of all aquifer ends
+        max_distance_fraction: Fraction of longest connection distance to be removed
+        max_distance: Maximum distance between nodes, removed otherwise
 
     Returns:
         Connection coordinate DataFrame on Flow desired format.
@@ -365,8 +374,61 @@ def _create_entity_connection_matrix(
             ignore_index=True,
         )
 
+    df_out = _remove_long_connections(df_out, max_distance_fraction, max_distance)
+
     print("done.")
     return df_out
+
+
+def _remove_long_connections(
+    df_connections: pd.DataFrame,
+    max_distance_fraction: float = 0,
+    max_distance: float = 1e12,
+) -> pd.DataFrame:
+    """
+    Helper function to remove long connections.
+
+    Args:
+        df_connections: Pandas dataframe with start point, end point and entity type
+        max_distance_fraction: Fraction of longest connections to drop. I.e., 0.1 will drop the 10% longest connections.
+        max_distance: Maximum length of a connection; connections longer than this value will be dropped.
+
+    Returns:
+        Input DataFrame without long connections
+
+    """
+    if max_distance_fraction == 0 and max_distance == 1e12:
+        return df_connections
+
+    def __calculate_distance(row: Any) -> float:
+        """
+        Helper function that calculates the distance between two nodes.
+
+        Args:
+            row: Pandas dataframe row object
+
+        Returns:
+            Distance
+
+        """
+        return (
+            (row["xend"] - row["xstart"]) ** 2
+            + (row["yend"] - row["ystart"]) ** 2
+            + (row["zend"] - row["zstart"]) ** 2
+        ) ** 0.5
+
+    df_connections["distance"] = df_connections.apply(__calculate_distance, axis=1)
+
+    max_distance = min(
+        df_connections["distance"].quantile(1 - max_distance_fraction), max_distance
+    )
+
+    df_connections = df_connections[
+        (df_connections["distance"] < max_distance)
+        | (df_connections["end_entity"] == "aquifer")
+    ]
+
+    return df_connections
 
 
 def _generate_aquifer_connections(
@@ -431,7 +493,9 @@ def _generate_aquifer_connections(
 
 
 def create_connections(
-    df_coordinates: pd.DataFrame, configuration: Any
+    df_coordinates: pd.DataFrame,
+    configuration: Any,
+    concave_hull_bounding_boxes: Optional[np.ndarray] = None,
 ) -> pd.DataFrame:
     """
     Creates additional flow nodes to increase complexity of field simulation structure so that history-matching can
@@ -443,12 +507,17 @@ def create_connections(
     Args:
         df_coordinates: Original structure of entity and X, Y, Z coords
         configuration: FlowNet configuration yaml as dictionary
+        concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
 
     Returns:
         Desired restructuring of start-end coordinates into separate columns, as per Flow needs.
 
     """
-    starts, ends = _generate_connections(df_coordinates, configuration)
+    starts, ends = _generate_connections(
+        df_coordinates=df_coordinates,
+        configuration=configuration,
+        concave_hull_bounding_boxes=concave_hull_bounding_boxes,
+    )
     aquifer_starts: List[Coordinate] = []
     aquifer_ends: List[Coordinate] = []
 
@@ -463,5 +532,11 @@ def create_connections(
         )
 
     return _create_entity_connection_matrix(
-        df_coordinates, starts, ends, aquifer_starts, aquifer_ends
+        df_coordinates,
+        starts,
+        ends,
+        aquifer_starts,
+        aquifer_ends,
+        configuration.flownet.max_distance_fraction,
+        configuration.flownet.max_distance,
     )
