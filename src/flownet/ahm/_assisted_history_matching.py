@@ -135,7 +135,7 @@ class AssistedHistoryMatching:
             f"Number of observations: {self._schedule.get_nr_observations(self._training_set_fraction):>20}"
         )
         print(
-            f"Number of realizations: {self._config["ert"].realizations.num_realizations:>20}"
+            f"Number of realizations: {self._config['ert'].realizations.num_realizations:>20}"
         )
 
         distributions = {

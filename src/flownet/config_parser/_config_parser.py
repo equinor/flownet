@@ -691,9 +691,9 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             )
 
     for suffix in [".DATA", ".EGRID", ".UNRST", ".UNSMRY", ".SMSPEC"]:
-        input_file = pathlib.Path(config.flownet.data_source.simulation.input_case).with_suffix(
-            suffix
-        )
+        input_file = pathlib.Path(
+            config.flownet.data_source.simulation.input_case
+        ).with_suffix(suffix)
         if not input_file.is_file():
             raise ValueError(f"The file {input_file} does not exist")
 

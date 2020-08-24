@@ -132,7 +132,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
 
     # Derive absolute path to reference simulation case
     if config["flownet"].data_source.simulation.input_case:
-        path_ref_sim = pathlib.Path(config["flownet"].data_source.simulation.input_case).resolve()
+        path_ref_sim = pathlib.Path(
+            config["flownet"].data_source.simulation.input_case
+        ).resolve()
     else:
         path_ref_sim = pathlib.Path(".").resolve()
 
