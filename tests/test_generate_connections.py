@@ -1,5 +1,6 @@
 import collections
 
+from pytest import approx
 import numpy as np
 import pandas as pd
 
@@ -70,8 +71,8 @@ def test_generate_connections() -> None:
     )
 
     assert len(starts) == len(ends)
-    assert starts == STARTS
-    assert ends == ENDS
+    assert all([starts[i] == approx(STARTS[i]) for i in range(len(starts))])
+    assert all([ends[i] == approx(ENDS[i]) for i in range(len(ends))])
 
     starts, ends = _generate_connections(
         df_coordinates=DF_COORDINATES,
@@ -80,8 +81,8 @@ def test_generate_connections() -> None:
     )
 
     assert len(starts) == len(ends)
-    assert starts is not STARTS
-    assert ends is not ENDS
+    assert len(starts) != len(STARTS)
+    assert len(ends) != len(ENDS)
 
 
 def test_create_entity_connection_matrix() -> None:
