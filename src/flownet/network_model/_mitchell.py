@@ -7,11 +7,13 @@ import numpy as np
 from ..utils.types import Coordinate
 
 
+# pylint: disable=too-many-branches,too-many-statements
 def mitchell_best_candidate_modified_3d(
     perforations: List[Coordinate],
     num_added_flow_nodes: int,
     num_candidates: int = 1000,
     hull_factor: Optional[float] = None,
+    concave_hull_bounding_boxes: Optional[np.ndarray] = None,
     random_seed: Optional[int] = None,
 ) -> List[Coordinate]:
 
@@ -34,6 +36,7 @@ def mitchell_best_candidate_modified_3d(
         hull_factor: Factor to linearly scale the convex hull with. Factor will
             scale the distance of each point from the centroid of all the points.
             When a None is supplied a box-shape is used.
+        concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
         random_seed: Random seed to control the reproducibility of the FlowNet.
 
     Returns:
@@ -102,6 +105,14 @@ def mitchell_best_candidate_modified_3d(
         y_candidate = np.zeros(num_candidates)
         z_candidate = np.zeros(num_candidates)
 
+        if concave_hull_bounding_boxes is not None:
+            xmin_grid_cells = concave_hull_bounding_boxes[:, 0]
+            xmax_grid_cells = concave_hull_bounding_boxes[:, 1]
+            ymin_grid_cells = concave_hull_bounding_boxes[:, 2]
+            ymax_grid_cells = concave_hull_bounding_boxes[:, 3]
+            zmin_grid_cells = concave_hull_bounding_boxes[:, 4]
+            zmax_grid_cells = concave_hull_bounding_boxes[:, 5]
+
         # Repeat while not all random points are inside the convex hull
         while not all(in_hull):
             # Generate a set of random candidates that will be the new
@@ -116,11 +127,29 @@ def mitchell_best_candidate_modified_3d(
             np.putmask(y_candidate, np.invert(in_hull), y_candidate_tmp)
             np.putmask(z_candidate, np.invert(in_hull), z_candidate_tmp)
 
-            # Test whether all points are inside the convex hull of the perforations
-            in_hull = (
-                hull.find_simplex(np.vstack([x_candidate, y_candidate, z_candidate]).T)
-                >= 0
-            )
+            candidates = np.vstack([x_candidate, y_candidate, z_candidate]).T
+
+            if concave_hull_bounding_boxes is not None:
+                for c_index, candidate in enumerate(candidates):
+                    if not in_hull[c_index]:
+                        in_hull[c_index] = (
+                            (
+                                (candidate[0] >= xmin_grid_cells)
+                                & (candidate[0] <= xmax_grid_cells)
+                            )
+                            & (
+                                (candidate[1] >= ymin_grid_cells)
+                                & (candidate[1] <= ymax_grid_cells)
+                            )
+                            & (
+                                (candidate[2] >= zmin_grid_cells)
+                                & (candidate[2] <= zmax_grid_cells)
+                            )
+                        ).any()
+
+            else:
+                # Test whether all points are inside the convex hull of the perforations
+                in_hull = hull.find_simplex(candidates) >= 0
 
         best_distance = 0
         best_candidate = 0
