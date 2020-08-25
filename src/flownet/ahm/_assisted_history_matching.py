@@ -7,7 +7,7 @@ import pathlib
 import re
 import shutil
 from typing import List, Dict, Tuple
-
+from configsuite import ConfigSuite
 import jinja2
 import numpy as np
 import pandas as pd
@@ -37,7 +37,7 @@ class AssistedHistoryMatching:
         network: NetworkModel,
         schedule: Schedule,
         parameters: List[Parameter],
-        config: Dict,
+        config: ConfigSuite.snapshot,
     ):
         """
         Initialize an Assisted History Matching Class
@@ -52,7 +52,7 @@ class AssistedHistoryMatching:
         self._schedule: Schedule = schedule
         self._parameters: List[Parameter] = parameters
 
-        self._config: dict = config
+        self._config: ConfigSuite.snapshot = config
 
     def create_ert_setup(self, args: argparse.Namespace, training_set_fraction: float):
         # pylint: disable=attribute-defined-outside-init
@@ -106,7 +106,7 @@ class AssistedHistoryMatching:
                     {
                         "output_folder": self.output_folder,
                         "iterations": range(len(weights) + 1),
-                        "runpath": self._config["ert"].runpath,
+                        "runpath": self._config.ert.runpath,
                     }
                 )
             )
@@ -114,7 +114,7 @@ class AssistedHistoryMatching:
         run_ert_subprocess(
             f"ert es_mda --weights {','.join(map(str, weights))!r} ahm_config.ert",
             cwd=self.output_folder,
-            runpath=self._config["ert"].runpath,
+            runpath=self._config.ert.runpath,
         )
 
     def report(self):
@@ -134,7 +134,7 @@ class AssistedHistoryMatching:
             f"Number of observations: {self._schedule.get_nr_observations(self._training_set_fraction):>20}"
         )
         print(
-            f"Number of realizations: {self._config['ert'].realizations.num_realizations:>20}"
+            f"Number of realizations: {self._config.ert.realizations.num_realizations:>20}"
         )
 
         distributions = {

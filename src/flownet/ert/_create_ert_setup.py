@@ -4,7 +4,7 @@ import argparse
 import pickle
 import shutil
 from typing import List
-
+from configsuite import ConfigSuite
 import jinja2
 import numpy as np
 
@@ -24,7 +24,7 @@ _MODULE_FOLDER = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
 def _create_observation_file(
     schedule: Schedule,
     obs_file: pathlib.Path,
-    config: dict,
+    config: ConfigSuite.snapshot,
     training_set_fraction: float = 1,
     yaml: bool = False,
 ):
@@ -37,7 +37,7 @@ def _create_observation_file(
     Args:
         schedule: FlowNet Schedule instance to create observations from.
         obs_file: Path to store the observation file.
-        config: Dictionary of config information
+        config: Information from the FlowNet config yaml
         training_set_fraction: Fraction of observations in schedule to use in training set
         yaml: Flag to indicate whether a yaml observation file is to be stored. False means ertobs.
 
@@ -54,9 +54,7 @@ def _create_observation_file(
                 template.render(
                     {
                         "schedule": schedule,
-                        "error_config": config[
-                            "flownet"
-                        ].data_source.simulation.vectors,
+                        "error_config": config.flownet.data_source.simulation.vectors,
                     }
                 )
             )
@@ -67,9 +65,7 @@ def _create_observation_file(
                 template.render(
                     {
                         "schedule": schedule,
-                        "error_config": config[
-                            "flownet"
-                        ].data_source.simulation.vectors,
+                        "error_config": config.flownet.data_source.simulation.vectors,
                         "num_training_dates": num_training_dates,
                     }
                 )
@@ -84,7 +80,7 @@ def _create_ert_parameter_file(
     and outputs them in an ert parameter definition file
 
     Args:
-        parameters: List with Paratemers
+        parameters: List with Parameters
         output_folder: Path to the output_folder
 
     Returns:
@@ -108,7 +104,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     args: argparse.Namespace,
     network,
     schedule: Schedule,
-    config: dict,
+    config: ConfigSuite.snapshot,
     parameters=None,
     training_set_fraction: float = 1,
     prediction_setup: bool = False,
@@ -119,7 +115,11 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         Args:
             schedule: FlowNet Schedule instance to create ERT setup from
             args: Arguments given to FlowNet at execution
+            network: FlowNet network instance
+            config: Information from the FlowNet config yaml
+            parameters: List with parameters (default = None)
             training_set_fraction: Fraction of observations to be used for model training (default = 1)
+            prediction_setup: Set to true if it is a prediction run (default = False)
 
         Returns:
             Nothing
@@ -132,9 +132,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
 
     if not prediction_setup:
         # Derive absolute path to reference simulation case
-        if config["flownet"].data_source.simulation.input_case:
+        if config.flownet.data_source.simulation.input_case:
             path_ref_sim = pathlib.Path(
-                config["flownet"].data_source.simulation.input_case
+                config.flownet.data_source.simulation.input_case
             ).resolve()
         else:
             path_ref_sim = pathlib.Path(".").resolve()
@@ -166,12 +166,10 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                     "pickled_parameters": output_folder.resolve()
                     / "parameters.pickled",
                     "config": config,
-                    "random_seed": config["flownet"].random_seed
+                    "random_seed": config.flownet.random_seed
                     if not prediction_setup
                     else None,
-                    "perforation_strategy": config[
-                        "flownet"
-                    ].perforation_handling_strategy
+                    "perforation_strategy": config.flownet.perforation_handling_strategy
                     if not prediction_setup
                     else None,
                     "reference_simulation": path_ref_sim
@@ -204,9 +202,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     )
 
     static_path = (
-        getattr(config["ert"], "static_include_files")
-        if hasattr(config["ert"], "static_include_files")
-        else config["ert"]["static_include_files"]
+        getattr(config.ert, "static_include_files")
+        if hasattr(config.ert, "static_include_files")
+        else config.ert.static_include_files
     )
 
     shutil.copyfile(

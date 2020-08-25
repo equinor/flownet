@@ -394,7 +394,7 @@ def run_flownet_history_matching(
         parameters.append(FaultTransmissibility(fault_mult_dist_values, network))
 
     ahm = AssistedHistoryMatching(
-        network, schedule, parameters, config=config._asdict(),
+        network, schedule, parameters, config,
     )
 
     ahm.create_ert_setup(
