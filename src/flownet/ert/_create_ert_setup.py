@@ -130,7 +130,6 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     output_folder = pathlib.Path(args.output_folder)
     os.makedirs(output_folder, exist_ok=True)
 
-
     if not prediction_setup:
         # Derive absolute path to reference simulation case
         if config["flownet"].data_source.simulation.input_case:
@@ -167,9 +166,15 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                     "pickled_parameters": output_folder.resolve()
                     / "parameters.pickled",
                     "config": config,
-                    "random_seed": config["flownet"].random_seed if not prediction_setup else None,
-                    "perforation_strategy": config["flownet"].perforation_strategy if not prediction_setup else None,
-                    "reference_simulation": path_ref_sim if not prediction_setup else None,
+                    "random_seed": config["flownet"].random_seed
+                    if not prediction_setup
+                    else None,
+                    "perforation_strategy": config["flownet"].perforation_strategy
+                    if not prediction_setup
+                    else None,
+                    "reference_simulation": path_ref_sim
+                    if not prediction_setup
+                    else None,
                     "debug": args.debug if hasattr(args, "debug") else False,
                     "pred_schedule_file": getattr(config, "pred_schedule_file", None),
                 }
