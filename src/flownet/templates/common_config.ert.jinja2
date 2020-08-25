@@ -1,5 +1,5 @@
-{% if config.flownet.random_seed is not none: -%}
-RANDOM_SEED {{config.flownet.random_seed }}
+{% if random_seed is not none: -%}
+RANDOM_SEED {{ random_seed }}
 {%- endif %}
 
 NUM_REALIZATIONS {{ config.ert.realizations.num_realizations }}

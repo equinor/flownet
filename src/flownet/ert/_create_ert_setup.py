@@ -130,13 +130,15 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     output_folder = pathlib.Path(args.output_folder)
     os.makedirs(output_folder, exist_ok=True)
 
-    # Derive absolute path to reference simulation case
-    if config["flownet"].data_source.simulation.input_case:
-        path_ref_sim = pathlib.Path(
-            config["flownet"].data_source.simulation.input_case
-        ).resolve()
-    else:
-        path_ref_sim = pathlib.Path(".").resolve()
+
+    if not prediction_setup:
+        # Derive absolute path to reference simulation case
+        if config["flownet"].data_source.simulation.input_case:
+            path_ref_sim = pathlib.Path(
+                config["flownet"].data_source.simulation.input_case
+            ).resolve()
+        else:
+            path_ref_sim = pathlib.Path(".").resolve()
 
     if prediction_setup:
         ert_config_file = output_folder / "pred_config.ert"
@@ -165,7 +167,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                     "pickled_parameters": output_folder.resolve()
                     / "parameters.pickled",
                     "config": config,
-                    "reference_simulation": path_ref_sim,
+                    "random_seed": config["flownet"].random_seed if not prediction_setup else None,
+                    "perforation_strategy": config["flownet"].perforation_strategy if not prediction_setup else None,
+                    "reference_simulation": path_ref_sim if not prediction_setup else None,
                     "debug": args.debug if hasattr(args, "debug") else False,
                     "pred_schedule_file": getattr(config, "pred_schedule_file", None),
                 }
@@ -217,17 +221,18 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
             # Otherwise create an empty one.
             (output_folder / f"{section}.inc").touch()
 
-    if parameters is not None:
-        _create_observation_file(
-            schedule,
-            output_folder / "observations.ertobs",
-            config,
-            training_set_fraction,
-        )
+    if not prediction_setup:
+        if parameters is not None:
+            _create_observation_file(
+                schedule,
+                output_folder / "observations.ertobs",
+                config,
+                training_set_fraction,
+            )
 
-        _create_observation_file(
-            schedule, output_folder / "observations.yamlobs", config, yaml=True
-        )
+            _create_observation_file(
+                schedule, output_folder / "observations.yamlobs", config, yaml=True
+            )
 
         _create_ert_parameter_file(parameters, output_folder)
 
