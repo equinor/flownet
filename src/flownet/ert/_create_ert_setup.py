@@ -169,7 +169,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                     "random_seed": config["flownet"].random_seed
                     if not prediction_setup
                     else None,
-                    "perforation_strategy": config["flownet"].perforation_strategy
+                    "perforation_strategy": config[
+                        "flownet"
+                    ].perforation_handling_strategy
                     if not prediction_setup
                     else None,
                     "reference_simulation": path_ref_sim
