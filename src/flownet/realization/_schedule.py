@@ -36,11 +36,13 @@ class Schedule:
         """
         Helper function that calls all functions involved in creating the schedule for the FlowNet run.
         """
+        print("Creating simulation schedule file...", flush=True, end=" ")
         self._calculate_entity_dates()
         self._calculate_compdat()
         self._calculate_welspecs()
         self._calculate_wconhist()
         self._calculate_wconinjh()
+        print("done.", flush=True)
 
     def _calculate_entity_dates(self):
         """
