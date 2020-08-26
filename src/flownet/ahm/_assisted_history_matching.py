@@ -7,6 +7,7 @@ import pathlib
 import re
 import shutil
 from typing import List, Dict, Tuple
+
 from configsuite import ConfigSuite
 import jinja2
 import numpy as np
@@ -46,7 +47,7 @@ class AssistedHistoryMatching:
             network: NetworkModel instance
             schedule: Schedule instance
             parameters: List of Parameter objects
-            config: Dictionary containing information about queue (system, name, server and max_running)
+            config: Information from the FlowNet config YAML
         """
         self._network: NetworkModel = network
         self._schedule: Schedule = schedule

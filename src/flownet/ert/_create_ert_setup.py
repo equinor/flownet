@@ -4,6 +4,7 @@ import argparse
 import pickle
 import shutil
 from typing import List
+
 from configsuite import ConfigSuite
 import jinja2
 import numpy as np
@@ -157,28 +158,30 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     with open(output_folder / "parameters.pickled", "wb") as fh:
         pickle.dump(parameters, fh)
 
+    configuration = {
+        "pickled_network": output_folder.resolve() / "network.pickled",
+        "pickled_schedule": output_folder.resolve() / "schedule.pickled",
+        "pickled_parameters": output_folder.resolve() / "parameters.pickled",
+        "config": config,
+        "random_seed": None,
+        "reference_simulation": None,
+        "perforation_strategy": None,
+        "debug": args.debug if hasattr(args, "debug") else False,
+        "pred_schedule_file": getattr(config.ert, "pred_schedule_file", None),
+    }
+
+    if not prediction_setup:
+        configuration.update(
+            {
+                "random_seed": config.flownet.random_seed,
+                "reference_simulation": path_ref_sim,
+                "perforation_strategy": config.flownet.perforation_handling_strategy,
+            }
+        )
+
     with open(ert_config_file, "w") as fh:  # type: ignore[assignment]
         fh.write(  # type: ignore[call-overload]
-            template.render(
-                {
-                    "pickled_network": output_folder.resolve() / "network.pickled",
-                    "pickled_schedule": output_folder.resolve() / "schedule.pickled",
-                    "pickled_parameters": output_folder.resolve()
-                    / "parameters.pickled",
-                    "config": config,
-                    "random_seed": config.flownet.random_seed
-                    if not prediction_setup
-                    else None,
-                    "perforation_strategy": config.flownet.perforation_handling_strategy
-                    if not prediction_setup
-                    else None,
-                    "reference_simulation": path_ref_sim
-                    if not prediction_setup
-                    else None,
-                    "debug": args.debug if hasattr(args, "debug") else False,
-                    "pred_schedule_file": getattr(config, "pred_schedule_file", None),
-                }
-            )
+            template.render(configuration)
         )
 
     shutil.copyfile(
