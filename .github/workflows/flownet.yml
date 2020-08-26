@@ -64,6 +64,12 @@ jobs:
              tar -zxvf $INPUT_MODEL_FOLDER/${{ matrix.flownet-model }}.tar.gz -C $INPUT_MODEL_FOLDER
           fi
 
+      - name: Increase number of realizations in manual runs
+        if: github.event_name == 'pull_request'  # In the end this will instead be 'repository_dispatch'
+        run: |
+          echo "Increase number of realizations in Norne config in some way"
+          echo "Increase number of realizations in Egg config in some way"
+
       - name: 📦 Install FlowNet
         run: |
           source $VENV_PATH/bin/activate
