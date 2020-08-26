@@ -164,8 +164,6 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         "pickled_parameters": output_folder.resolve() / "parameters.pickled",
         "config": config,
         "random_seed": None,
-        "reference_simulation": None,
-        "perforation_strategy": None,
         "debug": args.debug if hasattr(args, "debug") else False,
         "pred_schedule_file": getattr(config.ert, "pred_schedule_file", None),
     }
