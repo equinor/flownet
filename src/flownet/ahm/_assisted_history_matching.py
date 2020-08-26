@@ -52,7 +52,6 @@ class AssistedHistoryMatching:
         self._network: NetworkModel = network
         self._schedule: Schedule = schedule
         self._parameters: List[Parameter] = parameters
-
         self._config: ConfigSuite.snapshot = config
 
     def create_ert_setup(self, args: argparse.Namespace, training_set_fraction: float):
