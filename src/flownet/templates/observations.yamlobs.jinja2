@@ -7,7 +7,7 @@ smry:
    {%- elif not loop.first: %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.oil_rate }}
-      error: {{ [0.1 * kw.oil_rate, 50] | max }}
+      error: {{ [error_config.WOPR.rel_error * kw.oil_rate, error_config.WOPR.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
    {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="gas_rate") -%}
@@ -17,7 +17,7 @@ smry:
    {%- elif not loop.first: %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.gas_rate }}
-      error: {{ [0.1 * kw.gas_rate, 100000] | max }}
+      error: {{ [error_config.WGPR.rel_error * kw.oil_rate, error_config.WGPR.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
    {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="water_rate") -%}
@@ -27,7 +27,7 @@ smry:
    {%- elif not loop.first: %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.water_rate }}
-      error: {{ [0.1 * kw.water_rate, 50] | max }}
+      error: {{ [error_config.WWPR.rel_error * kw.oil_rate, error_config.WWPR.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
    {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="bhp") -%}
@@ -37,7 +37,7 @@ smry:
    {%- elif not loop.first: %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.bhp }}
-      error: {{ [0.05 * kw.bhp, 10] | max }}
+      error: {{ [error_config.WBHP.rel_error * kw.oil_rate, error_config.WBHP.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
    {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="thp") -%}
@@ -47,7 +47,7 @@ smry:
    {%- elif not loop.first: %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.thp }}
-      error: {{ [0.05 * kw.thp, 5] | max }}
+      error: {{ [error_config.WTHP.rel_error * kw.oil_rate, error_config.WTHP.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
 {%- endfor -%}
