@@ -19,7 +19,7 @@ FlowNet today has contributions from the following industry and research partner
   :width: 180pt
   :target: http://www.tno.nl
 
-.. image:: ./_static/sintef-logo.png
+.. image:: ./_static/sintef-logo.svg
   :width: 180pt
   :target: https://www.sintef.no/en/digital/applied-mathematics/computational-geoscience/
 
