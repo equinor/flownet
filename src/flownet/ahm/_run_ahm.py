@@ -144,7 +144,6 @@ def _get_distribution(
 
     return df
 
-
 def update_distribution(
         parameters: Union[str, List[str]], ahm_case: str
 ) -> Union[str, List[str]]:
@@ -221,7 +220,7 @@ def update_distribution(
 
     return parameters
 
-
+  
 # pylint: disable=too-many-branches,too-many-statements
 def run_flownet_history_matching(
     config: ConfigSuite.snapshot, args: argparse.Namespace
@@ -246,7 +245,7 @@ def run_flownet_history_matching(
 
     # Load production and well coordinate data
     field_data = FlowData(
-        config.flownet.data_source.input_case,
+        config.flownet.data_source.simulation.input_case,
         perforation_handling_strategy=config.flownet.perforation_handling_strategy,
     )
     df_production_data: pd.DataFrame = field_data.production
@@ -257,7 +256,13 @@ def run_flownet_history_matching(
         pd.DataFrame
     ] = field_data.faults if config.model_parameters.fault_mult else None
 
-    df_connections: pd.DataFrame = create_connections(df_coordinates, config)
+    concave_hull_bounding_boxes: Optional[np.ndarray] = None
+    if config.flownet.data_source.concave_hull:
+        concave_hull_bounding_boxes = field_data.grid_cell_bounding_boxes
+
+    df_connections: pd.DataFrame = create_connections(
+        df_coordinates, config, concave_hull_bounding_boxes=concave_hull_bounding_boxes
+    )
 
     network = NetworkModel(
         df_connections,
@@ -293,12 +298,10 @@ def run_flownet_history_matching(
     # Create a Pandas dataframe with all SATNUMs based on the chosen scheme
     if config.model_parameters.relative_permeability.scheme == "individual":
         df_satnum = pd.DataFrame(
-            range(1, len(network.grid.model.unique()) + 1), columns=["SATNUM"]
+            range(1, len(network.grid.index) + 1), columns=["SATNUM"]
         )
     elif config.model_parameters.relative_permeability.scheme == "global":
-        df_satnum = pd.DataFrame(
-            [1] * len(network.grid.model.unique()), columns=["SATNUM"]
-        )
+        df_satnum = pd.DataFrame([1] * len(network.grid.index), columns=["SATNUM"])
     else:
         raise ValueError(
             f"The relative permeability scheme "
@@ -312,9 +315,9 @@ def run_flownet_history_matching(
     )
 
     relperm_dict = {
-        key: value
-        for key, value in config.model_parameters.relative_permeability._asdict().items()
-        if any(value) is True
+        key: values
+        for key, values in config.model_parameters.relative_permeability._asdict().items()
+        if not all(value is None for value in values)
     }
 
     relperm_parameters = {
@@ -345,12 +348,10 @@ def run_flownet_history_matching(
     # Create a Pandas dataframe with all EQLNUM based on the chosen scheme
     if config.model_parameters.equil.scheme == "individual":
         df_eqlnum = pd.DataFrame(
-            range(1, len(network.grid.model.unique()) + 1), columns=["EQLNUM"]
+            range(1, len(network.grid.index) + 1), columns=["EQLNUM"]
         )
     elif config.model_parameters.equil.scheme == "global":
-        df_eqlnum = pd.DataFrame(
-            [1] * len(network.grid.model.unique()), columns=["EQLNUM"]
-        )
+        df_eqlnum = pd.DataFrame([1] * len(network.grid.index), columns=["EQLNUM"])
     else:
         raise ValueError(
             f"The equilibration scheme "
@@ -454,12 +455,14 @@ def run_flownet_history_matching(
                 ignore_index=True,
             )
 
-    # ******************************************************************************
-
     parameters = [
         PorvPoroTrans(porv_poro_trans_dist_values, ti2ci, network),
         RelativePermeability(
-            relperm_dist_values, ti2ci, df_satnum, fast_pyscal=fast_pyscal
+            relperm_dist_values,
+            ti2ci,
+            df_satnum,
+            config.flownet.phases,
+            fast_pyscal=fast_pyscal,
         ),
         Equilibration(
             equil_dist_values,
@@ -493,7 +496,7 @@ def run_flownet_history_matching(
     if config.model_parameters.ahm_case is not None:
         parameters = update_distribution(parameters, config.model_parameters.ahm_case)
 
-    ahm = AssistedHistoryMatching(network, schedule, parameters, config)
+    ahm = AssistedHistoryMatching(network, schedule, parameters, config,)
 
     ahm.create_ert_setup(
         args=args, training_set_fraction=_find_training_set_fraction(schedule, config),

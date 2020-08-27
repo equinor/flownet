@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 import yaml
 import configsuite
@@ -29,10 +29,96 @@ def create_schema(_to_abs_path) -> Dict:
                     "data_source": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "input_case": {
-                                MK.Type: types.String,
-                                MK.Transformation: _to_abs_path,
+                            "simulation": {
+                                MK.Type: types.NamedDict,
+                                MK.Content: {
+                                    "input_case": {
+                                        MK.Type: types.String,
+                                        MK.Transformation: _to_abs_path,
+                                    },
+                                    "vectors": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "WTHP": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WBHP": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WOPR": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WGPR": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WWPR": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
                             },
+                            "concave_hull": {MK.Type: types.Bool, MK.AllowNone: True},
                         },
                     },
                     "pvt": {
@@ -45,13 +131,18 @@ def create_schema(_to_abs_path) -> Dict:
                             },
                         },
                     },
+                    "phases": {
+                        MK.Type: types.List,
+                        MK.Content: {MK.Item: {MK.Type: types.String}},
+                        MK.Transformation: lambda names: [x.lower() for x in names],
+                    },
                     "cell_length": {MK.Type: types.Number},
-                    "training_set_end_date": {MK.Type: types.Date, MK.AllowNone: True},
+                    "training_set_end_date": {MK.Type: types.Date, MK.AllowNone: True,},
                     "training_set_fraction": {
                         MK.Type: types.Number,
                         MK.AllowNone: True,
                     },
-                    "additional_flow_nodes": {MK.Type: types.Integer, MK.Default: 100},
+                    "additional_flow_nodes": {MK.Type: types.Integer, MK.Default: 100,},
                     "additional_node_candidates": {
                         MK.Type: types.Integer,
                         MK.Default: 1000,
@@ -64,6 +155,8 @@ def create_schema(_to_abs_path) -> Dict:
                     },
                     "fast_pyscal": {MK.Type: types.Bool, MK.Default: True},
                     "fault_tolerance": {MK.Type: types.Number, MK.Default: 1.0e-5},
+                    "max_distance": {MK.Type: types.Number, MK.Default: 1e12},
+                    "max_distance_fraction": {MK.Type: types.Number, MK.Default: 0},
                 },
             },
             "ert": {
@@ -73,7 +166,7 @@ def create_schema(_to_abs_path) -> Dict:
                         MK.Type: types.String,
                         MK.Default: "output/runpath/realization-%d/iter-%d",
                     },
-                    "enspath": {MK.Type: types.String, MK.Default: "output/storage"},
+                    "enspath": {MK.Type: types.String, MK.Default: "output/storage",},
                     "eclbase": {
                         MK.Type: types.String,
                         MK.Default: "./eclipse/model/FLOWNET_REALIZATION",
@@ -96,7 +189,7 @@ def create_schema(_to_abs_path) -> Dict:
                                 MK.Type: types.Number,
                                 MK.Default: 20,
                             },
-                            "max_runtime": {MK.Type: types.Integer, MK.Default: 300},
+                            "max_runtime": {MK.Type: types.Integer, MK.Default: 300,},
                         },
                     },
                     "simulator": {
@@ -114,7 +207,7 @@ def create_schema(_to_abs_path) -> Dict:
                         MK.Type: types.NamedDict,
                         MK.Content: {
                             "system": {MK.Type: types.String},
-                            "name": {MK.Type: types.String},
+                            "name": {MK.Type: types.String, MK.AllowNone: True},
                             "server": {MK.Type: types.String, MK.AllowNone: True},
                             "max_running": {MK.Type: types.Integer},
                         },
@@ -130,17 +223,11 @@ def create_schema(_to_abs_path) -> Dict:
                     "analysis": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "metric": {MK.Type: types.String, MK.Default: "[RMSE]"},
-                            "quantity": {
-                                MK.Type: types.String,
-                                MK.Default: "[WOPR:BR-P-]",
-                            },
-                            "start": {MK.Type: types.String, MK.Default: "2001-04-01"},
-                            "end": {MK.Type: types.String, MK.Default: "2006-01-01"},
-                            "outfile": {
-                                MK.Type: types.String,
-                                MK.Default: "analysis_metrics_iteration",
-                            },
+                            "metric": {MK.Type: types.String, MK.AllowNone: True},
+                            "quantity": {MK.Type: types.String, MK.AllowNone: True,},
+                            "start": {MK.Type: types.String, MK.AllowNone: True},
+                            "end": {MK.Type: types.String, MK.AllowNone: True},
+                            "outfile": {MK.Type: types.String, MK.AllowNone: True,},
                         },
                     },
                 },
@@ -192,12 +279,15 @@ def create_schema(_to_abs_path) -> Dict:
                     "relative_permeability": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "scheme": {MK.Type: types.String},
+                            "scheme": {
+                                MK.Type: types.String,
+                                MK.Transformation: lambda name: name.lower(),
+                            },
                             "swirr": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -207,8 +297,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "swl": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -218,8 +308,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "swcr": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -240,8 +330,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "krwend": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -251,8 +341,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "krowend": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -262,8 +352,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "nw": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -273,8 +363,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "now": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -284,8 +374,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "sorg": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -295,8 +385,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "sgcr": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -306,15 +396,15 @@ def create_schema(_to_abs_path) -> Dict:
                             "ng": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                 },
                             },
                             "nog": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -324,8 +414,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "krgend": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -335,8 +425,8 @@ def create_schema(_to_abs_path) -> Dict:
                             "krogend": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -348,8 +438,12 @@ def create_schema(_to_abs_path) -> Dict:
                     "equil": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "scheme": {MK.Type: types.String, MK.Default: "global"},
-                            "datum_depth": {MK.Type: types.Number, MK.AllowNone: True},
+                            "scheme": {
+                                MK.Type: types.String,
+                                MK.Default: "global",
+                                MK.Transformation: lambda name: name.lower(),
+                            },
+                            "datum_depth": {MK.Type: types.Number, MK.AllowNone: True,},
                             "datum_pressure": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
@@ -360,22 +454,22 @@ def create_schema(_to_abs_path) -> Dict:
                             "owc_depth": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                 },
                             },
                             "gwc_depth": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                 },
                             },
                             "goc_depth": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                 },
                             },
                         },
@@ -396,12 +490,12 @@ def create_schema(_to_abs_path) -> Dict:
                         MK.Content: {
                             "scheme": {MK.Type: types.String, MK.AllowNone: True},
                             "fraction": {MK.Type: types.Number, MK.AllowNone: True},
-                            "delta_depth": {MK.Type: types.Number, MK.AllowNone: True},
+                            "delta_depth": {MK.Type: types.Number, MK.AllowNone: True,},
                             "size_in_bulkvolumes": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number, MK.AllowNone: True},
-                                    "max": {MK.Type: types.Number, MK.AllowNone: True},
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -464,6 +558,107 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
 
     config = suite.snapshot
 
+    req_relp_parameters: List[str] = []
+
+    for phase in config.flownet.phases:
+        if phase not in ["oil", "gas", "water", "disgas", "vapoil"]:
+            raise ValueError(
+                f"The {phase} phase is not a valid phase\n"
+                f"The valid phases are 'oil', 'gas', 'water', 'disgas' and 'vapoil'"
+            )
+    if not {"vapoil", "disgas"}.isdisjoint(config.flownet.phases) and not {
+        "oil",
+        "gas",
+    }.issubset(config.flownet.phases):
+        raise ValueError(
+            "The phases 'vapoil' and 'disgas' can not be defined without the phases 'oil' and 'gas'"
+        )
+
+    if {"oil", "water"}.issubset(config.flownet.phases):
+        req_relp_parameters = req_relp_parameters + [
+            "scheme",
+            "swirr",
+            "swl",
+            "swcr",
+            "sorw",
+            "nw",
+            "now",
+            "krwend",
+            "krowend",
+        ]
+        if (
+            config.model_parameters.equil.owc_depth.min is None
+            or config.model_parameters.equil.owc_depth.max is None
+            or config.model_parameters.equil.owc_depth.max
+            < config.model_parameters.equil.owc_depth.min
+        ):
+            raise ValueError(
+                "Ambiguous configuration input: OWC not properly specified. Min or max missing, or max < min."
+            )
+    if {"oil", "gas"}.issubset(config.flownet.phases):
+        req_relp_parameters = req_relp_parameters + [
+            "scheme",
+            "swirr",
+            "swl",
+            "sgcr",
+            "sorg",
+            "ng",
+            "nog",
+            "krgend",
+            "krogend",
+        ]
+        if (
+            config.model_parameters.equil.goc_depth.min is None
+            or config.model_parameters.equil.goc_depth.max is None
+            or config.model_parameters.equil.goc_depth.max
+            < config.model_parameters.equil.goc_depth.min
+        ):
+            raise ValueError(
+                "Ambiguous configuration input: GOC not properly specified. Min or max missing, or max < min."
+            )
+
+    for parameter in set(req_relp_parameters):
+        if parameter == "scheme":
+            if (
+                getattr(config.model_parameters.relative_permeability, parameter)
+                != "global"
+                and getattr(config.model_parameters.relative_permeability, parameter)
+                != "individual"
+            ):
+                raise ValueError(
+                    f"The relative permeability scheme "
+                    f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
+                    f"Valid options are 'global' or 'individual'."
+                )
+        else:
+            if (
+                getattr(config.model_parameters.relative_permeability, parameter).min
+                is None
+                or getattr(config.model_parameters.relative_permeability, parameter).max
+                is None
+            ):
+                raise ValueError(
+                    f"Ambiguous configuration input: The {parameter} parameter is missing or not properly defined."
+                )
+            if (
+                getattr(config.model_parameters.relative_permeability, parameter).max
+                < getattr(config.model_parameters.relative_permeability, parameter).min
+            ):
+                raise ValueError(
+                    f"Ambiguous configuration input: The {parameter} setting 'max' is higher than the 'min'"
+                )
+
+    for parameter in set(config.model_parameters.relative_permeability._fields) - set(
+        req_relp_parameters
+    ):
+        if (
+            getattr(config.model_parameters.relative_permeability, parameter).min
+            is not None
+            and getattr(config.model_parameters.relative_permeability, parameter).max
+            is not None
+        ):
+            raise ValueError(f"The {parameter} parameter should not be specified.")
+
     if config.ert.queue.system.upper() != "LOCAL" and (
         config.ert.queue.name is None or config.ert.queue.server is None
     ):
@@ -503,33 +698,12 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 f"set as 'min' ({getattr(config.model_parameters, parameter).min})."
             )
 
-    if (
-        config.model_parameters.equil.goc_depth
-        is None
-        != config.model_parameters.relative_permeability.sorg
-        is None
-        != config.model_parameters.relative_permeability.sgcr
-        is None
-        != config.model_parameters.relative_permeability.ng
-        is None
-        != config.model_parameters.relative_permeability.nog
-        is None
-        != config.model_parameters.relative_permeability.krgend
-        is None
-        != config.model_parameters.relative_permeability.krogend
-        is None
-    ):
-        raise ValueError(
-            "GOC and gas relative permeability must both be specified (or none of them)."
-        )
-
     for suffix in [".DATA", ".EGRID", ".UNRST", ".UNSMRY", ".SMSPEC"]:
-        if (
-            not pathlib.Path(config.flownet.data_source.input_case)
-            .with_suffix(suffix)
-            .is_file()
-        ):
-            raise ValueError(f"The input case {suffix} file does not exist")
+        input_file = pathlib.Path(
+            config.flownet.data_source.simulation.input_case
+        ).with_suffix(suffix)
+        if not input_file.is_file():
+            raise ValueError(f"The file {input_file} does not exist")
 
     if config.flownet.training_set_end_date and config.flownet.training_set_fraction:
         raise ValueError(

@@ -20,6 +20,8 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.6', '3.7']
+        flownet-model: ['norne','egg']
+
     env:
       VENV_PATH: ${{ github.workspace }}/flownet_venv
       PYTHONPATH: ${{ github.workspace }}/flownet_venv/lib/python${{ matrix.python-version }}/dist-packages
@@ -46,8 +48,20 @@ jobs:
         if: steps.cache-venv.outputs.cache-hit != 'true'
         run: bash ./build_environment.sh $VENV_PATH /usr/bin/flow
 
-      - name: 🏗️ Extract Norne Dataset
-        run: tar -zxvf tests/data/norne.tar.gz -C tests/data/
+      - name: 🍿 Download FlowNet test data
+        env:
+          INPUT_MODEL_FOLDER: ./flownet-testdata/${{ matrix.flownet-model }}/input_model
+          # If you want the CI to (temporarily) run against your fork of the testdada,
+          # change the value her from "equinor" to your username.
+          TESTDATA_REPO_OWNER: equinor
+          # If you want the CI to (temporarily) run against another branch than master,
+          # change the value her from "master" to the relevant branch name.
+          TESTDATA_REPO_BRANCH: master
+        run: |
+          git clone --depth 1 --branch $TESTDATA_REPO_BRANCH https://github.com/$TESTDATA_REPO_OWNER/flownet-testdata.git
+          if [ -f "$INPUT_MODEL_FOLDER/${{ matrix.flownet-model }}.tar.gz" ]; then
+             tar -zxvf $INPUT_MODEL_FOLDER/${{ matrix.flownet-model }}.tar.gz -C $INPUT_MODEL_FOLDER
+          fi
 
       - name: 📦 Install FlowNet
         run: |
@@ -67,23 +81,21 @@ jobs:
       - name: 🕵️ Check code style & linting
         run: |
           source $VENV_PATH/bin/activate
-          black --check examples/ tests/ src/ setup.py
+          black --check tests/ src/ setup.py
           pylint src/ tests/ setup.py
-          mypy --ignore-missing-imports src/ tests/ setup.py
+          mypy --ignore-missing-imports src/ setup.py
 
       - name: 🤖 Run tests
         run: |
           source $VENV_PATH/bin/activate
           webviz certificate --force
-          pytest --cov=flownet --cov-fail-under=50 ./tests
+          pytest --cov=flownet --cov-fail-under=29 ./tests
 
       - name: 🚀 Run full FlowNet example
         run: |
           source $VENV_PATH/bin/activate
-          pushd examples
-          flownet ahm ../tests/configs/norne_parameters.yml ./some_ahm_run
-          flownet pred ../tests/configs/norne_pred.yml ./some_pred_run ./some_ahm_run
-          popd
+          flownet ahm ./flownet-testdata/${{ matrix.flownet-model }}/ci_config/assisted_history_matching.yml ./some_ahm_run
+          flownet pred ./flownet-testdata/${{ matrix.flownet-model }}/ci_config/prediction.yml ./some_pred_run ./some_ahm_run
 
       - name: 📚 Build documentation
         run: |

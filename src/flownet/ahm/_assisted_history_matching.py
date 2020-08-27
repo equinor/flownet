@@ -6,14 +6,14 @@ import os
 import pathlib
 import re
 import shutil
-import subprocess
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Tuple
 
+from configsuite import ConfigSuite
 import jinja2
 import numpy as np
 import pandas as pd
 
-from ..ert import create_ert_setup
+from ..ert import create_ert_setup, run_ert_subprocess
 from ..realization import Schedule
 from ..network_model import NetworkModel
 from ..parameters import Parameter
@@ -38,9 +38,7 @@ class AssistedHistoryMatching:
         network: NetworkModel,
         schedule: Schedule,
         parameters: List[Parameter],
-        case_name: str,
-        ert_config: Dict,
-        random_seed: Optional[int] = None,
+        config: ConfigSuite.snapshot,
     ):
         """
         Initialize an Assisted History Matching Class
@@ -49,18 +47,12 @@ class AssistedHistoryMatching:
             network: NetworkModel instance
             schedule: Schedule instance
             parameters: List of Parameter objects
-            case_name: Name of simulation case
-            ert_config: Dictionary containing information about queue (system, name, server and max_running)
-                and realizations (num_realizations, required_success_percent and max_runtime)
-            random_seed: Random seed to control reproducibility of FlowNet
-
+            config: Information from the FlowNet config YAML
         """
         self._network: NetworkModel = network
         self._schedule: Schedule = schedule
         self._parameters: List[Parameter] = parameters
-        self._ert_config: dict = ert_config
-        self._case_name: str = case_name
-        self._random_seed: Optional[int] = random_seed
+        self._config: ConfigSuite.snapshot = config
 
     def create_ert_setup(self, args: argparse.Namespace, training_set_fraction: float):
         # pylint: disable=attribute-defined-outside-init
@@ -82,9 +74,8 @@ class AssistedHistoryMatching:
             args,
             self._network,
             self._schedule,
-            ert_config=self._ert_config,
+            config=self._config,
             parameters=self._parameters,
-            random_seed=self._random_seed,
             training_set_fraction=training_set_fraction,
         )
 
@@ -115,30 +106,16 @@ class AssistedHistoryMatching:
                     {
                         "output_folder": self.output_folder,
                         "iterations": range(len(weights) + 1),
-                        "runpath": self._ert_config["runpath"],
+                        "runpath": self._config.ert.runpath,
                     }
                 )
             )
 
-        try:
-            # Ignore deprecation warnings (ERT as of August 2019 has a lot of them
-            # due to transition to Python3)
-            subprocess.run(
-                "export PYTHONWARNINGS=ignore::DeprecationWarning;"
-                f"ert es_mda --weights {','.join(map(str, weights))!r} ahm_config.ert",
-                cwd=self.output_folder,
-                shell=True,
-                check=True,
-            )
-        except subprocess.CalledProcessError:
-            error_files = glob.glob(
-                str(
-                    self.output_folder
-                    / self._ert_config["runpath"].replace("%d", "*")
-                    / "ERROR"
-                )
-            )
-            raise RuntimeError(pathlib.Path(error_files[0]).read_text())
+        run_ert_subprocess(
+            f"ert es_mda --weights {','.join(map(str, weights))!r} ahm_config.ert",
+            cwd=self.output_folder,
+            runpath=self._config.ert.runpath,
+        )
 
     def report(self):
         """
@@ -157,7 +134,7 @@ class AssistedHistoryMatching:
             f"Number of observations: {self._schedule.get_nr_observations(self._training_set_fraction):>20}"
         )
         print(
-            f"Number of realizations: {self._ert_config['realizations'].num_realizations:>20}"
+            f"Number of realizations: {self._config.ert.realizations.num_realizations:>20}"
         )
 
         distributions = {
@@ -173,14 +150,14 @@ class AssistedHistoryMatching:
         for distribution in distributions:
             if distribution[0] == LogUniformDistribution:
                 print(
-                    "Loguniform".ljust((15)),
+                    "Loguniform".ljust(15),
                     f"{distribution[1]:16.8f}",
                     f"{(distribution[2] - distribution[1]) / np.log(distribution[2] / distribution[1]):16.8f}",
                     f"{distribution[2]:16.8f}",
                 )
             else:
                 print(
-                    "Uniform".ljust((15)),
+                    "Uniform".ljust(15),
                     f"{distribution[1]:16.8f}",
                     f"{(distribution[2] + distribution[1]) / 2.0:16.8f}",
                     f"{distribution[2]:16.8f}",
@@ -197,7 +174,7 @@ def delete_simulation_output():
         Nothing
 
     """
-    parser = argparse.ArgumentParser(prog=("Delete simulation output."))
+    parser = argparse.ArgumentParser(prog="Delete simulation output.")
 
     parser.add_argument(
         "ecl_base", type=str, help="Base name of the simulation DATA file"
@@ -225,7 +202,7 @@ def _load_parameters(runpath: str) -> Tuple[int, Dict]:
     realization = int(re.findall(r"[0-9]+", runpath)[-2])
     parameters = json.loads((pathlib.Path(runpath) / "parameters.json").read_text())
 
-    return (realization, parameters["FLOWNET_PARAMETERS"])
+    return realization, parameters["FLOWNET_PARAMETERS"]
 
 
 def save_iteration_parameters():
@@ -250,7 +227,7 @@ def save_iteration_parameters():
         Nothing
 
     """
-    parser = argparse.ArgumentParser(prog=("Save iteration parameters to a file."))
+    parser = argparse.ArgumentParser(prog="Save iteration parameters to a file.")
     parser.add_argument("runpath", type=str, help="Path to the ERT runpath.")
     args = parser.parse_args()
     args.runpath = args.runpath.replace("%d", "*")

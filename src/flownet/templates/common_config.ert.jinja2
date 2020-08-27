@@ -1,23 +1,23 @@
 {% if random_seed is not none: -%}
-RANDOM_SEED {{ random_seed }}
+RANDOM_SEED {{ random_seed }}
 {%- endif %}
 
-NUM_REALIZATIONS {{ ert_config.realizations.num_realizations }}
-MIN_REALIZATIONS {{ ert_config.realizations.required_success_percent }}%
+NUM_REALIZATIONS {{ config.ert.realizations.num_realizations }}
+MIN_REALIZATIONS {{ config.ert.realizations.required_success_percent }}%
 STOP_LONG_RUNNING FALSE
-MAX_RUNTIME {{ ert_config.realizations.max_runtime }}
+MAX_RUNTIME {{ config.ert.realizations.max_runtime }}
 
-QUEUE_SYSTEM {{ ert_config.queue.system }}
-{%- if ert_config.queue.system == "LSF" %}
-{% if ert_config.simulator.version is not none: -%} LSF_SERVER {{ ert_config.queue.server }} {%- endif %}
-QUEUE_OPTION {{ ert_config.queue.system }} LSF_QUEUE {{ ert_config.queue.name }}
+QUEUE_SYSTEM {{ config.ert.queue.system }}
+{%- if config.ert.queue.system == "LSF" %}
+{% if config.ert.simulator.version is not none: -%} LSF_SERVER {{ config.ert.queue.server }} {%- endif %}
+QUEUE_OPTION {{ config.ert.queue.system }} LSF_QUEUE {{ config.ert.queue.name }}
 {%- endif %}
-QUEUE_OPTION {{ ert_config.queue.system }} MAX_RUNNING {{ ert_config.queue.max_running }}
+QUEUE_OPTION {{ config.ert.queue.system }} MAX_RUNNING {{ config.ert.queue.max_running }}
 
-RUNPATH {{ ert_config.runpath }}
-ENSPATH {{ ert_config.enspath }}
+RUNPATH {{ config.ert.runpath }}
+ENSPATH {{ config.ert.enspath }}
 
-ECLBASE {{ ert_config.eclbase }}
+ECLBASE {{ config.ert.eclbase }}
 
 DEFINE <PICKLED_NETWORK> {{ pickled_network }}
 DEFINE <PICKLED_SCHEDULE> {{ pickled_schedule }}
@@ -33,4 +33,4 @@ FORWARD_MODEL COPY_FILE(<FROM>=<CONFIG_PATH>/PROPS.inc, <TO>=./eclipse/model/inc
 FORWARD_MODEL COPY_FILE(<FROM>=<CONFIG_PATH>/SOLUTION.inc, <TO>=./eclipse/model/include/SOLUTION.inc)
 FORWARD_MODEL COPY_FILE(<FROM>=<CONFIG_PATH>/SCHEDULE.inc, <TO>=./eclipse/model/include/SCHEDULE.inc)
 
-SIMULATION_JOB {{ ert_config.simulator.name.upper() }} <ECLBASE> {%- if ert_config.simulator.version is not none: -%}"--version={{ ert_config.simulator.version }}"{%- endif %}
+SIMULATION_JOB {{ config.ert.simulator.name.upper() }} <ECLBASE> {%- if config.ert.simulator.version is not none: -%}"--version={{ config.ert.simulator.version }}"{%- endif %}
