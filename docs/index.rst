@@ -11,6 +11,7 @@ FlowNet documentation
    configuration_file
    examples
    api
+   about
 
 Indices and tables
 ==================
