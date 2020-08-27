@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 ### Added
+- [#115](https://github.com/equinor/flownet/pull/150) Adds this changelog.
 - [#146](https://github.com/equinor/flownet/pull/146) Added about page to documentation with logo of industry and research institute partners.
 - [#138](https://github.com/equinor/flownet/pull/138) Print message to terminal when the schedule is being generated instead of utter silence.
 - [#134](https://github.com/equinor/flownet/pull/134) Egg [model](https://github.com/equinor/flownet-testdata/blob/master/egg/ci_config/assisted_history_matching.yml) added in CI.
