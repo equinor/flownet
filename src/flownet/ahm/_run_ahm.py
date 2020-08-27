@@ -222,7 +222,7 @@ def update_distribution(
     return parameters
 
 
-# pylint: disable=too-many-branches
+# pylint: disable=too-many-branches,too-many-statements
 def run_flownet_history_matching(
     config: ConfigSuite.snapshot, args: argparse.Namespace
 ):
@@ -493,14 +493,7 @@ def run_flownet_history_matching(
     if config.model_parameters.ahm_case is not None:
         parameters = update_distribution(parameters, config.model_parameters.ahm_case)
 
-    ahm = AssistedHistoryMatching(
-        network,
-        schedule,
-        parameters,
-        case_name=config.name,
-        ert_config=config.ert._asdict(),
-        random_seed=config.flownet.random_seed,
-    )
+    ahm = AssistedHistoryMatching(network, schedule, parameters, config)
 
     ahm.create_ert_setup(
         args=args, training_set_fraction=_find_training_set_fraction(schedule, config),
