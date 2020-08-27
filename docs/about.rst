@@ -15,8 +15,8 @@ FlowNet today has contributions from the following industry and research partner
   :width: 180pt
   :target: http://www.equinor.com
 
-.. image:: ./_static/tno-logo.png
-  :width: 180pt
+.. image:: ./_static/tno-logo.svg
+  :width: 250pt
   :target: http://www.tno.nl
 
 .. image:: ./_static/sintef-logo.svg
