@@ -499,11 +499,7 @@ def run_flownet_history_matching(
     if config.model_parameters.ahm_case is not None:
         parameters = update_distribution(parameters, config.model_parameters.ahm_case)
 
-<<<<<<< HEAD
     ahm = AssistedHistoryMatching(network, schedule, parameters, config,)
-=======
-    ahm = AssistedHistoryMatching(network, schedule, parameters, config)
->>>>>>> resolved conflicts
 
     ahm.create_ert_setup(
         args=args, training_set_fraction=_find_training_set_fraction(schedule, config),
