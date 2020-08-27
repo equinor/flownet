@@ -143,7 +143,7 @@ def run_flownet_history_matching(
 
     # Load production and well coordinate data
     field_data = FlowData(
-        config.flownet.data_source.input_case,
+        config.flownet.data_source.simulation.input_case,
         perforation_handling_strategy=config.flownet.perforation_handling_strategy,
     )
     df_production_data: pd.DataFrame = field_data.production
@@ -393,16 +393,7 @@ def run_flownet_history_matching(
     if isinstance(network.faults, dict):
         parameters.append(FaultTransmissibility(fault_mult_dist_values, network))
 
-    ahm = AssistedHistoryMatching(
-        network,
-        schedule,
-        parameters,
-        case_name=config.name,
-        perforation_strategy=config.flownet.perforation_handling_strategy,
-        reference_simulation=config.flownet.data_source.input_case,
-        ert_config=config.ert._asdict(),
-        random_seed=config.flownet.random_seed,
-    )
+    ahm = AssistedHistoryMatching(network, schedule, parameters, config,)
 
     ahm.create_ert_setup(
         args=args, training_set_fraction=_find_training_set_fraction(schedule, config),
