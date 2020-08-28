@@ -58,7 +58,7 @@ def _find_training_set_fraction(
     return training_set_fraction
 
 
-def _find_dist_minmax(min_val: float, max_val: float, mean_val: float) -> float:
+def _find_dist_minmax(min_val: Optional[float], max_val: Optional[float], mean_val: float) -> float:
     """
     Find the distribution min or max for a loguniform distribution, assuming only
     one of these and the mean are given
