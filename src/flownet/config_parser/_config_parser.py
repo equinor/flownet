@@ -114,6 +114,36 @@ def create_schema(_to_abs_path) -> Dict:
                                                     },
                                                 },
                                             },
+                                            "WWIR": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WGIR": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
                                         },
                                     },
                                 },
