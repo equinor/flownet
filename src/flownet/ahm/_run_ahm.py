@@ -59,6 +59,7 @@ def _find_training_set_fraction(
 
 
 def _find_dist_minmax(min_val: Optional[float], max_val: Optional[float], mean_val: float) -> float:
+
     """
     Find the distribution min or max for a loguniform distribution, assuming only
     one of these and the mean are given
@@ -222,7 +223,7 @@ def update_distribution(
     return parameters
 
 
-# pylint: disable=too-many-branches
+# pylint: disable=too-many-branches,too-many-statements
 def run_flownet_history_matching(
     config: ConfigSuite.snapshot, args: argparse.Namespace
 ):
@@ -455,8 +456,6 @@ def run_flownet_history_matching(
                 ),
                 ignore_index=True,
             )
-
-    # ******************************************************************************
 
     parameters = [
         PorvPoroTrans(porv_poro_trans_dist_values, ti2ci, network),
