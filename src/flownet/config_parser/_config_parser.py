@@ -36,6 +36,10 @@ def create_schema(_to_abs_path) -> Dict:
                                         MK.Type: types.String,
                                         MK.Transformation: _to_abs_path,
                                     },
+                                    "well_logs": {
+                                        MK.Type: types.Bool,
+                                        MK.AllowNone: True,
+                                    },
                                     "vectors": {
                                         MK.Type: types.NamedDict,
                                         MK.Content: {

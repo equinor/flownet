@@ -29,3 +29,10 @@ class FromSource(ABC):
         raise NotImplementedError(
             "The faults property is required to be implemented in a FromSource class."
         )
+
+    @property
+    @abstractmethod
+    def well_logs(self) -> Optional[pd.DataFrame]:
+        raise NotImplementedError(
+            "The well_log property is required to be implemented in a FromSource class."
+        )

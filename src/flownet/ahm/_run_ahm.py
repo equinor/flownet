@@ -149,6 +149,52 @@ def run_flownet_history_matching(
     df_production_data: pd.DataFrame = field_data.production
     df_coordinates: pd.DataFrame = field_data.coordinates
 
+    # Load log data if required
+    df_well_logs: Optional[
+        pd.DataFrame
+    ] = field_data.well_logs if config.flownet.data_source.simulation.well_logs else None
+
+    """
+    from matplotlib import pyplot as plt
+    import pykrige
+    from pykrige.uk3d import UniversalKriging3D
+    from pykrige.ok3d import OrdinaryKriging3D
+    
+    data = df_well_logs[["X","Y","Z","PERM"]].values
+    
+    n = 20
+    
+    gridx = np.arange(data[:,0].min(), data[:,0].max(), (data[:,0].max()-data[:,0].min())/n)
+    gridy = np.arange(data[:,1].min(), data[:,1].max(), (data[:,1].max()-data[:,1].min())/n)
+    gridz = np.arange(data[:,2].min(), data[:,2].max(), (data[:,2].max()-data[:,2].min())/n)
+    
+    print((data[:,0].max()-data[:,0].min())/n)
+    
+    zg, yg, xg = np.meshgrid(gridz, gridy, gridx, indexing="ij")
+    
+    uk3d = OrdinaryKriging3D(
+        data[:, 0],
+        data[:, 1],
+        data[:, 2],
+        np.log10(data[:, 3]),
+        variogram_model="spherical",
+        variogram_parameters={'sill': 0.75, 'range': 1000, 'nugget': 0},
+        nlags=6,
+        enable_plotting=True,
+        anisotropy_scaling_z=10
+    )
+    k3d3, ss3d = uk3d.execute(
+        "grid", gridx, gridy, gridz
+    )
+    
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection = '3d')
+    ax.scatter(data[:, 0], data[:, 1], data[:, 2], c=np.log10(data[:, 3]), s=50, vmin=2, vmax=3.1)
+    p = ax.scatter(xg.reshape(-1,1), yg.reshape(-1,1), zg.reshape(-1,1), c=np.array(k3d3.reshape(-1,1)), s=5, vmin=2, vmax=3.1)
+    fig.colorbar(p)
+    """
+
     # Load fault data if required
     df_fault_planes: Optional[
         pd.DataFrame

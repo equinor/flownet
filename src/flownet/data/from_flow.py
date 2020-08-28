@@ -34,6 +34,7 @@ class FlowData(FromSource):
 
         self._input_case: Path = Path(input_case)
         self._eclsum = EclSum(str(self._input_case))
+        self._init = EclFile(str(self._input_case.with_suffix(".INIT")))
         self._grid = EclGrid(str(self._input_case.with_suffix(".EGRID")))
         self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
         self._wells = WellInfo(
@@ -77,6 +78,42 @@ class FlowData(FromSource):
             coord_append([well_name, *xyz])
 
         return pd.DataFrame(coords, columns=["WELL_NAME", "X", "Y", "Z"])
+
+    def _well_logs(self) -> pd.DataFrame:
+        """
+        Function to extract well log information from a Flow simulation.
+
+        Returns:
+            columns: WELL_NAME, X, Y, Z, PERM (mD), PORO (-)
+
+        """
+        coords: List = []
+
+        for well_name in self._wells.allWellNames():
+            global_conns = self._wells[well_name][0].globalConnections()
+            for global_conn in global_conns:
+                ijk = global_conn.ijk()
+                xyz = self._grid.get_xyz(ijk=ijk)
+
+                PERM_kw = self._init.iget_named_kw("PERMX", 0)
+                PORO_kw = self._init.iget_named_kw("PORO", 0)
+
+                coords.append(
+                    [
+                        well_name,
+                        *xyz,
+                        PERM_kw[
+                            self._grid.cell(i=ijk[0], j=ijk[1], k=ijk[2]).active_index
+                        ],
+                        PORO_kw[
+                            self._grid.cell(i=ijk[0], j=ijk[1], k=ijk[2]).active_index
+                        ],
+                    ]
+                )
+
+        return pd.DataFrame(
+            coords, columns=["WELL_NAME", "X", "Y", "Z", "PERM", "PORO"]
+        )
 
     def _production_data(self) -> pd.DataFrame:
         """
@@ -301,3 +338,8 @@ class FlowData(FromSource):
     def coordinates(self) -> pd.DataFrame:
         """dataframe with all coordinates"""
         return self._coordinates()
+
+    @property
+    def well_logs(self) -> pd.DataFrame:
+        """dataframe with all well log"""
+        return self._well_logs()
