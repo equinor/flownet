@@ -34,6 +34,7 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="flownet.parameters._rock_compressibility module" href="flownet.parameters._rock_compressibility.html" />
@@ -88,8 +89,10 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration_file.html">Configuration file example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">FlowNet Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html#flownet-package">flownet package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About FlowNet</a></li>
 </ul>
 
             
@@ -163,7 +166,7 @@
 <span id="flownet-parameters-relative-permeability-module"></span><h1>flownet.parameters._relative_permeability module<a class="headerlink" href="#module-flownet.parameters._relative_permeability" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="flownet.parameters._relative_permeability.RelativePermeability">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters._relative_permeability.</code><code class="sig-name descname">RelativePermeability</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distribution_values</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">ti2ci</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">satnum</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">fast_pyscal</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters._relative_permeability.</code><code class="sig-name descname">RelativePermeability</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distribution_values</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">ti2ci</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">satnum</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">phases</span><span class="p">:</span> <span class="n">List</span></em>, <em class="sig-param"><span class="n">fast_pyscal</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.parameters._base_parameter.Parameter</span></code></a></p>
 <p>Parameter type which takes care of stochastically drawn Relative Permeability parameters.</p>
 <p>Required parameters for SWOF generation: “swirr”, “swl”, “swcr”, “sorw”, “nw”, “now”, “krwend”, “krowend”
@@ -224,7 +227,7 @@ It will raise an error if something is wrong.</p>
 
 <dl class="py method">
 <dt id="flownet.parameters._relative_permeability.RelativePermeability.get_dims">
-<code class="sig-name descname">get_dims</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Union[None, Dict[str, int]]<a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability.get_dims" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_dims</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>None<span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability.get_dims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to export the table dimensions used for memory allocation in Flow.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
