@@ -34,9 +34,10 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="FlowNet Python API" href="api.html" />
+    <link rel="next" title="Examples" href="examples.html" />
     <link rel="prev" title="Introduction" href="introduction.html" /> 
 </head>
 
@@ -92,8 +93,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#prediction-example">Prediction example</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">FlowNet Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html#flownet-package">flownet package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About FlowNet</a></li>
 </ul>
 
             
@@ -164,273 +167,9 @@
 <p>The configuration files follows the <a class="reference external" href="https://yaml.org/">YAML standard</a>.</p>
 <div class="section" id="assisted-history-matching-example">
 <h2>Assisted history matching example<a class="headerlink" href="#assisted-history-matching-example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
-  2
-  3
-  4
-  5
-  6
-  7
-  8
-  9
- 10
- 11
- 12
- 13
- 14
- 15
- 16
- 17
- 18
- 19
- 20
- 21
- 22
- 23
- 24
- 25
- 26
- 27
- 28
- 29
- 30
- 31
- 32
- 33
- 34
- 35
- 36
- 37
- 38
- 39
- 40
- 41
- 42
- 43
- 44
- 45
- 46
- 47
- 48
- 49
- 50
- 51
- 52
- 53
- 54
- 55
- 56
- 57
- 58
- 59
- 60
- 61
- 62
- 63
- 64
- 65
- 66
- 67
- 68
- 69
- 70
- 71
- 72
- 73
- 74
- 75
- 76
- 77
- 78
- 79
- 80
- 81
- 82
- 83
- 84
- 85
- 86
- 87
- 88
- 89
- 90
- 91
- 92
- 93
- 94
- 95
- 96
- 97
- 98
- 99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Norne</span>
-
-<span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">data_source</span><span class="p">:</span>
-    <span class="nt">input_case</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">../tests/data/norne/NORNE_ATW2013</span>
-  <span class="nt">pvt</span><span class="p">:</span>
-    <span class="nt">rsvd</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./examples/norne_static/rsvd.csv</span>
-  <span class="nt">cell_length</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
-  <span class="nt">additional_flow_nodes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
-  <span class="nt">additional_node_candidates</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
-  <span class="nt">hull_factor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.2</span>
-  <span class="nt">random_seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">123456</span>
-  <span class="nt">perforation_handling_strategy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">bottom_point</span>
-  <span class="nt">fast_pyscal</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
-  <span class="nt">training_set_end_date</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2005-01-31</span> <span class="c1">#YYYY-MM-DD. If defined training set fraction is calculated from this date</span>
-  <span class="nt">fault_tolerance</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
-
-<span class="nt">ert</span><span class="p">:</span>
-  <span class="nt">static_include_files</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./norne_static</span>
-  <span class="nt">realizations</span><span class="p">:</span>
-    <span class="nt">num_realizations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-    <span class="nt">required_success_percent</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">70</span>
-    <span class="nt">max_runtime</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">600</span>   <span class="c1"># Maximum runtime of on single realization in seconds</span>
-  <span class="nt">queue</span><span class="p">:</span>
-    <span class="nt">system</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LOCAL</span>   <span class="c1"># LOCAL or LSF</span>
-    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mr</span>   <span class="c1"># ignored when system is LOCAL</span>
-    <span class="nt">max_running</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>   <span class="c1"># Maximum number of simultaneous runs</span>
-  <span class="nt">ensemble_weights</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-
-<span class="nt">model_parameters</span><span class="p">:</span>
-  <span class="nt">permeability</span><span class="p">:</span>
-    <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
-    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5000</span>
-  <span class="nt">porosity</span><span class="p">:</span>
-    <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.01</span>
-    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.4</span>
-  <span class="nt">bulkvolume_mult</span><span class="p">:</span>
-    <span class="nt">mean</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-  <span class="nt">fault_mult</span><span class="p">:</span>
-    <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0e-3</span>
-    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-    <span class="nt">loguniform</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
-  <span class="nt">relative_permeability</span><span class="p">:</span>
-    <span class="nt">scheme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">global</span>
-    <span class="nt">swirr</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.01</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.04</span>
-    <span class="nt">swl</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.05</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.09</span>
-    <span class="nt">swcr</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.30</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.35</span>
-    <span class="nt">sorw</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.2</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.3</span>
-    <span class="nt">sorg</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.4</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-    <span class="nt">sgcr</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.03</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.08</span>
-    <span class="nt">krwend</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.7</span>
-    <span class="nt">krowend</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.3</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-    <span class="nt">krgend</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.9</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
-    <span class="nt">krogend</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.9</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
-    <span class="nt">nw</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2.5</span>
-    <span class="nt">now</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
-    <span class="nt">ng</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.5</span>
-    <span class="nt">nog</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.5</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2.0</span>
-  <span class="nt">equil</span><span class="p">:</span>
-    <span class="nt">scheme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">individual</span>
-    <span class="nt">datum_pressure</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">250</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">275</span>
-    <span class="nt">owc_depth</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2675</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2725</span>
-    <span class="nt">goc_depth</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2575</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2600</span>
-  <span class="nt">rock_compressibility</span><span class="p">:</span>
-    <span class="nt">reference_pressure</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">277</span>
-    <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4.8e-5</span>
-    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5.2e-5</span>
-  <span class="nt">aquifer</span><span class="p">:</span>
-    <span class="nt">scheme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">individual</span>
-    <span class="nt">fraction</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25</span>
-    <span class="nt">delta_depth</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
-    <span class="nt">size_in_bulkvolumes</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0e-6</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-      <span class="nt">loguniform</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
-</pre></div>
-</td></tr></table></div>
 </div>
 <div class="section" id="prediction-example">
 <h2>Prediction example<a class="headerlink" href="#prediction-example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Norne</span>
-
-<span class="nt">ert</span><span class="p">:</span>
-  <span class="nt">pred_schedule_file</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./trivial_prediction_schedule.sch</span>
-  <span class="nt">static_include_files</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./norne_static</span>
-  <span class="nt">realizations</span><span class="p">:</span>
-    <span class="nt">num_realizations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-    <span class="nt">required_success_percent</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
-    <span class="nt">max_runtime</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">300</span> <span class="c1"># Maximum runtime of on single realization in seconds</span>
-  <span class="nt">simulator</span><span class="p">:</span>
-    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Flow</span>
-  <span class="nt">queue</span><span class="p">:</span>
-    <span class="nt">system</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LOCAL</span> <span class="c1"># LOCAL or LSF</span>
-    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mr</span> <span class="c1"># ignored when system is LOCAL</span>
-    <span class="nt">max_running</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span> <span class="c1"># Maximum number of simultaneous runs</span>
-</pre></div>
-</td></tr></table></div>
 </div>
 </div>
 
@@ -442,7 +181,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="api.html" class="btn btn-neutral float-right" title="FlowNet Python API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

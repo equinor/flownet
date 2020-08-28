@@ -1,0 +1,8 @@
+flownet.ert.\_run\_subprocess module
+====================================
+
+.. automodule:: flownet.ert._run_subprocess
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

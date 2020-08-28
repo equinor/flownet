@@ -9,6 +9,7 @@ Submodules
 
    flownet.ert._create_ert_setup
    flownet.ert._create_synthetic_refcase
+   flownet.ert._run_subprocess
 
 Module contents
 ---------------

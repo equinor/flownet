@@ -34,6 +34,7 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="flownet.network_model._one_dimensional_model module" href="flownet.network_model._one_dimensional_model.html" />
@@ -88,8 +89,10 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration_file.html">Configuration file example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">FlowNet Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html#flownet-package">flownet package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About FlowNet</a></li>
 </ul>
 
             
@@ -184,13 +187,13 @@
 
 <dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel._calculate_faults">
-<code class="sig-name descname">_calculate_faults</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fault_tolerance</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1e-05</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Dict<span class="p">[</span>Any<span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_faults" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_calculate_faults</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fault_tolerance</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1e-05</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_faults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates fault definitions using the following approach:</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li><p>Loop through all faults</p></li>
-<li><p>Perform a triangulation of all points belonging to a fault</p></li>
-<li><p>For each triangle, perform ray tracing using the
+<li><p>Perform a triangulation of all points belonging to a fault plane and store the triangles</p></li>
+<li><p>For each connection, find all triangles in its bounding box, perform ray tracing using the
 Möller-Trumbore intersection algorithm.</p></li>
 <li><p>If an intersection is found, identify the grid blocks that are
 associated with the intersection.</p></li>

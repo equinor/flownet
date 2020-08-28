@@ -34,6 +34,7 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="flownet.data.from_pdm module" href="flownet.data.from_pdm.html" />
@@ -88,8 +89,10 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration_file.html">Configuration file example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">FlowNet Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html#flownet-package">flownet package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About FlowNet</a></li>
 </ul>
 
             
@@ -200,19 +203,11 @@
 <code class="sig-name descname">_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.from_flow.FlowData._coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to extract well coordinates from an Flow simulation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> – Entire path to the simulated simulation case. This
-case must have both and EGRID and UNRST file.</p></li>
-<li><p><strong>perforation_handling_strategy</strong> – How to deal with perforations per well.
-(‘bottom_point’, ‘top_point’, ‘multiple’)</p></li>
-</ul>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>WELL_NAME, X, Y, Z</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>WELL_NAME, X, Y, Z</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>columns</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>columns</p>
 </dd>
 </dl>
 </dd></dl>
@@ -232,6 +227,17 @@ case must have both and EGRID and UNRST file.</p></li>
 <dt id="flownet.data.from_flow.FlowData._get_start_date">
 <code class="sig-name descname">_get_start_date</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_flow.FlowData._get_start_date" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="flownet.data.from_flow.FlowData._grid_cell_bounding_boxes">
+<code class="sig-name descname">_grid_cell_bounding_boxes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#flownet.data.from_flow.FlowData._grid_cell_bounding_boxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to get the bounding box (x, y and z min + max) for all grid cells</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A (active grid cells x 6) numpy array with columns [ xmin, xmax, ymin, ymax, zmin, zmax ]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="flownet.data.from_flow.FlowData._production_data">
@@ -273,6 +279,12 @@ following vectors to the summary file: WOPR, WGPR, WWPR, WBHP, WTHP, WGIR, WWIR<
 <dt id="flownet.data.from_flow.FlowData.faults">
 <em class="property">property </em><code class="sig-name descname">faults</code><a class="headerlink" href="#flownet.data.from_flow.FlowData.faults" title="Permalink to this definition">¶</a></dt>
 <dd><p>dataframe with all fault data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="flownet.data.from_flow.FlowData.grid_cell_bounding_boxes">
+<em class="property">property </em><code class="sig-name descname">grid_cell_bounding_boxes</code><a class="headerlink" href="#flownet.data.from_flow.FlowData.grid_cell_bounding_boxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boundingboxes for all gridcells</p>
 </dd></dl>
 
 <dl class="py method">

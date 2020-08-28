@@ -34,6 +34,7 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="flownet.ert._create_synthetic_refcase module" href="flownet.ert._create_synthetic_refcase.html" />
@@ -88,8 +89,10 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration_file.html">Configuration file example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">FlowNet Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html#flownet-package">flownet package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About FlowNet</a></li>
 </ul>
 
             
@@ -169,7 +172,7 @@ and outputs them in an ert parameter definition file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>parameters</strong> – List with Paratemers</p></li>
+<li><p><strong>parameters</strong> – List with Parameters</p></li>
 <li><p><strong>output_folder</strong> – Path to the output_folder</p></li>
 </ul>
 </dd>
@@ -181,7 +184,7 @@ and outputs them in an ert parameter definition file</p>
 
 <dl class="py function">
 <dt id="flownet.ert._create_ert_setup._create_observation_file">
-<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">_create_observation_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">schedule</span><span class="p">:</span> <span class="n"><a class="reference internal" href="flownet.realization._schedule.html#flownet.realization._schedule.Schedule" title="flownet.realization._schedule.Schedule">flownet.realization._schedule.Schedule</a></span></em>, <em class="sig-param"><span class="n">obs_file</span><span class="p">:</span> <span class="n">pathlib.Path</span></em>, <em class="sig-param"><span class="n">training_set_fraction</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">yaml</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup._create_observation_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">_create_observation_file</code><span class="sig-paren">(</span><em class="sig-param">schedule: flownet.realization._schedule.Schedule</em>, <em class="sig-param">obs_file: pathlib.Path</em>, <em class="sig-param">config: &lt;property object at 0x7f6836a1d228&gt;</em>, <em class="sig-param">training_set_fraction: float = 1</em>, <em class="sig-param">yaml: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup._create_observation_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an ERT observation file from a given schedule instance.
 It has not yet been decided if schedule is to be given at creation or should be part
 of self.</p>
@@ -190,6 +193,7 @@ of self.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>schedule</strong> – FlowNet Schedule instance to create observations from.</p></li>
 <li><p><strong>obs_file</strong> – Path to store the observation file.</p></li>
+<li><p><strong>config</strong> – Information from the FlowNet config yaml</p></li>
 <li><p><strong>training_set_fraction</strong> – Fraction of observations in schedule to use in training set</p></li>
 <li><p><strong>yaml</strong> – Flag to indicate whether a yaml observation file is to be stored. False means ertobs.</p></li>
 </ul>
@@ -202,14 +206,18 @@ of self.</p>
 
 <dl class="py function">
 <dt id="flownet.ert._create_ert_setup.create_ert_setup">
-<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">create_ert_setup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">argparse.Namespace</span></em>, <em class="sig-param"><span class="n">network</span></em>, <em class="sig-param"><span class="n">schedule</span><span class="p">:</span> <span class="n"><a class="reference internal" href="flownet.realization._schedule.html#flownet.realization._schedule.Schedule" title="flownet.realization._schedule.Schedule">flownet.realization._schedule.Schedule</a></span></em>, <em class="sig-param"><span class="n">ert_config</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">parameters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">random_seed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">training_set_fraction</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">prediction_setup</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup.create_ert_setup" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">create_ert_setup</code><span class="sig-paren">(</span><em class="sig-param">args: argparse.Namespace</em>, <em class="sig-param">network</em>, <em class="sig-param">schedule: flownet.realization._schedule.Schedule</em>, <em class="sig-param">config: &lt;property object at 0x7f6836a1d228&gt;</em>, <em class="sig-param">parameters=None</em>, <em class="sig-param">training_set_fraction: float = 1</em>, <em class="sig-param">prediction_setup: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup.create_ert_setup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a ready-to-go ERT setup in output_folder.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>schedule</strong> – FlowNet Schedule instance to create ERT setup from</p></li>
 <li><p><strong>args</strong> – Arguments given to FlowNet at execution</p></li>
+<li><p><strong>network</strong> – FlowNet network instance</p></li>
+<li><p><strong>config</strong> – Information from the FlowNet config yaml</p></li>
+<li><p><strong>parameters</strong> – List with parameters (default = None)</p></li>
 <li><p><strong>training_set_fraction</strong> – Fraction of observations to be used for model training (default = 1)</p></li>
+<li><p><strong>prediction_setup</strong> – Set to true if it is a prediction run (default = False)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
