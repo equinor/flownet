@@ -95,17 +95,17 @@ class FlowData(FromSource):
                 ijk = global_conn.ijk()
                 xyz = self._grid.get_xyz(ijk=ijk)
 
-                PERM_kw = self._init.iget_named_kw("PERMX", 0)
-                PORO_kw = self._init.iget_named_kw("PORO", 0)
+                perm_kw = self._init.iget_named_kw("PERMX", 0)
+                poro_kw = self._init.iget_named_kw("PORO", 0)
 
                 coords.append(
                     [
                         well_name,
                         *xyz,
-                        PERM_kw[
+                        perm_kw[
                             self._grid.cell(i=ijk[0], j=ijk[1], k=ijk[2]).active_index
                         ],
-                        PORO_kw[
+                        poro_kw[
                             self._grid.cell(i=ijk[0], j=ijk[1], k=ijk[2]).active_index
                         ],
                     ]
