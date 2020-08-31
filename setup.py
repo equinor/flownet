@@ -3,6 +3,7 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     LONG_DESCRIPTION = fh.read()
 
+
 REQUIREMENTS = [
     "configsuite>=0.6",
     "cwrap>=1.6",
