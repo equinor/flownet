@@ -25,13 +25,19 @@ def execute(
         variogram_parameters = {"sill": 0.75, "range": 1000, "nugget": 0}
 
     gridx = np.arange(
-        data[:, 0].min(), data[:, 0].max(), (data[:, 0].max() - data[:, 0].min()) / n,
+        data[:, 0].min(),
+        data[:, 0].max(),
+        (data[:, 0].max() - data[:, 0].min()) / n,
     )
     gridy = np.arange(
-        data[:, 1].min(), data[:, 1].max(), (data[:, 1].max() - data[:, 1].min()) / n,
+        data[:, 1].min(),
+        data[:, 1].max(),
+        (data[:, 1].max() - data[:, 1].min()) / n,
     )
     gridz = np.arange(
-        data[:, 2].min(), data[:, 2].max(), (data[:, 2].max() - data[:, 2].min()) / n,
+        data[:, 2].min(),
+        data[:, 2].max(),
+        (data[:, 2].max() - data[:, 2].min()) / n,
     )
 
     uk3d = UniversalKriging3D(
