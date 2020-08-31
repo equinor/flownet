@@ -1,6 +1,7 @@
 import warnings
 from pathlib import Path
 from typing import Union, List
+import datetime
 
 import numpy as np
 import pandas as pd
@@ -69,6 +70,37 @@ class FlowData(FromSource):
             elif self._perforation_handling_strategy == "multiple":
                 xyz = [global_conns]
                 coord_append = multi_xyz_append
+            elif self._perforation_handling_strategy == "time_avg_open_location":
+                connection_open_time = {}
+
+                for conn_status in self._wells[well_name]:
+                    time = datetime.datetime.strptime(
+                        str(conn_status.simulationTime()), "%Y-%m-%d %H:%M:%S"
+                    )
+                    for i, connection in enumerate(conn_status.globalConnections()):
+                        if connection.ijk() not in connection_open_time:
+                            connection_open_time[connection.ijk()] = 0
+                        elif connection.isOpen():
+                            connection_open_time[connection.ijk()] += (
+                                time - prev_time
+                            ).total_seconds()
+                        else:
+                            connection_open_time[connection.ijk()] += 0
+
+                    prev_time = time
+
+                xyz = np.array([0.0, 0.0, 0.0])
+                total_time = sum(connection_open_time.values())
+                for connection, time in connection_open_time.items():
+                    if total_time > 0:
+                        xyz += np.multiply(
+                            np.array(self._grid.get_xyz(ijk=connection)), time
+                        )
+                    else:
+                        xyz = np.array(self._grid.get_xyz(ijk=connection))
+                if total_time > 0:
+                    xyz = tuple(np.divide(xyz, total_time))
+
             else:
                 raise Exception(
                     f"perforation strategy {self._perforation_handling_strategy} unknown"
