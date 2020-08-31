@@ -458,10 +458,10 @@ class Schedule:
 
     def get_vfp(self) -> Dict:
         """
-         Helper function to retrieve the VFP tables associated with all wells.
+        Helper function to retrieve the VFP tables associated with all wells.
 
-         Returns:
-             A dictionary of VFP table numbers or None if no such date exist
+        Returns:
+            A dictionary of VFP table numbers or None if no such date exist
 
         """
         vfp_tables = {}
