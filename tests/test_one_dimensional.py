@@ -4,8 +4,7 @@ from flownet.network_model import OneDimensionalModel, create_egrid
 
 
 def test_one_dimensional(tmp_path: pathlib.Path) -> None:
-    """Single one dimensional flow Model example
-    """
+    """Single one dimensional flow Model example"""
 
     n_grid_cells = 10
     model_cross_section_area = 40  # m^2
