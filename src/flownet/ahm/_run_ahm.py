@@ -270,7 +270,7 @@ def run_flownet_history_matching(
         network.grid.model.unique(),
     )
 
-    if config.flownet.data_source.simulation.well_logs:
+    if df_well_logs is not None:
         # Use well logs to constrain priors.
 
         perm_data = df_well_logs[["X", "Y", "Z", "PERM"]].values
