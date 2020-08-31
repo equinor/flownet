@@ -92,10 +92,10 @@ smry:
    {% if loop.first and not loop.last: %}
  - key: WGIR:{{ well_name }}
    observations:
-   {%- elif not loop.first: %}
+   {%- elif not loop.first and kw.inj_type == "GAS": %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
-      value: {{ kw.bhp }}
-      error: {{ [error_config.WGIR.rel_error * kw.bhp, error_config.WGIR.min_error] | max }}
+      value: {{ kw.rate }}
+      error: {{ [error_config.WGIR.rel_error * kw.rate, error_config.WGIR.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
    {%- endif -%}
@@ -104,10 +104,10 @@ smry:
    {% if loop.first and not loop.last: %}
  - key: WWIR:{{ well_name }}
    observations:
-   {%- elif not loop.first: %}
+   {%- elif not loop.first and kw.inj_type == "WATER": %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
-      value: {{ kw.bhp }}
-      error: {{ [error_config.WWIR.rel_error * kw.bhp, error_config.WWIR.min_error] | max }}
+      value: {{ kw.rate }}
+      error: {{ [error_config.WWIR.rel_error * kw.rate, error_config.WWIR.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
    {%- endif -%}
