@@ -1,4 +1,4 @@
-from typing import Optional, Dict
+from typing import Optional, Dict, Tuple
 
 import numpy as np
 from scipy.interpolate import RegularGridInterpolator
@@ -13,25 +13,22 @@ def execute(
     nlags: int = 6,
     anisotropy_scaling_z: float = 10.0,
     **kwargs
-) -> RegularGridInterpolator:
+) -> Tuple[RegularGridInterpolator, RegularGridInterpolator]:
     """
     Executes spatial kriging of input data and returns an scipy.interpolate.RegularInterpolator object.
 
     Args:
-        data:
-        n:
-        variogram_model:
-        nlags:
-        anisotropy_scaling:
+        data: 3xN np.ndarray with columns X, Y, Z, MEASUREMENT
+        n: Number of kriged values in each direct. E.g, n = 10 -> 10x10x10 = 1000 values
+        variogram_model: Variogram options as allowed in pykrige
+        nlags: nlag as defined in pykrige
+        anisotropy_scaling_<: anisotropy in the z-scale
         ...
 
     Returns:
-        RegularInterpolator for mthe kriged 3D volume
+        Tuple of RegularInterpolators for the kriged measurement and uncertainty in a 3D volume
 
     """
-    if variogram_parameters is None:
-        variogram_parameters = {"sill": 0.75, "range": 1000, "nugget": 0}
-
     gridx = np.arange(
         data[:, 0].min(),
         data[:, 0].max(),
@@ -49,10 +46,7 @@ def execute(
     )
 
     uk3d = UniversalKriging3D(
-        data[:, 0],
-        data[:, 1],
-        data[:, 2],
-        data[:, 3],
+        *data.T,
         variogram_model=variogram_model,
         variogram_parameters=variogram_parameters,
         nlags=nlags,
