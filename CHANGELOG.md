@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 ### Added
+- [#155](https://github.com/equinor/flownet/pull/155) Adds reading of simulation 'well logs' to condition the priors of permeability and porosity based on spatial kriging of well logs.
 - [#115](https://github.com/equinor/flownet/pull/150) Adds this changelog.
 - [#146](https://github.com/equinor/flownet/pull/146) Added about page to documentation with logo of industry and research institute partners.
 - [#138](https://github.com/equinor/flownet/pull/138) Print message to terminal when the schedule is being generated instead of utter silence.
