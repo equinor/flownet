@@ -17,6 +17,14 @@ def execute(
     """
     Executes spatial kriging of input data and returns an scipy.interpolate.RegularInterpolator object.
 
+    Args:
+        data:
+        n:
+        variogram_model:
+        nlags:
+        anisotropy_scaling:
+        ...
+
     Returns:
         RegularInterpolator for mthe kriged 3D volume
 
@@ -44,7 +52,7 @@ def execute(
         data[:, 0],
         data[:, 1],
         data[:, 2],
-        np.log10(data[:, 3]),
+        data[:, 3],
         variogram_model=variogram_model,
         variogram_parameters=variogram_parameters,
         nlags=nlags,

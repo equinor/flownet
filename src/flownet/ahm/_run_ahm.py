@@ -1,5 +1,5 @@
 import argparse
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Dict
 
 import numpy as np
 import pandas as pd
@@ -120,6 +120,79 @@ def _get_distribution(
     return df
 
 
+def _constrain_using_well_logs(
+    porv_poro_trans_dist_values: pd.DataFrame,
+    data: np.ndarray,
+    network: NetworkModel,
+    measurement_type: str,
+) -> pd.DataFrame:
+    """
+
+    Args:
+        porv_poro_trans_dist_values:
+        data:
+        network:
+        measurement_type:
+        config:
+
+    Returns:
+        Well-log constrained "porv_poro_trans_dist_values" DataFrame
+
+    """
+    if measurement_type == "permeability":
+        data[:, 3] = np.log10(data[:, 3])
+
+    variogram_parameters: Optional[Dict] = None
+    if measurement_type == "permeability":
+        variogram_parameters = {"sill": 0.75, "range": 1000, "nugget": 0}
+    elif measurement_type == "porosity":
+        variogram_parameters = {"sill": 0.05, "range": 1000, "nugget": 0}
+
+    k3d3_interpolator, ss3d_interpolator = kriging.execute(
+        data, variogram_parameters=variogram_parameters
+    )
+
+    parameter_min_kriging = k3d3_interpolator(
+        network.connection_midpoints
+    ) - ss3d_interpolator(network.connection_midpoints)
+
+    parameter_max_kriging = k3d3_interpolator(
+        network.connection_midpoints
+    ) + ss3d_interpolator(network.connection_midpoints)
+
+    if measurement_type == "permeability":
+        parameter_min_kriging = np.power(10, parameter_min_kriging)
+        parameter_max_kriging = np.power(10, parameter_max_kriging)
+
+    parameter_min = np.maximum(
+        np.minimum(
+            parameter_min_kriging,
+            porv_poro_trans_dist_values[f"maximum_{measurement_type}"].values,
+        ),
+        porv_poro_trans_dist_values[f"minimum_{measurement_type}"].values,
+    )
+    parameter_max = np.minimum(
+        np.maximum(
+            parameter_max_kriging,
+            porv_poro_trans_dist_values[f"minimum_{measurement_type}"].values,
+        ),
+        porv_poro_trans_dist_values[f"maximum_{measurement_type}"].values,
+    )
+
+    # Set NaN's to the full permeability range as set in the config
+    parameter_min[np.isnan(parameter_min)] = porv_poro_trans_dist_values[
+        f"minimum_{measurement_type}"
+    ].values[0]
+    parameter_max[np.isnan(parameter_max)] = porv_poro_trans_dist_values[
+        f"maximum_{measurement_type}"
+    ].values[0]
+
+    porv_poro_trans_dist_values[f"minimum_{measurement_type}"] = parameter_min
+    porv_poro_trans_dist_values[f"maximum_{measurement_type}"] = parameter_max
+
+    return porv_poro_trans_dist_values
+
+
 # pylint: disable=too-many-branches,too-many-statements
 def run_flownet_history_matching(
     config: ConfigSuite.snapshot, args: argparse.Namespace
@@ -199,44 +272,16 @@ def run_flownet_history_matching(
 
     if config.flownet.data_source.simulation.well_logs:
         # Use well logs to constrain priors.
-        k3d3_interpolator, ss3d_interpolator = kriging.execute(
-            df_well_logs[["X", "Y", "Z", "PERM"]].values
-        )
 
-        perm_min_kriging = 10 ** (
-            k3d3_interpolator(network.connection_midpoints)
-            - ss3d_interpolator(network.connection_midpoints)
-        )
-        perm_max_kriging = 10 ** (
-            k3d3_interpolator(network.connection_midpoints)
-            + ss3d_interpolator(network.connection_midpoints)
-        )
+        perm_data = df_well_logs[["X", "Y", "Z", "PERM"]].values
+        poro_data = df_well_logs[["X", "Y", "Z", "PORO"]].values
 
-        new_perm_min = np.maximum(
-            np.minimum(
-                perm_min_kriging,
-                porv_poro_trans_dist_values["maximum_permeability"].values,
-            ),
-            porv_poro_trans_dist_values["minimum_permeability"].values,
+        porv_poro_trans_dist_values = _constrain_using_well_logs(
+            porv_poro_trans_dist_values, perm_data, network, "permeability"
         )
-        new_perm_max = np.minimum(
-            np.maximum(
-                perm_max_kriging,
-                porv_poro_trans_dist_values["minimum_permeability"].values,
-            ),
-            porv_poro_trans_dist_values["maximum_permeability"].values,
+        porv_poro_trans_dist_values = _constrain_using_well_logs(
+            porv_poro_trans_dist_values, poro_data, network, "porosity"
         )
-
-        # Set NaN's to the full permeability range as set in the config
-        new_perm_min[np.isnan(new_perm_min)] = porv_poro_trans_dist_values[
-            "minimum_permeability"
-        ].values[0]
-        new_perm_max[np.isnan(new_perm_max)] = porv_poro_trans_dist_values[
-            "maximum_permeability"
-        ].values[0]
-
-        porv_poro_trans_dist_values["minimum_permeability"] = new_perm_min
-        porv_poro_trans_dist_values["maximum_permeability"] = new_perm_max
 
     #########################################
     # Relative Permeability                 #
