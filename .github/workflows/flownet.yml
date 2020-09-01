@@ -47,6 +47,9 @@ jobs:
       - name: 🏗️ Build Python environment
         if: steps.cache-venv.outputs.cache-hit != 'true'
         run: bash ./build_environment.sh $VENV_PATH /usr/bin/flow
+        - name: 📁 Using cache.
+          if: steps.cache-venv.outputs.cache-hit == 'true'
+          run: echo 'Using cached Python enviroment.'
 
       - name: 🍿 Download FlowNet test data
         env:
