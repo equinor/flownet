@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 ### Added
+- [#157](https://github.com/equinor/flownet/pull/157) Adds a new 'time-weighted average open perforation location' perforation strategy called `time_avg_open_location`. 
 - [#150](https://github.com/equinor/flownet/pull/150) Adds this changelog.
 - [#146](https://github.com/equinor/flownet/pull/146) Added about page to documentation with logo of industry and research institute partners.
 - [#138](https://github.com/equinor/flownet/pull/138) Print message to terminal when the schedule is being generated instead of utter silence.
