@@ -27,9 +27,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - [#89](https://github.com/equinor/flownet/pull/89), [#91](https://github.com/equinor/flownet/pull/91), [#99](https://github.com/equinor/flownet/pull/99) Updates and fixes in git workflow.
 - [#81](https://github.com/equinor/flownet/pull/81) Various bugfixes in the analysis workflow are now solved.
 - [#75](https://github.com/equinor/flownet/pull/75) Resampling via the config path is no longer supported. This PR removes also the resampling option from the config file parser.
-
+ 
 ### Changed
-- [#147](https://github.com/equinor/flownet/pull/147) The observation uncertainty now only needs to be specified for the vectors that are actually used in the conditioning. This PR also introduces WWIR and WGIR into the flownet configYAML.
+- [#147](https://github.com/equinor/flownet/pull/147) The observation uncertainty now only needs to be specified for the vectors that are actually used in the conditioning. This PR also adds possibility of defining uncertainty for WWIR and WGIR into the flownet config YAML.
 - [#132](https://github.com/equinor/flownet/pull/132) The observation uncertainty, used for conditioning models, is now exposed to the user via the configuration file instead of hidden in the `observations.yamlobs.jinja2` template. This PR also introduced a wider usage of passing around the `ConfigSuit.snapshot`.
 - [#128](https://github.com/equinor/flownet/pull/117) Simulation models and configuration files used in CI are now coming from [flownet-testdata](https://github.com/equinor/flownet-testdata) and are thus no longer an integral part of the flownet repository.
 - [#125](https://github.com/equinor/flownet/pull/125) AHM and prediction `subprocess` call are now being performed through a common `run_ert_subprocess` function call.
