@@ -65,6 +65,6 @@ setup(
         "Operating System :: OS Independent",
         "Natural Language :: English",
         "Topic :: Scientific/Engineering",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3) ",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
 )
