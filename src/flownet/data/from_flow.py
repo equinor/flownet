@@ -1,6 +1,7 @@
 import warnings
 from pathlib import Path
 from typing import Union, List
+import datetime
 
 import numpy as np
 import pandas as pd
@@ -43,6 +44,7 @@ class FlowData(FromSource):
 
         self._perforation_handling_strategy: str = perforation_handling_strategy
 
+    # pylint: disable=too-many-branches
     def _coordinates(self) -> pd.DataFrame:
         """
         Function to extract well coordinates from an Flow simulation.
@@ -70,6 +72,46 @@ class FlowData(FromSource):
             elif self._perforation_handling_strategy == "multiple":
                 xyz = [global_conns]
                 coord_append = multi_xyz_append
+            elif self._perforation_handling_strategy == "time_avg_open_location":
+                connection_open_time = {}
+
+                for i, conn_status in enumerate(self._wells[well_name]):
+                    time = datetime.datetime.strptime(
+                        str(conn_status.simulationTime()), "%Y-%m-%d %H:%M:%S"
+                    )
+                    if i == 0:
+                        prev_time = time
+
+                    for connection in conn_status.globalConnections():
+                        if connection.ijk() not in connection_open_time:
+                            connection_open_time[connection.ijk()] = 0.0
+                        elif connection.isOpen():
+                            connection_open_time[connection.ijk()] += (
+                                time - prev_time
+                            ).total_seconds()
+                        else:
+                            connection_open_time[connection.ijk()] += 0.0
+
+                    prev_time = time
+
+                xyz_values = np.zeros((1, 3), dtype=np.float64)
+                total_open_time = sum(connection_open_time.values())
+
+                if total_open_time > 0:
+                    for connection, open_time in connection_open_time.items():
+                        xyz_values += np.multiply(
+                            np.array(self._grid.get_xyz(ijk=connection)),
+                            open_time / total_open_time,
+                        )
+                else:
+                    for connection, open_time in connection_open_time.items():
+                        xyz_values += np.divide(
+                            np.array(self._grid.get_xyz(ijk=connection)),
+                            len(connection_open_time.items()),
+                        )
+
+                xyz = tuple(*xyz_values)
+
             else:
                 raise Exception(
                     f"perforation strategy {self._perforation_handling_strategy} unknown"
