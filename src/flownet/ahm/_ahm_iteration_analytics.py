@@ -399,7 +399,10 @@ def save_iteration_analytics():
     for str_key in list(args.quantity.replace("[", "").replace("]", "").split(",")):
         # Prepare data from reference simulation
         tmp_data = filter_dataframe(
-            df_obs, "DATE", np.datetime64(args.start), np.datetime64(args.end),
+            df_obs,
+            "DATE",
+            np.datetime64(args.start),
+            np.datetime64(args.end),
         )
 
         truth_data = pd.DataFrame()
@@ -418,7 +421,10 @@ def save_iteration_analytics():
         ens_flownet.append(
             prepare_flownet_data(
                 filter_dataframe(
-                    df_sim, "DATE", np.datetime64(args.start), np.datetime64(args.end),
+                    df_sim,
+                    "DATE",
+                    np.datetime64(args.start),
+                    np.datetime64(args.end),
                 ),
                 str_key,
                 len(realizations_dict),
@@ -426,7 +432,10 @@ def save_iteration_analytics():
         )
 
         filter_dataframe(
-            df_sim, "DATE", np.datetime64(args.start), np.datetime64(args.end),
+            df_sim,
+            "DATE",
+            np.datetime64(args.start),
+            np.datetime64(args.end),
         ).to_csv("ens_flownet_data.csv", index=False)
 
         # Normalizing data
