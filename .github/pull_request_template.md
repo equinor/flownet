@@ -4,10 +4,10 @@
 
 ### Contributor checklist
 
-- [ ] :tada: This PR closes #ISSUE_NUMBER.
+- [ ] :tada: This PR closes #139.
 - [ ] :scroll: I have broken down my PR into the following tasks:
-   - [ ] Task 1
-   - [ ] Task 2
+   - [ ] Assign eqlnum/satnum regions from simulation to FlowNet model
+   - [ ] Testing
 - [ ] :robot: I have added tests, or extended existing tests, to cover any new features or bugs fixed in this PR.
 - [ ] :book: I have considered adding a new entry in `CHANGELOG.md`.
 - [ ] :books: I have considered updating the documentation.
