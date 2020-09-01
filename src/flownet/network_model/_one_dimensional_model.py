@@ -107,32 +107,27 @@ class OneDimensionalModel:
 
     @property
     def n(self) -> int:
-        """Number of grid cells in model, counting both active and inactive.
-        """
+        """Number of grid cells in model, counting both active and inactive."""
         return self._n
 
     @property
     def nactive(self) -> int:
-        """Number active grid cells in model.
-        """
+        """Number active grid cells in model."""
         return self._nactive
 
     @property
     def cell_length(self) -> float:
-        """Actual cell length of the grid cells.
-        """
+        """Actual cell length of the grid cells."""
         return self._length / self._nactive
 
     @property
     def start(self) -> np.ndarray:
-        """Start position of model (x, y, z) returned as numpy array.
-        """
+        """Start position of model (x, y, z) returned as numpy array."""
         return self._start_pos
 
     @property
     def end(self) -> np.ndarray:
-        """End position of model (x, y, z) returned as numpy array.
-        """
+        """End position of model (x, y, z) returned as numpy array."""
         return self._end_pos
 
     @property
@@ -144,8 +139,7 @@ class OneDimensionalModel:
 
     @property
     def df_coord(self) -> pd.DataFrame:
-        """Returns a dataframe of the grid cells with corresponding coordinates
-        """
+        """Returns a dataframe of the grid cells with corresponding coordinates"""
         df_coordinates = pd.DataFrame(self.data)
         df_coordinates["cell_length"] = self._cell_length_actual
         df_coordinates["ACTNUM"] = 1

@@ -33,7 +33,12 @@ def run_flownet_prediction(config, args):
         parameters = pickle.load(fh)
 
     create_ert_setup(
-        args, network, schedule, config, parameters, prediction_setup=True,
+        args,
+        network,
+        schedule,
+        config,
+        parameters,
+        prediction_setup=True,
     )
     shutil.copyfile(
         args.ahm_folder / "parameters_iteration-latest.parquet.gzip",

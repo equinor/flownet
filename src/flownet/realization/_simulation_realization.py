@@ -45,9 +45,11 @@ class SimulationRealization:
         """
         self._network: NetworkModel = network
         self._schedule: Schedule = schedule
-        self._dims: Dict = simulation_input[  # type: ignore[assignment]
-            "DIMS"
-        ] if "DIMS" in simulation_input else {}
+        self._dims: Dict = (
+            simulation_input["DIMS"]  # type: ignore[assignment]
+            if "DIMS" in simulation_input
+            else {}
+        )
         self._includes: Dict = (
             simulation_input["INCLUDES"]  # type: ignore[assignment]
             if "INCLUDES" in simulation_input
