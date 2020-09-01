@@ -56,7 +56,7 @@ jobs:
           TESTDATA_REPO_OWNER: equinor
           # If you want the CI to (temporarily) run against another branch than master,
           # change the value her from "master" to the relevant branch name.
-          TESTDATA_REPO_BRANCH: observation-vectors-in-config-yaml
+          TESTDATA_REPO_BRANCH: master
         run: |
           git clone --depth 1 --branch $TESTDATA_REPO_BRANCH https://github.com/$TESTDATA_REPO_OWNER/flownet-testdata.git
           if [ -f "$INPUT_MODEL_FOLDER/${{ matrix.flownet-model }}.tar.gz" ]; then
