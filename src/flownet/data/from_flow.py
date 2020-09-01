@@ -93,28 +93,30 @@ class FlowData(FromSource):
 
                     prev_time = time
 
-                xyz = np.zeros((1, 3), dtype=np.float64)
+                xyz_values = np.zeros((1, 3), dtype=np.float64)
                 total_open_time = sum(connection_open_time.values())
 
                 if total_open_time > 0:
                     for connection, open_time in connection_open_time.items():
-                        xyz += np.multiply(
+                        xyz_values += np.multiply(
                             np.array(self._grid.get_xyz(ijk=connection)),
                             open_time / total_open_time,
                         )
                 else:
                     for connection, open_time in connection_open_time.items():
-                        xyz += np.divide(
+                        xyz_values += np.divide(
                             np.array(self._grid.get_xyz(ijk=connection)),
                             len(connection_open_time.items()),
                         )
+
+                xyz = tuple(*xyz_values)
 
             else:
                 raise Exception(
                     f"perforation strategy {self._perforation_handling_strategy} unknown"
                 )
 
-            coord_append([well_name, *tuple(*xyz)])
+            coord_append([well_name, *xyz])
 
         return pd.DataFrame(coords, columns=["WELL_NAME", "X", "Y", "Z"])
 
