@@ -199,7 +199,9 @@ def run_flownet_history_matching(
             range(1, len(network.grid.model.unique()) + 1), columns=["SATNUM"]
         )
     elif config.model_parameters.relative_permeability.scheme == "global":
-        df_satnum = pd.DataFrame([1] * len(network.grid.model.unique()), columns=["SATNUM"])
+        df_satnum = pd.DataFrame(
+            [1] * len(network.grid.model.unique()), columns=["SATNUM"]
+        )
     else:
         raise ValueError(
             f"The relative permeability scheme "
@@ -249,7 +251,9 @@ def run_flownet_history_matching(
             range(1, len(network.grid.model.unique()) + 1), columns=["EQLNUM"]
         )
     elif config.model_parameters.equil.scheme == "global":
-        df_eqlnum = pd.DataFrame([1] * len(network.grid.model.unique()), columns=["EQLNUM"])
+        df_eqlnum = pd.DataFrame(
+            [1] * len(network.grid.model.unique()), columns=["EQLNUM"]
+        )
     else:
         raise ValueError(
             f"The equilibration scheme "
