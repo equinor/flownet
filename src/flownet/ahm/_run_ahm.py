@@ -196,10 +196,10 @@ def run_flownet_history_matching(
     # Create a Pandas dataframe with all SATNUMs based on the chosen scheme
     if config.model_parameters.relative_permeability.scheme == "individual":
         df_satnum = pd.DataFrame(
-            range(1, len(network.grid.index) + 1), columns=["SATNUM"]
+            range(1, len(network.grid.model.unique()) + 1), columns=["SATNUM"]
         )
     elif config.model_parameters.relative_permeability.scheme == "global":
-        df_satnum = pd.DataFrame([1] * len(network.grid.index), columns=["SATNUM"])
+        df_satnum = pd.DataFrame([1] * len(network.grid.model.unique()), columns=["SATNUM"])
     else:
         raise ValueError(
             f"The relative permeability scheme "
@@ -246,10 +246,10 @@ def run_flownet_history_matching(
     # Create a Pandas dataframe with all EQLNUM based on the chosen scheme
     if config.model_parameters.equil.scheme == "individual":
         df_eqlnum = pd.DataFrame(
-            range(1, len(network.grid.index) + 1), columns=["EQLNUM"]
+            range(1, len(network.grid.model.unique()) + 1), columns=["EQLNUM"]
         )
     elif config.model_parameters.equil.scheme == "global":
-        df_eqlnum = pd.DataFrame([1] * len(network.grid.index), columns=["EQLNUM"])
+        df_eqlnum = pd.DataFrame([1] * len(network.grid.model.unique()), columns=["EQLNUM"])
     else:
         raise ValueError(
             f"The equilibration scheme "
