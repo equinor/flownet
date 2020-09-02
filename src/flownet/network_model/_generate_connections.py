@@ -539,4 +539,4 @@ def create_connections(
         aquifer_ends,
         configuration.flownet.max_distance_fraction,
         configuration.flownet.max_distance,
-    )
+    ).reset_index()
