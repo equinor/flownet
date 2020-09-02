@@ -6,7 +6,7 @@ import datetime
 import numpy as np
 import pandas as pd
 from ecl.well import WellInfo
-from ecl.grid import EclGrid
+from ecl.grid import EclGrid, EclRegion
 from ecl.eclfile import EclFile
 from ecl.summary import EclSum
 from ecl2df import faults
@@ -37,6 +37,8 @@ class FlowData(FromSource):
         self._eclsum = EclSum(str(self._input_case))
         self._grid = EclGrid(str(self._input_case.with_suffix(".EGRID")))
         self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
+        self._init = EclFile(str(self._input_case.with_suffix(".INIT")))
+
         self._wells = WellInfo(
             self._grid, rst_file=self._restart, load_segment_information=True
         )

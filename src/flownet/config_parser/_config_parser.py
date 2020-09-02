@@ -711,6 +711,14 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
 
     req_relp_parameters: List[str] = []
 
+    if (
+        config.model_parameters.relative_permeability.scheme == "regions_from_sim"
+        and config.flownet.data_source.simulation.input_case is None
+    ):
+        raise ValueError(
+            "Input simulation case is not defined - EQLNUM regions can not be extracted"
+        )
+
     for phase in config.flownet.phases:
         if phase not in ["oil", "gas", "water", "disgas", "vapoil"]:
             raise ValueError(
@@ -778,11 +786,13 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 != "global"
                 and getattr(config.model_parameters.relative_permeability, parameter)
                 != "individual"
+                and getattr(config.model_parameters.relative_permeability, parameter)
+                != "regions_from_sim"
             ):
                 raise ValueError(
                     f"The relative permeability scheme "
                     f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
-                    f"Valid options are 'global' or 'individual'."
+                    f"Valid options are 'global', 'regions_from_sim' or 'individual'."
                 )
         else:
             if (
