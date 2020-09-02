@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.VENV_PATH }}
-          key: ${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('build_environment.sh') }}-${{ hashFiles('setup.py') }}
+          key: ${{ runner.os }}--${{ matrix.python-version }}-${{ hashFiles('build_environment.sh') }}-${{ hashFiles('setup.py') }}
 
       - name: 📦 Install non-python dependencies
         run: sudo bash ./apt_install.sh
