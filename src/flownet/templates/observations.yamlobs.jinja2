@@ -83,7 +83,7 @@ smry:
    {%- elif not loop.first: %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.bhp }}
-      error: {{ [error_config.WTHP.rel_error * kw.bhp, error_config.WTHP.min_error] | max }}
+      error: {{ [error_config.WTHP.rel_error * kw.thp, error_config.WTHP.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
    {%- endif -%}
