@@ -1,5 +1,6 @@
 smry:
  {%- for well_name in schedule.get_wells(kw_class="WCONHIST") -%}
+   {%- if (error_config.WOPR.rel_error is not none) and (error_config.WOPR.min_error is not none) -%}
    {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="oil_rate") -%}
    {% if loop.first and not loop.last: %}
  - key: WOPR:{{ well_name }}
@@ -10,6 +11,8 @@ smry:
       error: {{ [error_config.WOPR.rel_error * kw.oil_rate, error_config.WOPR.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WGPR.rel_error is not none) and (error_config.WGPR.min_error is not none) -%}
    {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="gas_rate") -%}
    {% if loop.first and not loop.last: %}
  - key: WGPR:{{ well_name }}
@@ -20,6 +23,8 @@ smry:
       error: {{ [error_config.WGPR.rel_error * kw.oil_rate, error_config.WGPR.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WWPR.rel_error is not none) and (error_config.WWPR.min_error is not none) -%}
    {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="water_rate") -%}
    {% if loop.first and not loop.last: %}
  - key: WWPR:{{ well_name }}
@@ -30,6 +35,8 @@ smry:
       error: {{ [error_config.WWPR.rel_error * kw.oil_rate, error_config.WWPR.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WBHP.rel_error is not none) and (error_config.WBHP.min_error is not none) -%}
    {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="bhp") -%}
    {% if loop.first and not loop.last: %}
  - key: WBHP:{{ well_name }}
@@ -40,6 +47,8 @@ smry:
       error: {{ [error_config.WBHP.rel_error * kw.oil_rate, error_config.WBHP.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WTHP.rel_error is not none) and (error_config.WTHP.min_error is not none) -%}
    {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="thp") -%}
    {% if loop.first and not loop.last: %}
  - key: WTHP:{{ well_name }}
@@ -50,9 +59,11 @@ smry:
       error: {{ [error_config.WTHP.rel_error * kw.oil_rate, error_config.WTHP.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
+   {%- endif -%}
 {%- endfor -%}
 
 {% for well_name in schedule.get_wells(kw_class="WCONINJH") %}
+   {%- if (error_config.WBHP.rel_error is not none) and (error_config.WBHP.min_error is not none) -%}
    {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="bhp") -%}
    {% if loop.first and not loop.last: %}
  - key: WBHP:{{ well_name }}
@@ -60,9 +71,11 @@ smry:
    {%- elif not loop.first: %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.bhp }}
-      error: {{ [0.05 * kw.bhp, 10] | max }}
+      error: {{ [error_config.WBHP.rel_error * kw.bhp, error_config.WBHP.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WTHP.rel_error is not none) and (error_config.WTHP.min_error is not none) -%}
    {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp") -%}
    {% if loop.first and not loop.last: %}
  - key: WTHP:{{ well_name }}
@@ -70,7 +83,32 @@ smry:
    {%- elif not loop.first: %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.bhp }}
-      error: {{ [0.05 * kw.thp, 5] | max }}
+      error: {{ [error_config.WTHP.rel_error * kw.thp, error_config.WTHP.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WGIR.rel_error is not none) and (error_config.WGIR.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp") -%}
+   {% if loop.first and not loop.last: %}
+ - key: WGIR:{{ well_name }}
+   observations:
+   {%- elif not loop.first and kw.inj_type == "GAS": %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.rate }}
+      error: {{ [error_config.WGIR.rel_error * kw.rate, error_config.WGIR.min_error] | max }}
+   {%- endif -%}
+   {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WWIR.rel_error is not none) and (error_config.WWIR.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp") -%}
+   {% if loop.first and not loop.last: %}
+ - key: WWIR:{{ well_name }}
+   observations:
+   {%- elif not loop.first and kw.inj_type == "WATER": %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.rate }}
+      error: {{ [error_config.WWIR.rel_error * kw.rate, error_config.WWIR.min_error] | max }}
+   {%- endif -%}
+   {%- endfor %}
+   {%- endif -%}
  {%- endfor -%}
