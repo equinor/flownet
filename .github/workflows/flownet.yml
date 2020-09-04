@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.6', '3.7']
-        flownet-model: ['norne','egg']
+        flownet-model: ['norne','egg', 'brugge']
 
     env:
       VENV_PATH: ${{ github.workspace }}/flownet_venv
@@ -60,10 +60,8 @@ jobs:
           # change the value her from "master" to the relevant branch name.
           TESTDATA_REPO_BRANCH: master
         run: |
-          git clone --depth 1 --branch $TESTDATA_REPO_BRANCH https://github.com/$TESTDATA_REPO_OWNER/flownet-testdata.git
-          if [ -f "$INPUT_MODEL_FOLDER/${{ matrix.flownet-model }}.tar.gz" ]; then
-             tar -zxvf $INPUT_MODEL_FOLDER/${{ matrix.flownet-model }}.tar.gz -C $INPUT_MODEL_FOLDER
-          fi
+          git clone --depth 1 --branch $TESTDATA_REPO_BRANCH https://github.com/$TESTDATA_REPO_OWNER/flownet-testdata.git --recursive
+          for f in $INPUT_MODEL_FOLDER/*.tar.gz; do tar -zxvf "$f" -C $INPUT_MODEL_FOLDER; done
 
       - name: 📦 Install FlowNet
         run: |
