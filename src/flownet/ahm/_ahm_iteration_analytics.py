@@ -56,7 +56,7 @@ def prepare_opm_reference_data(df_opm, str_key, n_real):
     """
 
     keys = df_opm.keys()
-    keys = keys[df_opm.keys().str.contains(str_key)]
+    keys = sorted(keys[df_opm.keys().str.contains(str_key)])
     data = np.transpose(np.tile(df_opm[keys].values.flatten(), (n_real, 1)))
 
     return data
@@ -82,7 +82,7 @@ def prepare_flownet_data(df_flownet, str_key, n_real):
     """
 
     keys = df_flownet.keys()
-    keys = keys[df_flownet.keys().str.contains(str_key)]
+    keys = sorted(keys[df_flownet.keys().str.contains(str_key)])
     data = df_flownet[keys].values.flatten()
     data = np.reshape(data, (data.shape[0] // n_real, n_real), order="F")
 
@@ -148,6 +148,7 @@ def accuracy_metric(data_reference, data_test, metric):
         FlowNet realizations
         data_test: is the 2D numpy array containing normalized data from an ensemble of
         FlowNet simulations
+        metric: is a string with the name of the metric to be calculated
 
     Returns:
         A score value reflecting the accuracy of FlowNet simulations in terms of matching
@@ -403,11 +404,23 @@ def save_iteration_analytics():
         )
 
         truth_data = pd.DataFrame()
-        truth_data["DATE"] = np.unique(tmp_data["DATE"].values)
+        truth_data["DATE"], unique_idx = np.unique(
+            tmp_data["DATE"].values, return_index=True
+        )
+        truth_data["REAL_ID"] = pd.Series(np.zeros((len(unique_idx))), dtype=int)
         for well in np.unique(tmp_data["WELL_NAME"]):
-            truth_data[str_key[:5] + well] = tmp_data[tmp_data["WELL_NAME"] == well][
-                str_key[:4]
-            ].values
+            truth_data[str_key[:5] + well] = np.zeros((len(unique_idx), 1))
+            truth_data.iloc[
+                [
+                    idx
+                    for idx, val in enumerate(truth_data["DATE"].values)
+                    if val in tmp_data[tmp_data["WELL_NAME"] == well]["DATE"].values
+                ],
+                truth_data.columns.get_loc(str_key[:5] + well),
+            ] = tmp_data[tmp_data["WELL_NAME"] == well][str_key[:4]].values
+
+        truth_data = truth_data.fillna(0)
+        truth_data = truth_data[list(set(truth_data.columns) & set(df_sim.columns))]
 
         obs_opm = prepare_opm_reference_data(
             truth_data, str_key, len(realizations_dict)
@@ -418,16 +431,15 @@ def save_iteration_analytics():
         ens_flownet.append(
             prepare_flownet_data(
                 filter_dataframe(
-                    df_sim, "DATE", np.datetime64(args.start), np.datetime64(args.end),
+                    df_sim[truth_data.columns],
+                    "DATE",
+                    np.datetime64(args.start),
+                    np.datetime64(args.end),
                 ),
                 str_key,
                 len(realizations_dict),
             )
         )
-
-        filter_dataframe(
-            df_sim, "DATE", np.datetime64(args.start), np.datetime64(args.end),
-        ).to_csv("ens_flownet_data.csv", index=False)
 
         # Normalizing data
         obs_opm, ens_flownet = normalize_data(obs_opm, ens_flownet)
