@@ -400,7 +400,10 @@ def save_iteration_analytics():
     for str_key in list(args.quantity.replace("[", "").replace("]", "").split(",")):
         # Prepare data from reference simulation
         tmp_data = filter_dataframe(
-            df_obs, "DATE", np.datetime64(args.start), np.datetime64(args.end),
+            df_obs,
+            "DATE",
+            np.datetime64(args.start),
+            np.datetime64(args.end),
         )
 
         truth_data = pd.DataFrame()

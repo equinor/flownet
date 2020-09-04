@@ -111,21 +111,21 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     prediction_setup: bool = False,
 ):
     """
-        Create a ready-to-go ERT setup in output_folder.
+    Create a ready-to-go ERT setup in output_folder.
 
-        Args:
-            schedule: FlowNet Schedule instance to create ERT setup from
-            args: Arguments given to FlowNet at execution
-            network: FlowNet network instance
-            config: Information from the FlowNet config yaml
-            parameters: List with parameters (default = None)
-            training_set_fraction: Fraction of observations to be used for model training (default = 1)
-            prediction_setup: Set to true if it is a prediction run (default = False)
+    Args:
+        schedule: FlowNet Schedule instance to create ERT setup from
+        args: Arguments given to FlowNet at execution
+        network: FlowNet network instance
+        config: Information from the FlowNet config yaml
+        parameters: List with parameters (default = None)
+        training_set_fraction: Fraction of observations to be used for model training (default = 1)
+        prediction_setup: Set to true if it is a prediction run (default = False)
 
-        Returns:
-            Nothing
+    Returns:
+        Nothing
 
-        """
+    """
 
     # Create output folders if they don't exist
     output_folder = pathlib.Path(args.output_folder)
@@ -178,9 +178,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         )
 
     with open(ert_config_file, "w") as fh:  # type: ignore[assignment]
-        fh.write(  # type: ignore[call-overload]
-            template.render(configuration)
-        )
+        fh.write(template.render(configuration))  # type: ignore[call-overload]
 
     shutil.copyfile(
         _MODULE_FOLDER / ".." / "static" / "CREATE_FLOWNET_MODEL",
