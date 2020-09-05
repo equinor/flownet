@@ -3,6 +3,7 @@ from typing import Union, List, Optional
 
 import numpy as np
 import pandas as pd
+from scipy.stats import mode
 from scipy.optimize import minimize
 from configsuite import ConfigSuite
 
@@ -20,6 +21,62 @@ from ..parameters import (
     FaultTransmissibility,
 )
 from ..data import FlowData
+
+
+def _from_regions_to_flow_tubes(
+    network: NetworkModel,
+    field_data: FlowData,
+    ti2ci: pd.DataFrame,
+    name: str,
+) -> List:
+    """
+
+    Args:
+        network:
+        fd:
+        name:
+
+    Returns:
+
+    """
+    df_regions = [None] * len(network.grid.model.unique())
+
+    x_mid = network.grid[["x0", "x1", "x2", "x3", "x4", "x5", "x6", "x7"]].mean(axis=1)
+    y_mid = network.grid[["y0", "y1", "y2", "y3", "y4", "y5", "y6", "y7"]].mean(axis=1)
+    z_mid = network.grid[["z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7"]].mean(axis=1)
+
+    # how many tubes?
+    for i in network.grid.model.unique():
+        cell_regions = []
+        for j in ti2ci[ti2ci.index == i].values:
+            # for one tube - what regions are the cells in?
+            ijk = field_data._grid.find_cell(x_mid[j], y_mid[j], z_mid[j])
+            if ijk is not None and field_data._grid.active(ijk=ijk):
+                cell_regions.append(field_data._init[name][0][ijk])
+        if cell_regions != []:
+            df_regions[i] = mode(cell_regions).mode.tolist()[0]
+        else:
+            # tube completely outside of sim grid
+            c_mid = (
+                network.df_entity_connections.iloc[i][
+                    ["xstart", "ystart", "zstart"]
+                ].values
+                + network.df_entity_connections.iloc[i][["xend", "yend", "zend"]].values
+            ) / 2
+            dist = []
+            for k in range(1, field_data._grid.get_num_active()):
+                c_tmp = field_data._grid.get_xyz(active_index=k)
+                dist.append(
+                    np.sqrt(
+                        np.square(c_mid[0] - c_tmp[0])
+                        + np.square(c_mid[1] - c_tmp[1])
+                        + np.square(c_mid[2] - c_tmp[2])
+                    )
+                )
+            df_regions[i] = field_data._init[name][0][
+                field_data._grid.get_ijk(active_index=dist.index(min(dist)))
+            ]
+    return df_regions
 
 
 def _find_training_set_fraction(
@@ -198,15 +255,14 @@ def run_flownet_history_matching(
         df_satnum = pd.DataFrame(
             range(1, len(network.grid.model.unique()) + 1), columns=["SATNUM"]
         )
+    elif config.model_parameters.relative_permeability.scheme == "regions_from_sim":
+        df_satnum = pd.DataFrame(
+            _from_regions_to_flow_tubes(network, field_data, ti2ci, "SATNUM"),
+            columns=["SATNUM"],
+        )
     elif config.model_parameters.relative_permeability.scheme == "global":
         df_satnum = pd.DataFrame(
             [1] * len(network.grid.model.unique()), columns=["SATNUM"]
-        )
-    else:
-        raise ValueError(
-            f"The relative permeability scheme "
-            f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
-            f"Valid options are 'global' or 'individual'."
         )
 
     # Create a pandas dataframe with all parameter definition for each individual tube
@@ -250,15 +306,14 @@ def run_flownet_history_matching(
         df_eqlnum = pd.DataFrame(
             range(1, len(network.grid.model.unique()) + 1), columns=["EQLNUM"]
         )
+    elif config.model_parameters.equil.scheme == "regions_from_sim":
+        df_eqlnum = pd.DataFrame(
+            _from_regions_to_flow_tubes(network, field_data, ti2ci, "EQLNUM"),
+            columns=["EQLNUM"],
+        )
     elif config.model_parameters.equil.scheme == "global":
         df_eqlnum = pd.DataFrame(
             [1] * len(network.grid.model.unique()), columns=["EQLNUM"]
-        )
-    else:
-        raise ValueError(
-            f"The equilibration scheme "
-            f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
-            f"Valid options are 'global' or 'individual'."
         )
 
     # Create a pandas dataframe with all parameter definition for each individual tube

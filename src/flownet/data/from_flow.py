@@ -6,8 +6,8 @@ import datetime
 import numpy as np
 import pandas as pd
 from ecl.well import WellInfo
-from ecl.grid import EclGrid, EclRegion
-from ecl.eclfile import EclFile
+from ecl.grid import EclGrid
+from ecl.eclfile import EclFile, EclInitFile
 from ecl.summary import EclSum
 from ecl2df import faults
 from ecl2df.eclfiles import EclFiles
@@ -37,8 +37,7 @@ class FlowData(FromSource):
         self._eclsum = EclSum(str(self._input_case))
         self._grid = EclGrid(str(self._input_case.with_suffix(".EGRID")))
         self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
-        self._init = EclFile(str(self._input_case.with_suffix(".INIT")))
-
+        self._init = EclInitFile(self._grid, str(self._input_case.with_suffix(".INIT")))
         self._wells = WellInfo(
             self._grid, rst_file=self._restart, load_segment_information=True
         )
@@ -325,6 +324,10 @@ class FlowData(FromSource):
 
     def _get_start_date(self):
         return self._eclsum.start_date
+
+    def get_regions(self, name: str) -> np.ndarray:
+        """array with all 'name' regions"""
+        return np.unique(self._init[name][0])
 
     @property
     def grid_cell_bounding_boxes(self) -> np.ndarray:
