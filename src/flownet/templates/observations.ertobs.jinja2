@@ -47,7 +47,7 @@ SUMMARY_OBSERVATION WTHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.thp
 SUMMARY_OBSERVATION WGIR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.rate }}; ERROR = {{ [error_config.WGIR.rel_error * kw.rate, error_config.WGIR.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WGIR:{{ kw.well_name }}; };
 {%- endif %}
 {%- if not isnan(kw.rate) and kw.inj_type == "WATER" and error_config.WWIR.rel_error is not none and error_config.WWIR.min_error is not none: %}
-SUMMARY_OBSERVATION WWIR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.rate }}; ERROR = {{ [error_config.WWIR.rel_error * kw.rate, error_config.WWIR.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WGIR:{{ kw.well_name }}; };
+SUMMARY_OBSERVATION WWIR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.rate }}; ERROR = {{ [error_config.WWIR.rel_error * kw.rate, error_config.WWIR.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WWIR:{{ kw.well_name }}; };
 {%- endif %}
 {%- endif %}
 
