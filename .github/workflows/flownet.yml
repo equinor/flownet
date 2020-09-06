@@ -34,20 +34,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: 📁 Cache virtual environment
-        id: cache-venv
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.VENV_PATH }}
-          # As long as this issue is open https://github.com/actions/cache/issues/2#issuecomment-673493515
-          # we add a "secret" manual cache ID that can be changed in the GitHub UI when necessary.
-          key: ${{ secrets.manual_cache_id }}-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('build_environment.sh') }}-${{ hashFiles('setup.py') }}
-
       - name: 📦 Install non-python dependencies
         run: sudo bash ./apt_install.sh
 
       - name: 🏗️ Build Python environment
-        if: steps.cache-venv.outputs.cache-hit != 'true'
         run: bash ./build_environment.sh $VENV_PATH /usr/bin/flow
 
       - name: 🍿 Download FlowNet test data
