@@ -348,3 +348,13 @@ class FlowData(FromSource):
     def coordinates(self) -> pd.DataFrame:
         """dataframe with all coordinates"""
         return self._coordinates()
+
+    @property
+    def grid(self) -> EclGrid:
+        """"""
+        return self_grid()
+
+    @property
+    def init(self) -> EclInitFile:
+        """"""
+        return self._init()

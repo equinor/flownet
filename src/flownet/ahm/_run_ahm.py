@@ -50,9 +50,9 @@ def _from_regions_to_flow_tubes(
         cell_regions = []
         for j in ti2ci[ti2ci.index == i].values:
             # for one tube - what regions are the cells in?
-            ijk = field_data._grid.find_cell(x_mid[j], y_mid[j], z_mid[j])
-            if ijk is not None and field_data._grid.active(ijk=ijk):
-                cell_regions.append(field_data._init[name][0][ijk])
+            ijk = field_data.grid.find_cell(x_mid[j], y_mid[j], z_mid[j])
+            if ijk is not None and field_data.grid.active(ijk=ijk):
+                cell_regions.append(field_data.init[name][0][ijk])
         if cell_regions != []:
             df_regions[i] = mode(cell_regions).mode.tolist()[0]
         else:
@@ -64,8 +64,8 @@ def _from_regions_to_flow_tubes(
                 + network.df_entity_connections.iloc[i][["xend", "yend", "zend"]].values
             ) / 2
             dist = []
-            for k in range(1, field_data._grid.get_num_active()):
-                c_tmp = field_data._grid.get_xyz(active_index=k)
+            for k in range(1, field_data.grid.get_num_active()):
+                c_tmp = field_data.grid.get_xyz(active_index=k)
                 dist.append(
                     np.sqrt(
                         np.square(c_mid[0] - c_tmp[0])
@@ -73,8 +73,8 @@ def _from_regions_to_flow_tubes(
                         + np.square(c_mid[2] - c_tmp[2])
                     )
                 )
-            df_regions[i] = field_data._init[name][0][
-                field_data._grid.get_ijk(active_index=dist.index(min(dist)))
+            df_regions[i] = field_data.init[name][0][
+                field_data.grid.get_ijk(active_index=dist.index(min(dist)))
             ]
     return df_regions
 
