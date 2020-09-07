@@ -52,7 +52,7 @@ def _from_regions_to_flow_tubes(
             # for one tube - what regions are the cells in?
             ijk = field_data.grid.find_cell(x_mid[j], y_mid[j], z_mid[j])
             if ijk is not None and field_data.grid.active(ijk=ijk):
-                cell_regions.append(field_data.init[name][0][ijk])
+                cell_regions.append(field_data.init(name)[ijk])
         if cell_regions != []:
             df_regions[i] = mode(cell_regions).mode.tolist()[0]
         else:
@@ -73,7 +73,7 @@ def _from_regions_to_flow_tubes(
                         + np.square(c_mid[2] - c_tmp[2])
                     )
                 )
-            df_regions[i] = field_data.init[name][0][
+            df_regions[i] = field_data.init(name)[
                 field_data.grid.get_ijk(active_index=dist.index(min(dist)))
             ]
     return df_regions

@@ -325,9 +325,9 @@ class FlowData(FromSource):
     def _get_start_date(self):
         return self._eclsum.start_date
 
-    def get_regions(self, name: str) -> np.ndarray:
+    def init(self, name: str) -> np.ndarray:
         """array with all 'name' regions"""
-        return np.unique(self._init[name][0])
+        return self._init[name][0]
 
     @property
     def grid_cell_bounding_boxes(self) -> np.ndarray:
@@ -352,9 +352,4 @@ class FlowData(FromSource):
     @property
     def grid(self) -> EclGrid:
         """"""
-        return self_grid()
-
-    @property
-    def init(self) -> EclInitFile:
-        """"""
-        return self._init()
+        return self._grid
