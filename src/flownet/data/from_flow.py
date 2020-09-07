@@ -326,7 +326,7 @@ class FlowData(FromSource):
         return self._eclsum.start_date
 
     def init(self, name: str) -> np.ndarray:
-        """array with all 'name' regions"""
+        """array with parameter 'name'"""
         return self._init[name][0]
 
     @property
@@ -351,5 +351,5 @@ class FlowData(FromSource):
 
     @property
     def grid(self) -> EclGrid:
-        """"""
+        """the simulation grid with properties"""
         return self._grid
