@@ -28,7 +28,7 @@ def _from_regions_to_flow_tubes(
     field_data: FlowData,
     ti2ci: pd.DataFrame,
     name: str,
-) -> List:
+) -> List[int]:
     """
         The function loops through each cell in a flow tube, and checks what 'name' region the
         corresponding position (cell midpoint) in the data source simulation model has. If different
@@ -58,7 +58,7 @@ def _from_regions_to_flow_tubes(
             if ijk is not None and field_data.grid.active(ijk=ijk):
                 tube_regions.append(field_data.init(name)[ijk])
         if tube_regions != []:
-            df_regions[i] = mode(tube_regions).mode.tolist()[0]
+            df_regions.append(mode(tube_regions).mode.tolist()[0])
         else:
             tube_midpoint = (
                 network.df_entity_connections.iloc[i][
@@ -76,11 +76,13 @@ def _from_regions_to_flow_tubes(
                         + np.square(tube_midpoint[2] - cell_midpoint[2])
                     )
                 )
-            df_regions[i] = field_data.init(name)[
-                field_data.grid.get_ijk(
-                    active_index=dist_to_cell.index(min(dist_to_cell))
-                )
-            ]
+            df_regions.append(
+                field_data.init(name)[
+                    field_data.grid.get_ijk(
+                        active_index=dist_to_cell.index(min(dist_to_cell))
+                    )
+                ]
+            )
     return df_regions
 
 
