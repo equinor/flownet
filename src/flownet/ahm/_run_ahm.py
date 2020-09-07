@@ -30,51 +30,56 @@ def _from_regions_to_flow_tubes(
     name: str,
 ) -> List:
     """
+        The function loops through each cell in a flow tube, and checks what 'name' region the
+        corresponding position (cell midpoint) in the data source simulation model has. If different
+        cells in one flow tube are located in different 'name' regions of the original model, the mode is used.
+        If flow tubes are entirely outside of the data source simulation grid,
+        the 'name' region closest to the midpoint of the flow tube is used.
 
     Args:
-        network:
-        fd:
-        name:
+        network: FlowNet network instance
+        field_data: FlowData class with information from simulation model data source
+        ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
+        name: The same of the region parameter
 
     Returns:
-
+        A list with values for 'name' region for each tube in the FlowNet model
     """
-    df_regions = [None] * len(network.grid.model.unique())
+    df_regions = []
 
     x_mid = network.grid[["x0", "x1", "x2", "x3", "x4", "x5", "x6", "x7"]].mean(axis=1)
     y_mid = network.grid[["y0", "y1", "y2", "y3", "y4", "y5", "y6", "y7"]].mean(axis=1)
     z_mid = network.grid[["z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7"]].mean(axis=1)
 
-    # how many tubes?
     for i in network.grid.model.unique():
-        cell_regions = []
+        tube_regions = []
         for j in ti2ci[ti2ci.index == i].values:
-            # for one tube - what regions are the cells in?
             ijk = field_data.grid.find_cell(x_mid[j], y_mid[j], z_mid[j])
             if ijk is not None and field_data.grid.active(ijk=ijk):
-                cell_regions.append(field_data.init(name)[ijk])
-        if cell_regions != []:
-            df_regions[i] = mode(cell_regions).mode.tolist()[0]
+                tube_regions.append(field_data.init(name)[ijk])
+        if tube_regions != []:
+            df_regions[i] = mode(tube_regions).mode.tolist()[0]
         else:
-            # tube completely outside of sim grid
-            c_mid = (
+            tube_midpoint = (
                 network.df_entity_connections.iloc[i][
                     ["xstart", "ystart", "zstart"]
                 ].values
                 + network.df_entity_connections.iloc[i][["xend", "yend", "zend"]].values
             ) / 2
-            dist = []
+            dist_to_cell = []
             for k in range(1, field_data.grid.get_num_active()):
-                c_tmp = field_data.grid.get_xyz(active_index=k)
-                dist.append(
+                cell_midpoint = field_data.grid.get_xyz(active_index=k)
+                dist_to_cell.append(
                     np.sqrt(
-                        np.square(c_mid[0] - c_tmp[0])
-                        + np.square(c_mid[1] - c_tmp[1])
-                        + np.square(c_mid[2] - c_tmp[2])
+                        np.square(tube_midpoint[0] - cell_midpoint[0])
+                        + np.square(tube_midpoint[1] - cell_midpoint[1])
+                        + np.square(tube_midpoint[2] - cell_midpoint[2])
                     )
                 )
             df_regions[i] = field_data.init(name)[
-                field_data.grid.get_ijk(active_index=dist.index(min(dist)))
+                field_data.grid.get_ijk(
+                    active_index=dist_to_cell.index(min(dist_to_cell))
+                )
             ]
     return df_regions
 
