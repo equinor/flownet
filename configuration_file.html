@@ -13,6 +13,7 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/configsuite_ext.css" type="text/css" />
 
   
   
@@ -30,6 +31,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
+        <script src="_static/configsuite_ext.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -165,7 +167,1023 @@
   <div class="section" id="configuration-file-example">
 <h1>Configuration file example<a class="headerlink" href="#configuration-file-example" title="Permalink to this headline">¶</a></h1>
 <p>The configuration files follows the <a class="reference external" href="https://yaml.org/">YAML standard</a>.</p>
-<div class="section" id="assisted-history-matching-example">
+<div class="cs_top_container">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3></h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_name_of_the_flo_container">
+<div class="cs_header">
+<h3>name</h3><br></div><br><div class="cs_content" id="cs_name_of_the_flo_content">
+<p>Name of the FlowNet model, used e.g. in generated output report</p>
+<div class="cs_children" id="cs_name_of_the_flo_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>flownet</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>data_source</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>simulation</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_simulation_inpu_container">
+<div class="cs_header">
+<h3>input_case</h3><br></div><br><div class="cs_content" id="cs_simulation_inpu_content">
+<p>Simulation input case to be used as data source for FlowNet</p>
+<p>Convert input string to absolute path</p>
+<div class="cs_children" id="cs_simulation_inpu_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_which_vectors_t_container">
+<div class="cs_header">
+<h3>vectors</h3><br></div><br><div class="cs_content" id="cs_which_vectors_t_content">
+<p>Which vectors to use as observation data sources</p>
+<div class="cs_children" id="cs_which_vectors_t_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>WTHP</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>rel_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>WBHP</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>rel_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>WOPR</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>rel_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>WGPR</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>rel_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>WWPR</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>rel_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>WWIR</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>rel_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>WGIR</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>rel_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min_error</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>concave_hull</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>pvt</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>rsvd</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert input string to absolute path</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_list_of_phases__container">
+<div class="cs_header">
+<h3>phases</h3><br></div><br><div class="cs_content" id="cs_list_of_phases__content">
+<p>List of phases to be used in FlowNet (valid phases are oil, gas, water, disgas, vapoil</p>
+<p>Convert string to lower case</p>
+<div class="cs_children" id="cs_list_of_phases__children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>List Item</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>cell_length</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>training_set_end_date</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: date</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>training_set_fraction</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>additional_flow_nodes</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: integer</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_number_of_addit_container">
+<div class="cs_header">
+<h3>additional_node_candidates</h3><br></div><br><div class="cs_content" id="cs_number_of_addit_content">
+<p>Number of additional nodes to create (using Mitchell’s best candidate algorithm)</p>
+<div class="cs_children" id="cs_number_of_addit_children">
+<p>:type: integer</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>hull_factor</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_adding_this_mak_container">
+<div class="cs_header">
+<h3>random_seed</h3><br></div><br><div class="cs_content" id="cs_adding_this_mak_content">
+<p>Adding this makes sure two FlowNet runs create the exact same output</p>
+<div class="cs_children" id="cs_adding_this_mak_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>perforation_handling_strategy</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_if_true,_pyscal_container">
+<div class="cs_header">
+<h3>fast_pyscal</h3><br></div><br><div class="cs_content" id="cs_if_true,_pyscal_content">
+<p>If True, pyscal uses some reasonable approximation to reduce running time. It also skips validity tests</p>
+<div class="cs_children" id="cs_if_true,_pyscal_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>fault_tolerance</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max_distance</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max_distance_fraction</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>ert</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>runpath</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>enspath</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>eclbase</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>static_include_files</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert input string to absolute path</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>realizations</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_number_of_reali_container">
+<div class="cs_header">
+<h3>num_realizations</h3><br></div><br><div class="cs_content" id="cs_number_of_reali_content">
+<p>Number of realizations to create</p>
+<div class="cs_children" id="cs_number_of_reali_children">
+<p>:type: integer</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_percentage_of_t_container">
+<div class="cs_header">
+<h3>required_success_percent</h3><br></div><br><div class="cs_content" id="cs_percentage_of_t_content">
+<p>Percentage of the realizations that need to suceed, if not the FlowNet worklow is stopped.</p>
+<div class="cs_children" id="cs_percentage_of_t_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_maximum_number__container">
+<div class="cs_header">
+<h3>max_runtime</h3><br></div><br><div class="cs_content" id="cs_maximum_number__content">
+<p>Maximum number of seconds allowed for a single realization, if not that realization is treated as a failed realization.</p>
+<div class="cs_children" id="cs_maximum_number__children">
+<p>:type: integer</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>simulator</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_simulator_to_us_container">
+<div class="cs_header">
+<h3>name</h3><br></div><br><div class="cs_content" id="cs_simulator_to_us_content">
+<p>Simulator to use (typically either ‘flow’ or ‘eclipse’</p>
+<p>Convert string to lower case</p>
+<div class="cs_children" id="cs_simulator_to_us_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_version_of_the__container">
+<div class="cs_header">
+<h3>version</h3><br></div><br><div class="cs_content" id="cs_version_of_the__content">
+<p>Version of the simulator to use</p>
+<div class="cs_children" id="cs_version_of_the__children">
+<p>:type: string</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>queue</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>system</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>name</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>server</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max_running</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: integer</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>ensemble_weights</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>List Item</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_observation_fil_container">
+<div class="cs_header">
+<h3>yamlobs</h3><br></div><br><div class="cs_content" id="cs_observation_fil_content">
+<p>Observation file used by fmu-ensemble and webviz</p>
+<div class="cs_children" id="cs_observation_fil_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>analysis</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>metric</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>quantity</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>start</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>end</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>outfile</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>model_parameters</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_description_of__container">
+<div class="cs_header">
+<h3>permeability</h3><br></div><br><div class="cs_content" id="cs_description_of__content">
+<p>Description of the permeability prior distribution. You define either min and max, or one of the endpoints and mean</p>
+<div class="cs_children" id="cs_description_of__children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>mean</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_description_of__container">
+<div class="cs_header">
+<h3>porosity</h3><br></div><br><div class="cs_content" id="cs_description_of__content">
+<p>Description of the porosity prior distribution. You define either min and max, or one of the endpoints and mean</p>
+<div class="cs_children" id="cs_description_of__children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>mean</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_description_of__container">
+<div class="cs_header">
+<h3>bulkvolume_mult</h3><br></div><br><div class="cs_content" id="cs_description_of__content">
+<p>Description of bulk volume multiplier prior distribution. You define either min and max, or one of the endpoints and mean. One multiplies is drawn per tube which decreases/increases the default tube bulk volume (which again is a proportional part of model convex hull bulk with respect to tube length compared to other tubes).</p>
+<div class="cs_children" id="cs_description_of__children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>mean</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_description_of__container">
+<div class="cs_header">
+<h3>fault_mult</h3><br></div><br><div class="cs_content" id="cs_description_of__content">
+<p>Description of the fault multiplicator prior distribution. You define either min and max, or one of the endpoints and mean</p>
+<div class="cs_children" id="cs_description_of__children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>mean</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_add_relative_pe_container">
+<div class="cs_header">
+<h3>relative_permeability</h3><br></div><br><div class="cs_content" id="cs_add_relative_pe_content">
+<p>Add relative permeability uncertainty. Which endpoints to give depends on phases requested in the FlowNet model.</p>
+<div class="cs_children" id="cs_add_relative_pe_children">
+<div class="cs_container" id="cs_either_'global'_container">
+<div class="cs_header">
+<h3>scheme</h3><br></div><br><div class="cs_content" id="cs_either_'global'_content">
+<p>Either ‘global’ (one set of relative permeability curves for the whole model), or ‘individual’ (one set of curves per tube).</p>
+<p>Convert string to lower case</p>
+<div class="cs_children" id="cs_either_'global'_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>swirr</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>swl</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>swcr</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>sorw</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>krwend</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>krowend</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>nw</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>now</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>sorg</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>sgcr</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>ng</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>nog</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>krgend</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>krogend</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>equil</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_number_of_degre_container">
+<div class="cs_header">
+<h3>scheme</h3><br></div><br><div class="cs_content" id="cs_number_of_degre_content">
+<p>Number of degrees of freedom. Either ‘global’ (one for the whole model) or ‘individual’ (one per tube)</p>
+<p>Convert string to lower case</p>
+<div class="cs_children" id="cs_number_of_degre_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>datum_depth</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>datum_pressure</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>owc_depth</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>gwc_depth</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>goc_depth</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_add_uncertainty_container">
+<div class="cs_header">
+<h3>rock_compressibility</h3><br></div><br><div class="cs_content" id="cs_add_uncertainty_content">
+<p>Add uncertainty on subsurface rock compressibility.</p>
+<div class="cs_children" id="cs_add_uncertainty_children">
+<div class="cs_container" id="cs_reference_press_container">
+<div class="cs_header">
+<h3>reference_pressure</h3><br></div><br><div class="cs_content" id="cs_reference_press_content">
+<p>Reference pressure at which drawn rock compressibility is to be valid at</p>
+<div class="cs_children" id="cs_reference_press_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>aquifer</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_number_of_aquif_container">
+<div class="cs_header">
+<h3>scheme</h3><br></div><br><div class="cs_content" id="cs_number_of_aquif_content">
+<p>Number of aquifers. Either ‘global’ (all aquifer connections goes to the same aquifer) or ‘individual’ (one individual aquifer per aquifer connection)</p>
+<div class="cs_children" id="cs_number_of_aquif_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_fraction_of_the_container">
+<div class="cs_header">
+<h3>fraction</h3><br></div><br><div class="cs_content" id="cs_fraction_of_the_content">
+<p>Fraction of the deepest wells to be connected to an aquifer.</p>
+<div class="cs_children" id="cs_fraction_of_the_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_vertical_depth__container">
+<div class="cs_header">
+<h3>delta_depth</h3><br></div><br><div class="cs_content" id="cs_vertical_depth__content">
+<p>Vertical depth difference between aquifer an connected well location</p>
+<div class="cs_children" id="cs_vertical_depth__children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_description_of__container">
+<div class="cs_header">
+<h3>size_in_bulkvolumes</h3><br></div><br><div class="cs_content" id="cs_description_of__content">
+<p>Description of aquifer volume prior distribution (drawn number is multiplied with model bulk volume, excluding aquifers, to get aquifer volume).</p>
+<div class="cs_children" id="cs_description_of__children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>loguniform</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br><div class="section" id="assisted-history-matching-example">
 <h2>Assisted history matching example<a class="headerlink" href="#assisted-history-matching-example" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="prediction-example">
