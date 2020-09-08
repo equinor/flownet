@@ -440,6 +440,8 @@ def run_flownet_history_matching(
     else:
         datum_depths = equil_config_regions[0].datum_depth
 
+    datum_depths = pd.DataFrame(datum_depths)
+
     parameters = [
         PorvPoroTrans(porv_poro_trans_dist_values, ti2ci, network),
         RelativePermeability(

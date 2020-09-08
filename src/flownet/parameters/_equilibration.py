@@ -45,10 +45,10 @@ class Equilibration(Parameter):
         network: NetworkModel,
         ti2ci: pd.DataFrame,
         eqlnum: pd.DataFrame,
-        datum_depth: Optional[float] = None,
+        datum_depth: Optional[pd.DataFrame] = None,
         rsvd: Optional[pd.DataFrame] = None,
     ):
-        self._datum_depth: Union[float, None] = datum_depth
+        self._datum_depth: Union[pd.DataFrame, None] = datum_depth
         self._rsvd: Union[pathlib.Path, None] = rsvd
         self._network: NetworkModel = network
 
