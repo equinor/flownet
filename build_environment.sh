@@ -12,8 +12,8 @@
 # the given path. The second argument is the path to your installed flow binary, typically
 # something like /usr/bin/flow
 
-LIBRES_VERSION="faec0bb"  # v4.2.2
-ERT_VERSION="68f8919"  # v2.13.0
+LIBRES_VERSION="7d10e9c"  # v5.0.1
+ERT_VERSION="a05ecf3"  # v2.14.0
 
 set -e
 

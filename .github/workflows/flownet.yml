@@ -86,6 +86,9 @@ jobs:
           source $VENV_PATH/bin/activate
           flownet ahm ./flownet-testdata/${{ matrix.flownet-model }}/ci_config/assisted_history_matching.yml ./some_ahm_run
           flownet pred ./flownet-testdata/${{ matrix.flownet-model }}/ci_config/prediction.yml ./some_pred_run ./some_ahm_run
+          pushd ./some_ahm_run
+          ert api  # Check that entrypoint is available
+          popd
 
       - name: 📚 Build documentation
         run: |
