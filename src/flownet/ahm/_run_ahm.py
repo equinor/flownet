@@ -329,12 +329,12 @@ def run_flownet_history_matching(
     )
 
     if config.model_parameters.equil.scheme == "regions_from_sim":
-        equil_config_regions = config.model_parameters.equil.regions
+        equil_config_eclnum = config.model_parameters.equil.eclnum_region
     else:
-        equil_config_regions = [config.model_parameters.equil.regions[0]]
+        equil_config_eclnum = [config.model_parameters.equil.eclnum_region[0]]
 
     for i in df_eqlnum["EQLNUM"].unique():
-        for reg in equil_config_regions:
+        for reg in equil_config_eclnum:
             if reg.id == i or reg.id is None:
                 info = [
                     ["datum_pressure", "owc_depth", "gwc_depth", "goc_depth"],

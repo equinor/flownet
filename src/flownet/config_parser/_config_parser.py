@@ -566,7 +566,7 @@ def create_schema(_to_abs_path) -> Dict:
                                 MK.Default: "global",
                                 MK.Transformation: lambda name: name.lower(),
                             },
-                            "regions": {
+                            "eqlnum_region": {
                                 MK.Type: types.List,
                                 MK.Content: {
                                     MK.Item: {
@@ -726,7 +726,16 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
     config = suite.snapshot
 
     req_relp_parameters: List[str] = []
-
+    if (
+        config.model_parameters.equil.scheme != "regions_from_sim"
+        and config.model_parameters.equil.scheme != "individual"
+        and config.model_parameters.equil.scheme != "global"
+    ):
+        raise ValueError(
+            f"The relative permeability scheme "
+            f"'{config.model_parameters.equil.scheme}' is not valid.\n"
+            f"Valid options are 'global', 'regions_from_sim' or 'individual'."
+        )
     if config.model_parameters.equil.scheme == "regions_from_sim":
         if config.flownet.data_source.simulation.input_case is None:
             raise ValueError(
@@ -734,14 +743,14 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             )
         field_data = FlowData(config.flownet.data_source.simulation.input_case)
         unique_regions = field_data.get_unique_regions("EQLNUM")
-        for reg in config.model_parameters.equil.regions:
+        for reg in config.model_parameters.equil.eclnum_region:
             if reg.id not in unique_regions and reg.id is not None:
                 raise ValueError(
                     f"EQLNUM regions {reg.id} is not found in the input simulation case"
                 )
     if (
         config.model_parameters.equil.scheme != "regions_from_sim"
-        and config.model_parameters.equil.regions[0].id is not None
+        and config.model_parameters.equil.eclnum_region[0].id is not None
     ):
         raise ValueError(
             "Id for first equilibrium region parameter should not be set or set to 'None'\n"
@@ -777,7 +786,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             "krwend",
             "krowend",
         ]
-        for reg in config.model_parameters.equil.regions:
+        for reg in config.model_parameters.equil.eclnum_region:
             if (
                 reg.owc_depth.min is None
                 or reg.owc_depth.max is None
@@ -799,7 +808,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             "krgend",
             "krogend",
         ]
-        for reg in config.model_parameters.equil.regions:
+        for reg in config.model_parameters.equil.eclnum_region:
             if (
                 reg.goc_depth.min is None
                 or reg.goc_depth.max is None
@@ -816,13 +825,11 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 != "global"
                 and getattr(config.model_parameters.relative_permeability, parameter)
                 != "individual"
-                and getattr(config.model_parameters.relative_permeability, parameter)
-                != "regions_from_sim"
             ):
                 raise ValueError(
                     f"The relative permeability scheme "
                     f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
-                    f"Valid options are 'global', 'regions_from_sim' or 'individual'."
+                    f"Valid options are 'global' or 'individual'."
                 )
         else:
             if (
