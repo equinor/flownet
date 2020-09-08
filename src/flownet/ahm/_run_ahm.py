@@ -431,14 +431,14 @@ def run_flownet_history_matching(
 
     datum_depths = []
     if config.model_parameters.equil.scheme == "regions_from_sim":
-        for reg in equil_config_regions:
+        for reg in equil_config_eqlnum:
             datum_depths.append(reg.datum_depth)
     elif config.model_parameters.equil.scheme == "individual":
-        datum_depths = [equil_config_regions[0].datum_depth] * len(
+        datum_depths = [equil_config_eqlnum[0].datum_depth] * len(
             df_eqlnum["EQLNUM"].unique()
         )
     else:
-        datum_depths = [equil_config_regions[0].datum_depth]
+        datum_depths = [equil_config_eqlnum[0].datum_depth]
 
     datum_depths = list(datum_depths)
 
