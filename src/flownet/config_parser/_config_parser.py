@@ -690,7 +690,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         Parsed config, where values can be extracted like e.g. 'config.ert.queue.system'.
 
     """
-    # pylint: disable=too-many-branches, too-many-statements
+    # pylint: disable=too-many-branches, too-many-statements, too-many-lines
 
     input_config = yaml.safe_load(configuration_file.read_text())
 
