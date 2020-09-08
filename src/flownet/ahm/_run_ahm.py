@@ -438,9 +438,9 @@ def run_flownet_history_matching(
             df_eqlnum["EQLNUM"].unique()
         )
     else:
-        datum_depths = equil_config_regions[0].datum_depth
+        datum_depths = [equil_config_regions[0].datum_depth]
 
-    datum_depths = pd.DataFrame(datum_depths)
+    datum_depths = pd.DataFrame(datum_depths, columns=["datum_depth"])
 
     parameters = [
         PorvPoroTrans(porv_poro_trans_dist_values, ti2ci, network),
