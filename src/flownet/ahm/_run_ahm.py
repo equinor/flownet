@@ -434,10 +434,11 @@ def run_flownet_history_matching(
         for reg in equil_config_regions:
             datum_depths.append(reg.datum_depth)
     elif config.model_parameters.equil.scheme == "individual":
-        datum_depths = [equil_config_regions[0].datum_depth] * len(df_eqlnum["EQLNUM"].unique())
+        datum_depths = [equil_config_regions[0].datum_depth] * len(
+            df_eqlnum["EQLNUM"].unique()
+        )
     else:
         datum_depths = equil_config_regions[0].datum_depth
-
 
     parameters = [
         PorvPoroTrans(porv_poro_trans_dist_values, ti2ci, network),
