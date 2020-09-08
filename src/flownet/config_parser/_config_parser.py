@@ -743,14 +743,14 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             )
         field_data = FlowData(config.flownet.data_source.simulation.input_case)
         unique_regions = field_data.get_unique_regions("EQLNUM")
-        for reg in config.model_parameters.equil.eclnum_region:
+        for reg in config.model_parameters.equil.eqlnum_region:
             if reg.id not in unique_regions and reg.id is not None:
                 raise ValueError(
                     f"EQLNUM regions {reg.id} is not found in the input simulation case"
                 )
     if (
         config.model_parameters.equil.scheme != "regions_from_sim"
-        and config.model_parameters.equil.eclnum_region[0].id is not None
+        and config.model_parameters.equil.eqlnum_region[0].id is not None
     ):
         raise ValueError(
             "Id for first equilibrium region parameter should not be set or set to 'None'\n"
@@ -786,7 +786,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             "krwend",
             "krowend",
         ]
-        for reg in config.model_parameters.equil.eclnum_region:
+        for reg in config.model_parameters.equil.eqlnum_region:
             if (
                 reg.owc_depth.min is None
                 or reg.owc_depth.max is None
@@ -808,7 +808,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             "krgend",
             "krogend",
         ]
-        for reg in config.model_parameters.equil.eclnum_region:
+        for reg in config.model_parameters.equil.eqlnum_region:
             if (
                 reg.goc_depth.min is None
                 or reg.goc_depth.max is None
