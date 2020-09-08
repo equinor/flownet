@@ -33,7 +33,7 @@ class Equilibration(Parameter):
         network: FlowNet network instance.
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
         eqlnum: A dataframe defining the EQLNUM for each flow tube.
-        datum_depth: Depth of the datum (m).
+        datum_depth: Depth of the datum(s) (m).
         rsvd: Pandas dataframe with a single rsvd table.
 
     """

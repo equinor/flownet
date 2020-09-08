@@ -328,25 +328,31 @@ def run_flownet_history_matching(
         columns=["parameter", "minimum", "maximum", "loguniform", "eqlnum"]
     )
 
-    equil_config = config.model_parameters.equil
+    if config.model_parameters.equil.scheme == "regions_from_sim":
+        equil_config_regions = config.model_parameters.equil.regions
+    else:
+        equil_config_regions = [config.model_parameters.equil.regions[0]]
+
     for i in df_eqlnum["EQLNUM"].unique():
-        info = [
-            ["datum_pressure", "owc_depth", "gwc_depth", "goc_depth"],
-            [
-                equil_config.datum_pressure.min,
-                None if equil_config.owc_depth is None else equil_config.owc_depth.min,
-                None if equil_config.gwc_depth is None else equil_config.gwc_depth.min,
-                None if equil_config.goc_depth is None else equil_config.goc_depth.min,
-            ],
-            [
-                equil_config.datum_pressure.max,
-                None if equil_config.owc_depth is None else equil_config.owc_depth.max,
-                None if equil_config.gwc_depth is None else equil_config.gwc_depth.max,
-                None if equil_config.goc_depth is None else equil_config.goc_depth.max,
-            ],
-            [False] * 4,
-            [i] * 4,
-        ]
+        for reg in equil_config_regions:
+            if reg.id == i or reg.id is None:
+                info = [
+                    ["datum_pressure", "owc_depth", "gwc_depth", "goc_depth"],
+                    [
+                        reg.datum_pressure.min,
+                        None if reg.owc_depth is None else reg.owc_depth.min,
+                        None if reg.gwc_depth is None else reg.gwc_depth.min,
+                        None if reg.goc_depth is None else reg.goc_depth.min,
+                    ],
+                    [
+                        reg.datum_pressure.max,
+                        None if reg.owc_depth is None else reg.owc_depth.max,
+                        None if reg.gwc_depth is None else reg.gwc_depth.max,
+                        None if reg.goc_depth is None else reg.goc_depth.max,
+                    ],
+                    [False] * 4,
+                    [i] * 4,
+                ]
 
         equil_dist_values = equil_dist_values.append(
             pd.DataFrame(
@@ -423,6 +429,16 @@ def run_flownet_history_matching(
 
     # ******************************************************************************
 
+    datum_depths = []
+    if config.model_parameters.equil.scheme == "regions_from_sim":
+        for reg in equil_config_regions:
+            datum_depths.append(reg.datum_depth)
+    elif config.model_parameters.equil.scheme == "individual":
+        datum_depths = [equil_config_regions[0].datum_depth] * len(df_eqlnum["EQLNUM"].unique())
+    else:
+        datum_depths = equil_config_regions[0].datum_depth
+
+
     parameters = [
         PorvPoroTrans(porv_poro_trans_dist_values, ti2ci, network),
         RelativePermeability(
@@ -437,7 +453,7 @@ def run_flownet_history_matching(
             network,
             ti2ci,
             df_eqlnum,
-            equil_config.datum_depth,
+            datum_depths,
             config.flownet.pvt.rsvd,
         ),
     ]

@@ -6,6 +6,8 @@ import yaml
 import configsuite
 from configsuite import types, MetaKeys as MK, ConfigSuite
 
+from ..data.from_flow import FlowData
+
 
 def create_schema(_to_abs_path) -> Dict:
     """
@@ -564,53 +566,67 @@ def create_schema(_to_abs_path) -> Dict:
                                 MK.Default: "global",
                                 MK.Transformation: lambda name: name.lower(),
                             },
-                            "datum_depth": {
-                                MK.Type: types.Number,
-                                MK.AllowNone: True,
-                            },
-                            "datum_pressure": {
-                                MK.Type: types.NamedDict,
+                            "regions": {
+                                MK.Type: types.List,
                                 MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
-                                },
-                            },
-                            "owc_depth": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "gwc_depth": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "goc_depth": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
+                                    MK.Item: {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "id": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "datum_depth": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "datum_pressure": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {MK.Type: types.Number},
+                                                    "max": {MK.Type: types.Number},
+                                                },
+                                            },
+                                            "owc_depth": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "gwc_depth": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "goc_depth": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                        },
                                     },
                                 },
                             },
@@ -711,12 +727,29 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
 
     req_relp_parameters: List[str] = []
 
+    if config.model_parameters.equil.scheme == "regions_from_sim":
+        if config.flownet.data_source.simulation.input_case is None:
+            raise ValueError(
+                "Input simulation case is not defined - EQLNUM regions can not be extracted"
+            )
+        field_data = FlowData(config.flownet.data_source.simulation.input_case)
+        unique_regions = field_data.get_unique_regions("EQLNUM")
+        if len(unique_regions) != len(config.model_parameters.equil.regions):
+            raise ValueError(
+                "Input simulation case has more/less EQLNUM regions than defined in the config file"
+            )
+        for reg in config.model_parameters.equil.regions:
+            if reg.id not in unique_regions and reg.id is not None:
+                raise ValueError(
+                    f"EQLNUM regions {reg.id} is not found in the input simulation case"
+                )
     if (
-        config.model_parameters.relative_permeability.scheme == "regions_from_sim"
-        and config.flownet.data_source.simulation.input_case is None
+        config.model_parameters.equil.scheme != "regions_from_sim"
+        and config.model_parameters.equil.regions[0].id is not None
     ):
         raise ValueError(
-            "Input simulation case is not defined - EQLNUM regions can not be extracted"
+            "Id for first equilibrium region parameter should not be set or set to 'None'\n"
+            "when using the 'global' or 'individual' options"
         )
 
     for phase in config.flownet.phases:
@@ -748,15 +781,16 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             "krwend",
             "krowend",
         ]
-        if (
-            config.model_parameters.equil.owc_depth.min is None
-            or config.model_parameters.equil.owc_depth.max is None
-            or config.model_parameters.equil.owc_depth.max
-            < config.model_parameters.equil.owc_depth.min
-        ):
-            raise ValueError(
-                "Ambiguous configuration input: OWC not properly specified. Min or max missing, or max < min."
-            )
+        for reg in config.model_parameters.equil.regions:
+            if (
+                reg.owc_depth.min is None
+                or reg.owc_depth.max is None
+                or reg.owc_depth.max < reg.owc_depth.min
+            ):
+                raise ValueError(
+                    "Ambiguous configuration input: OWC not properly specified. Min or max missing, or max < min."
+                )
+
     if {"oil", "gas"}.issubset(config.flownet.phases):
         req_relp_parameters = req_relp_parameters + [
             "scheme",
@@ -769,15 +803,15 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             "krgend",
             "krogend",
         ]
-        if (
-            config.model_parameters.equil.goc_depth.min is None
-            or config.model_parameters.equil.goc_depth.max is None
-            or config.model_parameters.equil.goc_depth.max
-            < config.model_parameters.equil.goc_depth.min
-        ):
-            raise ValueError(
-                "Ambiguous configuration input: GOC not properly specified. Min or max missing, or max < min."
-            )
+        for reg in config.model_parameters.equil.regions:
+            if (
+                reg.goc_depth.min is None
+                or reg.goc_depth.max is None
+                or reg.goc_depth.max < reg.goc_depth.min
+            ):
+                raise ValueError(
+                    "Ambiguous configuration input: GOC not properly specified. Min or max missing, or max < min."
+                )
 
     for parameter in set(req_relp_parameters):
         if parameter == "scheme":

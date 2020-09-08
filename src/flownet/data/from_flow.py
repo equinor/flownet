@@ -326,8 +326,12 @@ class FlowData(FromSource):
         return self._eclsum.start_date
 
     def init(self, name: str) -> np.ndarray:
-        """array with parameter 'name'"""
+        """array with 'name' regions"""
         return self._init[name][0]
+
+    def get_unique_regions(self, name) -> np.ndarray:
+        """array with unique 'name' regions"""
+        return np.unique(self._init[name][0])
 
     @property
     def grid_cell_bounding_boxes(self) -> np.ndarray:
