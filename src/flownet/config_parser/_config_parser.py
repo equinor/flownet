@@ -1,13 +1,19 @@
 import os
 import pathlib
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Union
 
 import yaml
 import configsuite
 from configsuite import types, MetaKeys as MK, ConfigSuite
 
 
-def create_schema(_to_abs_path) -> Dict:
+# Small workaround while waiting for https://github.com/equinor/configsuite/pull/157
+# to be merged and released in upstream ConfigSuite:
+def create_schema_without_arguments() -> Dict:
+    return create_schema()
+
+
+def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
     """
     Returns a configsuite type schema, where configuration value types are defined, together
     with which values are optional and/or has default values.
@@ -19,10 +25,40 @@ def create_schema(_to_abs_path) -> Dict:
         Dictionary to be used as configsuite type schema
 
     """
+
+    @configsuite.transformation_msg("Convert string to lower case")
+    def _to_lower(input_data: Union[List[str], str]) -> Union[List[str], str]:
+        if isinstance(input_data, str):
+            return input_data.lower()
+
+        return [x.lower() for x in input_data]
+
+    @configsuite.transformation_msg("Convert input string to absolute path")
+    def _to_abs_path(path: Optional[str]) -> str:
+        """
+        Helper function for the configsuite. Take in a path as a string and
+        attempts to convert it to an absolute path.
+
+        Args:
+            path: A relative or absolute path or None
+
+        Returns:
+            Absolute path or empty string
+
+        """
+        if path is None:
+            return ""
+        if pathlib.Path(path).is_absolute():
+            return str(pathlib.Path(path).resolve())
+        return str((config_folder / pathlib.Path(path)).resolve())  # type: ignore
+
     return {
         MK.Type: types.NamedDict,
         MK.Content: {
-            "name": {MK.Type: types.String},
+            "name": {
+                MK.Type: types.String,
+                MK.Description: "Name of the FlowNet model, used e.g. in generated output report",
+            },
             "flownet": {
                 MK.Type: types.NamedDict,
                 MK.Content: {
@@ -35,9 +71,11 @@ def create_schema(_to_abs_path) -> Dict:
                                     "input_case": {
                                         MK.Type: types.String,
                                         MK.Transformation: _to_abs_path,
+                                        MK.Description: "Simulation input case to be used as data source for FlowNet",
                                     },
                                     "vectors": {
                                         MK.Type: types.NamedDict,
+                                        MK.Description: "Which vectors to use as observation data sources",
                                         MK.Content: {
                                             "WTHP": {
                                                 MK.Type: types.NamedDict,
@@ -164,7 +202,9 @@ def create_schema(_to_abs_path) -> Dict:
                     "phases": {
                         MK.Type: types.List,
                         MK.Content: {MK.Item: {MK.Type: types.String}},
-                        MK.Transformation: lambda names: [x.lower() for x in names],
+                        MK.Transformation: _to_lower,
+                        MK.Description: "List of phases to be used in FlowNet "
+                        "(valid phases are oil, gas, water, disgas, vapoil",
                     },
                     "cell_length": {MK.Type: types.Number},
                     "training_set_end_date": {
@@ -182,14 +222,27 @@ def create_schema(_to_abs_path) -> Dict:
                     "additional_node_candidates": {
                         MK.Type: types.Integer,
                         MK.Default: 1000,
+                        MK.Description: "Number of additional nodes to create "
+                        "(using Mitchell's best candidate algorithm)",
                     },
                     "hull_factor": {MK.Type: types.Number, MK.Default: 1.2},
-                    "random_seed": {MK.Type: types.Number},
+                    "random_seed": {
+                        MK.Type: types.Number,
+                        MK.AllowNone: True,
+                        MK.Description: "Adding this makes sure two FlowNet "
+                        "runs create the exact same output",
+                    },
                     "perforation_handling_strategy": {
                         MK.Type: types.String,
                         MK.Default: "bottom_point",
                     },
-                    "fast_pyscal": {MK.Type: types.Bool, MK.Default: True},
+                    "fast_pyscal": {
+                        MK.Type: types.Bool,
+                        MK.Default: True,
+                        MK.Description: "If True, pyscal uses some reasonable "
+                        "approximation to reduce running time. It also skips "
+                        "validity tests",
+                    },
                     "fault_tolerance": {MK.Type: types.Number, MK.Default: 1.0e-5},
                     "max_distance": {MK.Type: types.Number, MK.Default: 1e12},
                     "max_distance_fraction": {MK.Type: types.Number, MK.Default: 0},
@@ -223,14 +276,22 @@ def create_schema(_to_abs_path) -> Dict:
                     "realizations": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "num_realizations": {MK.Type: types.Integer},
+                            "num_realizations": {
+                                MK.Type: types.Integer,
+                                MK.Description: "Number of realizations to create",
+                            },
                             "required_success_percent": {
                                 MK.Type: types.Number,
                                 MK.Default: 20,
+                                MK.Description: "Percentage of the realizations that "
+                                "need to suceed, if not the FlowNet worklow is stopped.",
                             },
                             "max_runtime": {
                                 MK.Type: types.Integer,
                                 MK.Default: 300,
+                                MK.Description: "Maximum number of seconds allowed "
+                                "for a single realization, if not that realization "
+                                "is treated as a failed realization.",
                             },
                         },
                     },
@@ -239,10 +300,16 @@ def create_schema(_to_abs_path) -> Dict:
                         MK.Content: {
                             "name": {
                                 MK.Type: types.String,
-                                MK.Transformation: lambda name: name.lower(),
+                                MK.Transformation: _to_lower,
                                 MK.Default: "flow",
+                                MK.Description: "Simulator to use (typically either "
+                                "'flow' or 'eclipse'",
                             },
-                            "version": {MK.Type: types.String, MK.AllowNone: True},
+                            "version": {
+                                MK.Type: types.String,
+                                MK.AllowNone: True,
+                                MK.Description: "Version of the simulator to use",
+                            },
                         },
                     },
                     "queue": {
@@ -261,6 +328,8 @@ def create_schema(_to_abs_path) -> Dict:
                     "yamlobs": {
                         MK.Type: types.String,
                         MK.Default: "./observations.yamlobs",
+                        MK.Description: "Observation file used by fmu-ensemble "
+                        "and webviz",
                     },
                     "analysis": {
                         MK.Type: types.NamedDict,
@@ -285,6 +354,9 @@ def create_schema(_to_abs_path) -> Dict:
                 MK.Content: {
                     "permeability": {
                         MK.Type: types.NamedDict,
+                        MK.Description: "Description of the permeability prior "
+                        "distribution. You define either min and max, or one of "
+                        "the endpoints and mean",
                         MK.Content: {
                             "min": {MK.Type: types.Number, MK.AllowNone: True},
                             "mean": {MK.Type: types.Number, MK.AllowNone: True},
@@ -294,6 +366,9 @@ def create_schema(_to_abs_path) -> Dict:
                     },
                     "porosity": {
                         MK.Type: types.NamedDict,
+                        MK.Description: "Description of the porosity prior "
+                        "distribution. You define either min and max, or one of "
+                        "the endpoints and mean",
                         MK.Content: {
                             "min": {MK.Type: types.Number, MK.AllowNone: True},
                             "mean": {MK.Type: types.Number, MK.AllowNone: True},
@@ -303,6 +378,12 @@ def create_schema(_to_abs_path) -> Dict:
                     },
                     "bulkvolume_mult": {
                         MK.Type: types.NamedDict,
+                        MK.Description: "Description of bulk volume multiplier "
+                        "prior distribution. You define either min and max, or one "
+                        "of the endpoints and mean. One multiplies is drawn per tube "
+                        "which decreases/increases the default tube bulk volume "
+                        "(which again is a proportional part of model convex hull bulk "
+                        "with respect to tube length compared to other tubes).",
                         MK.Content: {
                             "min": {MK.Type: types.Number, MK.AllowNone: True},
                             "mean": {MK.Type: types.Number, MK.AllowNone: True},
@@ -312,6 +393,9 @@ def create_schema(_to_abs_path) -> Dict:
                     },
                     "fault_mult": {
                         MK.Type: types.NamedDict,
+                        MK.Description: "Description of the fault multiplicator "
+                        "prior distribution. You define either min and max, or one "
+                        "of the endpoints and mean",
                         MK.Content: {
                             "min": {MK.Type: types.Number, MK.AllowNone: True},
                             "mean": {MK.Type: types.Number, MK.AllowNone: True},
@@ -321,10 +405,16 @@ def create_schema(_to_abs_path) -> Dict:
                     },
                     "relative_permeability": {
                         MK.Type: types.NamedDict,
+                        MK.Description: "Add relative permeability uncertainty. "
+                        "Which endpoints to give depends on phases requested in the "
+                        "FlowNet model.",
                         MK.Content: {
                             "scheme": {
                                 MK.Type: types.String,
-                                MK.Transformation: lambda name: name.lower(),
+                                MK.Description: "Either 'global' (one set of relative "
+                                "permeability curves for the whole model), or "
+                                "'individual' (one set of curves per tube).",
+                                MK.Transformation: _to_lower,
                             },
                             "swirr": {
                                 MK.Type: types.NamedDict,
@@ -561,8 +651,11 @@ def create_schema(_to_abs_path) -> Dict:
                         MK.Content: {
                             "scheme": {
                                 MK.Type: types.String,
+                                MK.Description: "Number of degrees of freedom. Either "
+                                "'global' (one for the whole model) or 'individual' "
+                                "(one per tube)",
                                 MK.Default: "global",
-                                MK.Transformation: lambda name: name.lower(),
+                                MK.Transformation: _to_lower,
                             },
                             "datum_depth": {
                                 MK.Type: types.Number,
@@ -618,10 +711,14 @@ def create_schema(_to_abs_path) -> Dict:
                     },
                     "rock_compressibility": {
                         MK.Type: types.NamedDict,
+                        MK.Description: "Add uncertainty on subsurface rock "
+                        "compressibility.",
                         MK.Content: {
                             "reference_pressure": {
                                 MK.Type: types.Number,
                                 MK.AllowNone: True,
+                                MK.Description: "Reference pressure at which drawn "
+                                "rock compressibility is to be valid at",
                             },
                             "min": {MK.Type: types.Number, MK.AllowNone: True},
                             "max": {MK.Type: types.Number, MK.AllowNone: True},
@@ -630,14 +727,32 @@ def create_schema(_to_abs_path) -> Dict:
                     "aquifer": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "scheme": {MK.Type: types.String, MK.AllowNone: True},
-                            "fraction": {MK.Type: types.Number, MK.AllowNone: True},
+                            "scheme": {
+                                MK.Type: types.String,
+                                MK.AllowNone: True,
+                                MK.Description: "Number of aquifers. Either 'global' "
+                                "(all aquifer connections goes to the same aquifer) or "
+                                "'individual' (one individual aquifer per aquifer "
+                                "connection)",
+                            },
+                            "fraction": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Description: "Fraction of the deepest wells to be "
+                                "connected to an aquifer.",
+                            },
                             "delta_depth": {
                                 MK.Type: types.Number,
                                 MK.AllowNone: True,
+                                MK.Description: "Vertical depth difference between "
+                                "aquifer an connected well location",
                             },
                             "size_in_bulkvolumes": {
                                 MK.Type: types.NamedDict,
+                                MK.Description: "Description of aquifer volume prior "
+                                "distribution (drawn number is multiplied with model "
+                                "bulk volume, excluding aquifers, to get aquifer "
+                                "volume).",
                                 MK.Content: {
                                     "min": {
                                         MK.Type: types.Number,
@@ -678,27 +793,10 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
 
     input_config = yaml.safe_load(configuration_file.read_text())
 
-    @configsuite.transformation_msg("Tries to convert input to absolute path")
-    def _to_abs_path(path: Optional[str]) -> str:
-        """
-        Helper function for the configsuite. Take in a path as a string and
-        attempts to convert it to an absolute path.
-
-        Args:
-            path: A relative or absolute path or None
-
-        Returns:
-            Absolute path or empty string
-
-        """
-        if path is None:
-            return ""
-        if pathlib.Path(path).is_absolute():
-            return str(pathlib.Path(path).resolve())
-        return str((configuration_file.parent / pathlib.Path(path)).resolve())
-
     suite = ConfigSuite(
-        input_config, create_schema(_to_abs_path=_to_abs_path), deduce_required=True
+        input_config,
+        create_schema(config_folder=configuration_file.parent),
+        deduce_required=True,
     )
 
     if not suite.valid:
