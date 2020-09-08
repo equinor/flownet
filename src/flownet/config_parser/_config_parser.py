@@ -734,10 +734,6 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             )
         field_data = FlowData(config.flownet.data_source.simulation.input_case)
         unique_regions = field_data.get_unique_regions("EQLNUM")
-        if len(unique_regions) != len(config.model_parameters.equil.regions):
-            raise ValueError(
-                "Input simulation case has more/less EQLNUM regions than defined in the config file"
-            )
         for reg in config.model_parameters.equil.regions:
             if reg.id not in unique_regions and reg.id is not None:
                 raise ValueError(
