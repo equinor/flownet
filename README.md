@@ -34,12 +34,12 @@ Please check out our [contribution guidelines](CONTRIBUTING.md) if you want to c
 ## Installation
 
 _FlowNet_ is a Python package. The package itself, and other dependencies,
-can be installed using a Python virtual environment, except for the Flow reservoir
+can be installed using a Python virtual environment, except for the [_OPM-Flow_](https://opm-project.org/?page_id=19) reservoir
 simulator.
 
 ### Install FlowNet
 
-_FlowNet_ uses the open-source reservoir simulator [_OPM-Flow_](https://opm-project.org/?page_id=19). To be able to run _FlowNet_ you will need to have _OPM-Flow_
+_FlowNet_ uses the open-source reservoir simulator _OPM-Flow_. To be able to run _FlowNet_ you will need to have _OPM-Flow_
 installed first. There are also other dependencies like the Python packages [`libecl`](https://github.com/equinor/libecl) and
 [`libres`](https://github.com/equinor/libres) which currently are not easily installable from PyPI (however, things are happening, so hopefully in a not too distant future, dependencies are installable from PyPI, which is already the case for flownet itself: `pip install flownet`).
 
@@ -61,7 +61,7 @@ bash ./build_environment.sh ./venv /usr/bin/flow
 ```
 This will automatically create a simple [Python virtual environment](docs.python.org/3/library/venv.html) `./venv`
 
-##### 4. Source the newly create virtual environment:
+##### 4. Source the newly created virtual environment:
 ```bash
 source ./venv/bin/activate
 ```
@@ -82,7 +82,7 @@ virtual environment.
 
 You can run _FlowNet_ as a single command line:
 ```
-flownet ./some_config.yaml ./some_output_folder
+flownet ahm ./some_config.yaml ./some_output_folder
 ```
 Run `flownet --help` to see all possible command line argument options.
 
