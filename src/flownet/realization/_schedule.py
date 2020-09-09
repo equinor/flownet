@@ -43,7 +43,8 @@ class Schedule:
         self._calculate_wconhist()
         self._calculate_wconinjh()
         print("done.", flush=True)
-
+        import sys
+        sys.exit()
     def _calculate_entity_dates(self):
         """
         Helper function that calculate the start dates of all entities.
@@ -432,7 +433,7 @@ class Schedule:
         return [
             kw
             for kw in self._schedule_items
-            if isinstance(kw, COMPDAT) and kw.well_name == well_name
+            if kw.name == "COMPDAT" and kw.well_name == well_name
         ]
 
     def get_well_start_date(
@@ -451,7 +452,7 @@ class Schedule:
         compdat_dates = [
             kw.date
             for kw in self._schedule_items
-            if isinstance(kw, COMPDAT) and kw.well_name == well_name
+            if kw.name == "COMPDAT" and kw.well_name == well_name
         ]
 
         return min(compdat_dates) if compdat_dates else None
