@@ -1,3 +1,4 @@
+import sys
 import argparse
 import shutil
 import pathlib
@@ -203,6 +204,11 @@ def main():
     parser_hyperparam.set_defaults(func=flownet_hyperparam)
 
     args = parser.parse_args()
+
+    if len(sys.argv) <= 1:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+
     args.func(args)
 
 
