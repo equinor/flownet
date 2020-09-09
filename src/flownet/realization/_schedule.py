@@ -432,7 +432,7 @@ class Schedule:
         return [
             kw
             for kw in self._schedule_items
-            if isinstance(kw, COMPDAT) and kw.well_name == well_name
+            if kw.name == "COMPDAT" and kw.well_name == well_name
         ]
 
     def get_well_start_date(
@@ -451,7 +451,7 @@ class Schedule:
         compdat_dates = [
             kw.date
             for kw in self._schedule_items
-            if isinstance(kw, COMPDAT) and kw.well_name == well_name
+            if kw.name == "COMPDAT" and kw.well_name == well_name
         ]
 
         return min(compdat_dates) if compdat_dates else None
