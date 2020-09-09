@@ -654,8 +654,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             "scheme": {
                                 MK.Type: types.String,
                                 MK.Description: "Number of degrees of freedom. Either "
-                                "'global' (one for the whole model) or 'individual' "
-                                "(one per tube)",
+                                "'global' (the whole model treated as one EQLNUM region),"
+                                "'individual' (each tube treated as an EQLNUM region) or"
+                                "'regions_from_sim' (EQLNUM regions extracted from input sinm",
                                 MK.Default: "global",
                                 MK.Transformation: _to_lower,
                             },
@@ -858,7 +859,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
 
         if set(defined_regions) != set(unique_regions):
             print(
-                "Values not defined for all EQLNUM regions. Defulat values will be used if defined."
+                "Values not defined for all EQLNUM regions. Default values will be used if defined."
             )
             if not default_exists:
                 raise ValueError("Default values for EQLNUM regions not defined")
@@ -868,7 +869,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         and config.model_parameters.equil.eqlnum_region[0].id is not None
     ):
         raise ValueError(
-            "Id for first equilibrium region parameter should not be set or set to 'None'\n"
+            "Id for first equilibrium region parameter should not be set, or set to 'None'\n"
             "when using the 'global' or 'individual' options"
         )
 

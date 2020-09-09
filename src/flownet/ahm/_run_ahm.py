@@ -326,33 +326,49 @@ def run_flownet_history_matching(
         columns=["parameter", "minimum", "maximum", "loguniform", "eqlnum"]
     )
 
+    defined_eqlnum_regions = []
     if config.model_parameters.equil.scheme == "regions_from_sim":
         equil_config_eqlnum = config.model_parameters.equil.eqlnum_region
-        defined_eqlnum_regions = []
-
+        for reg in equil_config_eqlnum:
+            defined_eqlnum_regions.append(reg.id)
     else:
         equil_config_eqlnum = [config.model_parameters.equil.eqlnum_region[0]]
+        defined_eqlnum_regions = None
 
     for i in df_eqlnum["EQLNUM"].unique():
-        for reg in equil_config_eqlnum:
-            if reg.id == i or reg.id is None:
-                info = [
-                    ["datum_pressure", "owc_depth", "gwc_depth", "goc_depth"],
-                    [
-                        reg.datum_pressure.min,
-                        None if reg.owc_depth is None else reg.owc_depth.min,
-                        None if reg.gwc_depth is None else reg.gwc_depth.min,
-                        None if reg.goc_depth is None else reg.goc_depth.min,
-                    ],
-                    [
-                        reg.datum_pressure.max,
-                        None if reg.owc_depth is None else reg.owc_depth.max,
-                        None if reg.gwc_depth is None else reg.gwc_depth.max,
-                        None if reg.goc_depth is None else reg.goc_depth.max,
-                    ],
-                    [False] * 4,
-                    [i] * 4,
-                ]
+        if i in defined_eqlnum_regions:
+            idx = defined_eqlnum_regions.index(i)
+        else:
+            idx = defined_eqlnum_regions.index(None)
+        info = [
+            ["datum_pressure", "owc_depth", "gwc_depth", "goc_depth"],
+            [
+                equil_config_eqlnum[idx].datum_pressure.min,
+                None
+                if equil_config_eqlnum[idx].owc_depth is None
+                else equil_config_eqlnum[idx].owc_depth.min,
+                None
+                if equil_config_eqlnum[idx].gwc_depth is None
+                else equil_config_eqlnum[idx].gwc_depth.min,
+                None
+                if equil_config_eqlnum[idx].goc_depth is None
+                else equil_config_eqlnum[idx].goc_depth.min,
+            ],
+            [
+                equil_config_eqlnum[idx].datum_pressure.max,
+                None
+                if equil_config_eqlnum[idx].owc_depth is None
+                else equil_config_eqlnum[idx].owc_depth.max,
+                None
+                if equil_config_eqlnum[idx].gwc_depth is None
+                else equil_config_eqlnum[idx].gwc_depth.max,
+                None
+                if equil_config_eqlnum[idx].goc_depth is None
+                else equil_config_eqlnum[idx].goc_depth.max,
+            ],
+            [False] * 4,
+            [i] * 4,
+        ]
 
         equil_dist_values = equil_dist_values.append(
             pd.DataFrame(
