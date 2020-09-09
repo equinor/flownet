@@ -43,8 +43,7 @@ class Schedule:
         self._calculate_wconhist()
         self._calculate_wconinjh()
         print("done.", flush=True)
-        import sys
-        sys.exit()
+
     def _calculate_entity_dates(self):
         """
         Helper function that calculate the start dates of all entities.
