@@ -743,11 +743,28 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             )
         field_data = FlowData(config.flownet.data_source.simulation.input_case)
         unique_regions = field_data.get_unique_regions("EQLNUM")
+        default_exists = False
+        defined_regions = []
         for reg in config.model_parameters.equil.eqlnum_region:
+            if reg.id is None:
+                default_exists = True
+            else:
+                if reg.id in defined_regions:
+                    raise ValueError(
+                        f"EQLNUM region {reg.id} defined multiple times"
+                    )
+                defined_regions.append(reg.id)
+
             if reg.id not in unique_regions and reg.id is not None:
                 raise ValueError(
                     f"EQLNUM regions {reg.id} is not found in the input simulation case"
                 )
+
+        if set(defined_regions) != set(unique_regions):
+            print("Values not defined for all EQLNUM regions. Defulat values will be used if defined.")
+            if not default_exists:
+                raise ValueError("Default values for EQLNUM regions not defined")
+
     if (
         config.model_parameters.equil.scheme != "regions_from_sim"
         and config.model_parameters.equil.eqlnum_region[0].id is not None

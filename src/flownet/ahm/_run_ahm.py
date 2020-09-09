@@ -47,14 +47,12 @@ def _from_regions_to_flow_tubes(
     """
     df_regions = []
 
-    x_mid = network.grid[["x0", "x1", "x2", "x3", "x4", "x5", "x6", "x7"]].mean(axis=1)
-    y_mid = network.grid[["y0", "y1", "y2", "y3", "y4", "y5", "y6", "y7"]].mean(axis=1)
-    z_mid = network.grid[["z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7"]].mean(axis=1)
+    xyz_mid = network.cell_midpoints
 
     for i in network.grid.model.unique():
         tube_regions = []
         for j in ti2ci[ti2ci.index == i].values:
-            ijk = field_data.grid.find_cell(x_mid[j], y_mid[j], z_mid[j])
+            ijk = field_data.grid.find_cell(xyz_mid[0][j], xyz_mid[1][j], xyz_mid[2][j])
             if ijk is not None and field_data.grid.active(ijk=ijk):
                 tube_regions.append(field_data.init(name)[ijk])
         if tube_regions != []:
@@ -330,6 +328,8 @@ def run_flownet_history_matching(
 
     if config.model_parameters.equil.scheme == "regions_from_sim":
         equil_config_eqlnum = config.model_parameters.equil.eqlnum_region
+        defined_eqlnum_regions = []
+
     else:
         equil_config_eqlnum = [config.model_parameters.equil.eqlnum_region[0]]
 
