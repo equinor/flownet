@@ -80,7 +80,9 @@ class NetworkModel:
                 )
             selector = i
 
-        coordinates_start = self._df_entity_connections[["xstart", "ystart", "zstart"]].values[selector]
+        coordinates_start = self._df_entity_connections[
+            ["xstart", "ystart", "zstart"]
+        ].values[selector]
         coordinates_end = self._df_entity_connections[
             [
                 "xend",
