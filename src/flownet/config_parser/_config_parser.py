@@ -848,9 +848,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 default_exists = True
             else:
                 if reg.id in defined_regions:
-                    raise ValueError(
-                        f"EQLNUM region {reg.id} defined multiple times"
-                    )
+                    raise ValueError(f"EQLNUM region {reg.id} defined multiple times")
                 defined_regions.append(reg.id)
 
             if reg.id not in unique_regions and reg.id is not None:
@@ -859,7 +857,9 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 )
 
         if set(defined_regions) != set(unique_regions):
-            print("Values not defined for all EQLNUM regions. Defulat values will be used if defined.")
+            print(
+                "Values not defined for all EQLNUM regions. Defulat values will be used if defined."
+            )
             if not default_exists:
                 raise ValueError("Default values for EQLNUM regions not defined")
 
