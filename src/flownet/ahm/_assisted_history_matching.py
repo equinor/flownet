@@ -112,7 +112,7 @@ class AssistedHistoryMatching:
             )
 
         run_ert_subprocess(
-            f"ert es_mda --weights {','.join(map(str, weights))!r} ahm_config.ert",
+            f"ert es_mda --weights {','.join(map(str, weights))!r} --enable-new-storage ahm_config.ert",
             cwd=self.output_folder,
             runpath=self._config.ert.runpath,
         )
