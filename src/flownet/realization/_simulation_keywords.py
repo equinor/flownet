@@ -68,7 +68,7 @@ class COMPDAT(Keyword):
         direct: str = "1*",
     ):
         super().__init__(date)
-        self.name = 'COMPDAT'
+        self.name = "COMPDAT"
         self.well_name: str = well_name
         self.i: int = i
         self.j: int = j
@@ -113,7 +113,7 @@ class WCONHIST(Keyword):
         bhp: float = np.nan,
     ):
         super().__init__(date)
-        self.name = 'WCONHIST'
+        self.name = "WCONHIST"
         self.well_name: str = well_name
         self.status: str = status
         self.control_mode: str = control_mode
@@ -152,7 +152,7 @@ class WCONINJH(Keyword):
         target: str = "1*",
     ):
         super().__init__(date)
-        self.name = 'WCONINJH'
+        self.name = "WCONINJH"
         self.well_name: str = well_name
         self.inj_type: str = inj_type
         self.status: str = status
@@ -193,7 +193,7 @@ class WELSPECS(Keyword):
         fip: str = "1*",
     ):
         super().__init__(date)
-        self.name = 'WELSPECS'
+        self.name = "WELSPECS"
         self.well_name: str = well_name
         self.group_name: str = group_name
         self.i: int = i
