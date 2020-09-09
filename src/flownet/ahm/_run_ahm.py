@@ -58,12 +58,7 @@ def _from_regions_to_flow_tubes(
         if tube_regions != []:
             df_regions.append(mode(tube_regions).mode.tolist()[0])
         else:
-            tube_midpoint = (
-                network.df_entity_connections.iloc[i][
-                    ["xstart", "ystart", "zstart"]
-                ].values
-                + network.df_entity_connections.iloc[i][["xend", "yend", "zend"]].values
-            ) / 2
+            tube_midpoint = network.get_connection_midpoints(int(i))
             dist_to_cell = []
             for k in range(1, field_data.grid.get_num_active()):
                 cell_midpoint = field_data.grid.get_xyz(active_index=k)

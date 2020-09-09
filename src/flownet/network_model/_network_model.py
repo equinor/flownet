@@ -65,7 +65,7 @@ class NetworkModel:
             (Nx3) np.ndarray with connection midpoint coordinates.
 
         """
-        selector: Union[str, int] = ":"
+        selector: Union[slice, int] = slice(len(self._df_entity_connections.index))
 
         if i is not None:
             if i > len(self._df_entity_connections.index) or i < 0:
@@ -80,16 +80,14 @@ class NetworkModel:
                 )
             selector = i
 
-        coordinates_start = self._df_entity_connections[["xstart", "ystart", "zstart"]][
-            selector
-        ].values
+        coordinates_start = self._df_entity_connections[["xstart", "ystart", "zstart"]].values[selector]
         coordinates_end = self._df_entity_connections[
             [
                 "xend",
                 "yend",
                 "zend",
             ]
-        ][selector].values
+        ].values[selector]
 
         return (coordinates_start + coordinates_end) / 2
 
