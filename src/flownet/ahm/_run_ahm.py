@@ -280,7 +280,7 @@ def run_flownet_history_matching(
         key: relperm_dict[key] for key in relperm_dict if key != "scheme"
     }
 
-    for i in df_satnum["SATNUM"].unique():
+    for i in sorted(df_satnum["SATNUM"].unique()):
         info = [
             relperm_parameters.keys(),
             [relperm_parameters[key].min for key in relperm_parameters],
@@ -322,6 +322,7 @@ def run_flownet_history_matching(
     )
 
     defined_eqlnum_regions = []
+    datum_depths = []
     if config.model_parameters.equil.scheme == "regions_from_sim":
         equil_config_eqlnum = config.model_parameters.equil.eqlnum_region
         for reg in equil_config_eqlnum:
@@ -330,11 +331,12 @@ def run_flownet_history_matching(
         equil_config_eqlnum = [config.model_parameters.equil.eqlnum_region[0]]
         defined_eqlnum_regions.append(None)
 
-    for i in df_eqlnum["EQLNUM"].unique():
+    for i in sorted(df_eqlnum["EQLNUM"].unique()):
         if i in defined_eqlnum_regions:
             idx = defined_eqlnum_regions.index(i)
         else:
             idx = defined_eqlnum_regions.index(None)
+        datum_depths.append(equil_config_eqlnum[idx].datum_depth)
         info = [
             ["datum_pressure", "owc_depth", "gwc_depth", "goc_depth"],
             [
@@ -440,16 +442,7 @@ def run_flownet_history_matching(
 
     # ******************************************************************************
 
-    datum_depths = []
-    if config.model_parameters.equil.scheme == "regions_from_sim":
-        for reg in equil_config_eqlnum:
-            datum_depths.append(reg.datum_depth)
-    elif config.model_parameters.equil.scheme == "individual":
-        datum_depths = [equil_config_eqlnum[0].datum_depth] * len(
-            df_eqlnum["EQLNUM"].unique()
-        )
-    else:
-        datum_depths = [equil_config_eqlnum[0].datum_depth]
+
 
     datum_depths = list(datum_depths)
 
