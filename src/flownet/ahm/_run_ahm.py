@@ -280,7 +280,7 @@ def run_flownet_history_matching(
         key: relperm_dict[key] for key in relperm_dict if key != "scheme"
     }
 
-    for i in sorted(df_satnum["SATNUM"].unique()):
+    for i in np.sort(df_satnum["SATNUM"].unique()):
         info = [
             relperm_parameters.keys(),
             [relperm_parameters[key].min for key in relperm_parameters],
@@ -331,7 +331,7 @@ def run_flownet_history_matching(
         equil_config_eqlnum = [config.model_parameters.equil.eqlnum_region[0]]
         defined_eqlnum_regions.append(None)
 
-    for i in sorted(df_eqlnum["EQLNUM"].unique()):
+    for i in np.sort(df_eqlnum["EQLNUM"].unique()):
         if i in defined_eqlnum_regions:
             idx = defined_eqlnum_regions.index(i)
         else:
@@ -441,8 +441,6 @@ def run_flownet_history_matching(
             )
 
     # ******************************************************************************
-
-
 
     datum_depths = list(datum_depths)
 

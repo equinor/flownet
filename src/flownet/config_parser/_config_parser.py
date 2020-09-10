@@ -941,11 +941,14 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 != "global"
                 and getattr(config.model_parameters.relative_permeability, parameter)
                 != "individual"
+                and getattr(config.model_parameters.relative_permeability, parameter)
+                != "regions_from_sim"
+
             ):
                 raise ValueError(
                     f"The relative permeability scheme "
                     f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
-                    f"Valid options are 'global' or 'individual'."
+                    f"Valid options are 'global', 'regions_from_sim' or 'individual'."
                 )
         else:
             if (
