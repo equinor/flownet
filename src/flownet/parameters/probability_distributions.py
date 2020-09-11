@@ -17,8 +17,6 @@ class ProbabilityDistribution(abc.ABC):
 
 
 class UniformDistribution(ProbabilityDistribution):
-    def __init__(self, minimum, maximum):
-        super().__init__(minimum, maximum)
 
     @property
     def ert_gen_kw(self) -> str:
@@ -27,8 +25,6 @@ class UniformDistribution(ProbabilityDistribution):
 
 
 class LogUniformDistribution(ProbabilityDistribution):
-    def __init__(self, minimum, maximum):
-        super().__init__(minimum, maximum)
 
     @property
     def ert_gen_kw(self) -> str:
