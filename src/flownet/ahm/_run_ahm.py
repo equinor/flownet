@@ -406,7 +406,9 @@ def run_flownet_history_matching(
 
     if isinstance(network.faults, dict):
         fault_mult_dist_values = _get_distribution(
-            ["fault_mult"], config.model_parameters, list(network.faults.keys()),
+            ["fault_mult"],
+            config.model_parameters,
+            list(network.faults.keys()),
         )
 
     #########################################
@@ -502,10 +504,16 @@ def run_flownet_history_matching(
     if config.model_parameters.ahm_case is not None:
         parameters = update_distribution(parameters, config.model_parameters.ahm_case)
 
-    ahm = AssistedHistoryMatching(network, schedule, parameters, config,)
+    ahm = AssistedHistoryMatching(
+        network,
+        schedule,
+        parameters,
+        config,
+    )
 
     ahm.create_ert_setup(
-        args=args, training_set_fraction=_find_training_set_fraction(schedule, config),
+        args=args,
+        training_set_fraction=_find_training_set_fraction(schedule, config),
     )
 
     ahm.report()
