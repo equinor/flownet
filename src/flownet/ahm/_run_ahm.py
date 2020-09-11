@@ -59,8 +59,9 @@ def _find_training_set_fraction(
     return training_set_fraction
 
 
-def _find_dist_minmax(min_val: Optional[float], max_val: Optional[float], mean_val: float) -> float:
-
+def _find_dist_minmax(
+    min_val: Optional[float], max_val: Optional[float], mean_val: float
+) -> float:
     """
     Find the distribution min or max for a loguniform distribution, assuming only
     one of these and the mean are given
@@ -147,9 +148,7 @@ def _get_distribution(
     return df
 
 
-def update_distribution(
-        parameters: List[Parameter], ahm_case: str
-) -> List[Parameter]:
+def update_distribution(parameters: List[Parameter], ahm_case: str) -> List[Parameter]:
     """
     Update the prior distribution min-max for one or more parameters based on
     the mean of the posterior distribution. It is assumed that the prior min
@@ -407,9 +406,7 @@ def run_flownet_history_matching(
 
     if isinstance(network.faults, dict):
         fault_mult_dist_values = _get_distribution(
-            ["fault_mult"],
-            config.model_parameters,
-            list(network.faults.keys()),
+            ["fault_mult"], config.model_parameters, list(network.faults.keys()),
         )
 
     #########################################
@@ -505,16 +502,10 @@ def run_flownet_history_matching(
     if config.model_parameters.ahm_case is not None:
         parameters = update_distribution(parameters, config.model_parameters.ahm_case)
 
-    ahm = AssistedHistoryMatching(
-        network,
-        schedule,
-        parameters,
-        config,
-    )
+    ahm = AssistedHistoryMatching(network, schedule, parameters, config,)
 
     ahm.create_ert_setup(
-        args=args,
-        training_set_fraction=_find_training_set_fraction(schedule, config),
+        args=args, training_set_fraction=_find_training_set_fraction(schedule, config),
     )
 
     ahm.report()
