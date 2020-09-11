@@ -21,6 +21,7 @@ from ..parameters import (
     Aquifer,
     Equilibration,
     FaultTransmissibility,
+    Parameter,
 )
 from ..data import FlowData
 
@@ -147,8 +148,8 @@ def _get_distribution(
 
 
 def update_distribution(
-        parameters: Union[str, List[str]], ahm_case: str
-) -> Union[str, List[str]]:
+        parameters: List[Parameter], ahm_case: str
+) -> List[Parameter]:
     """
     Update the prior distribution min-max for one or more parameters based on
     the mean of the posterior distribution. It is assumed that the prior min
