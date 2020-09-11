@@ -943,7 +943,6 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 != "individual"
                 and getattr(config.model_parameters.relative_permeability, parameter)
                 != "regions_from_sim"
-
             ):
                 raise ValueError(
                     f"The relative permeability scheme "
