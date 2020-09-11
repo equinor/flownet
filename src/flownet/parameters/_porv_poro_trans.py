@@ -107,32 +107,36 @@ class PorvPoroTrans(Parameter):
     ):
         self._ti2ci: pd.DataFrame = ti2ci
 
-        self._random_variables: List[
-            ProbabilityDistribution
-        ] = [  # Add random variables for bulk volume multipliers
-            LogUniformDistribution(
-                row["minimum_bulkvolume_mult"], row["maximum_bulkvolume_mult"]
-            )
-            if row["loguniform_bulkvolume_mult"]
-            else UniformDistribution(
-                row["minimum_bulkvolume_mult"], row["maximum_bulkvolume_mult"]
-            )
-            for _, row in distribution_values.iterrows()
-        ] + [  # Add random variables for porosity
-            LogUniformDistribution(row["minimum_porosity"], row["maximum_porosity"])
-            if row["loguniform_porosity"]
-            else UniformDistribution(row["minimum_porosity"], row["maximum_porosity"])
-            for _, row in distribution_values.iterrows()
-        ] + [  # Add random variables for permeability
-            LogUniformDistribution(
-                row["minimum_permeability"], row["maximum_permeability"]
-            )
-            if row["loguniform_permeability"]
-            else UniformDistribution(
-                row["minimum_permeability"], row["maximum_permeability"]
-            )
-            for _, row in distribution_values.iterrows()
-        ]
+        self._random_variables: List[ProbabilityDistribution] = (
+            [  # Add random variables for bulk volume multipliers
+                LogUniformDistribution(
+                    row["minimum_bulkvolume_mult"], row["maximum_bulkvolume_mult"]
+                )
+                if row["loguniform_bulkvolume_mult"]
+                else UniformDistribution(
+                    row["minimum_bulkvolume_mult"], row["maximum_bulkvolume_mult"]
+                )
+                for _, row in distribution_values.iterrows()
+            ]
+            + [  # Add random variables for porosity
+                LogUniformDistribution(row["minimum_porosity"], row["maximum_porosity"])
+                if row["loguniform_porosity"]
+                else UniformDistribution(
+                    row["minimum_porosity"], row["maximum_porosity"]
+                )
+                for _, row in distribution_values.iterrows()
+            ]
+            + [  # Add random variables for permeability
+                LogUniformDistribution(
+                    row["minimum_permeability"], row["maximum_permeability"]
+                )
+                if row["loguniform_permeability"]
+                else UniformDistribution(
+                    row["minimum_permeability"], row["maximum_permeability"]
+                )
+                for _, row in distribution_values.iterrows()
+            ]
+        )
 
         self._network: NetworkModel = network
         self._number_tubes: int = len(self._ti2ci.index.unique())

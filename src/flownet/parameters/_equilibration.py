@@ -117,7 +117,10 @@ class Equilibration(Parameter):
             eqlnum2 = list(list(zip(*eqlnum_combinations))[1])
 
             thpres = _TEMPLATE_ENVIRONMENT.get_template("THPRES.jinja2").render(
-                {"eqlnum1": eqlnum1, "eqlnum2": eqlnum2,}
+                {
+                    "eqlnum1": eqlnum1,
+                    "eqlnum2": eqlnum2,
+                }
             )
 
             if self._rsvd is not None:

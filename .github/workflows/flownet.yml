@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.6', '3.7']
-        flownet-model: ['norne','egg']
+        flownet-model: ['norne','egg', 'brugge']
 
     env:
       VENV_PATH: ${{ github.workspace }}/flownet_venv
@@ -34,18 +34,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: 📁 Cache virtual environment
-        id: cache-venv
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.VENV_PATH }}
-          key: ${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('build_environment.sh') }}-${{ hashFiles('setup.py') }}
-
       - name: 📦 Install non-python dependencies
         run: sudo bash ./apt_install.sh
 
       - name: 🏗️ Build Python environment
-        if: steps.cache-venv.outputs.cache-hit != 'true'
         run: bash ./build_environment.sh $VENV_PATH /usr/bin/flow
 
       - name: 🍿 Download FlowNet test data
@@ -58,10 +50,8 @@ jobs:
           # change the value her from "master" to the relevant branch name.
           TESTDATA_REPO_BRANCH: master
         run: |
-          git clone --depth 1 --branch $TESTDATA_REPO_BRANCH https://github.com/$TESTDATA_REPO_OWNER/flownet-testdata.git
-          if [ -f "$INPUT_MODEL_FOLDER/${{ matrix.flownet-model }}.tar.gz" ]; then
-             tar -zxvf $INPUT_MODEL_FOLDER/${{ matrix.flownet-model }}.tar.gz -C $INPUT_MODEL_FOLDER
-          fi
+          git clone --depth 1 --branch $TESTDATA_REPO_BRANCH https://github.com/$TESTDATA_REPO_OWNER/flownet-testdata.git --recursive
+          for f in $INPUT_MODEL_FOLDER/*.tar.gz; do tar -zxvf "$f" -C $INPUT_MODEL_FOLDER; done
 
       - name: 📦 Install FlowNet
         run: |
@@ -115,7 +105,7 @@ jobs:
           twine upload dist/*
 
       - name: 📚 Update GitHub pages
-        if: github.event_name == 'release' && matrix.python-version == '3.6'
+        if: github.event_name != 'schedule' && github.ref == 'refs/heads/master' && matrix.python-version == '3.6'
         run: |
           cp -R ./docs/_build ../_build
           git config --local user.email "flownet-github-action"
