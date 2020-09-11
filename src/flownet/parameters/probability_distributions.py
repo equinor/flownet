@@ -17,7 +17,6 @@ class ProbabilityDistribution(abc.ABC):
 
 
 class UniformDistribution(ProbabilityDistribution):
-
     @property
     def ert_gen_kw(self) -> str:
         """string representing an ERT "UNFIORM MIN MAX" distribution keyword for use in GEN_KW"""
@@ -25,7 +24,6 @@ class UniformDistribution(ProbabilityDistribution):
 
 
 class LogUniformDistribution(ProbabilityDistribution):
-
     @property
     def ert_gen_kw(self) -> str:
         """string representing an ERT "LOGUNIF MIN MAX" distribution keyword for use in GEN_KW"""
