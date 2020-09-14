@@ -1036,10 +1036,27 @@
 <div class="cs_container" id="cs_number_of_degre_container">
 <div class="cs_header">
 <h3>scheme</h3><br></div><br><div class="cs_content" id="cs_number_of_degre_content">
-<p>Number of degrees of freedom. Either ‘global’ (one for the whole model) or ‘individual’ (one per tube)</p>
+<p>Number of degrees of freedom. Either ‘global’ (the whole model treated as one EQLNUM region),’individual’ (each tube treated as an EQLNUM region) or’regions_from_sim’ (EQLNUM regions extracted from input simulation</p>
 <p>Convert string to lower case</p>
 <div class="cs_children" id="cs_number_of_degre_children">
 <p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>regions</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>List Item</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>id</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
 </div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
 <div class="cs_header">
 <h3>datum_depth</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
@@ -1114,7 +1131,7 @@
 <p></p>
 <div class="cs_children" id="cs_default_title_children">
 <p>:type: number</p>
-</div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_add_uncertainty_container">
+</div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_add_uncertainty_container">
 <div class="cs_header">
 <h3>rock_compressibility</h3><br></div><br><div class="cs_content" id="cs_add_uncertainty_content">
 <p>Add uncertainty on subsurface rock compressibility.</p>

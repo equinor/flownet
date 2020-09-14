@@ -325,6 +325,13 @@ the one dimensional model in the network with index model_index.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="flownet.network_model._network_model.NetworkModel.cell_midpoints">
+<em class="property">property </em><code class="sig-name descname">cell_midpoints</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.cell_midpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a numpy array with the midpoint of each cell in the network
+:returns: (Nx3) np.ndarray with connection midpoint coordinates.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.connection_at_nodes">
 <em class="property">property </em><code class="sig-name descname">connection_at_nodes</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.connection_at_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>List is lists with tube indices belonging to a node</p>
@@ -340,6 +347,22 @@ the one dimensional model in the network with index model_index.</p>
 <dt id="flownet.network_model._network_model.NetworkModel.faults">
 <em class="property">property </em><code class="sig-name descname">faults</code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.faults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary of fault names containing a list of integer zero-offset I-coordinates belonging to a fault</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="flownet.network_model._network_model.NetworkModel.get_connection_midpoints">
+<code class="sig-name descname">get_connection_midpoints</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.get_connection_midpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a numpy array with the midpoint of each connection in the network or,
+in case the optional i parameter is specified, the midpoint
+of the i’th connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> – specific zero-offset element to calculate the midpoint for</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(Nx3) np.ndarray with connection midpoint coordinates.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
