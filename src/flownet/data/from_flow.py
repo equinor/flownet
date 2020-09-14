@@ -329,7 +329,7 @@ class FlowData(FromSource):
         """array with 'name' regions"""
         return self._init[name][0]
 
-    def get_unique_regions(self, name) -> np.ndarray:
+    def get_unique_regions(self, name: str) -> np.ndarray:
         """array with unique 'name' regions"""
         return np.unique(self._init[name][0])
 

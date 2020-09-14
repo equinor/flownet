@@ -27,20 +27,20 @@ def _from_regions_to_flow_tubes(
     network: NetworkModel,
     field_data: FlowData,
     ti2ci: pd.DataFrame,
-    name: str,
+    region_name: str,
 ) -> List[int]:
     """
-        The function loops through each cell in all flow tubes, and checks what 'name' region the
-        corresponding position (cell midpoint) in the data source simulation model has. If different
-        cells in one flow tube are located in different 'name' regions of the original model, the mode is used.
-        If flow tubes are entirely outside of the data source simulation grid,
-        the 'name' region closest to the midpoint of the flow tube is used.
+    The function loops through each cell in all flow tubes, and checks what region the
+    corresponding position (cell midpoint) in the data source simulation model has. If different
+    cells in one flow tube are located in different regions of the original model, the mode is used.
+    If flow tubes are entirely outside of the data source simulation grid,
+    the region closest to the midpoint of the flow tube is used.
 
     Args:
         network: FlowNet network instance
         field_data: FlowData class with information from simulation model data source
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
-        name: The same of the region parameter
+        name: The name of the region parameter
 
     Returns:
         A list with values for 'name' region for each tube in the FlowNet model
@@ -54,7 +54,7 @@ def _from_regions_to_flow_tubes(
         for j in ti2ci[ti2ci.index == i].values:
             ijk = field_data.grid.find_cell(xyz_mid[0][j], xyz_mid[1][j], xyz_mid[2][j])
             if ijk is not None and field_data.grid.active(ijk=ijk):
-                tube_regions.append(field_data.init(name)[ijk])
+                tube_regions.append(field_data.init(region_name)[ijk])
         if tube_regions != []:
             df_regions.append(mode(tube_regions).mode.tolist()[0])
         else:
@@ -70,7 +70,7 @@ def _from_regions_to_flow_tubes(
                     )
                 )
             df_regions.append(
-                field_data.init(name)[
+                field_data.init(region_name)[
                     field_data.grid.get_ijk(
                         active_index=dist_to_cell.index(min(dist_to_cell))
                     )
