@@ -319,11 +319,11 @@ def run_flownet_history_matching(
     defined_eqlnum_regions = []
     datum_depths = []
     if config.model_parameters.equil.scheme == "regions_from_sim":
-        equil_config_eqlnum = config.model_parameters.equil.eqlnum_region
+        equil_config_eqlnum = config.model_parameters.equil.regions
         for reg in equil_config_eqlnum:
             defined_eqlnum_regions.append(reg.id)
     else:
-        equil_config_eqlnum = [config.model_parameters.equil.eqlnum_region[0]]
+        equil_config_eqlnum = [config.model_parameters.equil.regions[0]]
         defined_eqlnum_regions.append(None)
 
     for i in np.sort(df_eqlnum["EQLNUM"].unique()):

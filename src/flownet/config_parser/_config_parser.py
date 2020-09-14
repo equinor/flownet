@@ -28,6 +28,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
 
     """
 
+    @configsuite.transformation_msg("Convert 'None' to None")
+    def _to_none(input_data):
+        if input_data == "None":
+            return None
+
+        return input_data
+
+
     @configsuite.transformation_msg("Convert string to lower case")
     def _to_lower(input_data: Union[List[str], str]) -> Union[List[str], str]:
         if isinstance(input_data, str):
@@ -660,7 +668,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 MK.Default: "global",
                                 MK.Transformation: _to_lower,
                             },
-                            "eqlnum_region": {
+                            "regions": {
                                 MK.Type: types.List,
                                 MK.Content: {
                                     MK.Item: {
@@ -669,6 +677,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                             "id": {
                                                 MK.Type: types.Number,
                                                 MK.AllowNone: True,
+                                                MK.Transformation: _to_none,
                                             },
                                             "datum_depth": {
                                                 MK.Type: types.Number,
@@ -835,6 +844,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             f"'{config.model_parameters.equil.scheme}' is not valid.\n"
             f"Valid options are 'global', 'regions_from_sim' or 'individual'."
         )
+
     if config.model_parameters.equil.scheme == "regions_from_sim":
         if config.flownet.data_source.simulation.input_case is None:
             raise ValueError(
@@ -844,7 +854,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         unique_regions = field_data.get_unique_regions("EQLNUM")
         default_exists = False
         defined_regions = []
-        for reg in config.model_parameters.equil.eqlnum_region:
+        for reg in config.model_parameters.equil.regions:
             if reg.id is None:
                 default_exists = True
             else:
@@ -866,7 +876,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
 
     if (
         config.model_parameters.equil.scheme != "regions_from_sim"
-        and config.model_parameters.equil.eqlnum_region[0].id is not None
+        and config.model_parameters.equil.regions[0].id is not None
     ):
         raise ValueError(
             "Id for first equilibrium region parameter should not be set, or set to 'None'\n"
@@ -902,7 +912,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             "krwend",
             "krowend",
         ]
-        for reg in config.model_parameters.equil.eqlnum_region:
+        for reg in config.model_parameters.equil.regions:
             if (
                 reg.owc_depth.min is None
                 or reg.owc_depth.max is None
@@ -924,7 +934,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             "krgend",
             "krogend",
         ]
-        for reg in config.model_parameters.equil.eqlnum_region:
+        for reg in config.model_parameters.equil.regions:
             if (
                 reg.goc_depth.min is None
                 or reg.goc_depth.max is None
