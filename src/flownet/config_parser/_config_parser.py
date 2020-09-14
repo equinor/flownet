@@ -29,9 +29,17 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
     """
 
     @configsuite.transformation_msg("Convert 'None' to None")
-    def _to_none(
-        input_data: Union[str, int, float, type(None)]
-    ) -> Union[str, int, float, type(None)]:
+    def _none_to_none(
+        input_data: Union[str, int, float, None]
+    ) -> Union[str, int, float, None]:
+        """
+        Converts "None" to None
+        Args:
+            input_data:
+
+        Returns:
+            The input_data. If the input is "None" it is converted to None (str to None)
+        """
         if input_data == "None":
             return None
 
@@ -678,7 +686,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                             "id": {
                                                 MK.Type: types.Number,
                                                 MK.AllowNone: True,
-                                                MK.Transformation: _to_none,
+                                                MK.Transformation: _none_to_none,
                                             },
                                             "datum_depth": {
                                                 MK.Type: types.Number,
