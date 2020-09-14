@@ -29,7 +29,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
     """
 
     @configsuite.transformation_msg("Convert 'None' to None")
-    def _to_none(input_data):
+    def _to_none(
+        input_data: Union[str, int, float, type(None)]
+    ) -> Union[str, int, float, type(None)]:
         if input_data == "None":
             return None
 
@@ -45,14 +47,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
     @configsuite.transformation_msg("Convert input string to absolute path")
     def _to_abs_path(path: Optional[str]) -> str:
         """
-        Helper function for the configsuite. Take in a path as a string and
-        attempts to convert it to an absolute path.
+        z        Helper function for the configsuite. Take in a path as a string and
+                attempts to convert it to an absolute path.
 
-        Args:
-            path: A relative or absolute path or None
+                Args:
+                    path: A relative or absolute path or None
 
-        Returns:
-            Absolute path or empty string
+                Returns:
+                    Absolute path or empty string
 
         """
         if path is None:
