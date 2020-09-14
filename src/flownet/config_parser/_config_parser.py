@@ -656,7 +656,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 MK.Description: "Number of degrees of freedom. Either "
                                 "'global' (the whole model treated as one EQLNUM region),"
                                 "'individual' (each tube treated as an EQLNUM region) or"
-                                "'regions_from_sim' (EQLNUM regions extracted from input sinm",
+                                "'regions_from_sim' (EQLNUM regions extracted from input simulation",
                                 MK.Default: "global",
                                 MK.Transformation: _to_lower,
                             },
@@ -941,13 +941,11 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 != "global"
                 and getattr(config.model_parameters.relative_permeability, parameter)
                 != "individual"
-                and getattr(config.model_parameters.relative_permeability, parameter)
-                != "regions_from_sim"
             ):
                 raise ValueError(
                     f"The relative permeability scheme "
                     f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
-                    f"Valid options are 'global', 'regions_from_sim' or 'individual'."
+                    f"Valid options are 'global' or 'individual'."
                 )
         else:
             if (

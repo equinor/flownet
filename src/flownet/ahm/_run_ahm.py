@@ -30,7 +30,7 @@ def _from_regions_to_flow_tubes(
     name: str,
 ) -> List[int]:
     """
-        The function loops through each cell in a flow tube, and checks what 'name' region the
+        The function loops through each cell in all flow tubes, and checks what 'name' region the
         corresponding position (cell midpoint) in the data source simulation model has. If different
         cells in one flow tube are located in different 'name' regions of the original model, the mode is used.
         If flow tubes are entirely outside of the data source simulation grid,
@@ -254,11 +254,6 @@ def run_flownet_history_matching(
     if config.model_parameters.relative_permeability.scheme == "individual":
         df_satnum = pd.DataFrame(
             range(1, len(network.grid.model.unique()) + 1), columns=["SATNUM"]
-        )
-    elif config.model_parameters.relative_permeability.scheme == "regions_from_sim":
-        df_satnum = pd.DataFrame(
-            _from_regions_to_flow_tubes(network, field_data, ti2ci, "SATNUM"),
-            columns=["SATNUM"],
         )
     elif config.model_parameters.relative_permeability.scheme == "global":
         df_satnum = pd.DataFrame(
