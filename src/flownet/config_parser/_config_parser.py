@@ -35,7 +35,6 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
 
         return input_data
 
-
     @configsuite.transformation_msg("Convert string to lower case")
     def _to_lower(input_data: Union[List[str], str]) -> Union[List[str], str]:
         if isinstance(input_data, str):
