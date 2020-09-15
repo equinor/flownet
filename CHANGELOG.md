@@ -3,6 +3,11 @@ All notable changes to `FlowNet` will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
+No new items yet.
+
+## [0.3.0] - 2020-09-14
+
 ### Added
 - [#160](https://github.com/equinor/flownet/pull/160) Adds the possibility to extract regions from an existing model when the data source is a simulation model. For equil, the scheme key can be set to 'regions_from_sim'
 - [#157](https://github.com/equinor/flownet/pull/157) Adds a new 'time-weighted average open perforation location' perforation strategy called `time_avg_open_location`. 
