@@ -435,231 +435,246 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 "'individual' (one set of curves per tube).",
                                 MK.Transformation: _to_lower,
                             },
-                            "swirr": {
-                                MK.Type: types.NamedDict,
+                            "regions": {
+                                MK.Type: types.List,
                                 MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "swl": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "swcr": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "sorw": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {MK.Type: types.Number},
-                                    "max": {MK.Type: types.Number},
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "krwend": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "krowend": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "nw": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "now": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "sorg": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "sgcr": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "ng": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "nog": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "krgend": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
-                                        MK.AllowNone: True,
-                                    },
-                                },
-                            },
-                            "krogend": {
-                                MK.Type: types.NamedDict,
-                                MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
-                                        MK.AllowNone: True,
+                                    MK.Item: {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "id": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                                MK.Transformation: _none_to_none,
+                                            },
+                                            "swirr": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "swl": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "swcr": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "sorw": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {MK.Type: types.Number},
+                                                    "max": {MK.Type: types.Number},
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "krwend": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "krowend": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "nw": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "now": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "sorg": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "sgcr": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "ng": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "nog": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "krgend": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "krogend": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                        },
                                     },
                                 },
                             },
@@ -849,7 +864,7 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
         and config.model_parameters.equil.scheme != "global"
     ):
         raise ValueError(
-            f"The relative permeability scheme "
+            f"The equil scheme "
             f"'{config.model_parameters.equil.scheme}' is not valid.\n"
             f"Valid options are 'global', 'regions_from_sim' or 'individual'."
         )
@@ -960,40 +975,39 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                 != "global"
                 and getattr(config.model_parameters.relative_permeability, parameter)
                 != "individual"
+                and getattr(config.model_parameters.relative_permeability, parameter)
+                != "regions_from_sim"
             ):
                 raise ValueError(
                     f"The relative permeability scheme "
                     f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
-                    f"Valid options are 'global' or 'individual'."
+                    f"Valid options are 'global', 'regions_from_sim' or 'individual'."
                 )
         else:
-            if (
-                getattr(config.model_parameters.relative_permeability, parameter).min
-                is None
-                or getattr(config.model_parameters.relative_permeability, parameter).max
-                is None
-            ):
-                raise ValueError(
-                    f"Ambiguous configuration input: The {parameter} parameter is missing or not properly defined."
-                )
-            if (
-                getattr(config.model_parameters.relative_permeability, parameter).max
-                < getattr(config.model_parameters.relative_permeability, parameter).min
-            ):
-                raise ValueError(
-                    f"Ambiguous configuration input: The {parameter} setting 'max' is higher than the 'min'"
-                )
+            for satreg in config.model_parameters.relative_permeability.regions:
+                if (
+                    getattr(satreg, parameter).min is None
+                    or getattr(satreg, parameter).max is None
+                ):
+                    raise ValueError(
+                        f"Ambiguous configuration input: The {parameter} parameter is missing or not properly defined in one of the satnum regions."
+                    )
+                if getattr(satreg, parameter).max < getattr(satreg, parameter).min:
+                    raise ValueError(
+                        f"Ambiguous configuration input: The {parameter} setting 'max' is higher than the 'min' in one of the satnum regions."
+                    )
 
-    for parameter in set(config.model_parameters.relative_permeability._fields) - set(
-        req_relp_parameters
+    for parameter in (
+        set(config.model_parameters.relative_permeability.regions[0]._fields)
+        - set(req_relp_parameters)
+        - set(["id"])
     ):
-        if (
-            getattr(config.model_parameters.relative_permeability, parameter).min
-            is not None
-            and getattr(config.model_parameters.relative_permeability, parameter).max
-            is not None
-        ):
-            raise ValueError(f"The {parameter} parameter should not be specified.")
+        for satreg in config.model_parameters.relative_permeability.regions:
+            if (
+                getattr(satreg, parameter).min is not None
+                and getattr(satreg, parameter).max is not None
+            ):
+                raise ValueError(f"The {parameter} parameter should not be specified.")
 
     if config.ert.queue.system.upper() != "LOCAL" and (
         config.ert.queue.name is None or config.ert.queue.server is None

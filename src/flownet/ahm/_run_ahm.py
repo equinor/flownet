@@ -49,6 +49,7 @@ def _from_regions_to_flow_tubes(
 
     xyz_mid = network.cell_midpoints
 
+    tube_outside = []
     for i in network.grid.model.unique():
         tube_regions = []
         for j in ti2ci[ti2ci.index == i].values:
@@ -58,24 +59,32 @@ def _from_regions_to_flow_tubes(
         if tube_regions != []:
             df_regions.append(mode(tube_regions).mode.tolist()[0])
         else:
-            tube_midpoint = network.get_connection_midpoints(int(i))
-            dist_to_cell = []
-            for k in range(1, field_data.grid.get_num_active()):
-                cell_midpoint = field_data.grid.get_xyz(active_index=k)
-                dist_to_cell.append(
-                    np.sqrt(
-                        np.square(tube_midpoint[0] - cell_midpoint[0])
-                        + np.square(tube_midpoint[1] - cell_midpoint[1])
-                        + np.square(tube_midpoint[2] - cell_midpoint[2])
-                    )
+            df_regions.append(None)
+            tube_outside.append(i)
+
+    if tube_outside != []:
+        tube_midpoints = network.get_connection_midpoints()
+        candidate_tubes = set(network.grid.model.unique()) - set(tube_outside)
+        while len(tube_outside) > 0:
+            i = tube_outside.pop(0)
+            first = True
+            for j in candidate_tubes:
+                dist_to_tube = np.sqrt(
+                    np.square(tube_midpoints[i][0] - tube_midpoints[j][0])
+                    + np.square(tube_midpoints[i][1] - tube_midpoints[j][1])
+                    + np.square(tube_midpoints[i][2] - tube_midpoints[j][2])
                 )
-            df_regions.append(
-                field_data.init(region_name)[
-                    field_data.grid.get_ijk(
-                        active_index=dist_to_cell.index(min(dist_to_cell))
-                    )
-                ]
-            )
+                if first:
+                    first = False
+                    shortest_dist = dist_to_tube
+                    shortest_index = j
+                elif dist_to_tube < shortest_dist:
+                    shortest_dist = dist_to_tube
+                    shortest_index = j
+
+            df_regions[i] = df_regions[shortest_index]
+            candidate_tubes.add(i)
+
     return df_regions
 
 
@@ -255,6 +264,11 @@ def run_flownet_history_matching(
         df_satnum = pd.DataFrame(
             range(1, len(network.grid.model.unique()) + 1), columns=["SATNUM"]
         )
+    elif config.model_parameters.relative_permeability.scheme == "regions_from_sim":
+        df_satnum = pd.DataFrame(
+            _from_regions_to_flow_tubes(network, field_data, ti2ci, "SATNUM"),
+            columns=["SATNUM"],
+        )
     elif config.model_parameters.relative_permeability.scheme == "global":
         df_satnum = pd.DataFrame(
             [1] * len(network.grid.model.unique()), columns=["SATNUM"]
@@ -265,21 +279,37 @@ def run_flownet_history_matching(
         columns=["parameter", "minimum", "maximum", "loguniform", "satnum"]
     )
 
+    relperm_parameters = config.model_parameters.relative_permeability.regions[
+        0
+    ]._asdict()
+    relperm_parameters.popitem(last=False)
+
     relperm_dict = {
         key: values
-        for key, values in config.model_parameters.relative_permeability._asdict().items()
+        for key, values in relperm_parameters.items()
         if not all(value is None for value in values)
     }
 
-    relperm_parameters = {
-        key: relperm_dict[key] for key in relperm_dict if key != "scheme"
-    }
+    relperm_parameters = {key: relperm_dict[key] for key in relperm_dict if key != "id"}
+
+    defined_satnum_regions = []
+    if config.model_parameters.relative_permeability.scheme == "regions_from_sim":
+        relp_config_satnum = config.model_parameters.relative_permeability.regions
+        for reg in relp_config_satnum:
+            defined_satnum_regions.append(reg.id)
+    else:
+        relp_config_satnum = [config.model_parameters.relative_permeability.regions[0]]
+        defined_satnum_regions.append(None)
 
     for i in np.sort(df_satnum["SATNUM"].unique()):
+        if i in defined_satnum_regions:
+            idx = defined_satnum_regions.index(i)
+        else:
+            idx = defined_satnum_regions.index(None)
         info = [
             relperm_parameters.keys(),
-            [relperm_parameters[key].min for key in relperm_parameters],
-            [relperm_parameters[key].max for key in relperm_parameters],
+            [getattr(relp_config_satnum[idx], key).min for key in relperm_parameters],
+            [getattr(relp_config_satnum[idx], key).max for key in relperm_parameters],
             [False] * len(relperm_parameters),
             [i] * len(relperm_parameters),
         ]
