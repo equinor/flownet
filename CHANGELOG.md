@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- [#188](https://github.com/equinor/flownet/pull/188) The possibility to extract regions from an input simulation model extended to also include SATNUM regions. For relatyive permeability, the scheme keyword can be set to regions_from_simAdds the possibility to extract regions from an existing model. For relative permeability, the scheme key in the config file can be set to 'regions_from_sim'.
+- [#188](https://github.com/equinor/flownet/pull/188) The possibility to extract regions from an input simulation model extended to also include SATNUM regions. For relative permeability, the scheme keyword can be set to regions_from_sim.
 
 ## [0.3.0] - 2020-09-14
 
