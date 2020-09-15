@@ -990,11 +990,13 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
                     or getattr(satreg, parameter).max is None
                 ):
                     raise ValueError(
-                        f"Ambiguous configuration input: The {parameter} parameter is missing or not properly defined in one of the satnum regions."
+                        f"Ambiguous configuration input: The {parameter} parameter is missing\n"
+                        f"or not properly defined in one of the satnum regions."
                     )
                 if getattr(satreg, parameter).max < getattr(satreg, parameter).min:
                     raise ValueError(
-                        f"Ambiguous configuration input: The {parameter} setting 'max' is higher than the 'min' in one of the satnum regions."
+                        f"Ambiguous configuration input: The {parameter} setting 'max' is higher\n"
+                        f"than the 'min' in one of the satnum regions."
                     )
 
     for parameter in (
