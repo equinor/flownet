@@ -290,7 +290,7 @@ def run_flownet_history_matching(
         if not all(value is None for value in values)
     }
 
-    relperm_parameters = {key: relperm_dict[key] for key in relperm_dict if key != "id"}
+    relperm_parameters = {key: relperm_dict[key] for key in relperm_dict}
 
     defined_satnum_regions = []
     if config.model_parameters.relative_permeability.scheme == "regions_from_sim":
