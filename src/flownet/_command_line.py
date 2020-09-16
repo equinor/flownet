@@ -64,7 +64,7 @@ def flownet_ahm(args: argparse.Namespace) -> None:
                 f"{args.output_folder} already exists. Add --overwrite or change output folder."
             )
 
-    config = parse_config(args.config)
+    config = parse_config(args.config, args.update_config)
     run_flownet_history_matching(config, args)
 
     if not args.skip_postprocessing:
@@ -90,7 +90,7 @@ def flownet_pred(args: argparse.Namespace) -> None:
                 f"{args.output_folder} already exists. Add --overwrite or change output folder."
             )
 
-    config = parse_pred_config(args.config)
+    config = parse_pred_config(args.config, args.update_config)
     run_flownet_prediction(config, args)
 
     if not args.skip_postprocessing:
@@ -138,6 +138,13 @@ def main():
         "output_folder", type=pathlib.Path, help="Folder to store AHM output."
     )
     parser_ahm.add_argument(
+        "--update-config",
+        type=pathlib.Path,
+        default=None,
+        help="Optional configuration file which values will update the main config. "
+        "Any relative paths in this file will also be assumed relative to the main config.",
+    )
+    parser_ahm.add_argument(
         "--overwrite",
         action="store_true",
         help="Overwrite output directory if it already exists",
@@ -177,6 +184,12 @@ def main():
         "ahm_folder",
         type=pathlib.Path,
         help="Folder to where the AHM run to be base on is located.",
+    )
+    parser_pred.add_argument(
+        "--update-config",
+        type=pathlib.Path,
+        default=None,
+        help="Optional configuration file which values will update the main config.",
     )
     parser_pred.add_argument(
         "--overwrite",
