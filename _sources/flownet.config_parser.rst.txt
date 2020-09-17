@@ -9,6 +9,7 @@ Submodules
 
    flownet.config_parser._config_parser
    flownet.config_parser._config_parser_pred
+   flownet.config_parser._merge_configs
 
 Module contents
 ---------------
