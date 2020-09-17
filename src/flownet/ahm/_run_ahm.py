@@ -538,7 +538,7 @@ def run_flownet_history_matching(
                 ),
                 ignore_index=True,
             )
-            
+
     datum_depths = list(datum_depths)
 
     # ******************************************************************************
