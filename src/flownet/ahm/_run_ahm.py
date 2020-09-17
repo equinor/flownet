@@ -63,10 +63,10 @@ def _from_regions_to_flow_tubes(
             df_regions.append(None)
             tube_outside.append(i)
 
-    if tube_outside != []:
+    if tube_outside:
         tube_midpoints = network.get_connection_midpoints()
         candidate_tubes = set(network.grid.model.unique()) - set(tube_outside)
-        while len(tube_outside) > 0:
+        while tube_outside:
             i = tube_outside.pop(0)
             first = True
             for j in candidate_tubes:
