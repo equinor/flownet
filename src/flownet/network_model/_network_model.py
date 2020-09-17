@@ -1,4 +1,4 @@
-from typing import List, Tuple, Optional, Dict, Any
+from typing import List, Tuple, Optional, Dict, Any, Union
 from itertools import combinations, repeat, compress
 
 import numpy as np
@@ -51,6 +51,47 @@ class NetworkModel:
         if isinstance(fault_planes, pd.DataFrame):
             self._fault_planes = fault_planes
             self._faults = self._calculate_faults(fault_tolerance)
+
+    def get_connection_midpoints(self, i: Optional[int] = None) -> np.ndarray:
+        """
+        Returns a numpy array with the midpoint of each connection in the network or,
+        in case the optional i parameter is specified, the midpoint
+        of the i'th connection.
+
+        Args:
+            i: specific zero-offset element to calculate the midpoint for
+
+        Returns:
+            (Nx3) np.ndarray with connection midpoint coordinates.
+
+        """
+        selector: Union[slice, int] = slice(len(self._df_entity_connections.index))
+
+        if i is not None:
+            if i > len(self._df_entity_connections.index) or i < 0:
+                raise ValueError(
+                    f"Optional parameter i is '{i}' but should be between 0 and "
+                    f"{len(self._df_entity_connections.index)}."
+                )
+            if not isinstance(i, int):
+                raise TypeError(
+                    f"Optional parameter i is of type '{type(i).__name__}' "
+                    "but should be an integer."
+                )
+            selector = i
+
+        coordinates_start = self._df_entity_connections[
+            ["xstart", "ystart", "zstart"]
+        ].values[selector]
+        coordinates_end = self._df_entity_connections[
+            [
+                "xend",
+                "yend",
+                "zend",
+            ]
+        ].values[selector]
+
+        return (coordinates_start + coordinates_end) / 2
 
     @property
     def aquifers_xyz(self) -> List[Coordinate]:
@@ -332,7 +373,7 @@ class NetworkModel:
                     row["xend"],
                     row["yend"],
                     row["zend"],
-                    *triangle
+                    *triangle,
                 )
 
                 if distance:
@@ -434,3 +475,28 @@ class NetworkModel:
     def connection_at_nodes(self) -> List[List[int]]:
         """List is lists with tube indices belonging to a node"""
         return self._calculate_connections_at_nodes()
+
+    @property
+    def cell_midpoints(self) -> np.ndarray:
+        """
+        Returns a numpy array with the midpoint of each cell in the network
+        Returns:
+            (Nx3) np.ndarray with connection midpoint coordinates.
+        """
+        x_mid = (
+            self._grid[["x0", "x1", "x2", "x3", "x4", "x5", "x6", "x7"]]
+            .mean(axis=1)
+            .values
+        )
+        y_mid = (
+            self._grid[["y0", "y1", "y2", "y3", "y4", "y5", "y6", "y7"]]
+            .mean(axis=1)
+            .values
+        )
+        z_mid = (
+            self._grid[["z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7"]]
+            .mean(axis=1)
+            .values
+        )
+
+        return (x_mid, y_mid, z_mid)

@@ -6,6 +6,8 @@ import yaml
 import configsuite
 from configsuite import types, MetaKeys as MK, ConfigSuite
 
+from ._merge_configs import merge_configs
+
 
 def create_schema(_to_abs_path) -> Dict:
     """
@@ -85,20 +87,30 @@ def create_schema(_to_abs_path) -> Dict:
     }
 
 
-def parse_pred_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
+def parse_pred_config(
+    base_config: pathlib.Path, update_config: pathlib.Path = None
+) -> ConfigSuite.snapshot:
     """
     Takes in path to a yaml configuration file, parses it, populates with default values
     where that is defined and the has not provided his/her own value. Also error checks input
     arguments, and making sure they are of expected type.
 
     Args:
-        configuration_file: Path to configuration file.
+        base_config: Path to the main configuration file.
+        update_config: Optional configuration file with
+            key/values to override in main configuration file.
 
     Returns:
         Parsed config, where values can be extracted like e.g. 'config.ert.queue.system'.
 
     """
-    input_config = yaml.safe_load(configuration_file.read_text())
+    if update_config is None:
+        input_config = yaml.safe_load(base_config.read_text())
+    else:
+        input_config = merge_configs(
+            yaml.safe_load(base_config.read_text()),
+            yaml.safe_load(update_config.read_text()),
+        )
 
     @configsuite.transformation_msg("Tries to convert input to absolute path")
     def _to_abs_path(path: str) -> str:
@@ -117,7 +129,7 @@ def parse_pred_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
             return ""
         if pathlib.Path(path).is_absolute():
             return str(pathlib.Path(path).resolve())
-        return str((configuration_file.parent / pathlib.Path(path)).resolve())
+        return str((base_config.parent / pathlib.Path(path)).resolve())
 
     suite = ConfigSuite(
         input_config, create_schema(_to_abs_path=_to_abs_path), deduce_required=True
