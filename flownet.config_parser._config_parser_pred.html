@@ -39,7 +39,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="flownet.data package" href="flownet.data.html" />
+    <link rel="next" title="flownet.config_parser._merge_configs module" href="flownet.config_parser._merge_configs.html" />
     <link rel="prev" title="flownet.config_parser._config_parser module" href="flownet.config_parser._config_parser.html" /> 
 </head>
 
@@ -183,13 +183,17 @@ with which values are optional and/or has default values.</p>
 
 <dl class="py function">
 <dt id="flownet.config_parser._config_parser_pred.parse_pred_config">
-<code class="sig-prename descclassname">flownet.config_parser._config_parser_pred.</code><code class="sig-name descname">parse_pred_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">configuration_file</span><span class="p">:</span> <span class="n">pathlib.Path</span></em><span class="sig-paren">)</span> &#x2192; &lt;property object at 0x7fe45c2f3188&gt;<a class="headerlink" href="#flownet.config_parser._config_parser_pred.parse_pred_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.config_parser._config_parser_pred.</code><code class="sig-name descname">parse_pred_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">base_config</span><span class="p">:</span> <span class="n">pathlib.Path</span></em>, <em class="sig-param"><span class="n">update_config</span><span class="p">:</span> <span class="n">pathlib.Path</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; &lt;property object at 0x7f0b39c45188&gt;<a class="headerlink" href="#flownet.config_parser._config_parser_pred.parse_pred_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes in path to a yaml configuration file, parses it, populates with default values
 where that is defined and the has not provided his/her own value. Also error checks input
 arguments, and making sure they are of expected type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>configuration_file</strong> – Path to configuration file.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_config</strong> – Path to the main configuration file.</p></li>
+<li><p><strong>update_config</strong> – Optional configuration file with
+key/values to override in main configuration file.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Parsed config, where values can be extracted like e.g. ‘config.ert.queue.system’.</p>
@@ -207,7 +211,7 @@ arguments, and making sure they are of expected type.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="flownet.data.html" class="btn btn-neutral float-right" title="flownet.data package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="flownet.config_parser._merge_configs.html" class="btn btn-neutral float-right" title="flownet.config_parser._merge_configs module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="flownet.config_parser._config_parser.html" class="btn btn-neutral float-left" title="flownet.config_parser._config_parser module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
