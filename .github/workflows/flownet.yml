@@ -84,9 +84,10 @@ jobs:
       - name: 🚀 Run full FlowNet example
         run: |
           source $VENV_PATH/bin/activate
-          flownet ahm ./flownet-testdata/${{ matrix.flownet-model }}/ci_config/assisted_history_matching.yml ./some_ahm_run
-          flownet pred ./flownet-testdata/${{ matrix.flownet-model }}/ci_config/prediction.yml ./some_pred_run ./some_ahm_run
-
+          pushd ./flownet-testdata/${{ matrix.flownet-model }}
+          flownet ahm ./config/assisted_history_matching.yml ./some_ahm_run --update-config ./ci_config/assisted_history_matching.yml
+          flownet pred ./config/prediction.yml ./some_pred_run ./some_ahm_run  --update-config ./ci_config/prediction.yml
+          popd
       - name: 📚 Build documentation
         run: |
           source $VENV_PATH/bin/activate

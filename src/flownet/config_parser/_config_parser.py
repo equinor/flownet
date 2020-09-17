@@ -6,6 +6,7 @@ import yaml
 import configsuite
 from configsuite import types, MetaKeys as MK, ConfigSuite
 
+from ._merge_configs import merge_configs
 from ..data.from_flow import FlowData
 
 
@@ -826,14 +827,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
     }
 
 
-def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
+def parse_config(
+    base_config: pathlib.Path, update_config: pathlib.Path = None
+) -> ConfigSuite.snapshot:
     """
     Takes in path to a yaml configuration file, parses it, populates with default values
     where that is defined and the has not provided his/her own value. Also error checks input
     arguments, and making sure they are of expected type.
 
     Args:
-        configuration_file: Path to configuration file.
+        base_cofnig: Path to the main configuration file.
+        update_config: Optional configuration file with
+            key/values to override in main configuration file.
 
     Returns:
         Parsed config, where values can be extracted like e.g. 'config.ert.queue.system'.
@@ -841,11 +846,17 @@ def parse_config(configuration_file: pathlib.Path) -> ConfigSuite.snapshot:
     """
     # pylint: disable=too-many-branches, too-many-statements, too-many-lines
 
-    input_config = yaml.safe_load(configuration_file.read_text())
+    if update_config is None:
+        input_config = yaml.safe_load(base_config.read_text())
+    else:
+        input_config = merge_configs(
+            yaml.safe_load(base_config.read_text()),
+            yaml.safe_load(update_config.read_text()),
+        )
 
     suite = ConfigSuite(
         input_config,
-        create_schema(config_folder=configuration_file.parent),
+        create_schema(config_folder=base_config.parent),
         deduce_required=True,
     )
 
