@@ -4,7 +4,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-No new items yet.
+### Added
+- [#189](https://github.com/equinor/flownet/pull/189) User can now provide both a _base_ configuration file, and an optional extra configuration file
+which will be used to override the base settings.
 
 ## [0.3.0] - 2020-09-14
 
