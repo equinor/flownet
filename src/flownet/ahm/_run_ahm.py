@@ -33,8 +33,9 @@ def _from_regions_to_flow_tubes(
     The function loops through each cell in all flow tubes, and checks what region the
     corresponding position (cell midpoint) in the data source simulation model has. If different
     cells in one flow tube are located in different regions of the original model, the mode is used.
-    If flow tubes are entirely outside of the data source simulation grid,
-    the region closest to the midpoint of the flow tube is used.
+    If flow tubes are entirely outside of the data source simulation grid, the region of the closest 
+    flow tube which has already been assigned to a region will be used. The distance between two flow
+    tubes is calculated as the distance between the mid points of the two flow tubes.
 
     Args:
         network: FlowNet network instance
