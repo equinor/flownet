@@ -6,6 +6,7 @@ from operator import add
 
 import numpy as np
 import pandas as pd
+from scipy.stats import mode
 from scipy.optimize import minimize
 from configsuite import ConfigSuite
 
@@ -24,6 +25,62 @@ from ..parameters import (
     Parameter,
 )
 from ..data import FlowData
+
+
+def _from_regions_to_flow_tubes(
+    network: NetworkModel,
+    field_data: FlowData,
+    ti2ci: pd.DataFrame,
+    region_name: str,
+) -> List[int]:
+    """
+    The function loops through each cell in all flow tubes, and checks what region the
+    corresponding position (cell midpoint) in the data source simulation model has. If different
+    cells in one flow tube are located in different regions of the original model, the mode is used.
+    If flow tubes are entirely outside of the data source simulation grid,
+    the region closest to the midpoint of the flow tube is used.
+
+    Args:
+        network: FlowNet network instance
+        field_data: FlowData class with information from simulation model data source
+        ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
+        name: The name of the region parameter
+
+    Returns:
+        A list with values for 'name' region for each tube in the FlowNet model
+    """
+    df_regions = []
+
+    xyz_mid = network.cell_midpoints
+
+    for i in network.grid.model.unique():
+        tube_regions = []
+        for j in ti2ci[ti2ci.index == i].values:
+            ijk = field_data.grid.find_cell(xyz_mid[0][j], xyz_mid[1][j], xyz_mid[2][j])
+            if ijk is not None and field_data.grid.active(ijk=ijk):
+                tube_regions.append(field_data.init(region_name)[ijk])
+        if tube_regions != []:
+            df_regions.append(mode(tube_regions).mode.tolist()[0])
+        else:
+            tube_midpoint = network.get_connection_midpoints(int(i))
+            dist_to_cell = []
+            for k in range(1, field_data.grid.get_num_active()):
+                cell_midpoint = field_data.grid.get_xyz(active_index=k)
+                dist_to_cell.append(
+                    np.sqrt(
+                        np.square(tube_midpoint[0] - cell_midpoint[0])
+                        + np.square(tube_midpoint[1] - cell_midpoint[1])
+                        + np.square(tube_midpoint[2] - cell_midpoint[2])
+                    )
+                )
+            df_regions.append(
+                field_data.init(region_name)[
+                    field_data.grid.get_ijk(
+                        active_index=dist_to_cell.index(min(dist_to_cell))
+                    )
+                ]
+            )
+    return df_regions
 
 
 def _find_training_set_fraction(
@@ -306,12 +363,6 @@ def run_flownet_history_matching(
         df_satnum = pd.DataFrame(
             [1] * len(network.grid.model.unique()), columns=["SATNUM"]
         )
-    else:
-        raise ValueError(
-            f"The relative permeability scheme "
-            f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
-            f"Valid options are 'global' or 'individual'."
-        )
 
     # Create a pandas dataframe with all parameter definition for each individual tube
     relperm_dist_values = pd.DataFrame(
@@ -328,7 +379,7 @@ def run_flownet_history_matching(
         key: relperm_dict[key] for key in relperm_dict if key != "scheme"
     }
 
-    for i in df_satnum["SATNUM"].unique():
+    for i in np.sort(df_satnum["SATNUM"].unique()):
         info = [
             relperm_parameters.keys(),
             [relperm_parameters[key].min for key in relperm_parameters],
@@ -354,15 +405,14 @@ def run_flownet_history_matching(
         df_eqlnum = pd.DataFrame(
             range(1, len(network.grid.model.unique()) + 1), columns=["EQLNUM"]
         )
+    elif config.model_parameters.equil.scheme == "regions_from_sim":
+        df_eqlnum = pd.DataFrame(
+            _from_regions_to_flow_tubes(network, field_data, ti2ci, "EQLNUM"),
+            columns=["EQLNUM"],
+        )
     elif config.model_parameters.equil.scheme == "global":
         df_eqlnum = pd.DataFrame(
             [1] * len(network.grid.model.unique()), columns=["EQLNUM"]
-        )
-    else:
-        raise ValueError(
-            f"The equilibration scheme "
-            f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
-            f"Valid options are 'global' or 'individual'."
         )
 
     # Create a pandas dataframe with all parameter definition for each individual tube
@@ -370,21 +420,47 @@ def run_flownet_history_matching(
         columns=["parameter", "minimum", "maximum", "loguniform", "eqlnum"]
     )
 
-    equil_config = config.model_parameters.equil
-    for i in df_eqlnum["EQLNUM"].unique():
+    defined_eqlnum_regions = []
+    datum_depths = []
+    if config.model_parameters.equil.scheme == "regions_from_sim":
+        equil_config_eqlnum = config.model_parameters.equil.regions
+        for reg in equil_config_eqlnum:
+            defined_eqlnum_regions.append(reg.id)
+    else:
+        equil_config_eqlnum = [config.model_parameters.equil.regions[0]]
+        defined_eqlnum_regions.append(None)
+
+    for i in np.sort(df_eqlnum["EQLNUM"].unique()):
+        if i in defined_eqlnum_regions:
+            idx = defined_eqlnum_regions.index(i)
+        else:
+            idx = defined_eqlnum_regions.index(None)
+        datum_depths.append(equil_config_eqlnum[idx].datum_depth)
         info = [
             ["datum_pressure", "owc_depth", "gwc_depth", "goc_depth"],
             [
-                equil_config.datum_pressure.min,
-                None if equil_config.owc_depth is None else equil_config.owc_depth.min,
-                None if equil_config.gwc_depth is None else equil_config.gwc_depth.min,
-                None if equil_config.goc_depth is None else equil_config.goc_depth.min,
+                equil_config_eqlnum[idx].datum_pressure.min,
+                None
+                if equil_config_eqlnum[idx].owc_depth is None
+                else equil_config_eqlnum[idx].owc_depth.min,
+                None
+                if equil_config_eqlnum[idx].gwc_depth is None
+                else equil_config_eqlnum[idx].gwc_depth.min,
+                None
+                if equil_config_eqlnum[idx].goc_depth is None
+                else equil_config_eqlnum[idx].goc_depth.min,
             ],
             [
-                equil_config.datum_pressure.max,
-                None if equil_config.owc_depth is None else equil_config.owc_depth.max,
-                None if equil_config.gwc_depth is None else equil_config.gwc_depth.max,
-                None if equil_config.goc_depth is None else equil_config.goc_depth.max,
+                equil_config_eqlnum[idx].datum_pressure.max,
+                None
+                if equil_config_eqlnum[idx].owc_depth is None
+                else equil_config_eqlnum[idx].owc_depth.max,
+                None
+                if equil_config_eqlnum[idx].gwc_depth is None
+                else equil_config_eqlnum[idx].gwc_depth.max,
+                None
+                if equil_config_eqlnum[idx].goc_depth is None
+                else equil_config_eqlnum[idx].goc_depth.max,
             ],
             [False] * 4,
             [i] * 4,
@@ -462,6 +538,8 @@ def run_flownet_history_matching(
                 ),
                 ignore_index=True,
             )
+            
+    datum_depths = list(datum_depths)
 
     # ******************************************************************************
 
