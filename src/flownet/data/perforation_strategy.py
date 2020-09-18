@@ -43,7 +43,7 @@ def multiple(df: pd.DataFrame) -> pd.DataFrame:
     Todo: This should be time and state aware!
 
     """
-    return df.drop_duplicates("IJK", keep="first")[["X", "Y", "Z", "WELL_NAME"]]
+    return df.drop_duplicates("IJK", keep="first")[["WELL_NAME", "X", "Y", "Z"]]
 
 
 def time_avg_open_location_multiple_based_on_workovers(
