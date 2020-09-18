@@ -12,6 +12,7 @@ from ecl.summary import EclSum
 from ecl2df import faults
 from ecl2df.eclfiles import EclFiles
 
+from ..data import perforation_strategy
 from .from_source import FromSource
 
 
@@ -47,79 +48,46 @@ class FlowData(FromSource):
     # pylint: disable=too-many-branches
     def _coordinates(self) -> pd.DataFrame:
         """
-        Function to extract well coordinates from an Flow simulation.
+        Function to extract well connection coordinates from an Flow simulation including their
+        opening and closure time. The output of this function will be filtered based on the
+        configured perforation strategy.
 
         Returns:
-            columns: WELL_NAME, X, Y, Z
+            columns: WELL_NAME, X, Y, Z, START_DATE and END_DATE
 
         """
-
-        def multi_xyz_append(append_obj_list):
-            for global_conn in append_obj_list[1]:
-                coords.append(
-                    [append_obj_list[0], *self._grid.get_xyz(ijk=global_conn.ijk())]
-                )
-
-        coords: List = []
-
+        new_items = []
         for well_name in self._wells.allWellNames():
-            global_conns = self._wells[well_name][0].globalConnections()
-            coord_append = coords.append
-            if self._perforation_handling_strategy == "bottom_point":
-                xyz = self._grid.get_xyz(ijk=global_conns[-1].ijk())
-            elif self._perforation_handling_strategy == "top_point":
-                xyz = self._grid.get_xyz(ijk=global_conns[0].ijk())
-            elif self._perforation_handling_strategy == "multiple":
-                xyz = [global_conns]
-                coord_append = multi_xyz_append
-            elif self._perforation_handling_strategy == "time_avg_open_location":
-                connection_open_time = {}
+            for _, conn_status in enumerate(self._wells[well_name]):
+                for connection in conn_status.globalConnections():
+                    X, Y, Z = self._grid.get_xyz(ijk=connection.ijk())
+                    new_row = {
+                        "WELL_NAME": well_name,
+                        "IJK": connection.ijk(),
+                        "X": X,
+                        "Y": Y,
+                        "Z": Z,
+                        "DATE": datetime.datetime.strptime(
+                            str(conn_status.simulationTime()), "%Y-%m-%d %H:%M:%S"
+                        ),
+                        "OPEN": connection.isOpen(),
+                    }
+                    new_items.append(new_row)
 
-                for i, conn_status in enumerate(self._wells[well_name]):
-                    time = datetime.datetime.strptime(
-                        str(conn_status.simulationTime()), "%Y-%m-%d %H:%M:%S"
-                    )
-                    if i == 0:
-                        prev_time = time
+        df = pd.DataFrame(
+            new_items, columns=["WELL_NAME", "IJK", "X", "Y", "Z", "DATE", "OPEN"]
+        )
 
-                    for connection in conn_status.globalConnections():
-                        if connection.ijk() not in connection_open_time:
-                            connection_open_time[connection.ijk()] = 0.0
-                        elif connection.isOpen():
-                            connection_open_time[connection.ijk()] += (
-                                time - prev_time
-                            ).total_seconds()
-                        else:
-                            connection_open_time[connection.ijk()] += 0.0
+        try:
+            perforation_strategy_method = getattr(
+                perforation_strategy, self._perforation_handling_strategy
+            )
+        except AttributeError:
+            raise NotImplementedError(
+                f"The perforation handling strategy {self._perforation_handling_strategy} is unknown."
+            )
 
-                    prev_time = time
-
-                xyz_values = np.zeros((1, 3), dtype=np.float64)
-                total_open_time = sum(connection_open_time.values())
-
-                if total_open_time > 0:
-                    for connection, open_time in connection_open_time.items():
-                        xyz_values += np.multiply(
-                            np.array(self._grid.get_xyz(ijk=connection)),
-                            open_time / total_open_time,
-                        )
-                else:
-                    for connection, open_time in connection_open_time.items():
-                        xyz_values += np.divide(
-                            np.array(self._grid.get_xyz(ijk=connection)),
-                            len(connection_open_time.items()),
-                        )
-
-                xyz = tuple(*xyz_values)
-
-            else:
-                raise Exception(
-                    f"perforation strategy {self._perforation_handling_strategy} unknown"
-                )
-
-            coord_append([well_name, *xyz])
-
-        return pd.DataFrame(coords, columns=["WELL_NAME", "X", "Y", "Z"])
+        return perforation_strategy_method(df)
 
     def _production_data(self) -> pd.DataFrame:
         """
