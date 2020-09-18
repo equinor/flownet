@@ -94,7 +94,7 @@ class AssistedHistoryMatching:
         Args:
             weights: Weights for the iterated ensemble smoother to use.
 
-        Returns:
+        Returns:self.output_folder
             Nothing
 
         """

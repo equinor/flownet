@@ -2,6 +2,7 @@ import argparse
 from typing import Union, List, Optional
 
 import json
+import pathlib
 from operator import add
 
 import numpy as np
@@ -215,7 +216,9 @@ def _get_distribution(
     return df
 
 
-def update_distribution(parameters: List[Parameter], ahm_case: str) -> List[Parameter]:
+def update_distribution(
+    parameters: List[Parameter], ahm_case: pathlib.Path
+) -> List[Parameter]:
     """
     Update the prior distribution min-max for one or more parameters based on
     the mean of the posterior distribution. It is assumed that the prior min
@@ -230,7 +233,7 @@ def update_distribution(parameters: List[Parameter], ahm_case: str) -> List[Para
 
     """
 
-    df = pd.read_parquet(ahm_case + "/parameters_iteration-latest.parquet.gzip")
+    df = pd.read_parquet(ahm_case.joinpath("parameters_iteration-latest.parquet.gzip"))
 
     count_index = 0
     for realization_index in df.index.values.tolist():
@@ -614,8 +617,8 @@ def run_flownet_history_matching(
     if isinstance(network.faults, dict):
         parameters.append(FaultTransmissibility(fault_mult_dist_values, network))
 
-    if config.model_parameters.ahm_case is not None:
-        parameters = update_distribution(parameters, config.model_parameters.ahm_case)
+    if args.restart_folder is not None:
+        parameters = update_distribution(parameters, args.restart_folder)
 
     ahm = AssistedHistoryMatching(
         network,
