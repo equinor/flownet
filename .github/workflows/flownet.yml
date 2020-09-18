@@ -25,6 +25,7 @@ jobs:
     env:
       VENV_PATH: ${{ github.workspace }}/flownet_venv
       PYTHONPATH: ${{ github.workspace }}/flownet_venv/lib/python${{ matrix.python-version }}/dist-packages
+      PYTHONWARNINGS: default
     steps:
       - name: 📖 Checkout commit locally
         uses: actions/checkout@v2
