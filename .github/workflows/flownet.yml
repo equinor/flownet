@@ -2,14 +2,15 @@ name: CI
 
 on:
   push:
-    branches:
-      - master
+  #  branches:
+  #    - master
   pull_request:
     branches:
       - master
   release:
     types:
       - published
+  workflow_dispatch:
   schedule:
     # Run CI daily and check that tests are working with latest dependencies
     - cron:  '0 0 * * *'
@@ -54,6 +55,16 @@ jobs:
           git clone --depth 1 --branch $TESTDATA_REPO_BRANCH https://github.com/$TESTDATA_REPO_OWNER/flownet-testdata.git --recursive
           for f in $INPUT_MODEL_FOLDER/*.tar.gz; do tar -zxvf "$f" -C $INPUT_MODEL_FOLDER; done
 
+      - name: Update 
+        #if: github.event_name == 'workflow_dispatch'
+        run: |
+          # Overwrite ci config with more realizations
+          pushd ./flownet-testdata/${{ matrix.flownet-model }}
+          export NUM_REALIZATIONS=100
+          echo -e "ert:\n  realizations:\n    num_realizations: "$NUM_REALIZATIONS > ./ci_config/prediction.yml
+          cat ./ci_config/prediction.yml
+          popd
+
       - name: 📦 Install FlowNet
         run: |
           source $VENV_PATH/bin/activate
@@ -91,6 +102,24 @@ jobs:
           flownet pred ./config/prediction.yml ./some_pred_run ./some_ahm_run  --update-config ./ci_config/prediction.yml
           popd
 
+<<<<<<< HEAD
+=======
+      - name: 🐳 Build Docker FlowNet image
+        #if: github.event_name == 'workflow_dispatch'
+        run: |
+          pushd ./flownet-testdata/${{ matrix.flownet-model }}/generated_app
+
+          # fmu-ensemble currently miss libecl dependency
+          echo "RUN pip install --user libecl" >> Dockerfile
+
+          docker build -t ${{ secrets.docker_registry_url }}/${{ matrix.flownet-model }}:latest
+
+          echo ${{ secrets.docker_registry_token }} | docker login ${{ secrets.docker_registry_url }} --username ${{ secrets.docker_registry_username }} --password-stdin
+          docker push ${{ secrets.docker_registry_url }}/${{ matrix.flownet-model }}:latest
+
+          popd
+          
+>>>>>>> Larger manual runs
       - name: 📚 Build documentation
         run: |
           source $VENV_PATH/bin/activate
