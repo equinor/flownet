@@ -46,7 +46,7 @@ class FlowData(FromSource):
         self._perforation_handling_strategy: str = perforation_handling_strategy
 
     # pylint: disable=too-many-branches
-    def _coordinates(self) -> pd.DataFrame:
+    def _well_connections(self) -> pd.DataFrame:
         """
         Function to extract well connection coordinates from an Flow simulation including their
         opening and closure time. The output of this function will be filtered based on the
@@ -317,9 +317,9 @@ class FlowData(FromSource):
         return self._production_data()
 
     @property
-    def coordinates(self) -> pd.DataFrame:
-        """dataframe with all coordinates"""
-        return self._coordinates()
+    def well_connections(self) -> pd.DataFrame:
+        """dataframe with all well connection coordinates"""
+        return self._well_connections()
 
     @property
     def grid(self) -> EclGrid:

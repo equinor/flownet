@@ -11,7 +11,12 @@ def bottom_point(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
 
     """
-    raise NotImplementedError()
+    return (
+        multiple(df)
+        .sort_index()[(df["WELL_NAME"] != df["WELL_NAME"].shift(-1))]
+        .assign(OPEN=True)
+        .reset_index(drop=True)
+    )
 
 
 def top_point(df: pd.DataFrame) -> pd.DataFrame:
@@ -40,10 +45,20 @@ def multiple(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         DataFrame will all connections
 
-    Todo: This should be time and state aware!
-
     """
-    return df.drop_duplicates("IJK", keep="first")[["WELL_NAME", "X", "Y", "Z"]]
+    df = df[["WELL_NAME", "X", "Y", "Z", "DATE", "OPEN"]].sort_values(
+        ["WELL_NAME", "X", "Y", "Z", "DATE"]
+    )
+
+    return df[
+        (df["OPEN"] != df["OPEN"].shift(-1))
+        | (
+            (df["X"] != df["X"].shift(-1))
+            & (df["Y"] != df["Y"].shift(-1))
+            & (df["Z"] != df["Z"].shift(-1))
+        )
+        | (df["WELL_NAME"] != df["WELL_NAME"].shift(-1))
+    ]
 
 
 def time_avg_open_location_multiple_based_on_workovers(
@@ -79,9 +94,6 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
         4. When all groups have no foreign connections in their bounding boxes the average location of the groups
            are returned, including their respective open/closing times.
 
-    Todo: opening and closing times need to be passed out of the function as well. But this requires that the receiving
-          end also understands what it needs to do with times... Aka: open and close connections.
-
     Args:
         df: Dataframe with all well connections, through time, including state.
 
@@ -90,38 +102,49 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
 
     """
 
+    df_w_groups = pd.DataFrame(
+        [], columns=["WELL_NAME", "X", "Y", "Z", "DATE", "OPEN", "GROUPID"]
+    )
     df_groups = pd.DataFrame([], columns=["X", "Y", "Z", "GROUPID"])
     groupid = 0
 
     # Step 1
     for well_name in df["WELL_NAME"].unique():
-        df_well = df.loc[df["WELL_NAME"] == well_name]
-        df_well = df_well.pivot_table("OPEN", ["X", "Y", "Z", "WELL_NAME"], "DATE")
-        df_well = df_well.apply(lambda x: hash(tuple(x)), axis=1)
+        df_well = df.loc[df["WELL_NAME"] == well_name][
+            ["X", "Y", "Z", "WELL_NAME", "OPEN", "DATE"]
+        ]
+        df_well_piv = df_well.pivot_table("OPEN", ["X", "Y", "Z", "WELL_NAME"], "DATE")
+        df_well_piv = df_well_piv.apply(lambda x: hash(tuple(x)), axis=1)
 
-        for group in df_well.unique():
+        for group in df_well_piv.unique():
             df_group = (
-                df_well.loc[df_well == group].index.to_frame().reset_index(drop=True)
+                df_well_piv.loc[df_well_piv == group]
+                .index.to_frame()
+                .reset_index(drop=True)[["X", "Y", "Z"]]
             )
             df_group["GROUPID"] = groupid
             groupid += 1
             df_groups = df_groups.append(df_group)
 
+        df_w_groups = df_w_groups.append(
+            df_well.merge(df_groups, how="left", on=["X", "Y", "Z"])
+        )
+
     # Step 2
-    for groupid in df_groups["GROUPID"].unique():
-        df_group = df_groups.loc[df_groups["GROUPID"] == groupid]
+    for groupid in df_w_groups["GROUPID"].unique():
+        df_group = df_w_groups.loc[df_w_groups["GROUPID"] == groupid]
 
-        xmin, ymin, zmin = df_group[["X", "Y", "Z"]].min()
-        xmax, ymax, zmax = df_group[["X", "Y", "Z"]].max()
+        xmin, ymin, zmin = df_w_groups[["X", "Y", "Z"]].min()
+        xmax, ymax, zmax = df_w_groups[["X", "Y", "Z"]].max()
 
-        df_forein = df_groups.loc[
-            (df_groups["X"] >= xmin)
-            & (df_groups["X"] <= xmax)
-            & (df_groups["Y"] >= ymin)
-            & (df_groups["Y"] <= ymax)
-            & (df_groups["Z"] >= zmin)
-            & (df_groups["Z"] <= zmax)
-            & (df_groups["GROUPID"] != groupid)
+        df_forein = df_w_groups.loc[
+            (df_w_groups["X"] >= xmin)
+            & (df_w_groups["X"] <= xmax)
+            & (df_w_groups["Y"] >= ymin)
+            & (df_w_groups["Y"] <= ymax)
+            & (df_w_groups["Z"] >= zmin)
+            & (df_w_groups["Z"] <= zmax)
+            & (df_w_groups["GROUPID"] != groupid)
         ]
 
         # Step 3
@@ -129,11 +152,8 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
             # Todo: write splitting function
             pass
 
-    return (
-        df_groups.groupby(["GROUPID", "WELL_NAME"])
-        .mean()
-        .reset_index()[["WELL_NAME", "X", "Y", "Z"]]
-    )
+    # Todo: this still needs to get some average connection location for a group.
+    return df_w_groups
 
 
 def time_avg_open_location(df: pd.DataFrame) -> pd.DataFrame:
