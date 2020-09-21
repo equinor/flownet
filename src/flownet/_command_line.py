@@ -148,8 +148,7 @@ def main():
         "--restart-folder",
         type=pathlib.Path,
         default=None,
-        help="Optional folder containing results from a previous history match. "
-        "Any relative paths in this file will also be assumed relative to the main config.",
+        help="Optional folder containing results from a previous history match.",
     )
     parser_ahm.add_argument(
         "--overwrite",
