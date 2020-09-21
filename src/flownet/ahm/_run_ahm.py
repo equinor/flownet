@@ -1,6 +1,5 @@
 import argparse
 from typing import Union, List, Optional
-
 import json
 import pathlib
 from operator import add
