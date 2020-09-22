@@ -41,7 +41,7 @@ def _from_regions_to_flow_tubes(
         network: FlowNet network instance
         field_data: FlowData class with information from simulation model data source
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
-        name: The name of the region parameter
+        region_name: The name of the region parameter
 
     Returns:
         A list with values for 'name' region for each tube in the FlowNet model
@@ -57,7 +57,7 @@ def _from_regions_to_flow_tubes(
             ijk = field_data.grid.find_cell(xyz_mid[0][j], xyz_mid[1][j], xyz_mid[2][j])
             if ijk is not None and field_data.grid.active(ijk=ijk):
                 tube_regions.append(field_data.init(region_name)[ijk])
-        if tube_regions != []:
+        if tube_regions:
             df_regions.append(mode(tube_regions).mode.tolist()[0])
         else:
             df_regions.append(None)
@@ -280,6 +280,12 @@ def run_flownet_history_matching(
         columns=["parameter", "minimum", "maximum", "loguniform", "satnum"]
     )
 
+    relperm_interp_values: Optional[pd.DataFrame] = (
+        pd.DataFrame(columns=["parameter", "low", "base", "high", "satnum"])
+        if config.model_parameters.relative_permeability.interpolate
+        else None
+    )
+
     relperm_parameters = config.model_parameters.relative_permeability.regions[
         0
     ]._asdict()
@@ -307,13 +313,53 @@ def run_flownet_history_matching(
             idx = defined_satnum_regions.index(i)
         else:
             idx = defined_satnum_regions.index(None)
-        info = [
-            relperm_parameters.keys(),
-            [getattr(relp_config_satnum[idx], key).min for key in relperm_parameters],
-            [getattr(relp_config_satnum[idx], key).max for key in relperm_parameters],
-            [False] * len(relperm_parameters),
-            [i] * len(relperm_parameters),
-        ]
+        if config.model_parameters.relative_permeability.interpolate:
+            info = [
+                ["interpolate"],
+                [-1],
+                [1],
+                [False],
+                [i],
+            ]
+            interp_info = [
+                relperm_parameters.keys(),
+                [
+                    getattr(relp_config_satnum[idx], key).min
+                    for key in relperm_parameters
+                ],
+                [
+                    getattr(relp_config_satnum[idx], key).base
+                    for key in relperm_parameters
+                ],
+                [
+                    getattr(relp_config_satnum[idx], key).max
+                    for key in relperm_parameters
+                ],
+                [i] * len(relperm_parameters),
+            ]
+        else:
+            info = [
+                relperm_parameters.keys(),
+                [
+                    getattr(relp_config_satnum[idx], key).min
+                    for key in relperm_parameters
+                ],
+                [
+                    getattr(relp_config_satnum[idx], key).max
+                    for key in relperm_parameters
+                ],
+                [False] * len(relperm_parameters),
+                [i] * len(relperm_parameters),
+            ]
+
+        if config.model_parameters.relative_permeability.interpolate:
+            relperm_interp_values = relperm_interp_values.append(
+                pd.DataFrame(
+                    list(map(list, zip(*interp_info))),
+                    columns=["parameter", "low", "base", "high", "satnum"],
+                ),
+                ignore_index=True,
+            )
 
         relperm_dist_values = relperm_dist_values.append(
             pd.DataFrame(
@@ -477,6 +523,7 @@ def run_flownet_history_matching(
             ti2ci,
             df_satnum,
             config.flownet.phases,
+            interpolation_values=relperm_interp_values,
             fast_pyscal=fast_pyscal,
         ),
         Equilibration(

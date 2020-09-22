@@ -1,9 +1,9 @@
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple, Union, Optional
 import concurrent.futures
 import functools
 
 import pandas as pd
-from pyscal import WaterOilGas, WaterOil, GasOil
+from pyscal import WaterOilGas, WaterOil, GasOil, SCALrecommendation, PyscalFactory
 
 from ..utils import write_grdecl_file
 from ..utils.constants import H_CONSTANT
@@ -43,12 +43,10 @@ def gen_wog(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOilGas:
         nw=parameters["nw"], krwend=parameters["krwend"]
     )
     wog_relperm.wateroil.add_corey_oil(
-        now=parameters["now"], kroend=parameters["krowend"]
+        now=parameters["now"], kroend=parameters["kroend"]
     )
     wog_relperm.gasoil.add_corey_gas(ng=parameters["ng"], krgend=parameters["krgend"])
-    wog_relperm.gasoil.add_corey_oil(
-        nog=parameters["nog"], kroend=parameters["krogend"]
-    )
+    wog_relperm.gasoil.add_corey_oil(nog=parameters["nog"], kroend=parameters["kroend"])
 
     return wog_relperm
 
@@ -75,7 +73,7 @@ def gen_wo(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOil:
     )
 
     wo_relperm.add_corey_water(nw=parameters["nw"], krwend=parameters["krwend"])
-    wo_relperm.add_corey_oil(now=parameters["now"], kroend=parameters["krowend"])
+    wo_relperm.add_corey_oil(now=parameters["now"], kroend=parameters["kroend"])
 
     return wo_relperm
 
@@ -102,7 +100,7 @@ def gen_og(parameters: pd.DataFrame, fast_pyscal: bool = False) -> GasOil:
     )
 
     og_relperm.add_corey_gas(ng=parameters["ng"], krgend=parameters["krgend"])
-    og_relperm.add_corey_oil(nog=parameters["nog"], kroend=parameters["krogend"])
+    og_relperm.add_corey_oil(nog=parameters["nog"], kroend=parameters["kroend"])
 
     return og_relperm
 
@@ -111,8 +109,8 @@ class RelativePermeability(Parameter):
     """
     Parameter type which takes care of stochastically drawn Relative Permeability parameters.
 
-    Required parameters for SWOF generation: "swirr", "swl", "swcr", "sorw", "nw", "now", "krwend", "krowend"
-    Required parameters for SGOF generation: "swirr", "swl", "sgcr", "sorg", "ng", "nog", "kroend", "krogend"
+    Required parameters for SWOF generation: "swirr", "swl", "swcr", "sorw", "nw", "now", "krwend", "kroend"
+    Required parameters for SGOF generation: "swirr", "swl", "sgcr", "sorg", "ng", "nog", "krgend", "kroend"
 
     Args:
         distribution_values:
@@ -136,6 +134,7 @@ class RelativePermeability(Parameter):
         satnum: pd.DataFrame,
         phases: List,
         fast_pyscal: bool = False,
+        interpolation_values: Optional[pd.DataFrame] = None,
     ):
         self._ti2ci: pd.DataFrame = ti2ci
 
@@ -151,8 +150,65 @@ class RelativePermeability(Parameter):
             distribution_values["parameter"].unique()
         )
         self._satnum: pd.DataFrame = satnum
-        self._swof, self._sgof = self._check_parameters()
         self._phases = phases
+        self._interpolation_values: Optional[pd.DataFrame] = None
+        self._low: Optional[List[WaterOilGas]] = None
+        self._base: Optional[List[WaterOilGas]] = None
+        self._high: Optional[List[WaterOilGas]] = None
+        if isinstance(interpolation_values, pd.DataFrame):
+            self._interpolation_values = interpolation_values
+            self._low: List[WaterOilGas] = [
+                PyscalFactory.create_water_oil_gas(
+                    dict(
+                        zip(
+                            self._interpolation_values[
+                                self._interpolation_values["satnum"] == i
+                            ]["parameter"].values,
+                            self._interpolation_values[
+                                self._interpolation_values["satnum"] == i
+                            ]["low"],
+                        )
+                    )
+                )
+                for i in self._unique_satnums
+            ]
+            self._base: List[WaterOilGas] = [
+                PyscalFactory.create_water_oil_gas(
+                    dict(
+                        zip(
+                            self._interpolation_values[
+                                self._interpolation_values["satnum"] == i
+                            ]["parameter"].values,
+                            self._interpolation_values[
+                                self._interpolation_values["satnum"] == i
+                            ]["base"],
+                        )
+                    )
+                )
+                for i in self._unique_satnums
+            ]
+            self._high: List[WaterOilGas] = [
+                PyscalFactory.create_water_oil_gas(
+                    dict(
+                        zip(
+                            self._interpolation_values[
+                                self._interpolation_values["satnum"] == i
+                            ]["parameter"].values,
+                            self._interpolation_values[
+                                self._interpolation_values["satnum"] == i
+                            ]["high"],
+                        )
+                    )
+                )
+                for i in self._unique_satnums
+            ]
+            self._rec: List[SCALrecommendation] = [
+                SCALrecommendation(
+                    self._low[i - 1], self._base[i - 1], self._high[i - 1]
+                )
+                for i in self._unique_satnums
+            ]
+        self._swof, self._sgof = self._check_parameters()
         self._fast_pyscal: bool = fast_pyscal
 
     def _check_parameters(self) -> Tuple[bool, bool]:
@@ -165,19 +221,24 @@ class RelativePermeability(Parameter):
             A tuple of booleans defining whether to generate the SWOF and or SGOF tables.
 
         """
-        # Check if the number of parameters make either sense for SWOF (8), SGOF (8) or both (14)
-        if len(self._parameters) != 8 and len(self._parameters) != 14:
+        if isinstance(self._interpolation_values, pd.DataFrame):
+            check_parameters = list(self._interpolation_values["parameter"])
+        else:
+            check_parameters = self._parameters
+
+        # Check if the number of parameters make either sense for SWOF (8), SGOF (8) or both (13)
+        if len(check_parameters) != 8 and len(check_parameters) != 13:
             raise AssertionError(
                 "Please specify the correct number of relative permeability "
-                "parameters to model SWOF and/or SGOF. (8 or 14 parameters)\n"
-                "Required parameters for SWOF generation: swirr, swl, swcr, sorw, nw, now, krwend, krowend\n"
-                "Required parameters for SGOF generation: swirr, swl, sgcr, sorg, ng, nog, kroend, krogend\n"
+                "parameters to model SWOF and/or SGOF. (8 or 13 parameters)\n"
+                "Required parameters for SWOF generation: swirr, swl, swcr, sorw, nw, now, krwend, kroend\n"
+                "Required parameters for SGOF generation: swirr, swl, sgcr, sorg, ng, nog, krgend, kroend\n"
                 "See the documentation for more information."
             )
 
         # Check if SWOF should be generated
         swof = all(
-            elem in self._parameters
+            elem in check_parameters
             for elem in [
                 "swirr",
                 "swl",
@@ -186,13 +247,13 @@ class RelativePermeability(Parameter):
                 "nw",
                 "now",
                 "krwend",
-                "krowend",
+                "kroend",
             ]
         )
 
         # Check if SGOF should be generated
         sgof = all(
-            elem in self._parameters
+            elem in check_parameters
             for elem in [
                 "swirr",
                 "swl",
@@ -201,7 +262,7 @@ class RelativePermeability(Parameter):
                 "ng",
                 "nog",
                 "krgend",
-                "krogend",
+                "kroend",
             ]
         )
 
@@ -262,11 +323,19 @@ class RelativePermeability(Parameter):
 
         if self._swof and self._sgof:
             with concurrent.futures.ProcessPoolExecutor() as executor:
-                for i, relperm in zip(  # type: ignore[assignment]
-                    parameters, executor.map(partial_gen_wog, parameters)
-                ):
-                    str_swofs += relperm.SWOF(header=False)
-                    str_sgofs += relperm.SGOF(header=False)
+                if isinstance(self._interpolation_values, pd.DataFrame):
+                    for i in self._unique_satnums:
+                        relperm = self._rec[i - 1].interpolate(
+                            parameters[i - 1]["interpolate"]
+                        )
+                        str_swofs += relperm.SWOF(header=False)
+                        str_sgofs += relperm.SGOF(header=False)
+                else:
+                    for i, relperm in zip(  # type: ignore[assignment]
+                        parameters, executor.map(partial_gen_wog, parameters)
+                    ):
+                        str_swofs += relperm.SWOF(header=False)
+                        str_sgofs += relperm.SGOF(header=False)
         elif self._swof:
             with concurrent.futures.ProcessPoolExecutor() as executor:
                 for i, relperm in zip(  # type: ignore[assignment]
