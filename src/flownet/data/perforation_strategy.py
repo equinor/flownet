@@ -1,39 +1,76 @@
-import numpy as np
 import pandas as pd
 
 
 def bottom_point(df: pd.DataFrame) -> pd.DataFrame:
     """
+    This function returns the bottom point of the well (assuming it is the last open connection specified, anywhere
+    in time).
 
     Args:
-        df:
+        df: connection DataFrame
 
     Returns:
+        bottom point connections
 
     """
-    return (
-        multiple(df)
-        .sort_index()[(df["WELL_NAME"] != df["WELL_NAME"].shift(-1))]
-        .assign(OPEN=True)
-        .reset_index(drop=True)
+    df_multiple = multiple(df)
+    df_multiple_ever_true = (
+        df_multiple.groupby(["X", "Y", "Z", "WELL_NAME"]).sum().reset_index()
     )
+    df_multiple_true = df_multiple.loc[df_multiple["OPEN"] is True]
+    df_first_dates = (
+        df_multiple_true[["WELL_NAME", "DATE"]]
+        .sort_values("DATE")
+        .groupby(["WELL_NAME"])
+        .first()
+    )
+    result = (
+        df_multiple_ever_true.groupby("WELL_NAME")
+        .last()
+        .reset_index()
+        .assign(OPEN=True)
+        .merge(df_first_dates, on="WELL_NAME")
+    )
+    return result
 
 
 def top_point(df: pd.DataFrame) -> pd.DataFrame:
     """
+    This function returns the top point of the well (assuming it is the first open connection specified, anywhere
+    in time).
 
     Args:
-        df:
+        df: connection DataFrame
 
     Returns:
+        bottom point connections
 
     """
-    raise NotImplementedError()
+    df_multiple = multiple(df)
+    df_multiple_ever_true = (
+        df_multiple.groupby(["X", "Y", "Z", "WELL_NAME"]).sum().reset_index()
+    )
+    df_multiple_true = df_multiple.loc[df_multiple["OPEN"] is True]
+    df_first_dates = (
+        df_multiple_true[["WELL_NAME", "DATE"]]
+        .sort_values("DATE")
+        .groupby(["WELL_NAME"])
+        .first()
+    )
+    result = (
+        df_multiple_ever_true.groupby("WELL_NAME")
+        .first()
+        .reset_index()
+        .assign(OPEN=True)
+        .merge(df_first_dates, on="WELL_NAME")
+    )
+    return result
 
 
 def multiple(df: pd.DataFrame) -> pd.DataFrame:
     """
-    This strategy creates multiple connections per well, as many as there is data available.
+    This strategy creates multiple connections per well, as many as there is data available. Connections that
+    repeatedly have the same state through time are reduced to only only having records for state changes.
 
     NB. This may lead to a lot of connections in the FlowNet with potentially numerical issues as a result. When
         generating a FlowNet that is not aware of geological layering, it is questionable whether having many
@@ -51,13 +88,13 @@ def multiple(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     return df[
-        (df["OPEN"] != df["OPEN"].shift(-1))
+        (df["OPEN"] != df["OPEN"].shift(1))
         | (
-            (df["X"] != df["X"].shift(-1))
-            & (df["Y"] != df["Y"].shift(-1))
-            & (df["Z"] != df["Z"].shift(-1))
+            (df["X"] != df["X"].shift(1))
+            & (df["Y"] != df["Y"].shift(1))
+            & (df["Z"] != df["Z"].shift(1))
         )
-        | (df["WELL_NAME"] != df["WELL_NAME"].shift(-1))
+        | (df["WELL_NAME"] != df["WELL_NAME"].shift(1))
     ]
 
 
@@ -153,6 +190,7 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
             pass
 
     # Todo: this still needs to get some average connection location for a group.
+    # Todo: could potentially be a call to time_avg_open_location?
     return df_w_groups
 
 
@@ -164,9 +202,6 @@ def time_avg_open_location(df: pd.DataFrame) -> pd.DataFrame:
 
     Returns:
 
-    """
-
-    """       
     def multi_xyz_append(append_obj_list):
         for global_conn in append_obj_list[1]:
             coords.append(
@@ -240,5 +275,4 @@ def time_avg_open_location(df: pd.DataFrame) -> pd.DataFrame:
         coords, columns=["WELL_NAME", "X", "Y", "Z", "START_DATE", "END_DATE"]
     )
     """
-
     return df
