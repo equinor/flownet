@@ -102,8 +102,6 @@ jobs:
           flownet pred ./config/prediction.yml ./some_pred_run ./some_ahm_run  --update-config ./ci_config/prediction.yml
           popd
 
-<<<<<<< HEAD
-=======
       - name: 🐳 Build Docker FlowNet image
         #if: github.event_name == 'workflow_dispatch'
         run: |
@@ -119,7 +117,6 @@ jobs:
 
           popd
           
->>>>>>> Larger manual runs
       - name: 📚 Build documentation
         run: |
           source $VENV_PATH/bin/activate
