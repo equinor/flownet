@@ -17,7 +17,7 @@ def bottom_point(df: pd.DataFrame) -> pd.DataFrame:
     df_multiple_ever_true = (
         df_multiple.groupby(["X", "Y", "Z", "WELL_NAME"]).sum().reset_index()
     )
-    df_multiple_true = df_multiple.loc[df_multiple["OPEN"] is True]
+    df_multiple_true = df_multiple.loc[df_multiple["OPEN"]]
     df_first_dates = (
         df_multiple_true[["WELL_NAME", "DATE"]]
         .sort_values("DATE")
@@ -50,7 +50,7 @@ def top_point(df: pd.DataFrame) -> pd.DataFrame:
     df_multiple_ever_true = (
         df_multiple.groupby(["X", "Y", "Z", "WELL_NAME"]).sum().reset_index()
     )
-    df_multiple_true = df_multiple.loc[df_multiple["OPEN"] is True]
+    df_multiple_true = df_multiple.loc[df_multiple["OPEN"]]
     df_first_dates = (
         df_multiple_true[["WELL_NAME", "DATE"]]
         .sort_values("DATE")

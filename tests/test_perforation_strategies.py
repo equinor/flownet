@@ -219,7 +219,8 @@ def test_bottom_point() -> None:
 
     result = bottom_point(DF)
 
-    assert result.shape[0] == len(DF[DF["OPEN"] == True]["WELL_NAME"].unique())
+    assert result.shape[0] == len(DF[DF["OPEN"]]["WELL_NAME"].unique())
+    assert all(result["OPEN"].values)
 
     assert result.loc[result["WELL_NAME"] == "A"]["X"].values[0] == 2
     assert result.loc[result["WELL_NAME"] == "B"]["X"].values[0] == 4
@@ -296,12 +297,15 @@ def test_bottom_point() -> None:
     )
 
     assert all(result["OPEN"].values)
+    assert all(result.WELL_NAME.isin(DF.WELL_NAME))
+    assert not all(DF.WELL_NAME.isin(result.WELL_NAME))
 
 
 def test_top_point() -> None:
     result = top_point(DF)
 
     assert result.shape[0] == len(DF[DF["OPEN"] == True]["WELL_NAME"].unique())
+    assert all(result["OPEN"].values)
 
     assert result.loc[result["WELL_NAME"] == "A"]["X"].values[0] == 1
     assert result.loc[result["WELL_NAME"] == "B"]["X"].values[0] == 3
@@ -378,11 +382,65 @@ def test_top_point() -> None:
     )
 
     assert all(result["OPEN"].values)
+    assert all(result.WELL_NAME.isin(DF.WELL_NAME))
+    assert not all(DF.WELL_NAME.isin(result.WELL_NAME))
 
 
 def test_multiple() -> None:
     result = multiple(DF)
 
-    # Todo: Write test
-
     assert not all(result["OPEN"].values)
+    assert all(result.X.isin(DF.X).astype(float))
+    assert all(result.Y.isin(DF.Y).astype(float))
+    assert all(result.Z.isin(DF.Z).astype(float))
+    assert all(result.WELL_NAME.isin(DF.WELL_NAME))
+    assert all(DF.WELL_NAME.isin(result.WELL_NAME))
+
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "A"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D1
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "B"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D1
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "C"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D2
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "D"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "E"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "G"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "H"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "I"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
