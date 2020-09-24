@@ -138,6 +138,7 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
         Dataframe with 1 or more connections per will depending on the historic straddles / plugs.
 
     """
+    df = multiple(df)
 
     df_w_groups = pd.DataFrame(
         [], columns=["WELL_NAME", "X", "Y", "Z", "DATE", "OPEN", "GROUPID"]
@@ -189,9 +190,13 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
             # Todo: write splitting function
             pass
 
-    # Todo: this still needs to get some average connection location for a group.
     # Todo: could potentially be a call to time_avg_open_location?
-    return df_w_groups
+    df_w_groups["OPEN"] = df_w_groups["OPEN"].astype(int)
+    result = df_w_groups.groupby(["WELL_NAME", "DATE", "GROUPID"]).mean().reset_index()
+    result["OPEN"] = result["OPEN"].astype(bool)
+    result.drop("GROUPID", axis=1, inplace=True)
+
+    return result
 
 
 def time_avg_open_location(df: pd.DataFrame) -> pd.DataFrame:

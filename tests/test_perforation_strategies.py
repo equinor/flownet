@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 
-from flownet.data.perforation_strategy import bottom_point, top_point, multiple
+from flownet.data.perforation_strategy import bottom_point, top_point, multiple, multiple_based_on_workovers
 
 D2 = datetime.today()
 D1 = D2 - timedelta(days=1)
@@ -213,6 +213,9 @@ DATA = {
     ],
 }
 DF = pd.DataFrame(DATA)
+DF["X"] = DF["X"].astype(float)
+DF["Y"] = DF["Y"].astype(float)
+DF["Z"] = DF["Z"].astype(float)
 
 
 def test_bottom_point() -> None:
@@ -393,6 +396,68 @@ def test_multiple() -> None:
     assert all(result.X.isin(DF.X).astype(float))
     assert all(result.Y.isin(DF.Y).astype(float))
     assert all(result.Z.isin(DF.Z).astype(float))
+    assert all(result.WELL_NAME.isin(DF.WELL_NAME))
+    assert all(DF.WELL_NAME.isin(result.WELL_NAME))
+
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "A"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D1
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "B"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D1
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "C"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D2
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "D"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "E"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "G"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "H"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "I"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
+
+
+def test_multiple_based_on_workovers() -> None:
+    result = multiple_based_on_workovers(DF)
+
+    assert multiple(DF).shape[1] is multiple_based_on_workovers(DF).shape[1]
+    assert multiple(DF).shape[0] > multiple_based_on_workovers(DF).shape[0]
+    assert not all(result["OPEN"].values)
+    assert not all(result.X.isin(DF.X).astype(float))
+    assert not all(result.Y.isin(DF.Y).astype(float))
+    assert not all(result.Z.isin(DF.Z).astype(float))
     assert all(result.WELL_NAME.isin(DF.WELL_NAME))
     assert all(DF.WELL_NAME.isin(result.WELL_NAME))
 
