@@ -2,7 +2,12 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 
-from flownet.data.perforation_strategy import bottom_point, top_point, multiple, multiple_based_on_workovers
+from flownet.data.perforation_strategy import (
+    bottom_point,
+    top_point,
+    multiple,
+    multiple_based_on_workovers,
+)
 
 D2 = datetime.today()
 D1 = D2 - timedelta(days=1)
@@ -307,7 +312,7 @@ def test_bottom_point() -> None:
 def test_top_point() -> None:
     result = top_point(DF)
 
-    assert result.shape[0] == len(DF[DF["OPEN"] == True]["WELL_NAME"].unique())
+    assert result.shape[0] == len(DF[DF["OPEN"]]["WELL_NAME"].unique())
     assert all(result["OPEN"].values)
 
     assert result.loc[result["WELL_NAME"] == "A"]["X"].values[0] == 1

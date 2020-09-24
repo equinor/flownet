@@ -187,16 +187,30 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
 
         # Step 3
         if df_forein.shape[0]:
-            # Todo: write splitting function
+            # This should be a better splitting function.
             pass
 
-    # Todo: could potentially be a call to time_avg_open_location?
     df_w_groups["OPEN"] = df_w_groups["OPEN"].astype(int)
     result = df_w_groups.groupby(["WELL_NAME", "DATE", "GROUPID"]).mean().reset_index()
     result["OPEN"] = result["OPEN"].astype(bool)
     result.drop("GROUPID", axis=1, inplace=True)
 
     return result
+
+
+def multiple_based_on_workovers_time_avg_open_location(
+    df: pd.DataFrame,
+) -> pd.DataFrame():
+    """
+
+
+    Args:
+        df:
+
+    Returns:
+
+    """
+    return time_avg_open_location(multiple_based_on_workovers(df))
 
 
 def time_avg_open_location(df: pd.DataFrame) -> pd.DataFrame:
