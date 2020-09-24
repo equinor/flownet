@@ -187,7 +187,6 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
 
         # Step 3
         if df_forein.shape[0]:
-            # This should be a better splitting function.
             pass
 
     df_w_groups["OPEN"] = df_w_groups["OPEN"].astype(int)
@@ -200,7 +199,7 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
 
 def multiple_based_on_workovers_time_avg_open_location(
     df: pd.DataFrame,
-) -> pd.DataFrame():
+) -> pd.DataFrame:
     """
 
 
