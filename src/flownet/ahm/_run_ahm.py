@@ -352,7 +352,7 @@ def run_flownet_history_matching(
                 [i] * len(relperm_parameters),
             ]
 
-        if config.model_parameters.relative_permeability.interpolate:
+        if relperm_interp_values:
             relperm_interp_values = relperm_interp_values.append(
                 pd.DataFrame(
                     list(map(list, zip(*interp_info))),
