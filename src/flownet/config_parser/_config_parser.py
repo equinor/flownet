@@ -985,18 +985,21 @@ def parse_config(
             "The phases 'vapoil' and 'disgas' can not be defined without the phases 'oil' and 'gas'"
         )
 
-    if (
-        config.model_parameters.relative_permeability.interpolate
-        and not {
-            "oil",
-            "gas",
-            "water",
-        }.issubset(config.flownet.phases)
-    ):
-        raise ValueError(
-            "Interpolation between relative permeability curves only available "
-            "for three phase problems (water, oil, gas)"
-        )
+    #    if (
+    #        config.model_parameters.relative_permeability.interpolate
+    #        and not {
+    #            "oil",
+    #            "gas",
+    #            "water",
+    #        }.issubset(config.flownet.phases)
+    #    ):
+    #        raise ValueError(
+    #            "Interpolation between relative permeability curves only available "
+    #            "for three phase problems (water, oil, gas)"
+    #        )
+
+    #    if config.model_parameters.relative_permeability.interpolate:
+    #       check if min/base/max are all defined
 
     if {"oil", "water"}.issubset(config.flownet.phases):
         req_relp_parameters = req_relp_parameters + [

@@ -152,59 +152,26 @@ class RelativePermeability(Parameter):
         self._satnum: pd.DataFrame = satnum
         self._phases = phases
         self._interpolation_values: Optional[pd.DataFrame] = None
-        self._low: Optional[List[WaterOilGas]] = None
-        self._base: Optional[List[WaterOilGas]] = None
-        self._high: Optional[List[WaterOilGas]] = None
+        self._rec: Optional[List[SCALrecommendation]] = None
         if isinstance(interpolation_values, pd.DataFrame):
             self._interpolation_values = interpolation_values
-            self._low: List[WaterOilGas] = [
-                PyscalFactory.create_water_oil_gas(
-                    dict(
-                        zip(
-                            self._interpolation_values[
-                                self._interpolation_values["satnum"] == i
-                            ]["parameter"].values,
-                            self._interpolation_values[
-                                self._interpolation_values["satnum"] == i
-                            ]["low"],
-                        )
-                    )
-                )
-                for i in self._unique_satnums
-            ]
-            self._base: List[WaterOilGas] = [
-                PyscalFactory.create_water_oil_gas(
-                    dict(
-                        zip(
-                            self._interpolation_values[
-                                self._interpolation_values["satnum"] == i
-                            ]["parameter"].values,
-                            self._interpolation_values[
-                                self._interpolation_values["satnum"] == i
-                            ]["base"],
-                        )
-                    )
-                )
-                for i in self._unique_satnums
-            ]
-            self._high: List[WaterOilGas] = [
-                PyscalFactory.create_water_oil_gas(
-                    dict(
-                        zip(
-                            self._interpolation_values[
-                                self._interpolation_values["satnum"] == i
-                            ]["parameter"].values,
-                            self._interpolation_values[
-                                self._interpolation_values["satnum"] == i
-                            ]["high"],
-                        )
-                    )
-                )
-                for i in self._unique_satnums
-            ]
-            self._rec: List[SCALrecommendation] = [
+            self._rec = [
                 SCALrecommendation(
-                    self._low[i - 1], self._base[i - 1], self._high[i - 1]
+                    *[
+                        PyscalFactory.create_water_oil_gas(
+                            dict(
+                                zip(
+                                    self._interpolation_values[
+                                        self._interpolation_values["satnum"] == i
+                                    ]["parameter"],
+                                    self._interpolation_values[
+                                        self._interpolation_values["satnum"] == i
+                                    ][j],
+                                )
+                            )
+                        )
+                        for j in {"low", "base", "high"}
+                    ]
                 )
                 for i in self._unique_satnums
             ]
@@ -222,7 +189,7 @@ class RelativePermeability(Parameter):
 
         """
         if isinstance(self._interpolation_values, pd.DataFrame):
-            check_parameters = list(self._interpolation_values["parameter"])
+            check_parameters = list(self._interpolation_values["parameter"].unique())
         else:
             check_parameters = self._parameters
 
@@ -321,38 +288,45 @@ class RelativePermeability(Parameter):
         partial_gen_wo = functools.partial(gen_wo, fast_pyscal=True)
         partial_gen_og = functools.partial(gen_og, fast_pyscal=True)
 
-        if self._swof and self._sgof:
-            with concurrent.futures.ProcessPoolExecutor() as executor:
-                if isinstance(self._interpolation_values, pd.DataFrame):
-                    for i in self._unique_satnums:
-                        relperm = self._rec[i - 1].interpolate(
-                            parameters[i - 1]["interpolate"]
-                        )
-                        str_swofs += relperm.SWOF(header=False)
-                        str_sgofs += relperm.SGOF(header=False)
-                else:
+        if isinstance(self._interpolation_values, pd.DataFrame):
+            for i in self._unique_satnums:
+                relperm = self._rec[i - 1].interpolate(
+                    parameters[i - 1]["interpolate"]
+                )
+                if self._swof:
+                    str_swofs += relperm.SWOF(header=False)
+                if self._sgof:
+                    str_sgofs += relperm.SGOF(header=False)
+                if not self._swof and not self._sgof:
+                    raise ValueError(
+                        "It seems like both SWOF and SGOF should not be generated."
+                        "Either one of the two should be generated. Can't continue..."
+                    )
+        else:
+            if self._swof and self._sgof:
+                with concurrent.futures.ProcessPoolExecutor() as executor:
                     for i, relperm in zip(  # type: ignore[assignment]
                         parameters, executor.map(partial_gen_wog, parameters)
                     ):
                         str_swofs += relperm.SWOF(header=False)
                         str_sgofs += relperm.SGOF(header=False)
-        elif self._swof:
-            with concurrent.futures.ProcessPoolExecutor() as executor:
-                for i, relperm in zip(  # type: ignore[assignment]
-                    parameters, executor.map(partial_gen_wo, parameters)
-                ):
-                    str_swofs += relperm.SWOF(header=False)
-        elif self._sgof:
-            with concurrent.futures.ProcessPoolExecutor() as executor:
-                for i, relperm in zip(  # type: ignore[assignment]
-                    parameters, executor.map(partial_gen_og, parameters)
-                ):
-                    str_sgofs += relperm.SGOF(header=False)
-        else:
-            raise ValueError(
-                "It seems like both SWOF and SGOF should not be generated."
-                "Either one of the two should be generated. Can't continue..."
-            )
+            elif self._swof:
+                with concurrent.futures.ProcessPoolExecutor() as executor:
+                    for i, relperm in zip(  # type: ignore[assignment]
+                        parameters, executor.map(partial_gen_wo, parameters)
+                    ):
+                        str_swofs += relperm.SWOF(header=False)
+            elif self._sgof:
+                with concurrent.futures.ProcessPoolExecutor() as executor:
+                    for i, relperm in zip(  # type: ignore[assignment]
+                        parameters, executor.map(partial_gen_og, parameters)
+                    ):
+                        str_sgofs += relperm.SGOF(header=False)
+            else:
+                raise ValueError(
+                    "It seems like both SWOF and SGOF should not be generated."
+                    "Either one of the two should be generated. Can't continue..."
+                )
 
         str_props_section = f"SWOF\n{str_swofs}\n" if self._swof else ""
         str_props_section += f"SGOF\n{str_sgofs}\n" if self._sgof else ""
