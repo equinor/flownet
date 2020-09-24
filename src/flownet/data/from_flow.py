@@ -82,10 +82,10 @@ class FlowData(FromSource):
             perforation_strategy_method = getattr(
                 perforation_strategy, self._perforation_handling_strategy
             )
-        except AttributeError:
+        except AttributeError as attribute_error:
             raise NotImplementedError(
                 f"The perforation handling strategy {self._perforation_handling_strategy} is unknown."
-            )
+            ) from attribute_error
 
         return perforation_strategy_method(df)
 
