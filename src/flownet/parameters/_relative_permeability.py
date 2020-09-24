@@ -289,17 +289,18 @@ class RelativePermeability(Parameter):
         partial_gen_og = functools.partial(gen_og, fast_pyscal=True)
 
         if isinstance(self._interpolation_values, pd.DataFrame):
-            for i in self._unique_satnums:
-                relperm = self._rec[i - 1].interpolate(parameters[i - 1]["interpolate"])
-                if self._swof:
-                    str_swofs += relperm.SWOF(header=False)
-                if self._sgof:
-                    str_sgofs += relperm.SGOF(header=False)
-                if not self._swof and not self._sgof:
-                    raise ValueError(
-                        "It seems like both SWOF and SGOF should not be generated."
-                        "Either one of the two should be generated. Can't continue..."
-                    )
+            for i in range(len(self._unique_satnums)):
+                if self._rec is not None:
+                    relperm = self._rec[i].interpolate(list(parameters[i].values()))
+                    if self._swof:
+                        str_swofs += relperm.SWOF(header=False)
+                    if self._sgof:
+                        str_sgofs += relperm.SGOF(header=False)
+                    if not self._swof and not self._sgof:
+                        raise ValueError(
+                            "It seems like both SWOF and SGOF should not be generated."
+                            "Either one of the two should be generated. Can't continue..."
+                        )
         else:
             if self._swof and self._sgof:
                 with concurrent.futures.ProcessPoolExecutor() as executor:
