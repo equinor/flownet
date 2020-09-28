@@ -316,13 +316,6 @@ def run_flownet_history_matching(
         else:
             idx = defined_satnum_regions.index(None)
         if config.model_parameters.relative_permeability.interpolate:
-            info = [
-                interpolate_dict.keys(),
-                [getattr(interpolate_dict, key).min for key in interpolate_dict],
-                [getattr(interpolate_dict, key).min for key in interpolate_dict],
-                [False] * len(interpolate_dict),
-                [i] * len(interpolate_dict),
-            ]
             interp_info = [
                 relperm_parameters.keys(),
                 [
@@ -362,14 +355,21 @@ def run_flownet_history_matching(
                 ),
                 ignore_index=True,
             )
-
-        relperm_dist_values = relperm_dist_values.append(
-            pd.DataFrame(
-                list(map(list, zip(*info))),
-                columns=["parameter", "minimum", "maximum", "loguniform", "satnum"],
-            ),
-            ignore_index=True,
-        )
+            relperm_dist_values = relperm_dist_values.append(
+                pd.DataFrame(
+                    ["interpolate", -1, 1, False, i],
+                    columns=["parameter", "minimum", "maximum", "loguniform", "satnum"],
+                ),
+                ignore_index=True,
+            )
+        else:
+            relperm_dist_values = relperm_dist_values.append(
+                pd.DataFrame(
+                    list(map(list, zip(*tuple(info)))),
+                    columns=["parameter", "minimum", "maximum", "loguniform", "satnum"],
+                ),
+                ignore_index=True,
+            )
 
     #########################################
     # Equilibration                         #
