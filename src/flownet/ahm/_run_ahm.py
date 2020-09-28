@@ -297,8 +297,6 @@ def run_flownet_history_matching(
         if not all(value is None for value in values)
     }
 
-    interpolate_dict = {"interpolate": {"min": -1, "max": 1}}
-
     relperm_parameters = {key: relperm_dict[key] for key in relperm_dict}
 
     defined_satnum_regions = []
