@@ -291,7 +291,7 @@ class RelativePermeability(Parameter):
         if isinstance(self._interpolation_values, pd.DataFrame):
             for i in range(len(self._unique_satnums)):
                 if self._rec is not None:
-                    relperm = self._rec[i].interpolate(list(parameters[i].values()))
+                    relperm = self._rec[i].interpolate(parameters[i]["interpolate"])
                     if self._swof:
                         str_swofs += relperm.SWOF(header=False)
                     if self._sgof:
