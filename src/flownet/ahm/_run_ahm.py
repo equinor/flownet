@@ -297,6 +297,8 @@ def run_flownet_history_matching(
         if not all(value is None for value in values)
     }
 
+    interpolate_dict = {"interpolate": {"min" : -1 , "max" : 1}}
+
     relperm_parameters = {key: relperm_dict[key] for key in relperm_dict}
 
     defined_satnum_regions = []
@@ -315,11 +317,17 @@ def run_flownet_history_matching(
             idx = defined_satnum_regions.index(None)
         if config.model_parameters.relative_permeability.interpolate:
             info = [
-                ["interpolate"],
-                [-1],
-                [1],
-                [False],
-                [i],
+                interpolate_dict.keys(),
+                [
+                    getattr(interpolate_dict, key).min
+                    for key in interpolate_dict
+                ],
+                [
+                    getattr(interpolate_dict, key).min
+                    for key in interpolate_dict
+                ],
+                [False] * len(interpolate_dict),
+                [i] * len(interpolate_dict),
             ]
             interp_info = [
                 relperm_parameters.keys(),
@@ -352,7 +360,7 @@ def run_flownet_history_matching(
                 [i] * len(relperm_parameters),
             ]
 
-        if relperm_interp_values:
+        if isinstance(relperm_interp_values,pd.DataFrame):
             relperm_interp_values = relperm_interp_values.append(
                 pd.DataFrame(
                     list(map(list, zip(*interp_info))),
