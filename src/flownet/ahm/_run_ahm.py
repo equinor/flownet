@@ -355,7 +355,7 @@ def run_flownet_history_matching(
             )
             relperm_dist_values = relperm_dist_values.append(
                 pd.DataFrame(
-                    ["interpolate", -1, 1, False, i],
+                    list(map(list,zip(*[["interpolate"], [-1], [1], [False], [i]]))),
                     columns=["parameter", "minimum", "maximum", "loguniform", "satnum"],
                 ),
                 ignore_index=True,
@@ -363,7 +363,7 @@ def run_flownet_history_matching(
         else:
             relperm_dist_values = relperm_dist_values.append(
                 pd.DataFrame(
-                    list(map(list, zip(*tuple(info)))),
+                    list(map(list, zip(*info))),
                     columns=["parameter", "minimum", "maximum", "loguniform", "satnum"],
                 ),
                 ignore_index=True,
