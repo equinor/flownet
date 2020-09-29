@@ -1,5 +1,8 @@
 import argparse
 from typing import Union, List, Optional
+import json
+import pathlib
+from operator import add
 
 import numpy as np
 import pandas as pd
@@ -19,6 +22,7 @@ from ..parameters import (
     Aquifer,
     Equilibration,
     FaultTransmissibility,
+    Parameter,
 )
 from ..data import FlowData
 
@@ -122,6 +126,43 @@ def _find_training_set_fraction(
     return training_set_fraction
 
 
+def _find_dist_minmax(
+    min_val: Optional[float], max_val: Optional[float], mean_val: float
+) -> float:
+    """
+    Find the distribution min or max for a loguniform distribution, assuming only
+    one of these and the mean are given
+
+    Args:
+        min_val: minimum value for the distribution
+        max_val: maximum value for the distribution
+        mean_val: mean value for the distribution
+
+    Returns:
+        The missing minimum or maximum value
+
+    """
+    # pylint: disable=cell-var-from-loop
+    if min_val is None:
+        result = minimize(
+            lambda x: (mean_val - ((max_val - x) / np.log(max_val / x))) ** 2,
+            x0=mean_val,
+            tol=1e-9,
+            method="L-BFGS-B",
+            bounds=[(1e-9, mean_val)],
+        ).x[0]
+    if max_val is None:
+        result = minimize(
+            lambda x: (mean_val - ((x - min_val) / np.log(x / min_val))) ** 2,
+            x0=mean_val,
+            tol=1e-9,
+            method="L-BFGS-B",
+            bounds=[(mean_val, None)],
+        ).x[0]
+
+    return result
+
+
 def _get_distribution(
     parameters: Union[str, List[str]], parameters_config: dict, index: list
 ) -> pd.DataFrame:
@@ -152,22 +193,10 @@ def _get_distribution(
                 # pylint: disable=cell-var-from-loop
                 if parameter_config.max is not None:
                     dist_max = parameter_config.max
-                    dist_min = minimize(
-                        lambda x: (mean - ((dist_max - x) / np.log(dist_max / x))) ** 2,
-                        x0=mean,
-                        tol=1e-9,
-                        method="L-BFGS-B",
-                        bounds=[(1e-9, mean)],
-                    ).x[0]
+                    dist_min = _find_dist_minmax(None, dist_max, mean)
                 else:
                     dist_min = parameter_config.min
-                    dist_max = minimize(
-                        lambda x: (mean - ((x - dist_min) / np.log(x / dist_min))) ** 2,
-                        x0=mean,
-                        tol=1e-9,
-                        method="L-BFGS-B",
-                        bounds=[(mean, None)],
-                    ).x[0]
+                    dist_max = _find_dist_minmax(dist_min, None, mean)
             else:
                 if parameter_config.max is not None:
                     dist_max = parameter_config.max
@@ -184,6 +213,83 @@ def _get_distribution(
         df[f"loguniform_{parameter}"] = parameter_config.loguniform
 
     return df
+
+
+def update_distribution(
+    parameters: List[Parameter], ahm_case: pathlib.Path
+) -> List[Parameter]:
+    """
+    Update the prior distribution min-max for one or more parameters based on
+    the mean of the posterior distribution. It is assumed that the prior min
+    and max values cannot be exceeded.
+
+    Args:
+        parameters: which parameter(s) should be updated
+        ahm_case: path to a previous HM experiment folder
+
+    Returns:
+        The parameters list with updated distributions.
+
+    """
+
+    df = pd.read_parquet(ahm_case.joinpath("parameters_iteration-latest.parquet.gzip"))
+
+    count_index = 0
+    for realization_index in df.index.values.tolist():
+        count_index += 1
+        unsorted_random_samples = json.loads(
+            df[df.index == realization_index].transpose().to_json()
+        )[str(realization_index)]
+
+        sorted_names = sorted(
+            list(unsorted_random_samples.keys()), key=lambda x: int(x.split("_")[0])
+        )
+        sorted_random_samples = [unsorted_random_samples[name] for name in sorted_names]
+
+        for parameter in parameters:
+            n = len(parameter.random_variables)
+            random_samples = sorted_random_samples[:n]
+            del sorted_random_samples[:n]
+            if count_index == 1:
+                parameter.mean_values = random_samples
+            else:
+                parameter.mean_values = list(
+                    map(add, parameter.mean_values, random_samples)
+                )
+
+    # compute ensemble-mean values
+    for parameter in parameters:
+        parameter.mean_values = [
+            value / float(df.shape[0]) for value in parameter.mean_values
+        ]
+
+    # update the distributions
+    for parameter in parameters:
+        n = len(parameter.random_variables)
+
+        for i, var in enumerate(parameter.random_variables):
+            mean = parameter.mean_values[i]
+
+            loguniform = var.ert_gen_kw.split()[0] == "LOGUNIF"
+            dist_min0 = var.minimum
+            dist_max0 = var.maximum
+
+            if loguniform is True:
+                dist_max = dist_max0
+                dist_min = _find_dist_minmax(None, dist_max, mean)
+                if dist_min < dist_min0:
+                    dist_min = dist_min0
+                    dist_max = _find_dist_minmax(dist_min, None, mean)
+            else:
+                dist_max = dist_max0
+                dist_min = mean - (dist_max - mean)
+                if dist_min < dist_min0:
+                    dist_min = dist_min0
+                    dist_max = mean + (mean - dist_min)
+            var.minimum = dist_min
+            var.maximum = dist_max
+
+    return parameters
 
 
 # pylint: disable=too-many-branches,too-many-statements
@@ -512,6 +618,8 @@ def run_flownet_history_matching(
                 ignore_index=True,
             )
 
+    datum_depths = list(datum_depths)
+
     # ******************************************************************************
 
     datum_depths = list(datum_depths)
@@ -554,6 +662,9 @@ def run_flownet_history_matching(
 
     if isinstance(network.faults, dict):
         parameters.append(FaultTransmissibility(fault_mult_dist_values, network))
+
+    if args.restart_folder is not None:
+        parameters = update_distribution(parameters, args.restart_folder)
 
     ahm = AssistedHistoryMatching(
         network,
