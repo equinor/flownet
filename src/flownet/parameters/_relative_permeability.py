@@ -274,7 +274,7 @@ class RelativePermeability(Parameter):
         str_sgofs = ""
         parameters = []
         for i, _ in enumerate(self._unique_satnums):
-            param_value_dict = dict(
+            param_value_dict: Dict = dict(
                 zip(
                     self._parameters,
                     self.random_samples[
