@@ -443,8 +443,8 @@ def run_flownet_history_matching(
             info: List = [["interpolate"], [-1], [1], [False], [i]]
             if {"oil", "gas", "water"}.issubset(config.flownet.phases):
                 add_info = ["interpolate gas", -1, 1, False, i]
-                for i, val in enumerate(info):
-                    info[i].append(add_info[i])
+                for j, val in enumerate(add_info):
+                    info[j].append(val)
 
         else:
             info = [
