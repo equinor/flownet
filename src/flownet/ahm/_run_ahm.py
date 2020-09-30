@@ -386,11 +386,6 @@ def run_flownet_history_matching(
         columns=["parameter", "minimum", "maximum", "loguniform", "satnum"]
     )
 
-    relperm_interp_values: Optional[pd.DataFrame] = (
-        pd.DataFrame(columns=["parameter", "low", "base", "high", "satnum"])
-        if config.model_parameters.relative_permeability.interpolate
-        else None
-    )
 
     relperm_parameters = config.model_parameters.relative_permeability.regions[
         0
@@ -404,6 +399,12 @@ def run_flownet_history_matching(
     }
 
     relperm_parameters = {key: relperm_dict[key] for key in relperm_dict}
+
+    relperm_interp_values: Optional[pd.DataFrame] = (
+        pd.DataFrame(columns=list(relperm_parameters.keys()) + ["CASE", "SATNUM"])
+        if config.model_parameters.relative_permeability.interpolate
+        else None
+    )
 
     defined_satnum_regions = []
     if config.model_parameters.relative_permeability.scheme == "regions_from_sim":
@@ -421,20 +422,18 @@ def run_flownet_history_matching(
             idx = defined_satnum_regions.index(None)
         if config.model_parameters.relative_permeability.interpolate:
             interp_info = [
-                relperm_parameters.keys(),
                 [
                     getattr(relp_config_satnum[idx], key).min
                     for key in relperm_parameters
-                ],
+                ] + ["low"] + [i],
                 [
                     getattr(relp_config_satnum[idx], key).base
                     for key in relperm_parameters
-                ],
+                ] + ["base"] + [i],
                 [
                     getattr(relp_config_satnum[idx], key).max
                     for key in relperm_parameters
-                ],
-                [i] * len(relperm_parameters),
+                ] + ["high"] + [i],
             ]
         else:
             info = [
@@ -454,8 +453,8 @@ def run_flownet_history_matching(
         if isinstance(relperm_interp_values, pd.DataFrame):
             relperm_interp_values = relperm_interp_values.append(
                 pd.DataFrame(
-                    list(map(list, zip(*interp_info))),
-                    columns=["parameter", "low", "base", "high", "satnum"],
+                    list(map(list, interp_info)),
+                    columns=list(relperm_parameters.keys()) + ["CASE", "SATNUM"],
                 ),
                 ignore_index=True,
             )

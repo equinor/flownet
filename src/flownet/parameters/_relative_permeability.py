@@ -3,7 +3,7 @@ import concurrent.futures
 import functools
 
 import pandas as pd
-from pyscal import WaterOilGas, WaterOil, GasOil, SCALrecommendation, PyscalFactory
+from pyscal import WaterOilGas, WaterOil, GasOil, PyscalFactory, PyscalList
 
 from ..utils import write_grdecl_file
 from ..utils.constants import H_CONSTANT
@@ -137,7 +137,6 @@ class RelativePermeability(Parameter):
         interpolation_values: Optional[pd.DataFrame] = None,
     ):
         self._ti2ci: pd.DataFrame = ti2ci
-
         self._random_variables: List[ProbabilityDistribution] = [
             LogUniformDistribution(row["minimum"], row["maximum"])
             if row["loguniform"]
@@ -152,29 +151,12 @@ class RelativePermeability(Parameter):
         self._satnum: pd.DataFrame = satnum
         self._phases = phases
         self._interpolation_values: Optional[pd.DataFrame] = None
-        self._rec: Optional[List[SCALrecommendation]] = None
+        self._scal_for_interp: Optional[PyscalList] = None
         if isinstance(interpolation_values, pd.DataFrame):
             self._interpolation_values = interpolation_values
-            self._rec = [
-                SCALrecommendation(
-                    *[
-                        PyscalFactory.create_water_oil_gas(
-                            dict(
-                                zip(
-                                    self._interpolation_values[
-                                        self._interpolation_values["satnum"] == i
-                                    ]["parameter"],
-                                    self._interpolation_values[
-                                        self._interpolation_values["satnum"] == i
-                                    ][j],
-                                )
-                            )
-                        )
-                        for j in {"low", "base", "high"}
-                    ]
-                )
-                for i in self._unique_satnums
-            ]
+            # self._rec will be indexed by SATNUM region, starting at 1
+            self._scal_for_interp = PyscalFactory.create_scal_recommendation_list(interpolation_values)
+
         self._swof, self._sgof = self._check_parameters()
         self._fast_pyscal: bool = fast_pyscal
 
@@ -189,11 +171,10 @@ class RelativePermeability(Parameter):
 
         """
         if isinstance(self._interpolation_values, pd.DataFrame):
-            check_parameters = list(self._interpolation_values["parameter"].unique())
+            check_parameters = list(self._interpolation_values.columns[:-2])
         else:
             check_parameters = self._parameters
 
-        # Check if the number of parameters make either sense for SWOF (8), SGOF (8) or both (13)
         if len(check_parameters) != 8 and len(check_parameters) != 13:
             raise AssertionError(
                 "Please specify the correct number of relative permeability "
@@ -290,8 +271,8 @@ class RelativePermeability(Parameter):
 
         if isinstance(self._interpolation_values, pd.DataFrame):
             for i in range(len(self._unique_satnums)):
-                if self._rec is not None:
-                    relperm = self._rec[i].interpolate(parameters[i].get("interpolate"))
+                if self._scal_for_interp is not None:
+                    relperm = self._scal_for_interp[i+1].interpolate(parameters[i].get("interpolate"))
                     if self._swof:
                         str_swofs += relperm.SWOF(header=False)
                     if self._sgof:

@@ -985,22 +985,6 @@ def parse_config(
             "The phases 'vapoil' and 'disgas' can not be defined without the phases 'oil' and 'gas'"
         )
 
-    #    if (
-    #        config.model_parameters.relative_permeability.interpolate
-    #        and not {
-    #            "oil",
-    #            "gas",
-    #            "water",
-    #        }.issubset(config.flownet.phases)
-    #    ):
-    #        raise ValueError(
-    #            "Interpolation between relative permeability curves only available "
-    #            "for three phase problems (water, oil, gas)"
-    #        )
-
-    #    if config.model_parameters.relative_permeability.interpolate:
-    #       check if min/base/max are all defined
-
     if {"oil", "water"}.issubset(config.flownet.phases):
         req_relp_parameters = req_relp_parameters + [
             "scheme",
@@ -1075,6 +1059,14 @@ def parse_config(
                         f"Ambiguous configuration input: The {parameter} setting 'max' is higher\n"
                         f"than the 'min' in one of the satnum regions."
                     )
+                if (
+                    config.model_parameters.relative_permeability.interpolate
+                    and getattr(satreg, parameter).base is None
+                ):
+                    raise ValueError(
+                        f"Ambiguous configuration input: The {parameter} setting 'base' is missing\n"
+                        f"in one of the satnum regions."
+                    )
 
     for parameter in (
         set(config.model_parameters.relative_permeability.regions[0]._fields)
@@ -1085,6 +1077,7 @@ def parse_config(
             if (
                 getattr(satreg, parameter).min is not None
                 and getattr(satreg, parameter).max is not None
+                and getattr(satreg, parameter).base is not None
             ):
                 raise ValueError(f"The {parameter} parameter should not be specified.")
 
