@@ -275,7 +275,8 @@ class RelativePermeability(Parameter):
             for i in range(len(self._unique_satnums)):
                 if self._scal_for_interp is not None:
                     relperm = self._scal_for_interp[i + 1].interpolate(
-                        parameters[i].get("interpolate")
+                        parameters[i].get("interpolate"),
+                        parameters[i].get("interpolate gas"),
                     )
                     if self._swof:
                         str_swofs += relperm.SWOF(header=False)
