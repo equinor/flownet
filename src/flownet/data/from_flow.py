@@ -58,8 +58,15 @@ class FlowData(FromSource):
         """
         new_items = []
         for well_name in self._wells.allWellNames():
-            for _, conn_status in enumerate(self._wells[well_name]):
-                for connection in conn_status.globalConnections():
+            for i in range(0, len(self._wells[well_name])):
+                for connection in self._wells[well_name][i].globalConnections():
+                    if i == 0:
+                        date = self._eclsum.start_date
+                    else:
+                        date = datetime.datetime.strptime(
+                            str(self._wells[well_name][i].simulationTime()),
+                            "%Y-%m-%d %H:%M:%S",
+                        )
                     X, Y, Z = self._grid.get_xyz(ijk=connection.ijk())
                     new_row = {
                         "WELL_NAME": well_name,
@@ -67,9 +74,7 @@ class FlowData(FromSource):
                         "X": X,
                         "Y": Y,
                         "Z": Z,
-                        "DATE": datetime.datetime.strptime(
-                            str(conn_status.simulationTime()), "%Y-%m-%d %H:%M:%S"
-                        ),
+                        "DATE": date,
                         "OPEN": connection.isOpen(),
                     }
                     new_items.append(new_row)

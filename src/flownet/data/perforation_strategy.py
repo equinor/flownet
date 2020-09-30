@@ -113,6 +113,7 @@ def time_avg_open_location_multiple_based_on_workovers(
     return time_avg_open_location(multiple_based_on_workovers(df))
 
 
+# pylint: disable=too-many-locals
 def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
     """
     This strategy creates multiple connections per well when the well during the historic production period has been
@@ -152,6 +153,8 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
             ["X", "Y", "Z", "WELL_NAME", "OPEN", "DATE"]
         ]
         df_well_piv = df_well.pivot_table("OPEN", ["X", "Y", "Z", "WELL_NAME"], "DATE")
+        df_well_piv.fillna(method="ffill", axis=1, inplace=True)
+        df_well_piv.fillna(False, inplace=True)
         df_well_piv = df_well_piv.apply(lambda x: hash(tuple(x)), axis=1)
 
         for group in df_well_piv.unique():
@@ -172,22 +175,37 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
     for groupid in df_w_groups["GROUPID"].unique():
         df_group = df_w_groups.loc[df_w_groups["GROUPID"] == groupid]
 
-        xmin, ymin, zmin = df_w_groups[["X", "Y", "Z"]].min()
-        xmax, ymax, zmax = df_w_groups[["X", "Y", "Z"]].max()
+        xmin, ymin, zmin = df_group[["X", "Y", "Z"]].min()
+        xmax, ymax, zmax = df_group[["X", "Y", "Z"]].max()
 
-        df_forein = df_w_groups.loc[
-            (df_w_groups["X"] >= xmin)
-            & (df_w_groups["X"] <= xmax)
-            & (df_w_groups["Y"] >= ymin)
-            & (df_w_groups["Y"] <= ymax)
-            & (df_w_groups["Z"] >= zmin)
-            & (df_w_groups["Z"] <= zmax)
+        df_foreign = df_w_groups.loc[
+            (
+                ((df_w_groups["X"] > xmin) & (df_w_groups["X"] < xmax))
+                | ((df_w_groups["Y"] > ymin) & (df_w_groups["Y"] < ymax))
+                | ((df_w_groups["Z"] > zmin) & (df_w_groups["Z"] < zmax))
+            )
             & (df_w_groups["GROUPID"] != groupid)
         ]
 
         # Step 3
-        if df_forein.shape[0]:
-            pass
+        if df_foreign.shape[0]:
+            xmin_foreign, ymin_foreign, zmin_foreign = df_foreign[["X", "Y", "Z"]].min()
+            xmax_foreign, ymax_foreign, zmax_foreign = df_foreign[["X", "Y", "Z"]].max()
+
+            df_w_groups.loc[
+                (df_w_groups["GROUPID"] == groupid)
+                & (
+                    (df_w_groups["X"] < xmin_foreign)
+                    | (df_w_groups["Y"] < ymin_foreign)
+                    | (df_w_groups["Z"] < zmin_foreign)
+                ), 'GROUPID'] = (df_w_groups["GROUPID"].max() + 1)
+            df_w_groups.loc[
+                (df_w_groups["GROUPID"] == groupid)
+                & (
+                    (df_w_groups["X"] > xmax_foreign)
+                    | (df_w_groups["Y"] < ymax_foreign)
+                    | (df_w_groups["Z"] < zmax_foreign)
+                ), 'GROUPID'] = (df_w_groups["GROUPID"].max() + 1)
 
     df_w_groups["OPEN"] = df_w_groups["OPEN"].astype(int)
     result = df_w_groups.groupby(["WELL_NAME", "DATE", "GROUPID"]).mean().reset_index()

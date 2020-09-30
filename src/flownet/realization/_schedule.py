@@ -76,14 +76,74 @@ class Schedule:
         for index, row in self._network.df_entity_connections.iterrows():
             for e_index, entity in enumerate(["start_entity", "end_entity"]):
                 if row[[entity]].values[0] and row[[entity]].values[0] != "aquifer":
+
                     entity_index = 0 - e_index  # first, or last
                     grid_mask = self._network.active_mask(model_index=index)
                     i = self._network.grid[grid_mask].index[entity_index]
 
-                    date = self._retrieve_date_first_non_zero_prodinj(
-                        self._df_production_data, row[[entity]][0]
-                    )
-                    if date:
+                    for (
+                        _,
+                        well_connection_state,
+                    ) in self._network.df_well_connections.loc[
+                        (
+                            self._network.df_well_connections["WELL_NAME"]
+                            == row[[entity]].values[0]
+                        )
+                        & (
+                            (
+                                (
+                                    np.isclose(
+                                        self._network.df_well_connections["X"],
+                                        row["xstart"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Y"],
+                                        row["ystart"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Z"],
+                                        row["zstart"],
+                                    )
+                                )
+                            )
+                            | (
+                                (
+                                    np.isclose(
+                                        self._network.df_well_connections["X"],
+                                        row["xend"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Y"],
+                                        row["yend"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Z"],
+                                        row["zend"],
+                                    )
+                                )
+                            )
+                        )
+                    ].iterrows():
+                        date = self._retrieve_date_first_non_zero_prodinj(
+                            self._df_production_data, row[[entity]][0]
+                        )
+                        if date < well_connection_state["DATE"].date():
+                            date = well_connection_state["DATE"].date()
+                        if not date:
+                            print(
+                                f"Skipping COMPDAT for well {row[[entity]][0]} as no positive production or "
+                                f"injection data has been supplied."
+                            )
+                            break
+
                         self.append(
                             COMPDAT(
                                 date=date,
@@ -93,13 +153,10 @@ class Schedule:
                                 k1=0,
                                 k2=0,
                                 rw=0.22,
-                                status="OPEN",
+                                status="OPEN"
+                                if well_connection_state["OPEN"]
+                                else "SHUT",
                             )
-                        )
-                    else:
-                        print(
-                            f"Skipping COMPDAT for well {row[[entity]][0]} as no positive production or "
-                            f"injection data has been supplied."
                         )
 
     def _calculate_welspecs(self):

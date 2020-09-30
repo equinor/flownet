@@ -41,6 +41,12 @@ DATA = {
         "I",
         "I",
         "I",
+        "J",
+        "J",
+        "J",
+        "J",
+        "J",
+        "J",
     ],
     "IJK": [
         (1, 1, 1),
@@ -70,6 +76,12 @@ DATA = {
         (14, 14, 14),
         (14, 14, 14),
         (14, 14, 14),
+        (15, 15, 15),
+        (16, 16, 16),
+        (17, 17, 17),
+        (15, 15, 15),
+        (16, 16, 16),
+        (17, 17, 17),
     ],
     "X": [
         1,
@@ -99,6 +111,12 @@ DATA = {
         14,
         14,
         14,
+        15,
+        16,
+        17,
+        15,
+        16,
+        17,
     ],
     "Y": [
         1,
@@ -128,6 +146,12 @@ DATA = {
         14,
         14,
         14,
+        15,
+        16,
+        17,
+        15,
+        16,
+        17,
     ],
     "Z": [
         1,
@@ -157,6 +181,12 @@ DATA = {
         14,
         14,
         14,
+        15,
+        16,
+        17,
+        15,
+        16,
+        17,
     ],
     "DATE": [
         D1,
@@ -185,6 +215,12 @@ DATA = {
         D1,
         D0,
         D1,
+        D2,
+        D0,
+        D0,
+        D0,
+        D2,
+        D2,
         D2,
     ],
     "OPEN": [
@@ -215,6 +251,12 @@ DATA = {
         True,
         True,
         True,
+        True,
+        True,
+        True,
+        True,
+        False,
+        True,
     ],
 }
 DF = pd.DataFrame(DATA)
@@ -238,6 +280,7 @@ def test_bottom_point() -> None:
     assert result.loc[result["WELL_NAME"] == "G"]["X"].values[0] == 11
     assert result.loc[result["WELL_NAME"] == "H"]["X"].values[0] == 13
     assert result.loc[result["WELL_NAME"] == "I"]["X"].values[0] == 14
+    assert result.loc[result["WELL_NAME"] == "J"]["X"].values[0] == 17
     assert result.loc[result["WELL_NAME"] == "A"]["Y"].values[0] == 2
     assert result.loc[result["WELL_NAME"] == "B"]["Y"].values[0] == 4
     assert result.loc[result["WELL_NAME"] == "C"]["Y"].values[0] == 6
@@ -246,6 +289,7 @@ def test_bottom_point() -> None:
     assert result.loc[result["WELL_NAME"] == "G"]["Y"].values[0] == 11
     assert result.loc[result["WELL_NAME"] == "H"]["Y"].values[0] == 13
     assert result.loc[result["WELL_NAME"] == "I"]["Y"].values[0] == 14
+    assert result.loc[result["WELL_NAME"] == "J"]["Y"].values[0] == 17
     assert result.loc[result["WELL_NAME"] == "A"]["Z"].values[0] == 2
     assert result.loc[result["WELL_NAME"] == "B"]["Z"].values[0] == 4
     assert result.loc[result["WELL_NAME"] == "C"]["Z"].values[0] == 6
@@ -254,6 +298,7 @@ def test_bottom_point() -> None:
     assert result.loc[result["WELL_NAME"] == "G"]["Z"].values[0] == 11
     assert result.loc[result["WELL_NAME"] == "H"]["Z"].values[0] == 13
     assert result.loc[result["WELL_NAME"] == "I"]["Z"].values[0] == 14
+    assert result.loc[result["WELL_NAME"] == "J"]["Z"].values[0] == 17
 
     assert (
         pd.Timestamp(
@@ -300,6 +345,12 @@ def test_bottom_point() -> None:
     assert (
         pd.Timestamp(
             result.loc[result["WELL_NAME"] == "I"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "J"]["DATE"].values[0]
         ).to_pydatetime()
         == D0
     )
@@ -323,6 +374,7 @@ def test_top_point() -> None:
     assert result.loc[result["WELL_NAME"] == "G"]["X"].values[0] == 10
     assert result.loc[result["WELL_NAME"] == "H"]["X"].values[0] == 12
     assert result.loc[result["WELL_NAME"] == "I"]["X"].values[0] == 14
+    assert result.loc[result["WELL_NAME"] == "J"]["X"].values[0] == 15
     assert result.loc[result["WELL_NAME"] == "A"]["Y"].values[0] == 1
     assert result.loc[result["WELL_NAME"] == "B"]["Y"].values[0] == 3
     assert result.loc[result["WELL_NAME"] == "C"]["Y"].values[0] == 5
@@ -331,6 +383,7 @@ def test_top_point() -> None:
     assert result.loc[result["WELL_NAME"] == "G"]["Y"].values[0] == 10
     assert result.loc[result["WELL_NAME"] == "H"]["Y"].values[0] == 12
     assert result.loc[result["WELL_NAME"] == "I"]["Y"].values[0] == 14
+    assert result.loc[result["WELL_NAME"] == "J"]["Y"].values[0] == 15
     assert result.loc[result["WELL_NAME"] == "A"]["Z"].values[0] == 1
     assert result.loc[result["WELL_NAME"] == "B"]["Z"].values[0] == 3
     assert result.loc[result["WELL_NAME"] == "C"]["Z"].values[0] == 5
@@ -338,7 +391,8 @@ def test_top_point() -> None:
     assert result.loc[result["WELL_NAME"] == "E"]["Z"].values[0] == 8
     assert result.loc[result["WELL_NAME"] == "G"]["Z"].values[0] == 10
     assert result.loc[result["WELL_NAME"] == "H"]["Z"].values[0] == 12
-    assert result.loc[result["WELL_NAME"] == "I"]["Y"].values[0] == 14
+    assert result.loc[result["WELL_NAME"] == "I"]["Z"].values[0] == 14
+    assert result.loc[result["WELL_NAME"] == "J"]["Z"].values[0] == 15
 
     assert (
         pd.Timestamp(
@@ -385,6 +439,12 @@ def test_top_point() -> None:
     assert (
         pd.Timestamp(
             result.loc[result["WELL_NAME"] == "I"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "J"]["DATE"].values[0]
         ).to_pydatetime()
         == D0
     )
@@ -452,6 +512,12 @@ def test_multiple() -> None:
         ).to_pydatetime()
         == D0
     )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "J"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
 
 
 def test_multiple_based_on_workovers() -> None:
@@ -465,6 +531,8 @@ def test_multiple_based_on_workovers() -> None:
     assert not all(result.Z.isin(DF.Z).astype(float))
     assert all(result.WELL_NAME.isin(DF.WELL_NAME))
     assert all(DF.WELL_NAME.isin(result.WELL_NAME))
+
+    assert len(result.loc[result["WELL_NAME"] == "J"]) == 3
 
     assert (
         pd.Timestamp(
@@ -511,6 +579,12 @@ def test_multiple_based_on_workovers() -> None:
     assert (
         pd.Timestamp(
             result.loc[result["WELL_NAME"] == "I"]["DATE"].values[0]
+        ).to_pydatetime()
+        == D0
+    )
+    assert (
+        pd.Timestamp(
+            result.loc[result["WELL_NAME"] == "J"]["DATE"].values[0]
         ).to_pydatetime()
         == D0
     )
