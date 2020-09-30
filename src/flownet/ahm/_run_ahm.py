@@ -386,7 +386,6 @@ def run_flownet_history_matching(
         columns=["parameter", "minimum", "maximum", "loguniform", "satnum"]
     )
 
-
     relperm_parameters = config.model_parameters.relative_permeability.regions[
         0
     ]._asdict()
@@ -425,16 +424,23 @@ def run_flownet_history_matching(
                 [
                     getattr(relp_config_satnum[idx], key).min
                     for key in relperm_parameters
-                ] + ["low"] + [i],
+                ]
+                + ["low"]
+                + [i],
                 [
                     getattr(relp_config_satnum[idx], key).base
                     for key in relperm_parameters
-                ] + ["base"] + [i],
+                ]
+                + ["base"]
+                + [i],
                 [
                     getattr(relp_config_satnum[idx], key).max
                     for key in relperm_parameters
-                ] + ["high"] + [i],
+                ]
+                + ["high"]
+                + [i],
             ]
+            info: List = [["interpolate"], [-1], [1], [False], [i]]
         else:
             info = [
                 relperm_parameters.keys(),
@@ -458,21 +464,14 @@ def run_flownet_history_matching(
                 ),
                 ignore_index=True,
             )
-            relperm_dist_values = relperm_dist_values.append(
-                pd.DataFrame(
-                    [["interpolate", -1, 1, False, i]],
-                    columns=["parameter", "minimum", "maximum", "loguniform", "satnum"],
-                ),
-                ignore_index=True,
-            )
-        else:
-            relperm_dist_values = relperm_dist_values.append(
-                pd.DataFrame(
-                    list(map(list, zip(*info))),
-                    columns=["parameter", "minimum", "maximum", "loguniform", "satnum"],
-                ),
-                ignore_index=True,
-            )
+
+        relperm_dist_values = relperm_dist_values.append(
+            pd.DataFrame(
+                list(map(list, zip(*info))),
+                columns=["parameter", "minimum", "maximum", "loguniform", "satnum"],
+            ),
+            ignore_index=True,
+        )
 
     #########################################
     # Equilibration                         #

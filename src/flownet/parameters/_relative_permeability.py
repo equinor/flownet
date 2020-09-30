@@ -155,7 +155,9 @@ class RelativePermeability(Parameter):
         if isinstance(interpolation_values, pd.DataFrame):
             self._interpolation_values = interpolation_values
             # self._rec will be indexed by SATNUM region, starting at 1
-            self._scal_for_interp = PyscalFactory.create_scal_recommendation_list(interpolation_values)
+            self._scal_for_interp = PyscalFactory.create_scal_recommendation_list(
+                interpolation_values
+            )
 
         self._swof, self._sgof = self._check_parameters()
         self._fast_pyscal: bool = fast_pyscal
@@ -272,7 +274,9 @@ class RelativePermeability(Parameter):
         if isinstance(self._interpolation_values, pd.DataFrame):
             for i in range(len(self._unique_satnums)):
                 if self._scal_for_interp is not None:
-                    relperm = self._scal_for_interp[i+1].interpolate(parameters[i].get("interpolate"))
+                    relperm = self._scal_for_interp[i + 1].interpolate(
+                        parameters[i].get("interpolate")
+                    )
                     if self._swof:
                         str_swofs += relperm.SWOF(header=False)
                     if self._sgof:
