@@ -10,7 +10,7 @@ The configuration files follows the `YAML standard <https://yaml.org/>`_.
 Assisted history matching example
 =================================
 
-.. literalinclude:: https://github.com/equinor/flownet-testdata/blob/master/norne/config/assisted_history_matching.yml
+.. literalinclude:: ../examples/norne_parameters.yml
    :language: yaml
    :linenos:
 
