@@ -42,6 +42,16 @@ class Parameter(abc.ABC):
             )
         self._random_samples = values
 
+    @property
+    def mean_values(self) -> List[float]:
+        """List of all random values for each distribution for the Parameter"""
+        return self._mean_values
+
+    @mean_values.setter
+    def mean_values(self, values: List[float]):
+        """Setter for the Parameter random samples."""
+        self._mean_values = values
+
     # pylint: disable=no-self-use
     def get_dims(self) -> Union[None, Dict[str, int]]:
         """In case a parameter requires updates in runspec dimensions, a get_dims
