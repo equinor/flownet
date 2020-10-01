@@ -269,7 +269,7 @@ def test_bottom_point() -> None:
 
     result = bottom_point(DF)
 
-    assert result.shape[0] == len(DF[DF["OPEN"]]["WELL_NAME"].unique())
+    assert result.shape[0] == len(DF["WELL_NAME"].unique())
     assert all(result["OPEN"].values)
 
     assert result.loc[result["WELL_NAME"] == "A"]["X"].values[0] == 2
@@ -322,7 +322,7 @@ def test_bottom_point() -> None:
         pd.Timestamp(
             result.loc[result["WELL_NAME"] == "D"]["DATE"].values[0]
         ).to_pydatetime()
-        == D2
+        == D0
     )
     assert (
         pd.Timestamp(
@@ -357,13 +357,12 @@ def test_bottom_point() -> None:
 
     assert all(result["OPEN"].values)
     assert all(result.WELL_NAME.isin(DF.WELL_NAME))
-    assert not all(DF.WELL_NAME.isin(result.WELL_NAME))
 
 
 def test_top_point() -> None:
     result = top_point(DF)
 
-    assert result.shape[0] == len(DF[DF["OPEN"]]["WELL_NAME"].unique())
+    assert result.shape[0] == len(DF["WELL_NAME"].unique())
     assert all(result["OPEN"].values)
 
     assert result.loc[result["WELL_NAME"] == "A"]["X"].values[0] == 1
@@ -416,7 +415,7 @@ def test_top_point() -> None:
         pd.Timestamp(
             result.loc[result["WELL_NAME"] == "D"]["DATE"].values[0]
         ).to_pydatetime()
-        == D2
+        == D0
     )
     assert (
         pd.Timestamp(
@@ -451,7 +450,6 @@ def test_top_point() -> None:
 
     assert all(result["OPEN"].values)
     assert all(result.WELL_NAME.isin(DF.WELL_NAME))
-    assert not all(DF.WELL_NAME.isin(result.WELL_NAME))
 
 
 def test_multiple() -> None:
@@ -532,7 +530,8 @@ def test_multiple_based_on_workovers() -> None:
     assert all(result.WELL_NAME.isin(DF.WELL_NAME))
     assert all(DF.WELL_NAME.isin(result.WELL_NAME))
 
-    assert len(result.loc[result["WELL_NAME"] == "J"]) == 3
+    assert len(result.loc[result["WELL_NAME"] == "J"]) == 4
+    assert len(result.loc[result["WELL_NAME"] == "J"]["X"].unique()) == 3
 
     assert (
         pd.Timestamp(
