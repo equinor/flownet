@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple, Any
 
 import numpy as np
 import pandas as pd
@@ -258,9 +258,9 @@ def time_avg_open_location(df: pd.DataFrame) -> pd.DataFrame:
                     len(connection_open_time.items()),
                 )
 
-        xyz = tuple(*xyz_values)
+        xyz_coordinates = tuple(*xyz_values)
 
-        coord_append([well_name, *xyz])
+        coord_append([well_name, *xyz_coordinates])
 
     result = pd.DataFrame(coords, columns=["WELL_NAME", "X", "Y", "Z"])
     result["OPEN"] = True
