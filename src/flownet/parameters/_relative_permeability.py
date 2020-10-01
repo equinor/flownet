@@ -124,6 +124,11 @@ class RelativePermeability(Parameter):
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
         satnum: A dataframe defining the SATNUM for each flow tube.
         fast_pyscal: Run pyscal in fast-mode skipping checks. Useful for large models/ensemble.
+        interpolation_values:
+            A dataframe with information about the relative permeability models used for interpolation.
+            One row corresponds to one model, the column names should be the names of the parameters
+            needed to establish the model. In addition there should be a column "CASE", which should be
+            set to "low", "base" or "high", and a column "SATNUM" defining which SATNUM region the model applies to.
 
     """
 
@@ -261,7 +266,7 @@ class RelativePermeability(Parameter):
                 zip(
                     self._parameters,
                     self.random_samples[
-                        i * samples_per_satnum : (i + 1) * samples_per_satnum
+                        i * samples_per_satnum: (i + 1) * samples_per_satnum
                     ],
                 )
             )
@@ -272,11 +277,11 @@ class RelativePermeability(Parameter):
         partial_gen_og = functools.partial(gen_og, fast_pyscal=True)
 
         if isinstance(self._interpolation_values, pd.DataFrame):
-            for i in range(len(self._unique_satnums)):
+            for i, parameter in enumerate(parameters, 1):
                 if self._scal_for_interp is not None:
-                    relperm = self._scal_for_interp[i + 1].interpolate(
-                        parameters[i].get("interpolate"),
-                        parameters[i].get("interpolate gas"),
+                    relperm = self._scal_for_interp[i].interpolate(
+                        parameter.get("interpolate"),
+                        parameter.get("interpolate gas"),
                     )
                     if self._swof:
                         str_swofs += relperm.SWOF(header=False)
@@ -290,20 +295,20 @@ class RelativePermeability(Parameter):
         else:
             if self._swof and self._sgof:
                 with concurrent.futures.ProcessPoolExecutor() as executor:
-                    for i, relperm in zip(  # type: ignore[assignment]
+                    for _, relperm in zip(  # type: ignore[assignment]
                         parameters, executor.map(partial_gen_wog, parameters)
                     ):
                         str_swofs += relperm.SWOF(header=False)
                         str_sgofs += relperm.SGOF(header=False)
             elif self._swof:
                 with concurrent.futures.ProcessPoolExecutor() as executor:
-                    for i, relperm in zip(  # type: ignore[assignment]
+                    for _, relperm in zip(  # type: ignore[assignment]
                         parameters, executor.map(partial_gen_wo, parameters)
                     ):
                         str_swofs += relperm.SWOF(header=False)
             elif self._sgof:
                 with concurrent.futures.ProcessPoolExecutor() as executor:
-                    for i, relperm in zip(  # type: ignore[assignment]
+                    for _, relperm in zip(  # type: ignore[assignment]
                         parameters, executor.map(partial_gen_og, parameters)
                     ):
                         str_sgofs += relperm.SGOF(header=False)

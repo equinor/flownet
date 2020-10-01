@@ -440,7 +440,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             },
                             "interpolate": {
                                 MK.Type: types.Bool,
-                                MK.Description: "Uses the interpolation option between low/base/mid "
+                                MK.Description: "Uses the interpolation option between low/base/high "
                                 "relative permeability curves if set to True (one interpolation "
                                 "per SATNUM region. Only available for three phase problems.",
                                 MK.Default: False,
