@@ -60,7 +60,7 @@ jobs:
         run: |
           # Overwrite ci config with more realizations
           pushd ./flownet-testdata/${{ matrix.flownet-model }}
-          export NUM_REALIZATIONS=100
+          export NUM_REALIZATIONS=10
           echo -e "ert:\n  realizations:\n    num_realizations: "$NUM_REALIZATIONS > ./ci_config/assisted_history_matching.yml
           cat ./ci_config/prediction.yml
           popd
