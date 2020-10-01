@@ -266,7 +266,7 @@ class RelativePermeability(Parameter):
                 zip(
                     self._parameters,
                     self.random_samples[
-                        i * samples_per_satnum: (i + 1) * samples_per_satnum
+                        i * samples_per_satnum : (i + 1) * samples_per_satnum
                     ],
                 )
             )
