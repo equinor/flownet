@@ -53,7 +53,7 @@ class FlowData(FromSource):
         configured perforation strategy.
 
         Returns:
-            columns: WELL_NAME, X, Y, Z, START_DATE and END_DATE
+            columns: WELL_NAME, X, Y, Z, DATE, OPEN
 
         """
         new_items = []
