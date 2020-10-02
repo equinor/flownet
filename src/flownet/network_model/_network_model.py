@@ -29,7 +29,7 @@ class NetworkModel:
                                    dimensional models. Columns required are xstart, ystart, zstart,
                                    xend, yend, zend, start_entity and end_entity
             df_well_connections: A dataframe containing information about the (individual) connections of a
-                                 well, and its open or close state throughout time.
+                                 well, and their open or closed state throughout time.
             cell_length: Preferred length of each grid cell along the model.
             area: surface area of the flow path.
             fault_planes: DataFrame with fault plane coordinates
