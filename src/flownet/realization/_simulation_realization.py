@@ -12,7 +12,7 @@ import numpy as np
 import jinja2
 
 from ..network_model import NetworkModel, create_egrid
-from ..realization import Schedule
+from ._schedule import Schedule
 from ..utils import write_grdecl_file
 
 

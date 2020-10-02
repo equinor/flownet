@@ -6,6 +6,10 @@ import abc
 
 
 class ProbabilityDistribution(abc.ABC):
+    def __init__(self, minimum, maximum):
+        self.minimum = minimum
+        self.maximum = maximum
+
     @property
     @abc.abstractmethod
     def ert_gen_kw(self):
@@ -13,10 +17,6 @@ class ProbabilityDistribution(abc.ABC):
 
 
 class UniformDistribution(ProbabilityDistribution):
-    def __init__(self, minimum, maximum):
-        self.minimum = minimum
-        self.maximum = maximum
-
     @property
     def ert_gen_kw(self) -> str:
         """string representing an ERT "UNFIORM MIN MAX" distribution keyword for use in GEN_KW"""
@@ -24,10 +24,6 @@ class UniformDistribution(ProbabilityDistribution):
 
 
 class LogUniformDistribution(ProbabilityDistribution):
-    def __init__(self, minimum, maximum):
-        self.minimum = minimum
-        self.maximum = maximum
-
     @property
     def ert_gen_kw(self) -> str:
         """string representing an ERT "LOGUNIF MIN MAX" distribution keyword for use in GEN_KW"""
@@ -36,8 +32,7 @@ class LogUniformDistribution(ProbabilityDistribution):
 
 class TriangularDistribution(ProbabilityDistribution):
     def __init__(self, minimum, maximum, mode):
-        self.minimum = minimum
-        self.maximum = maximum
+        super().__init__(minimum, maximum)
         self.mode = mode
 
     @property
