@@ -221,6 +221,7 @@ def _constrain_using_well_logs(
     data: np.ndarray,
     network: NetworkModel,
     measurement_type: str,
+    config: ConfigSuite.snapshot,
 ) -> pd.DataFrame:
     """
 
@@ -235,17 +236,31 @@ def _constrain_using_well_logs(
         Well-log constrained "porv_poro_trans_dist_values" DataFrame
 
     """
+    n = config.flownet.constraining.kriging.n
+    n_lags = config.flownet.constraining.kriging.nlags
+    anisotropy_scaling_z = config.flownet.constraining.kriging.anisotropy_scaling_z
+    variogram_model = config.flownet.constraining.kriging.variogram_model
+
     if measurement_type == "permeability":
         data[:, 3] = np.log10(data[:, 3])
 
     variogram_parameters: Optional[Dict] = None
     if measurement_type == "permeability":
-        variogram_parameters = {"sill": 0.75, "range": 1000, "nugget": 0}
+        variogram_parameters = (
+            config.flownet.constraining.kriging.permeability_variogram_parameters
+        )
     elif measurement_type == "porosity":
-        variogram_parameters = {"sill": 0.05, "range": 1000, "nugget": 0}
+        variogram_parameters = (
+            config.flownet.constraining.kriging.porosity_variogram_parameters
+        )
 
     k3d3_interpolator, ss3d_interpolator = kriging.execute(
-        data, variogram_parameters=variogram_parameters
+        data,
+        n=n,
+        n_lags=n_lags,
+        variogram_model=variogram_model,
+        variogram_parameters=variogram_parameters,
+        anisotropy_scaling_z=anisotropy_scaling_z,
     )
 
     parameter_min_kriging = k3d3_interpolator(
@@ -450,10 +465,14 @@ def run_flownet_history_matching(
         poro_data = df_well_logs[["X", "Y", "Z", "PORO"]].values
 
         porv_poro_trans_dist_values = _constrain_using_well_logs(
-            porv_poro_trans_dist_values, perm_data, network, "permeability"
+            porv_poro_trans_dist_values,
+            perm_data,
+            network,
+            "permeability",
+            config=config,
         )
         porv_poro_trans_dist_values = _constrain_using_well_logs(
-            porv_poro_trans_dist_values, poro_data, network, "porosity"
+            porv_poro_trans_dist_values, poro_data, network, "porosity", config=config
         )
 
     #########################################

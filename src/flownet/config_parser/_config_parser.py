@@ -213,6 +213,65 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             "concave_hull": {MK.Type: types.Bool, MK.AllowNone: True},
                         },
                     },
+                    "constraining": {
+                        MK.Type: types.NamedDict,
+                        MK.Content: {
+                            "kriging": {
+                                MK.Type: types.NamedDict,
+                                MK.Content: {
+                                    "enabled": {
+                                        MK.Type: types.Bool,
+                                        MK.Default: False,
+                                        MK.Description: "Switch to enable or disable kriging on well log data.",
+                                    },
+                                    "n": {
+                                        MK.Type: types.Integer,
+                                        MK.Default: 20,
+                                        MK.Description: "Number of kriged values in each direct. E.g, n = 10 -> "
+                                        "10x10x10 = 1000 values. Default: 20",
+                                    },
+                                    "n_lags": {
+                                        MK.Type: types.Integer,
+                                        MK.Default: 6,
+                                        MK.Description: "Number of averaging bins for the semivariogram. Default: 6",
+                                    },
+                                    "anisotropy_scaling_z": {
+                                        MK.Type: types.Number,
+                                        MK.Default: 10,
+                                        MK.Description: "Scalar stretching value to take into account anisotropy. "
+                                        "Default: 10",
+                                    },
+                                    "variogram_model": {
+                                        MK.Type: types.String,
+                                        MK.Default: "linear",
+                                        MK.Description: "Specifies which variogram model to use. See PyKridge "
+                                        "documentation for valid options. Default: linear",
+                                    },
+                                    "permeability_variogram_parameters": {
+                                        MK.Type: types.Dict,
+                                        MK.Default: {
+                                            "sill": 0.75,
+                                            "range": 1000,
+                                            "nugget": 0,
+                                        },
+                                        MK.Description: "Parameters that define the specified variogram model. "
+                                        "Permeability model sill and nugget are in log scale. See "
+                                        "PyKridge documentation for valid options.",
+                                    },
+                                    "porosity_variogram_parameters": {
+                                        MK.Type: types.Dict,
+                                        MK.Default: {
+                                            "sill": 0.05,
+                                            "range": 1000,
+                                            "nugget": 0,
+                                        },
+                                        MK.Description: "Parameters that define the specified variogram model. See "
+                                        "PyKridge documentation for valid options.",
+                                    },
+                                },
+                            },
+                        },
+                    },
                     "pvt": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
@@ -1104,6 +1163,15 @@ def parse_config(
         raise ValueError(
             "Ambiguous configuration input: 'size_in_bulkvolumes' in 'aquifer' needs to be defined using "
             "'min', 'max' and 'log_unif'. Currently one or more parameters are missing."
+        )
+
+    if (
+        config.flownet.constraining.kriging.enabled
+        and not config.flownet.data_source.simulation.well_logs
+    ):
+        raise ValueError(
+            "Ambiguous configuration input: well log data needs to be loaded (from the simulation model) in order "
+            "to allow for enabling of kriging."
         )
 
     return config
