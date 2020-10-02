@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- [#197](https://github.com/equinor/flownet/pull/197) Added opening/closing of connects based on straddling/plugging/perforations through time. This PR also adds a new perforation strategy `multiple_based_on_workovers` which models the well connections with as few connections as possible taking into account opening/closing of groups of connections. 
+- [#197](https://github.com/equinor/flownet/pull/197) Added opening/closing of connections based on straddling/plugging/perforations through time. This PR also adds a new perforation strategy `multiple_based_on_workovers` which models the well connections with as few connections as possible taking into account opening/closing of groups of connections. 
 - [#188](https://github.com/equinor/flownet/pull/188) The possibility to extract regions from an input simulation model extended to also include SATNUM regions. For relative permeability, the scheme keyword can be set to 'regions_from_sim' in the configuration file.
 - [#189](https://github.com/equinor/flownet/pull/189) User can now provide both a _base_ configuration file, and an optional extra configuration file which will be used to override the base settings.
 
