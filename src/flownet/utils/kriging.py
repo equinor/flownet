@@ -10,7 +10,7 @@ def execute(
     n: int = 20,
     variogram_model: str = "spherical",
     variogram_parameters: Optional[Dict] = None,
-    nlags: int = 6,
+    n_lags: int = 6,
     anisotropy_scaling_z: float = 10.0,
     **kwargs
 ) -> Tuple[RegularGridInterpolator, RegularGridInterpolator]:
@@ -49,7 +49,7 @@ def execute(
         *data.T,
         variogram_model=variogram_model,
         variogram_parameters=variogram_parameters,
-        nlags=nlags,
+        nlags=n_lags,
         anisotropy_scaling_z=anisotropy_scaling_z,
         **kwargs
     )

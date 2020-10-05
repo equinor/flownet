@@ -56,7 +56,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
     @configsuite.transformation_msg("Convert input string to absolute path")
     def _to_abs_path(path: Optional[str]) -> str:
         """
-        Helper function for the configsuite. Take in a path as a string and
+        Helper function for the configsuite. Takes in a path as a string and
         attempts to convert it to an absolute path.
 
         Args:
@@ -243,30 +243,28 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                     },
                                     "variogram_model": {
                                         MK.Type: types.String,
-                                        MK.Default: "linear",
+                                        MK.Default: "spherical",
                                         MK.Description: "Specifies which variogram model to use. See PyKridge "
-                                        "documentation for valid options. Default: linear",
+                                        "documentation for valid options. Default: spherical",
                                     },
                                     "permeability_variogram_parameters": {
                                         MK.Type: types.Dict,
-                                        MK.Default: {
-                                            "sill": 0.75,
-                                            "range": 1000,
-                                            "nugget": 0,
-                                        },
                                         MK.Description: "Parameters that define the specified variogram model. "
                                         "Permeability model sill and nugget are in log scale. See "
                                         "PyKridge documentation for valid options.",
+                                        MK.Content: {
+                                            MK.Key: {MK.Type: types.String},
+                                            MK.Value: {MK.Type: types.Number},
+                                        },
                                     },
                                     "porosity_variogram_parameters": {
                                         MK.Type: types.Dict,
-                                        MK.Default: {
-                                            "sill": 0.05,
-                                            "range": 1000,
-                                            "nugget": 0,
-                                        },
                                         MK.Description: "Parameters that define the specified variogram model. See "
                                         "PyKridge documentation for valid options.",
+                                        MK.Content: {
+                                            MK.Key: {MK.Type: types.String},
+                                            MK.Value: {MK.Type: types.Number},
+                                        },
                                     },
                                 },
                             },

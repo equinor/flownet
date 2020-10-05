@@ -224,20 +224,22 @@ def _constrain_using_well_logs(
     config: ConfigSuite.snapshot,
 ) -> pd.DataFrame:
     """
+    Function to constrain permeability and porosity distributions of flow tubes by using 3D kriging of
+    porosity and permeability values from well logs.
 
     Args:
-        porv_poro_trans_dist_values:
-        data:
-        network:
-        measurement_type:
-        config:
+        porv_poro_trans_dist_values: pre-constraining dataframe
+        data: well log data
+        network: FlowNet network model
+        measurement_type: 'prorosity' or 'permeability' (always log10)
+        config: FlowNet configparser snapshot
 
     Returns:
         Well-log constrained "porv_poro_trans_dist_values" DataFrame
 
     """
     n = config.flownet.constraining.kriging.n
-    n_lags = config.flownet.constraining.kriging.nlags
+    n_lags = config.flownet.constraining.kriging.n_lags
     anisotropy_scaling_z = config.flownet.constraining.kriging.anisotropy_scaling_z
     variogram_model = config.flownet.constraining.kriging.variogram_model
 
@@ -246,11 +248,11 @@ def _constrain_using_well_logs(
 
     variogram_parameters: Optional[Dict] = None
     if measurement_type == "permeability":
-        variogram_parameters = (
+        variogram_parameters = dict(
             config.flownet.constraining.kriging.permeability_variogram_parameters
         )
     elif measurement_type == "porosity":
-        variogram_parameters = (
+        variogram_parameters = dict(
             config.flownet.constraining.kriging.porosity_variogram_parameters
         )
 
@@ -290,7 +292,7 @@ def _constrain_using_well_logs(
         porv_poro_trans_dist_values[f"maximum_{measurement_type}"].values,
     )
 
-    # Set NaN's to the full permeability range as set in the config
+    # Set NaN's to the full original range as set in the config
     parameter_min[np.isnan(parameter_min)] = porv_poro_trans_dist_values[
         f"minimum_{measurement_type}"
     ].values[0]
