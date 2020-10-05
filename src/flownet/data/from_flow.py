@@ -78,7 +78,7 @@ class FlowData(FromSource):
 
                 for i, conn_status in enumerate(self._wells[well_name]):
                     time = datetime.datetime.strptime(
-                        str(conn_status.sismulationTime()), "%Y-%m-%d %H:%M:%S"
+                        str(conn_status.simulationTime()), "%Y-%m-%d %H:%M:%S"
                     )
                     if i == 0:
                         prev_time = time
