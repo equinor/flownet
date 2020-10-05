@@ -435,9 +435,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             "scheme": {
                                 MK.Type: types.String,
                                 MK.Description: "Either 'global' (one set of relative "
-                                "permeability curves for the whole model), or "
-                                "'individual' (one set of curves per tube).",
+                                "permeability curves for the whole model), 'regions_from_sim' "
+                                "(one set of curves for each SATNUM region in data source simulation) "
+                                "or 'individual' (one set of curves per tube).",
+                                MK.Default: "global",
                                 MK.Transformation: _to_lower,
+                            },
+                            "interpolate": {
+                                MK.Type: types.Bool,
+                                MK.Description: "Uses the interpolation option between low/base/high "
+                                "relative permeability curves if set to True (one interpolation "
+                                "per SATNUM region. Only available for three phase problems.",
+                                MK.Default: False,
                             },
                             "regions": {
                                 MK.Type: types.List,
@@ -454,6 +463,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Type: types.NamedDict,
                                                 MK.Content: {
                                                     "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "base": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -474,6 +487,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
+                                                    "base": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
                                                     "max": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
@@ -491,6 +508,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
+                                                    "base": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
                                                     "max": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
@@ -504,18 +525,11 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                             "sorw": {
                                                 MK.Type: types.NamedDict,
                                                 MK.Content: {
-                                                    "min": {MK.Type: types.Number},
-                                                    "max": {MK.Type: types.Number},
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
+                                                    "min": {
+                                                        MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                },
-                                            },
-                                            "krwend": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "min": {
+                                                    "base": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -529,10 +543,35 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                     },
                                                 },
                                             },
-                                            "krowend": {
+                                            "krwend": {
                                                 MK.Type: types.NamedDict,
                                                 MK.Content: {
                                                     "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "base": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "kroend": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "base": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -553,6 +592,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
+                                                    "base": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
                                                     "max": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
@@ -567,6 +610,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Type: types.NamedDict,
                                                 MK.Content: {
                                                     "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "base": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -587,6 +634,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
+                                                    "base": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
                                                     "max": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
@@ -601,6 +652,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Type: types.NamedDict,
                                                 MK.Content: {
                                                     "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "base": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -621,6 +676,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
+                                                    "base": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
                                                     "max": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
@@ -631,6 +690,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Type: types.NamedDict,
                                                 MK.Content: {
                                                     "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "base": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -651,20 +714,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "max": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "krogend": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "min": {
+                                                    "base": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -948,7 +998,7 @@ def parse_config(
             "nw",
             "now",
             "krwend",
-            "krowend",
+            "kroend",
         ]
         for reg in config.model_parameters.equil.regions:
             if (
@@ -970,7 +1020,7 @@ def parse_config(
             "ng",
             "nog",
             "krgend",
-            "krogend",
+            "kroend",
         ]
         for reg in config.model_parameters.equil.regions:
             if (
@@ -1012,6 +1062,14 @@ def parse_config(
                         f"Ambiguous configuration input: The {parameter} setting 'max' is higher\n"
                         f"than the 'min' in one of the satnum regions."
                     )
+                if (
+                    config.model_parameters.relative_permeability.interpolate
+                    and getattr(satreg, parameter).base is None
+                ):
+                    raise ValueError(
+                        f"Ambiguous configuration input: The {parameter} setting 'base' is missing\n"
+                        f"in one of the satnum regions."
+                    )
 
     for parameter in (
         set(config.model_parameters.relative_permeability.regions[0]._fields)
@@ -1022,6 +1080,7 @@ def parse_config(
             if (
                 getattr(satreg, parameter).min is not None
                 and getattr(satreg, parameter).max is not None
+                and getattr(satreg, parameter).base is not None
             ):
                 raise ValueError(f"The {parameter} parameter should not be specified.")
 
