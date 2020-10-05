@@ -71,7 +71,7 @@ def top_point(df: pd.DataFrame) -> pd.DataFrame:
 def multiple(df: pd.DataFrame) -> pd.DataFrame:
     """
     This strategy creates multiple connections per well, as many as there is data available. Connections that
-    repeatedly have the same state through time are reduced to only only having records for state changes.
+    repeatedly have the same state through time are reduced to only having records for state changes.
 
     NB. This may lead to a lot of connections in the FlowNet with potentially numerical issues as a result. When
         generating a FlowNet that is not aware of geological layering, it is questionable whether having many
