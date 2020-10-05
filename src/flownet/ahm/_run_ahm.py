@@ -256,6 +256,9 @@ def _constrain_using_well_logs(
             config.flownet.constraining.kriging.porosity_variogram_parameters
         )
 
+    if not variogram_parameters:
+        variogram_parameters = None
+
     k3d3_interpolator, ss3d_interpolator = kriging.execute(
         data,
         n=n,
