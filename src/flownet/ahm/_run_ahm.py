@@ -332,7 +332,7 @@ def run_flownet_history_matching(
         concave_hull_bounding_boxes = field_data.grid_cell_bounding_boxes
 
     df_entity_connections: pd.DataFrame = create_connections(
-        df_well_connections[["WELL_NAME", "X", "Y", "Z"]],
+        df_well_connections[["WELL_NAME", "X", "Y", "Z"]].drop_duplicates(keep="first"),
         config,
         concave_hull_bounding_boxes=concave_hull_bounding_boxes,
     )
