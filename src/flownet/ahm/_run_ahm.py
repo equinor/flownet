@@ -389,7 +389,7 @@ def run_flownet_history_matching(
     relperm_parameters = config.model_parameters.relative_permeability.regions[
         0
     ]._asdict()
-    relperm_parameters.popitem(last=False)
+    relperm_parameters.popitem(False)
 
     relperm_dict = {
         key: values
