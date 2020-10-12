@@ -8,7 +8,7 @@ from typing import List, Dict
 import pandas as pd
 
 from ..parameters import Parameter
-from ..realization import SimulationRealization
+from ._simulation_realization import SimulationRealization
 
 
 def _ert_samples2simulation_input(
@@ -102,9 +102,9 @@ def render_realization():
     """
     parser = argparse.ArgumentParser(
         prog=(
-            "Creates a FlowNet realization model"
-            "based on a previously calculated"
-            "network model, but updating e.g."
+            "Creates a FlowNet realization model "
+            "based on a previously calculated "
+            "network model, but updating e.g. "
             "porosity and permeability"
         )
     )

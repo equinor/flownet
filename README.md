@@ -34,17 +34,17 @@ Please check out our [contribution guidelines](CONTRIBUTING.md) if you want to c
 ## Installation
 
 _FlowNet_ is a Python package. The package itself, and other dependencies,
-could be installed e.g. using a Python/Conda virtual environment. You will
-need to choose your favourite environment and install all dependencies
-to get going.
+can be installed using a Python virtual environment, except for the [_OPM-Flow_](https://opm-project.org/?page_id=19) reservoir
+simulator.
 
 ### Install FlowNet
 
-_FlowNet_ uses the open-source reservoir simulator [_OPM-Flow_](https://opm-project.org/?page_id=19). To be able to run _FlowNet_ you will need to have _OPM-Flow_
+_FlowNet_ uses the open-source reservoir simulator _OPM-Flow_. To be able to run _FlowNet_ you will need to have _OPM-Flow_
 installed first. There are also other dependencies like the Python packages [`libecl`](https://github.com/equinor/libecl) and
 [`libres`](https://github.com/equinor/libres) which currently are not easily installable from PyPI (however, things are happening, so hopefully in a not too distant future, dependencies are installable from PyPI, which is already the case for flownet itself: `pip install flownet`).
 
 ##### 1. Clone the _FlowNet_ GitHub repository with SSH:
+    
 ```bash
 git clone git@github.com:equinor/flownet.git
 ```
@@ -61,46 +61,12 @@ bash ./build_environment.sh ./venv /usr/bin/flow
 ```
 This will automatically create a simple [Python virtual environment](docs.python.org/3/library/venv.html) `./venv`
 
-<details>
-<summary><u>Click here</u> for alternative installation by creating your own environment</summary>
-
-#### A. Python virtual environment
-##### A.1. Create a [Python virtual environment](docs.python.org/3/library/venv.html) named `venv` yourself:
-```bash
-python3 -m venv ./venv
-```
-##### A.2. Activate the environment:
+##### 4. Source the newly created virtual environment:
 ```bash
 source ./venv/bin/activate
 ```
-##### A.3. Run the build script providing the path to the Python virtual environment:
-```bash
-./build_environment.sh $VIRTUAL_ENV /usr/bin/flow
-```
-or
-#### B. Conda environment
-##### B.1. Create a [Conda environment](docs.conda.io/projects/conda/en/latest/user-guide/concepts/environments.html)
-```bash
-conda create -n venv python=3.7
-```
-##### B.2. Activate the environment:
-```bash
-conda activate venv
-```
-##### B.3. Fix path to Python packages:
-```bash
-conda create -n flownet python=3.7
-conda activate flownet
-echo "$CONDA_PREFIX/lib/python3.7/dist-packages" > $CONDA_PREFIX/lib/python3.7/site-packages/dist-packages.pth
-```
-##### B.4. Run the build script providing the path to the Conda environment:
-```bash
-./build_environment.sh $CONDA_PREFIX /usr/bin/flow
-```
 
-</details>
-
-##### 4. Install the `flownet` Python module in development mode:
+##### 5. Install the `flownet` Python module in development mode:
 ```bash
 pip install -e .
 ```
@@ -111,13 +77,12 @@ To be able to have the ERT process, that will be called by FlowNet,
 run jobs via LSF correctly you will need to update your default shell's
 configuration file (`.cshrc` or `.bashrc`) to automatically source your
 virtual environment.
-> 
 
 ### Running FlowNet
 
 You can run _FlowNet_ as a single command line:
 ```
-flownet ./some_config.yaml ./some_output_folder
+flownet ahm ./some_config.yaml ./some_output_folder
 ```
 Run `flownet --help` to see all possible command line argument options.
 

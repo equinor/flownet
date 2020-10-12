@@ -12,7 +12,7 @@ import numpy as np
 import jinja2
 
 from ..network_model import NetworkModel, create_egrid
-from ..realization import Schedule
+from ._schedule import Schedule
 from ..utils import write_grdecl_file
 
 
@@ -45,9 +45,11 @@ class SimulationRealization:
         """
         self._network: NetworkModel = network
         self._schedule: Schedule = schedule
-        self._dims: Dict = simulation_input[  # type: ignore[assignment]
-            "DIMS"
-        ] if "DIMS" in simulation_input else {}
+        self._dims: Dict = (
+            simulation_input["DIMS"]  # type: ignore[assignment]
+            if "DIMS" in simulation_input
+            else {}
+        )
         self._includes: Dict = (
             simulation_input["INCLUDES"]  # type: ignore[assignment]
             if "INCLUDES" in simulation_input

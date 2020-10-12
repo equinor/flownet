@@ -1,12 +1,13 @@
 import warnings
 from pathlib import Path
 from typing import Union, List
+import datetime
 
 import numpy as np
 import pandas as pd
 from ecl.well import WellInfo
 from ecl.grid import EclGrid
-from ecl.eclfile import EclFile
+from ecl.eclfile import EclFile, EclInitFile
 from ecl.summary import EclSum
 from ecl2df import faults
 from ecl2df.eclfiles import EclFiles
@@ -36,12 +37,14 @@ class FlowData(FromSource):
         self._eclsum = EclSum(str(self._input_case))
         self._grid = EclGrid(str(self._input_case.with_suffix(".EGRID")))
         self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
+        self._init = EclInitFile(self._grid, str(self._input_case.with_suffix(".INIT")))
         self._wells = WellInfo(
             self._grid, rst_file=self._restart, load_segment_information=True
         )
 
         self._perforation_handling_strategy: str = perforation_handling_strategy
 
+    # pylint: disable=too-many-branches
     def _coordinates(self) -> pd.DataFrame:
         """
         Function to extract well coordinates from an Flow simulation.
@@ -69,6 +72,46 @@ class FlowData(FromSource):
             elif self._perforation_handling_strategy == "multiple":
                 xyz = [global_conns]
                 coord_append = multi_xyz_append
+            elif self._perforation_handling_strategy == "time_avg_open_location":
+                connection_open_time = {}
+
+                for i, conn_status in enumerate(self._wells[well_name]):
+                    time = datetime.datetime.strptime(
+                        str(conn_status.simulationTime()), "%Y-%m-%d %H:%M:%S"
+                    )
+                    if i == 0:
+                        prev_time = time
+
+                    for connection in conn_status.globalConnections():
+                        if connection.ijk() not in connection_open_time:
+                            connection_open_time[connection.ijk()] = 0.0
+                        elif connection.isOpen():
+                            connection_open_time[connection.ijk()] += (
+                                time - prev_time
+                            ).total_seconds()
+                        else:
+                            connection_open_time[connection.ijk()] += 0.0
+
+                    prev_time = time
+
+                xyz_values = np.zeros((1, 3), dtype=np.float64)
+                total_open_time = sum(connection_open_time.values())
+
+                if total_open_time > 0:
+                    for connection, open_time in connection_open_time.items():
+                        xyz_values += np.multiply(
+                            np.array(self._grid.get_xyz(ijk=connection)),
+                            open_time / total_open_time,
+                        )
+                else:
+                    for connection, open_time in connection_open_time.items():
+                        xyz_values += np.divide(
+                            np.array(self._grid.get_xyz(ijk=connection)),
+                            len(connection_open_time.items()),
+                        )
+
+                xyz = tuple(*xyz_values)
+
             else:
                 raise Exception(
                     f"perforation strategy {self._perforation_handling_strategy} unknown"
@@ -282,6 +325,14 @@ class FlowData(FromSource):
     def _get_start_date(self):
         return self._eclsum.start_date
 
+    def init(self, name: str) -> np.ndarray:
+        """array with 'name' regions"""
+        return self._init[name][0]
+
+    def get_unique_regions(self, name: str) -> np.ndarray:
+        """array with unique 'name' regions"""
+        return np.unique(self._init[name][0])
+
     @property
     def grid_cell_bounding_boxes(self) -> np.ndarray:
         """Boundingboxes for all gridcells"""
@@ -301,3 +352,8 @@ class FlowData(FromSource):
     def coordinates(self) -> pd.DataFrame:
         """dataframe with all coordinates"""
         return self._coordinates()
+
+    @property
+    def grid(self) -> EclGrid:
+        """the simulation grid with properties"""
+        return self._grid

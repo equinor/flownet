@@ -20,11 +20,12 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.6', '3.7']
-        flownet-model: ['norne','egg']
+        flownet-model: ['norne','egg', 'brugge']
 
     env:
       VENV_PATH: ${{ github.workspace }}/flownet_venv
       PYTHONPATH: ${{ github.workspace }}/flownet_venv/lib/python${{ matrix.python-version }}/dist-packages
+      PYTHONWARNINGS: default
     steps:
       - name: 📖 Checkout commit locally
         uses: actions/checkout@v2
@@ -34,18 +35,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: 📁 Cache virtual environment
-        id: cache-venv
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.VENV_PATH }}
-          key: ${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('build_environment.sh') }}-${{ hashFiles('setup.py') }}
-
       - name: 📦 Install non-python dependencies
         run: sudo bash ./apt_install.sh
 
       - name: 🏗️ Build Python environment
-        if: steps.cache-venv.outputs.cache-hit != 'true'
         run: bash ./build_environment.sh $VENV_PATH /usr/bin/flow
 
       - name: 🍿 Download FlowNet test data
@@ -58,10 +51,8 @@ jobs:
           # change the value her from "master" to the relevant branch name.
           TESTDATA_REPO_BRANCH: master
         run: |
-          git clone --depth 1 --branch $TESTDATA_REPO_BRANCH https://github.com/$TESTDATA_REPO_OWNER/flownet-testdata.git
-          if [ -f "$INPUT_MODEL_FOLDER/${{ matrix.flownet-model }}.tar.gz" ]; then
-             tar -zxvf $INPUT_MODEL_FOLDER/${{ matrix.flownet-model }}.tar.gz -C $INPUT_MODEL_FOLDER
-          fi
+          git clone --depth 1 --branch $TESTDATA_REPO_BRANCH https://github.com/$TESTDATA_REPO_OWNER/flownet-testdata.git --recursive
+          for f in $INPUT_MODEL_FOLDER/*.tar.gz; do tar -zxvf "$f" -C $INPUT_MODEL_FOLDER; done
 
       - name: 📦 Install FlowNet
         run: |
@@ -94,8 +85,11 @@ jobs:
       - name: 🚀 Run full FlowNet example
         run: |
           source $VENV_PATH/bin/activate
-          flownet ahm ./flownet-testdata/${{ matrix.flownet-model }}/ci_config/assisted_history_matching.yml ./some_ahm_run
-          flownet pred ./flownet-testdata/${{ matrix.flownet-model }}/ci_config/prediction.yml ./some_pred_run ./some_ahm_run
+          pushd ./flownet-testdata/${{ matrix.flownet-model }}
+          flownet ahm ./config/assisted_history_matching.yml ./some_ahm_run --update-config ./ci_config/assisted_history_matching.yml
+          flownet ahm ./config/assisted_history_matching.yml ./some_ahm_run2 --update-config ./ci_config/assisted_history_matching.yml --restart-folder ./some_ahm_run
+          flownet pred ./config/prediction.yml ./some_pred_run ./some_ahm_run  --update-config ./ci_config/prediction.yml
+          popd
 
       - name: 📚 Build documentation
         run: |

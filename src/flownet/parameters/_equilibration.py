@@ -33,7 +33,7 @@ class Equilibration(Parameter):
         network: FlowNet network instance.
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
         eqlnum: A dataframe defining the EQLNUM for each flow tube.
-        datum_depth: Depth of the datum (m).
+        datum_depth: Depth of the datum(s) (m).
         rsvd: Pandas dataframe with a single rsvd table.
 
     """
@@ -45,10 +45,10 @@ class Equilibration(Parameter):
         network: NetworkModel,
         ti2ci: pd.DataFrame,
         eqlnum: pd.DataFrame,
-        datum_depth: Optional[float] = None,
+        datum_depth: Optional[List[float]] = None,
         rsvd: Optional[pd.DataFrame] = None,
     ):
-        self._datum_depth: Union[float, None] = datum_depth
+        self._datum_depth: Union[List[float], None] = datum_depth
         self._rsvd: Union[pathlib.Path, None] = rsvd
         self._network: NetworkModel = network
 
@@ -117,7 +117,10 @@ class Equilibration(Parameter):
             eqlnum2 = list(list(zip(*eqlnum_combinations))[1])
 
             thpres = _TEMPLATE_ENVIRONMENT.get_template("THPRES.jinja2").render(
-                {"eqlnum1": eqlnum1, "eqlnum2": eqlnum2,}
+                {
+                    "eqlnum1": eqlnum1,
+                    "eqlnum2": eqlnum2,
+                }
             )
 
             if self._rsvd is not None:

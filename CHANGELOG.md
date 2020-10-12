@@ -3,8 +3,20 @@ All notable changes to `FlowNet` will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
 ### Added
-- [#115](https://github.com/equinor/flownet/pull/150) Adds this changelog.
+- [#199](https://github.com/equinor/flownet/pull/199) Added the possibility of defining a 'base' value for all parameters related to relative permeability. This provides the opportunity to interpolate between three relative permeability models. All the 'min' values will be used to construct a pessimistic or low model, the 'base' values are used for a 'base' model, and the 'high' values are used for an optimistic or high model value. The history matching can then be done with only one (two for three phase models - oil/water and gas/oil interpolated independently) relative permeability parameter(s) per SATNUM region.
+- [#188](https://github.com/equinor/flownet/pull/188) The possibility to extract regions from an input simulation model extended to also include SATNUM regions. For relative permeability, the scheme keyword can be set to 'regions_from_sim' in the configuration file.
+- [#189](https://github.com/equinor/flownet/pull/189) User can now provide both a _base_ configuration file, and an optional extra configuration file which will be used to override the base settings.
+
+### Changed
+- [#199](https://github.com/equinor/flownet/pull/199) Removed deprecated parameters in pyscal ('krowend', 'krogend') from config file. Added 'kroend' to config file. 
+
+## [0.3.0] - 2020-09-14
+### Added
+- [#160](https://github.com/equinor/flownet/pull/160) Adds the possibility to extract regions from an existing model when the data source is a simulation model. For equil, the scheme key can be set to 'regions_from_sim'
+- [#157](https://github.com/equinor/flownet/pull/157) Adds a new 'time-weighted average open perforation location' perforation strategy called `time_avg_open_location`. 
+- [#150](https://github.com/equinor/flownet/pull/150) Adds this changelog.
 - [#146](https://github.com/equinor/flownet/pull/146) Added about page to documentation with logo of industry and research institute partners.
 - [#138](https://github.com/equinor/flownet/pull/138) Print message to terminal when the schedule is being generated instead of utter silence.
 - [#134](https://github.com/equinor/flownet/pull/134) Egg [model](https://github.com/equinor/flownet-testdata/blob/master/egg/ci_config/assisted_history_matching.yml) added in CI.
@@ -26,8 +38,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - [#89](https://github.com/equinor/flownet/pull/89), [#91](https://github.com/equinor/flownet/pull/91), [#99](https://github.com/equinor/flownet/pull/99) Updates and fixes in git workflow.
 - [#81](https://github.com/equinor/flownet/pull/81) Various bugfixes in the analysis workflow are now solved.
 - [#75](https://github.com/equinor/flownet/pull/75) Resampling via the config path is no longer supported. This PR removes also the resampling option from the config file parser.
-
+ 
 ### Changed
+- [#147](https://github.com/equinor/flownet/pull/147) The observation uncertainty now only needs to be specified for the vectors that are actually used in the conditioning. This PR also adds possibility of defining uncertainty for WWIR and WGIR into the flownet config YAML.
 - [#132](https://github.com/equinor/flownet/pull/132) The observation uncertainty, used for conditioning models, is now exposed to the user via the configuration file instead of hidden in the `observations.yamlobs.jinja2` template. This PR also introduced a wider usage of passing around the `ConfigSuit.snapshot`.
 - [#128](https://github.com/equinor/flownet/pull/117) Simulation models and configuration files used in CI are now coming from [flownet-testdata](https://github.com/equinor/flownet-testdata) and are thus no longer an integral part of the flownet repository.
 - [#125](https://github.com/equinor/flownet/pull/125) AHM and prediction `subprocess` call are now being performed through a common `run_ert_subprocess` function call.
