@@ -3,7 +3,7 @@ import pathlib
 import argparse
 import pickle
 import shutil
-from typing import List
+from typing import List, IO
 
 from configsuite import ConfigSuite
 import jinja2
@@ -148,15 +148,15 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         template = _TEMPLATE_ENVIRONMENT.get_template("ahm_config.ert.jinja2")
 
     # Pickle network
-    with open(output_folder / "network.pickled", "wb") as fhb:
-        pickle.dump(network, fhb)
+    with open(output_folder / "network.pickled", "wb") as fh:  # type: IO
+        pickle.dump(network, fh)
 
     # Pickle schedule
-    with open(output_folder / "schedule.pickled", "wb") as fhb:
-        pickle.dump(schedule, fhb)
+    with open(output_folder / "schedule.pickled", "wb") as fh:
+        pickle.dump(schedule, fh)
 
-    with open(output_folder / "parameters.pickled", "wb") as fhb:
-        pickle.dump(parameters, fhb)
+    with open(output_folder / "parameters.pickled", "wb") as fh:
+        pickle.dump(parameters, fh)
 
     configuration = {
         "pickled_network": output_folder.resolve() / "network.pickled",
