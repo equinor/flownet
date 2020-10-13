@@ -148,15 +148,15 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         template = _TEMPLATE_ENVIRONMENT.get_template("ahm_config.ert.jinja2")
 
     # Pickle network
-    with open(output_folder / "network.pickled", "wb") as fh:
-        pickle.dump(network, fh)
+    with open(output_folder / "network.pickled", "wb") as fhb:
+        pickle.dump(network, fhb)
 
     # Pickle schedule
-    with open(output_folder / "schedule.pickled", "wb") as fh:
-        pickle.dump(schedule, fh)
+    with open(output_folder / "schedule.pickled", "wb") as fhb:
+        pickle.dump(schedule, fhb)
 
-    with open(output_folder / "parameters.pickled", "wb") as fh:
-        pickle.dump(parameters, fh)
+    with open(output_folder / "parameters.pickled", "wb") as fhb:
+        pickle.dump(parameters, fhb)
 
     configuration = {
         "pickled_network": output_folder.resolve() / "network.pickled",
@@ -177,8 +177,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
             }
         )
 
-    with open(ert_config_file, "w") as fh:  # type: ignore[assignment]
-        fh.write(template.render(configuration))  # type: ignore[call-overload]
+    with open(ert_config_file, "w") as fh:
+        fh.write(template.render(configuration))
 
     shutil.copyfile(
         _MODULE_FOLDER / ".." / "static" / "CREATE_FLOWNET_MODEL",
