@@ -11,6 +11,7 @@ REQUIREMENTS = [
     "jinja2>=2.10",
     "matplotlib>=3.1",
     "numpy>=1.17",
+    "pip>=20.2.3",
     "opm>=2020.10",
     "pandas~=1.0",
     "pyarrow>=0.14",
