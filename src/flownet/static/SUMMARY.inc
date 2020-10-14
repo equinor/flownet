@@ -24,7 +24,6 @@ FOPTH
 FGPTH
 FWPTH
 FLPTH
-FVPTH
 
 -- Injection rates
 FGIR
