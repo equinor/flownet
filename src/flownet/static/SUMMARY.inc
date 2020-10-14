@@ -12,7 +12,6 @@ FOPRH
 FGPRH
 FWPRH
 FLPRH
-FVPRH
 
 -- Production cumulatives
 FOPT
