@@ -268,13 +268,13 @@ def _constrain_using_well_logs(
         anisotropy_scaling_z=anisotropy_scaling_z,
     )
 
-    parameter_min_kriging = k3d3_interpolator(
-        network.connection_midpoints
-    ) - ss3d_interpolator(network.connection_midpoints)
+    parameter_min_kriging = k3d3_interpolator(network.connection_midpoints) - 2 * np.sqrt(
+        ss3d_interpolator(network.connection_midpoints)
+    )
 
-    parameter_max_kriging = k3d3_interpolator(
-        network.connection_midpoints
-    ) + ss3d_interpolator(network.connection_midpoints)
+    parameter_max_kriging = k3d3_interpolator(network.connection_midpoints) + 2 * np.sqrt(
+        ss3d_interpolator(network.connection_midpoints)
+    )
 
     if measurement_type == "permeability":
         parameter_min_kriging = np.power(10, parameter_min_kriging)
