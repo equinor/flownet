@@ -82,9 +82,9 @@ RGIP
 RWIP
 /
 
--- #######################
--- ## Region quantities ##
--- #######################
+-- #####################
+-- ## Well quantities ##
+-- #####################
 
 -- Production rates
 WOPR
