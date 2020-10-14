@@ -101,7 +101,6 @@ WWPRH
 /
 
 -- Production cumulatives
-
 WOPT
 /
 WGPT
