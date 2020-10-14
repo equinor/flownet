@@ -79,7 +79,7 @@ Benchmark models
 The core developers of FlowNet are currently testing on the following open benchmark models:
 
  - `Norne model <https://github.com/OPM/opm-data/tree/master/norne>`_
- - `Brugge model <https://www.isapp2.com/data-sharepoint/brugge-data-set.html>`_ (soon to be available on GitHub)
+ - `Brugge model <https://github.com/TNO/Brugge>`_
  - `Egg model <https://data.4tu.nl/articles/The_Egg_Model_-_data_files/12707642>`_
 
 A small Norne assisted history matching example using FlowNet is automatically started
