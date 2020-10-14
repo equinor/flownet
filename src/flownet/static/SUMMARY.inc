@@ -1,105 +1,156 @@
+-- ######################
+-- ## Field quantities ##
+-- ######################
+
+-- Production rates
 FOPR
-FOPT
+FGPR
+FWPR
+FLPR
+FVPR
 FOPRH
-FOPTH
-FWPT
-FWPTH
+FGPRH
+FWPRH
+FLPRH
+FVPRH
+
+-- Production cumulatives
+FOPT
 FGPT
+FWPT
+FLPT
+FVPT
+FOPTH
 FGPTH
+FWPTH
+FLPTH
+FVPTH
+
+-- Injection rates
+FGIR
+FWIR
+FGIRH
+FWIRH
+
+-- Injection cumulatives
+FGIT
+FWIT
+FGITH
+FWITH
+
+-- Ratios
+FGOR
+FWCT
+FGORH
+FWCTH
+
+-- In-place volumes
+FOIP
+FGIP
+FWIP
+
+-- Pore volumes
+FOPV
+FGPV
+FWPV
+FRPV
+FHPV
+
+-- Pressure
+FPR
+
+-- Recovery Efficiency
+FOE
+
+-- Active wells
+FMWPR
+FMWIN
+
+-- #######################
+-- ## Region quantities ##
+-- #######################
+
+-- Pressure
+RPR
+/
+
+-- In-place volumes
+ROIP
+/
+RGIP
+/
+RWIP
+/
+
+-- #######################
+-- ## Region quantities ##
+-- #######################
+
+-- Production rates
 WOPR
-/
-WOPRH
-/
-WOPT
-/
-WOPTH
 /
 WGPR
 /
-WGPRH
-/
-WGPT
-/
-WGPTH
-/
 WWPR
+/
+WOPRH
+/
+WGPRH
 /
 WWPRH
 /
+
+-- Production cumulatives
+
+WOPT
+/
+WGPT
+/
 WWPT
+/
+WOPTH
+/
+WGPTH
 /
 WWPTH
 /
-FWIR
-WWIR
-/
-WWIRH
-/
-FWIT
-WWIT
-/
-FWIRH
-FWITH
-WWITH
-/
-FGIR
+
+-- Injection rates
 WGIR
+/
+WWIR
 /
 WGIRH
 /
-FGIT
+WWIRH
+/
+
+-- Injection cumulatives
 WGIT
 /
-FGIRH
-FGITH
+WWIT
+/
 WGITH
 /
-FGOR
+WWITH
+/
+
+-- Ratios
 WGOR
 /
-FGORH
-WGORH
-/
-FWCT
 WWCT
 /
-FWCTH
+WGORH
+/
 WWCTH
 /
-FOIP
-ROIP
-/
-FWIP
-RWIP
-/
-FGIP
-RGIP
-/
-FGPR
-FGPRH
-FGPR
-FGPRH
-FWPR
-FWPRH
-FWPR
-FWPRH
-FPR
-RPR
+
+-- Pressure
+WBHP
 /
 WTHP
 /
-WTHPH
-/
-WBHP
-/
 WBHPH
 /
-FOIP
-FGIP
-FWIP
-FRPV
-FOPV
-FWPV
-FGPV
-FHPV
-FOE
+WTHPH
+/
