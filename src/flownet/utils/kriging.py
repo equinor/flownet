@@ -22,7 +22,7 @@ def execute(
         n: Number of kriged values in each direct. E.g, n = 10 -> 10x10x10 = 1000 values
         variogram_model: Variogram options as allowed in pykrige
         nlags: nlag as defined in pykrige
-        anisotropy_scaling_<: anisotropy in the z-scale
+        anisotropy_scaling_z: anisotropy in the z-scale
         ...
 
     Returns:
