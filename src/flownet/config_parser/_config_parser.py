@@ -228,24 +228,23 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                         MK.Type: types.Integer,
                                         MK.Default: 20,
                                         MK.Description: "Number of kriged values in each direct. E.g, n = 10 -> "
-                                        "10x10x10 = 1000 values. Default: 20",
+                                        "10x10x10 = 1000 values.",
                                     },
                                     "n_lags": {
                                         MK.Type: types.Integer,
                                         MK.Default: 6,
-                                        MK.Description: "Number of averaging bins for the semivariogram. Default: 6",
+                                        MK.Description: "Number of averaging bins for the semivariogram.",
                                     },
                                     "anisotropy_scaling_z": {
                                         MK.Type: types.Number,
                                         MK.Default: 10,
-                                        MK.Description: "Scalar stretching value to take into account anisotropy. "
-                                        "Default: 10",
+                                        MK.Description: "Scalar stretching value to take into account anisotropy. ",
                                     },
                                     "variogram_model": {
                                         MK.Type: types.String,
                                         MK.Default: "spherical",
                                         MK.Description: "Specifies which variogram model to use. See PyKridge "
-                                        "documentation for valid options. Default: spherical",
+                                        "documentation for valid options.",
                                     },
                                     "permeability_variogram_parameters": {
                                         MK.Type: types.Dict,
