@@ -3,7 +3,7 @@ import pathlib
 import argparse
 import pickle
 import shutil
-from typing import List
+from typing import List, IO
 
 from configsuite import ConfigSuite
 import jinja2
@@ -148,7 +148,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         template = _TEMPLATE_ENVIRONMENT.get_template("ahm_config.ert.jinja2")
 
     # Pickle network
-    with open(output_folder / "network.pickled", "wb") as fh:
+    with open(output_folder / "network.pickled", "wb") as fh:  # type: IO
         pickle.dump(network, fh)
 
     # Pickle schedule
@@ -177,8 +177,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
             }
         )
 
-    with open(ert_config_file, "w") as fh:  # type: ignore[assignment]
-        fh.write(template.render(configuration))  # type: ignore[call-overload]
+    with open(ert_config_file, "w") as fh:
+        fh.write(template.render(configuration))
 
     shutil.copyfile(
         _MODULE_FOLDER / ".." / "static" / "CREATE_FLOWNET_MODEL",
