@@ -1,15 +1,13 @@
 import warnings
 from pathlib import Path
 from typing import Union
-import datetime
 
 import numpy as np
 import pandas as pd
-from ecl.well import WellInfo
 from ecl.grid import EclGrid
 from ecl.eclfile import EclFile, EclInitFile
 from ecl.summary import EclSum
-from ecl2df import faults
+from ecl2df import compdat, faults
 from ecl2df.eclfiles import EclFiles
 
 from ..data import perforation_strategy
@@ -39,9 +37,7 @@ class FlowData(FromSource):
         self._grid = EclGrid(str(self._input_case.with_suffix(".EGRID")))
         self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
         self._init = EclInitFile(self._grid, str(self._input_case.with_suffix(".INIT")))
-        self._wells = WellInfo(
-            self._grid, rst_file=self._restart, load_segment_information=True
-        )
+        self._wells = compdat.df(EclFiles(str(self._input_case)))
 
         self._perforation_handling_strategy: str = perforation_handling_strategy
 
@@ -57,31 +53,29 @@ class FlowData(FromSource):
 
         """
         new_items = []
-        for well_name in self._wells.allWellNames():
-            for i in range(0, len(self._wells[well_name])):
-                for connection in self._wells[well_name][i].globalConnections():
-                    if i == 0:
-                        date = self._eclsum.start_date
-                    else:
-                        date = datetime.datetime.strptime(
-                            str(self._wells[well_name][i].simulationTime()),
-                            "%Y-%m-%d %H:%M:%S",
-                        )
-                    X, Y, Z = self._grid.get_xyz(ijk=connection.ijk())
-                    new_row = {
-                        "WELL_NAME": well_name,
-                        "IJK": connection.ijk(),
-                        "X": X,
-                        "Y": Y,
-                        "Z": Z,
-                        "DATE": date,
-                        "OPEN": connection.isOpen(),
-                    }
-                    new_items.append(new_row)
+        for _, row in self._wells.iterrows():
+            X, Y, Z = self._grid.get_xyz(
+                ijk=(row["I"] - 1, row["J"] - 1, row["K1"] - 1)
+            )
+            new_row = {
+                "WELL_NAME": row["WELL"],
+                "IJK": (
+                    row["I"] - 1,
+                    row["J"] - 1,
+                    row["K1"] - 1,
+                ),
+                "X": X,
+                "Y": Y,
+                "Z": Z,
+                "DATE": row["DATE"],
+                "OPEN": bool(row["OP/SH"] == "OPEN"),
+            }
+            new_items.append(new_row)
 
         df = pd.DataFrame(
             new_items, columns=["WELL_NAME", "IJK", "X", "Y", "Z", "DATE", "OPEN"]
         )
+        df["DATE"] = pd.to_datetime(df["DATE"], format="%Y-%m-%d").dt.date
 
         try:
             perforation_strategy_method = getattr(
@@ -92,7 +86,7 @@ class FlowData(FromSource):
                 f"The perforation handling strategy {self._perforation_handling_strategy} is unknown."
             ) from attribute_error
 
-        return perforation_strategy_method(df)
+        return perforation_strategy_method(df).sort_values(["DATE"])
 
     def _production_data(self) -> pd.DataFrame:
         """
@@ -124,8 +118,6 @@ class FlowData(FromSource):
 
         df_production_data = pd.DataFrame()
 
-        start_date = self._get_start_date()
-
         # Suppress a depreciation warning inside LibEcl
         warnings.simplefilter("ignore", category=DeprecationWarning)
         with warnings.catch_warnings():
@@ -144,30 +136,6 @@ class FlowData(FromSource):
                         )
                     except KeyError:
                         df[f"{prod_key}"] = np.nan
-
-                # Find number of leading empty rows (with only nan or 0 values)
-                zero = df.fillna(0).eq(0).all(1).sum()
-
-                if zero < df.shape[0]:
-                    # If there are no empty rows, prepend one for the start date
-                    if zero == 0:
-                        df1 = df.head(1)
-                        as_list = df1.index.tolist()
-                        idx = as_list.index(df1.index)
-                        as_list[idx] = pd.to_datetime(start_date)
-                        df1.index = as_list
-                        df = pd.concat([df1, df])
-                        for col in df.columns:
-                            df[col].values[0] = 0
-                        zero = 1
-
-                    # Keep only the last empty row (well activation date)
-                    df = df.iloc[max(zero - 1, 0) :]
-
-                    # Assign well targets to the correct schedule dates
-                    df = df.shift(-1)
-                    # Make sure the row for the final date is not empty
-                    df.iloc[-1] = df.iloc[-2]
 
                 # Set columns that have only exact zero values to np.nan
                 df.loc[:, (df == 0).all(axis=0)] = np.nan
