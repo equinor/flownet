@@ -4,6 +4,14 @@ DATES
  {{ date.strftime('%d %b %Y').upper() }} /
 /
 {%- endif %}
+
+{%- if schedule.get_keywords(date=date, kw_class="WHISTCTL"): %}
+WHISTCTL
+{%- for kw in schedule.get_keywords(date=date, kw_class="WHISTCTL"): %}
+  {{  kw.control_mode.upper()  }} /
+{%- endfor %}
+{%- endif %}
+
 {%- if schedule.get_keywords(date=date, kw_class="WELSPECS"): %}
 WELSPECS
 -- WELL GROUP LOCATION BHP   PHASE DRAIN INFLOW OPEN CROSS PVT   DEN FIPNUM

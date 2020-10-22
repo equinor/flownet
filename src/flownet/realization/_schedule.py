@@ -7,7 +7,8 @@ from operator import attrgetter
 import numpy as np
 import pandas as pd
 
-from ._simulation_keywords import Keyword, COMPDAT, WCONHIST, WCONINJH, WELSPECS
+from configsuite import ConfigSuite
+from ._simulation_keywords import Keyword, COMPDAT, WCONHIST, WCONINJH, WELSPECS, WHISTCTL
 from ..network_model import NetworkModel
 
 
@@ -21,14 +22,14 @@ class Schedule:
         self,
         network: NetworkModel,
         df_production_data: pd.DataFrame,
-        case_name: str,
-        control_mode: str = "RESV",
+        config: ConfigSuite.snapshot,
     ):
         self._schedule_items: List = []
         self._network: NetworkModel = network
         self._df_production_data: pd.DataFrame = df_production_data
-        self._control_mode: str = control_mode
-        self._case_name: str = case_name
+        self._control_mode: str = config.flownet.default_control_mode if config.flownet.default_control_mode else "RESV"
+        self._control_mode_changes: Dict = dict(config.flownet.control_mode_changes)
+        self._case_name: str = config.name
 
         self._create_schedule()
 
@@ -42,6 +43,7 @@ class Schedule:
         self._calculate_welspecs()
         self._calculate_wconhist()
         self._calculate_wconinjh()
+        self._calculate_whistctl()
         print("done.", flush=True)
 
     def _calculate_entity_dates(self):
@@ -138,6 +140,24 @@ class Schedule:
                     f"Skipping WELSPECS for well {well_name} as no positive production or injection data"
                     f" has been supplied."
                 )
+
+
+    def _calculate_whistctl(self):
+        """
+        Helper function that generates the WHISTCTL keywords based on dates/control modes provided in the
+        config yaml file
+
+        Returns:
+            Nothing
+
+        """
+        for key, value in self._control_mode_changes.items():
+            self.append(
+                WHISTCTL(
+                    date=key,
+                    control_mode=value,
+                )
+            )
 
     def _calculate_wconhist(self):
         """
@@ -377,7 +397,7 @@ class Schedule:
                 }
             )
         else:
-            output = list({kw.well_name for kw in self._schedule_items})
+            output = list({kw.well_name for kw in self._schedule_items if kw.well_name})
 
         return output
 
@@ -500,29 +520,24 @@ class Schedule:
             )
             if keywords_wconhist:
                 for keyword_wconhist in keywords_wconhist:
-                    if not self.get_well_start_date(keyword_wconhist.well_name) == date:
-                        if not np.isnan(keyword_wconhist.oil_rate):
-                            i += 1
-                        if not np.isnan(keyword_wconhist.gas_rate):
-                            i += 1
-                        if not np.isnan(keyword_wconhist.bhp):
-                            i += 1
-                        if not np.isnan(keyword_wconhist.thp):
-                            i += 1
+                    if not np.isnan(keyword_wconhist.oil_rate):
+                        i += 1
+                    if not np.isnan(keyword_wconhist.gas_rate):
+                        i += 1
+                    if not np.isnan(keyword_wconhist.bhp):
+                        i += 1
+                    if not np.isnan(keyword_wconhist.thp):
+                        i += 1
 
             keywords_wconinjh: List[Keyword] = self.get_keywords(
                 date=date, kw_class="WCONINJH"
             )
             if keywords_wconinjh:
                 for keyword__wconinjh in keywords_wconinjh:
-                    if (
-                        not self.get_well_start_date(keyword__wconinjh.well_name)
-                        == date
-                    ):
-                        if not np.isnan(keyword__wconinjh.bhp):
-                            i += 1
-                        if not np.isnan(keyword__wconinjh.thp):
-                            i += 1
+                    if not np.isnan(keyword__wconinjh.bhp):
+                        i += 1
+                    if not np.isnan(keyword__wconinjh.thp):
+                        i += 1
 
         return i
 

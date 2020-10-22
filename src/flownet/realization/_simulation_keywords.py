@@ -37,6 +37,26 @@ class DATES(Keyword):
     """
 
 
+class WHISTCTL(Keyword):
+    """
+    This keyword overrides the history matching production well control modes, set in all subsequent
+    WCONHIST keywords, with a single specified control mode.
+
+    See the OPM Flow manual for further details
+
+    """
+    def __init__(
+        self,
+        date: datetime.date,
+        control_mode: str,
+    ):
+        super().__init__(date)
+        self.name = "WHISTCTL"
+        self.well_name = None
+        self.control_mode: str = control_mode
+
+
+
 class COMPDAT(Keyword):
     """
     The COMPDAT keyword defines how a well is connected to the reservoir by defining or modifying existing
