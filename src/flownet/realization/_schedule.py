@@ -8,7 +8,14 @@ import numpy as np
 import pandas as pd
 
 from configsuite import ConfigSuite
-from ._simulation_keywords import Keyword, COMPDAT, WCONHIST, WCONINJH, WELSPECS, WHISTCTL
+from ._simulation_keywords import (
+    Keyword,
+    COMPDAT,
+    WCONHIST,
+    WCONINJH,
+    WELSPECS,
+    WHISTCTL,
+)
 from ..network_model import NetworkModel
 
 
@@ -27,7 +34,11 @@ class Schedule:
         self._schedule_items: List = []
         self._network: NetworkModel = network
         self._df_production_data: pd.DataFrame = df_production_data
-        self._control_mode: str = config.flownet.default_control_mode if config.flownet.default_control_mode else "RESV"
+        self._control_mode: str = (
+            config.flownet.default_control_mode
+            if config.flownet.default_control_mode
+            else "RESV"
+        )
         self._control_mode_changes: Dict = dict(config.flownet.control_mode_changes)
         self._case_name: str = config.name
 
@@ -140,7 +151,6 @@ class Schedule:
                     f"Skipping WELSPECS for well {well_name} as no positive production or injection data"
                     f" has been supplied."
                 )
-
 
     def _calculate_whistctl(self):
         """

@@ -45,6 +45,7 @@ class WHISTCTL(Keyword):
     See the OPM Flow manual for further details
 
     """
+
     def __init__(
         self,
         date: datetime.date,
@@ -54,7 +55,6 @@ class WHISTCTL(Keyword):
         self.name = "WHISTCTL"
         self.well_name = None
         self.control_mode: str = control_mode
-
 
 
 class COMPDAT(Keyword):

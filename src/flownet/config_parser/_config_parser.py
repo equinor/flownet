@@ -273,12 +273,11 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             MK.Key: {MK.Type: types.Date},
                             MK.Value: {MK.Type: types.String},
                         },
-
                         MK.Description: "Dictionary with dates as keys and control modes "
-                                        "for history matching as values. If defined, this "
-                                        "will overwrite the defined default control mode "
-                                        "values from the given dates onwards."
-                    }
+                        "for history matching as values. If defined, this "
+                        "will overwrite the defined default control mode "
+                        "values from the given dates onwards.",
+                    },
                 },
             },
             "ert": {
