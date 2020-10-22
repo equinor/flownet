@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Optional
 import datetime
 
 import numpy as np
@@ -12,7 +13,7 @@ class Keyword(ABC):
     """
 
     name: str
-    well_name: str
+    well_name: Optional[str] = None
     oil_rate: float
     gas_rate: float
     bhp: float
@@ -53,7 +54,6 @@ class WHISTCTL(Keyword):
     ):
         super().__init__(date)
         self.name = "WHISTCTL"
-        self.well_name = None
         self.control_mode: str = control_mode
 
 
