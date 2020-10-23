@@ -267,17 +267,6 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     "max_distance": {MK.Type: types.Number, MK.Default: 1e12},
                     "max_distance_fraction": {MK.Type: types.Number, MK.Default: 0},
                     "default_control_mode": {MK.Type: types.String, MK.Default: "RESV"},
-                    "control_mode_changes": {
-                        MK.Type: types.Dict,
-                        MK.Content: {
-                            MK.Key: {MK.Type: types.Date},
-                            MK.Value: {MK.Type: types.String},
-                        },
-                        MK.Description: "Dictionary with dates as keys and control modes "
-                        "for history matching as values. If defined, this "
-                        "will overwrite the defined default control mode "
-                        "values from the given dates onwards.",
-                    },
                 },
             },
             "ert": {

@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import Optional
 import datetime
 
 import numpy as np
@@ -13,7 +12,7 @@ class Keyword(ABC):
     """
 
     name: str
-    well_name: Optional[str] = None
+    well_name: str
     oil_rate: float
     gas_rate: float
     bhp: float
@@ -36,25 +35,6 @@ class DATES(Keyword):
     See the OPM Flow manual for further details.
 
     """
-
-
-class WHISTCTL(Keyword):
-    """
-    This keyword overrides the history matching production well control modes, set in all subsequent
-    WCONHIST keywords, with a single specified control mode.
-
-    See the OPM Flow manual for further details
-
-    """
-
-    def __init__(
-        self,
-        date: datetime.date,
-        control_mode: str,
-    ):
-        super().__init__(date)
-        self.name = "WHISTCTL"
-        self.control_mode: str = control_mode
 
 
 class COMPDAT(Keyword):

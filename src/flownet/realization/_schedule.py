@@ -8,14 +8,7 @@ import numpy as np
 import pandas as pd
 
 from configsuite import ConfigSuite
-from ._simulation_keywords import (
-    Keyword,
-    COMPDAT,
-    WCONHIST,
-    WCONINJH,
-    WELSPECS,
-    WHISTCTL,
-)
+from ._simulation_keywords import Keyword, COMPDAT, WCONHIST, WCONINJH, WELSPECS
 from ..network_model import NetworkModel
 
 
@@ -34,14 +27,9 @@ class Schedule:
         self._schedule_items: List = []
         self._network: NetworkModel = network
         self._df_production_data: pd.DataFrame = df_production_data
-        self._control_mode: str = (
-            config.flownet.default_control_mode
-            if config.flownet.default_control_mode
-            else "RESV"
-        )
+        self._control_mode: str = config.flownet.default_control_mode
         self._control_mode_changes: Dict = dict(config.flownet.control_mode_changes)
         self._case_name: str = config.name
-
         self._create_schedule()
 
     def _create_schedule(self):
@@ -54,7 +42,6 @@ class Schedule:
         self._calculate_welspecs()
         self._calculate_wconhist()
         self._calculate_wconinjh()
-        self._calculate_whistctl()
         print("done.", flush=True)
 
     def _calculate_entity_dates(self):
@@ -151,23 +138,6 @@ class Schedule:
                     f"Skipping WELSPECS for well {well_name} as no positive production or injection data"
                     f" has been supplied."
                 )
-
-    def _calculate_whistctl(self):
-        """
-        Helper function that generates the WHISTCTL keywords based on dates/control modes provided in the
-        config yaml file
-
-        Returns:
-            Nothing
-
-        """
-        for key, value in self._control_mode_changes.items():
-            self.append(
-                WHISTCTL(
-                    date=key,
-                    control_mode=value,
-                )
-            )
 
     def _calculate_wconhist(self):
         """
@@ -407,7 +377,7 @@ class Schedule:
                 }
             )
         else:
-            output = list({kw.well_name for kw in self._schedule_items if kw.well_name})
+            output = list({kw.well_name for kw in self._schedule_items})
 
         return output
 
@@ -524,7 +494,7 @@ class Schedule:
         num_training_dates = round(len(self.get_dates()) * training_set_fraction)
         i = 0
 
-        for date in self.get_dates()[0 : num_training_dates - 1]:
+        for date in self.get_dates()[1 : num_training_dates - 1]:
             keywords_wconhist: List[Keyword] = self.get_keywords(
                 date=date, kw_class="WCONHIST"
             )
