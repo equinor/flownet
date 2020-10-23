@@ -266,7 +266,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     "fault_tolerance": {MK.Type: types.Number, MK.Default: 1.0e-5},
                     "max_distance": {MK.Type: types.Number, MK.Default: 1e12},
                     "max_distance_fraction": {MK.Type: types.Number, MK.Default: 0},
-                    "default_control_mode": {MK.Type: types.String, MK.Default: "RESV"},
+                    "prod_well_control_mode": {MK.Type: types.String, MK.Default: "RESV"},
                 },
             },
             "ert": {

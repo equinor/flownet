@@ -27,8 +27,7 @@ class Schedule:
         self._schedule_items: List = []
         self._network: NetworkModel = network
         self._df_production_data: pd.DataFrame = df_production_data
-        self._control_mode: str = config.flownet.default_control_mode
-        self._control_mode_changes: Dict = dict(config.flownet.control_mode_changes)
+        self._control_mode: str = config.flownet.prod_well_control_mode
         self._case_name: str = config.name
         self._create_schedule()
 
