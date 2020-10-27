@@ -27,7 +27,8 @@ class Schedule:
         self._schedule_items: List = []
         self._network: NetworkModel = network
         self._df_production_data: pd.DataFrame = df_production_data
-        self._control_mode: str = config.flownet.prod_well_control_mode
+        self._prod_control_mode: str = config.flownet.prod_control_mode
+        self._inj_control_mode: str = config.flownet.inj_control_mode
         self._case_name: str = config.name
         self._create_schedule()
 
@@ -161,7 +162,7 @@ class Schedule:
                         date=value["date"],
                         well_name=value["WELL_NAME"],
                         status=value["WSTAT"],
-                        control_mode=self._control_mode,
+                        control_mode=self._prod_control_mode,
                         vfp_table=vfp_tables[value["WELL_NAME"]],
                         oil_rate=value["WOPR"],
                         water_rate=value["WWPR"],
@@ -196,6 +197,7 @@ class Schedule:
                         rate=value["WWIR"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
+                        target=self._inj_control_mode,
                     )
                 )
             elif value["TYPE"] == "GI" and start_date and value["date"] >= start_date:
@@ -208,6 +210,7 @@ class Schedule:
                         rate=value["WGIR"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
+                        target=self._inj_control_mode,
                     )
                 )
 

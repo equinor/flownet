@@ -39,7 +39,7 @@ WCONINJH
 -- WELL FLUID OPEN/ SURF BHP   THP  VFP   4 NOT TAR
 -- NAME TYPE  SHUT  RATE PRSES PRES TABLE USED  GET
 {%- for kw in schedule.get_keywords(date=date, kw_class="WCONINJH"): %}
- '{{ kw.well_name }}' '{{ kw.inj_type }}' '{{ kw.status }}' {{ kw.rate | isnan }} {{ kw.bhp | isnan }} {{ kw.thp | isnan }} {{ kw.vfp_table }} 4* {{ kw.target }} /
+ '{{ kw.well_name }}' '{{ kw.inj_type }}' '{{ kw.status }}' {{ kw.rate | isnan }} {{ kw.bhp | isnan }} {{ kw.thp | isnan }} {{ kw.vfp_table }} 4* '{{ kw.target }}' /
 {%- endfor %}
 /
 
