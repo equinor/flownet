@@ -29,7 +29,7 @@ WCONHIST
 -- WELL OPEN/ CNTL OIL  WAT  GAS  VFP   VFP  THP  BHP
 -- NAME SHUT  MODE RATE RATE RATE TABLE ALFQ PRES PRES
 {%- for kw in schedule.get_keywords(date=date, kw_class="WCONHIST"): %}
-  '{{ kw.well_name }}' '{{ kw.status }}' '{{ kw.control_mode }}' {{ kw.oil_rate | isnan }} {{ kw.water_rate | isnan }} {{ kw.gas_rate | isnan }} {{ kw.vfp_table }} {{ kw.artificial_lift }} {{ kw.thp | isnan }} {{ kw.bhp | isnan }} /
+  '{{ kw.well_name }}' '{{ kw.status }}' '{{ kw.prod_control_mode }}' {{ kw.oil_rate | isnan }} {{ kw.water_rate | isnan }} {{ kw.gas_rate | isnan }} {{ kw.vfp_table }} {{ kw.artificial_lift }} {{ kw.thp | isnan }} {{ kw.bhp | isnan }} /
 {%- endfor %}
 /
 {%- endif %}
@@ -39,7 +39,7 @@ WCONINJH
 -- WELL FLUID OPEN/ SURF BHP   THP  VFP   4 NOT TAR
 -- NAME TYPE  SHUT  RATE PRSES PRES TABLE USED  GET
 {%- for kw in schedule.get_keywords(date=date, kw_class="WCONINJH"): %}
- '{{ kw.well_name }}' '{{ kw.inj_type }}' '{{ kw.status }}' {{ kw.rate | isnan }} {{ kw.bhp | isnan }} {{ kw.thp | isnan }} {{ kw.vfp_table }} 4* '{{ kw.target }}' /
+ '{{ kw.well_name }}' '{{ kw.inj_type }}' '{{ kw.status }}' {{ kw.rate | isnan }} {{ kw.bhp | isnan }} {{ kw.thp | isnan }} {{ kw.vfp_table }} 4* '{{ kw.inj_control_mode }}' /
 {%- endfor %}
 /
 
