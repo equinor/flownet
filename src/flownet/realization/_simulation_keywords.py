@@ -149,7 +149,7 @@ class WCONINJH(Keyword):
         bhp: float = np.nan,
         thp: float = np.nan,
         vfp_table: str = "1*",
-        target: str = "1*",
+        inj_control_mode: str = "1*",
     ):
         super().__init__(date)
         self.name = "WCONINJH"
@@ -160,7 +160,7 @@ class WCONINJH(Keyword):
         self.bhp: float = bhp
         self.thp: float = thp
         self.vfp_table: str = vfp_table
-        self.target: str = target
+        self.inj_control_mode: str = inj_control_mode
 
 
 class WELSPECS(Keyword):

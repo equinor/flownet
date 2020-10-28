@@ -16,6 +16,11 @@ class Schedule:
     """
     Python class to to store all schedule items for the Flownet run.
 
+    Args:
+        network: FlowNet network instance
+        df_production_data: Dataframe with all production data
+        config: Information from the FlowNet config yaml
+
     """
 
     def __init__(
@@ -162,7 +167,7 @@ class Schedule:
                         date=value["date"],
                         well_name=value["WELL_NAME"],
                         status=value["WSTAT"],
-                        control_mode=self._prod_control_mode,
+                        prod_control_mode=self._prod_control_mode,
                         vfp_table=vfp_tables[value["WELL_NAME"]],
                         oil_rate=value["WOPR"],
                         water_rate=value["WWPR"],
@@ -197,7 +202,7 @@ class Schedule:
                         rate=value["WWIR"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
-                        target=self._inj_control_mode,
+                        inj_control_mode=self._inj_control_mode,
                     )
                 )
             elif value["TYPE"] == "GI" and start_date and value["date"] >= start_date:
@@ -210,7 +215,7 @@ class Schedule:
                         rate=value["WGIR"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
-                        target=self._inj_control_mode,
+                        inj_control_mode=self._inj_control_mode,
                     )
                 )
 
