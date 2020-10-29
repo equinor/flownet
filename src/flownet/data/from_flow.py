@@ -166,6 +166,7 @@ class FlowData(FromSource):
 
         df_production_data["WSTAT"] = df_production_data["WSTAT"].map(
             {
+                0: wstat_default,
                 1: "OPEN",  # Producer OPEN
                 2: "OPEN",  # Injector OPEN
                 3: "SHUT",
