@@ -343,7 +343,7 @@ def run_flownet_history_matching(
         fault_tolerance=config.flownet.fault_tolerance,
     )
 
-    schedule = Schedule(network, df_production_data, config.name)
+    schedule = Schedule(network, df_production_data, config)
 
     #########################################
     # Set the range on uncertain parameters #
