@@ -7,6 +7,7 @@ from operator import attrgetter
 import numpy as np
 import pandas as pd
 
+from configsuite import ConfigSuite
 from ._simulation_keywords import Keyword, COMPDAT, WCONHIST, WCONINJH, WELSPECS
 from ..network_model import NetworkModel
 
@@ -15,21 +16,25 @@ class Schedule:
     """
     Python class to to store all schedule items for the Flownet run.
 
+    Args:
+        network: FlowNet network instance
+        df_production_data: Dataframe with all production data
+        config: Information from the FlowNet config yaml
+
     """
 
     def __init__(
         self,
         network: NetworkModel,
         df_production_data: pd.DataFrame,
-        case_name: str,
-        control_mode: str = "RESV",
+        config: ConfigSuite.snapshot,
     ):
         self._schedule_items: List = []
         self._network: NetworkModel = network
         self._df_production_data: pd.DataFrame = df_production_data
-        self._control_mode: str = control_mode
-        self._case_name: str = case_name
-
+        self._prod_control_mode: str = config.flownet.prod_control_mode
+        self._inj_control_mode: str = config.flownet.inj_control_mode
+        self._case_name: str = config.name
         self._create_schedule()
 
     def _create_schedule(self):
@@ -177,7 +182,7 @@ class Schedule:
                         date=value["date"],
                         well_name=value["WELL_NAME"],
                         status=value["WSTAT"],
-                        control_mode=self._control_mode,
+                        prod_control_mode=self._prod_control_mode,
                         vfp_table=vfp_tables[value["WELL_NAME"]],
                         oil_rate=value["WOPR"],
                         water_rate=value["WWPR"],
@@ -212,6 +217,7 @@ class Schedule:
                         rate=value["WWIR"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
+                        inj_control_mode=self._inj_control_mode,
                     )
                 )
             elif value["TYPE"] == "GI" and start_date and value["date"] >= start_date:
@@ -224,6 +230,7 @@ class Schedule:
                         rate=value["WGIR"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
+                        inj_control_mode=self._inj_control_mode,
                     )
                 )
 
@@ -509,35 +516,30 @@ class Schedule:
         num_training_dates = round(len(self.get_dates()) * training_set_fraction)
         i = 0
 
-        for date in self.get_dates()[0 : num_training_dates - 1]:
+        for date in self.get_dates()[1 : num_training_dates - 1]:
             keywords_wconhist: List[Keyword] = self.get_keywords(
                 date=date, kw_class="WCONHIST"
             )
             if keywords_wconhist:
                 for keyword_wconhist in keywords_wconhist:
-                    if not self.get_well_start_date(keyword_wconhist.well_name) == date:
-                        if not np.isnan(keyword_wconhist.oil_rate):
-                            i += 1
-                        if not np.isnan(keyword_wconhist.gas_rate):
-                            i += 1
-                        if not np.isnan(keyword_wconhist.bhp):
-                            i += 1
-                        if not np.isnan(keyword_wconhist.thp):
-                            i += 1
+                    if not np.isnan(keyword_wconhist.oil_rate):
+                        i += 1
+                    if not np.isnan(keyword_wconhist.gas_rate):
+                        i += 1
+                    if not np.isnan(keyword_wconhist.bhp):
+                        i += 1
+                    if not np.isnan(keyword_wconhist.thp):
+                        i += 1
 
             keywords_wconinjh: List[Keyword] = self.get_keywords(
                 date=date, kw_class="WCONINJH"
             )
             if keywords_wconinjh:
                 for keyword__wconinjh in keywords_wconinjh:
-                    if (
-                        not self.get_well_start_date(keyword__wconinjh.well_name)
-                        == date
-                    ):
-                        if not np.isnan(keyword__wconinjh.bhp):
-                            i += 1
-                        if not np.isnan(keyword__wconinjh.thp):
-                            i += 1
+                    if not np.isnan(keyword__wconinjh.bhp):
+                        i += 1
+                    if not np.isnan(keyword__wconinjh.thp):
+                        i += 1
 
         return i
 
