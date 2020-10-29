@@ -168,9 +168,18 @@
 <span id="flownet-realization-schedule-module"></span><h1>flownet.realization._schedule module<a class="headerlink" href="#module-flownet.realization._schedule" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="flownet.realization._schedule.Schedule">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.realization._schedule.</code><code class="sig-name descname">Schedule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n"><a class="reference internal" href="flownet.network_model._network_model.html#flownet.network_model._network_model.NetworkModel" title="flownet.network_model._network_model.NetworkModel">flownet.network_model._network_model.NetworkModel</a></span></em>, <em class="sig-param"><span class="n">df_production_data</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">case_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">control_mode</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'RESV'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.realization._schedule.</code><code class="sig-name descname">Schedule</code><span class="sig-paren">(</span><em class="sig-param">network: flownet.network_model._network_model.NetworkModel</em>, <em class="sig-param">df_production_data: pandas.core.frame.DataFrame</em>, <em class="sig-param">config: &lt;property object at 0x7fc0ce6f7c28&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Python class to to store all schedule items for the Flownet run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> – FlowNet network instance</p></li>
+<li><p><strong>df_production_data</strong> – Dataframe with all production data</p></li>
+<li><p><strong>config</strong> – Information from the FlowNet config yaml</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt id="flownet.realization._schedule.Schedule._calculate_compdat">
 <code class="sig-name descname">_calculate_compdat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._calculate_compdat" title="Permalink to this definition">¶</a></dt>
