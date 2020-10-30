@@ -47,8 +47,7 @@ def _create_observation_file(
         Nothing
 
     """
-    num_dates = len(schedule.get_dates()) 
-    num_training_dates = round(num_dates * training_set_fraction)
+    num_training_dates = round(len(schedule.get_dates()) * training_set_fraction)
     
     
     #TODO Create a trainin, test and complete observation files for yaml and ert. Later make a test to check both files has the same information
@@ -96,7 +95,6 @@ def _create_observation_file(
                     {
                         "schedule": schedule,
                         "error_config": config.flownet.data_source.simulation.vectors,
-                        "num_training_dates": num_training_dates,
                     }
                 )
             )

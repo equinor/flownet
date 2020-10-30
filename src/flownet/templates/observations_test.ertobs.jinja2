@@ -1,4 +1,4 @@
-{%- for date in schedule.get_dates()[1:num_training_dates-1] -%}
+{%- for date in schedule.get_dates()[num_training_dates:-1] -%}
 
 {%- if schedule.get_keywords(date=date, kw_class="WCONHIST"): %}
 {%- for kw in schedule.get_keywords(date=date, kw_class="WCONHIST"): -%}
