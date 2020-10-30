@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>flownet.data.from_source module &mdash; FlowNet  documentation</title>
+  <title>flownet.utils.kriging module &mdash; FlowNet  documentation</title>
   
 
   
@@ -39,8 +39,8 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="flownet.data.perforation_strategy module" href="flownet.data.perforation_strategy.html" />
-    <link rel="prev" title="flownet.data.from_pdm module" href="flownet.data.from_pdm.html" /> 
+    <link rel="next" title="flownet.utils.raytracing module" href="flownet.utils.raytracing.html" />
+    <link rel="prev" title="flownet.utils.constants module" href="flownet.utils.constants.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -143,15 +143,15 @@
         
           <li><a href="api.html">FlowNet Python API</a> &raquo;</li>
         
-          <li><a href="flownet.data.html">flownet.data package</a> &raquo;</li>
+          <li><a href="flownet.utils.html">flownet.utils package</a> &raquo;</li>
         
-      <li>flownet.data.from_source module</li>
+      <li>flownet.utils.kriging module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/flownet.data.from_source.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/flownet.utils.kriging.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -164,53 +164,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-flownet.data.from_source">
-<span id="flownet-data-from-source-module"></span><h1>flownet.data.from_source module<a class="headerlink" href="#module-flownet.data.from_source" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="flownet.data.from_source.FromSource">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.data.from_source.</code><code class="sig-name descname">FromSource</code><a class="headerlink" href="#flownet.data.from_source.FromSource" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<p>Abstract base class that defines the minimum requirements for a FromSource child class.</p>
-<dl class="py attribute">
-<dt id="flownet.data.from_source.FromSource._abc_cache">
-<code class="sig-name descname">_abc_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.data.from_source.FromSource._abc_cache" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="flownet.data.from_source.FromSource._abc_negative_cache">
-<code class="sig-name descname">_abc_negative_cache</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.data.from_source.FromSource._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="flownet.data.from_source.FromSource._abc_negative_cache_version">
-<code class="sig-name descname">_abc_negative_cache_version</code><em class="property"> = 48</em><a class="headerlink" href="#flownet.data.from_source.FromSource._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="flownet.data.from_source.FromSource._abc_registry">
-<code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.data.from_source.FromSource._abc_registry" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="flownet.data.from_source.FromSource.faults">
-<em class="property">abstract property </em><code class="sig-name descname">faults</code><a class="headerlink" href="#flownet.data.from_source.FromSource.faults" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="flownet.data.from_source.FromSource.production">
-<em class="property">abstract property </em><code class="sig-name descname">production</code><a class="headerlink" href="#flownet.data.from_source.FromSource.production" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="flownet.data.from_source.FromSource.well_connections">
-<em class="property">abstract property </em><code class="sig-name descname">well_connections</code><a class="headerlink" href="#flownet.data.from_source.FromSource.well_connections" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="flownet.data.from_source.FromSource.well_logs">
-<em class="property">abstract property </em><code class="sig-name descname">well_logs</code><a class="headerlink" href="#flownet.data.from_source.FromSource.well_logs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+  <div class="section" id="module-flownet.utils.kriging">
+<span id="flownet-utils-kriging-module"></span><h1>flownet.utils.kriging module<a class="headerlink" href="#module-flownet.utils.kriging" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="flownet.utils.kriging.execute">
+<code class="sig-prename descclassname">flownet.utils.kriging.</code><code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">20</span></em>, <em class="sig-param"><span class="n">variogram_model</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'spherical'</span></em>, <em class="sig-param"><span class="n">variogram_parameters</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n_lags</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">6</span></em>, <em class="sig-param"><span class="n">anisotropy_scaling_z</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">10.0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>scipy.interpolate.interpolate.RegularGridInterpolator<span class="p">, </span>scipy.interpolate.interpolate.RegularGridInterpolator<span class="p">]</span><a class="headerlink" href="#flownet.utils.kriging.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes spatial kriging of input data and returns an scipy.interpolate.RegularInterpolator object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – 3xN np.ndarray with columns X, Y, Z, MEASUREMENT</p></li>
+<li><p><strong>n</strong> – Number of kriged values in each direct. E.g, n = 10 -&gt; 10x10x10 = 1000 values</p></li>
+<li><p><strong>variogram_model</strong> – Variogram options as allowed in pykrige</p></li>
+<li><p><strong>nlags</strong> – nlag as defined in pykrige</p></li>
+<li><p><strong>anisotropy_scaling_z</strong> – anisotropy in the z-scale</p></li>
+<li><p><strong>..</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tuple of RegularInterpolators for the kriged measurement and uncertainty in a 3D volume</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -223,10 +197,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="flownet.data.perforation_strategy.html" class="btn btn-neutral float-right" title="flownet.data.perforation_strategy module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="flownet.utils.raytracing.html" class="btn btn-neutral float-right" title="flownet.utils.raytracing module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="flownet.data.from_pdm.html" class="btn btn-neutral float-left" title="flownet.data.from_pdm module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="flownet.utils.constants.html" class="btn btn-neutral float-left" title="flownet.utils.constants module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
