@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 REQUIREMENTS = [
     "configsuite>=0.6",
     "cwrap>=1.6",
-    "ecl2df>=0.5",
+    "ecl2df>=0.8.1",
     "fmu-ensemble>=1.2",
     "jinja2>=2.10",
     "matplotlib>=3.1",

@@ -1,9 +1,7 @@
-{%- for date in schedule.get_dates()[0:num_training_dates-1] -%}
+{%- for date in schedule.get_dates()[1:num_training_dates-1] -%}
 
 {%- if schedule.get_keywords(date=date, kw_class="WCONHIST"): %}
 {%- for kw in schedule.get_keywords(date=date, kw_class="WCONHIST"): -%}
-
-{%- if not schedule.get_well_start_date(kw.well_name) == date: %}
 
 {%- set index_name = date.strftime('%d_%m_%Y') -%}
 {%- set date_formatted = date.strftime('%d/%m/%Y') %}
@@ -24,15 +22,11 @@ SUMMARY_OBSERVATION WBHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.bhp
 SUMMARY_OBSERVATION WTHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.thp }}; ERROR = {{ [error_config.WTHP.rel_error * kw.thp, error_config.WTHP.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WTHP:{{ kw.well_name }}; };
 {%- endif %}
 
-{%- endif %}
-
 {% endfor %}
 {%- endif %}
 
 {%- if schedule.get_keywords(date=date, kw_class="WCONINJH"): %}
 {%- for kw in schedule.get_keywords(date=date, kw_class="WCONINJH"): -%}
-
-{%- if not schedule.get_well_start_date(kw.well_name) == date: %}
 
 {%- set index_name = date.strftime('%d_%m_%Y') -%}
 {%- set date_formatted = date.strftime('%d/%m/%Y') %}
@@ -48,7 +42,6 @@ SUMMARY_OBSERVATION WGIR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.rat
 {%- endif %}
 {%- if not isnan(kw.rate) and kw.inj_type == "WATER" and error_config.WWIR.rel_error is not none and error_config.WWIR.min_error is not none: %}
 SUMMARY_OBSERVATION WWIR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.rate }}; ERROR = {{ [error_config.WWIR.rel_error * kw.rate, error_config.WWIR.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WWIR:{{ kw.well_name }}; };
-{%- endif %}
 {%- endif %}
 
 {% endfor %}

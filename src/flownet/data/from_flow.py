@@ -1,17 +1,16 @@
 import warnings
 from pathlib import Path
-from typing import Union, List
-import datetime
+from typing import Union
 
 import numpy as np
 import pandas as pd
-from ecl.well import WellInfo
 from ecl.grid import EclGrid
 from ecl.eclfile import EclFile, EclInitFile
 from ecl.summary import EclSum
-from ecl2df import faults
+from ecl2df import compdat, faults
 from ecl2df.eclfiles import EclFiles
 
+from ..data import perforation_strategy
 from .from_source import FromSource
 
 
@@ -39,88 +38,56 @@ class FlowData(FromSource):
         self._grid = EclGrid(str(self._input_case.with_suffix(".EGRID")))
         self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
         self._init = EclInitFile(self._grid, str(self._input_case.with_suffix(".INIT")))
-        self._wells = WellInfo(
-            self._grid, rst_file=self._restart, load_segment_information=True
-        )
+        self._wells = compdat.df(EclFiles(str(self._input_case)))
 
         self._perforation_handling_strategy: str = perforation_handling_strategy
 
     # pylint: disable=too-many-branches
-    def _coordinates(self) -> pd.DataFrame:
+    def _well_connections(self) -> pd.DataFrame:
         """
-        Function to extract well coordinates from an Flow simulation.
+        Function to extract well connection coordinates from an Flow simulation including their
+        opening and closure time. The output of this function will be filtered based on the
+        configured perforation strategy.
 
         Returns:
-            columns: WELL_NAME, X, Y, Z
+            columns: WELL_NAME, X, Y, Z, DATE, OPEN
 
         """
+        new_items = []
+        for _, row in self._wells.iterrows():
+            X, Y, Z = self._grid.get_xyz(
+                ijk=(row["I"] - 1, row["J"] - 1, row["K1"] - 1)
+            )
+            new_row = {
+                "WELL_NAME": row["WELL"],
+                "IJK": (
+                    row["I"] - 1,
+                    row["J"] - 1,
+                    row["K1"] - 1,
+                ),
+                "X": X,
+                "Y": Y,
+                "Z": Z,
+                "DATE": row["DATE"],
+                "OPEN": bool(row["OP/SH"] == "OPEN"),
+            }
+            new_items.append(new_row)
 
-        def multi_xyz_append(append_obj_list):
-            for global_conn in append_obj_list[1]:
-                coords.append(
-                    [append_obj_list[0], *self._grid.get_xyz(ijk=global_conn.ijk())]
-                )
+        df = pd.DataFrame(
+            new_items, columns=["WELL_NAME", "IJK", "X", "Y", "Z", "DATE", "OPEN"]
+        )
+        df["DATE"] = pd.to_datetime(df["DATE"], format="%Y-%m-%d").dt.date
 
-        coords: List = []
+        try:
+            perforation_strategy_method = getattr(
+                perforation_strategy, self._perforation_handling_strategy
+            )
+        except AttributeError as attribute_error:
+            raise NotImplementedError(
+                f"The perforation handling strategy {self._perforation_handling_strategy} is unknown."
+            ) from attribute_error
 
-        for well_name in self._wells.allWellNames():
-            global_conns = self._wells[well_name][0].globalConnections()
-            coord_append = coords.append
-            if self._perforation_handling_strategy == "bottom_point":
-                xyz = self._grid.get_xyz(ijk=global_conns[-1].ijk())
-            elif self._perforation_handling_strategy == "top_point":
-                xyz = self._grid.get_xyz(ijk=global_conns[0].ijk())
-            elif self._perforation_handling_strategy == "multiple":
-                xyz = [global_conns]
-                coord_append = multi_xyz_append
-            elif self._perforation_handling_strategy == "time_avg_open_location":
-                connection_open_time = {}
-
-                for i, conn_status in enumerate(self._wells[well_name]):
-                    time = datetime.datetime.strptime(
-                        str(conn_status.simulationTime()), "%Y-%m-%d %H:%M:%S"
-                    )
-                    if i == 0:
-                        prev_time = time
-
-                    for connection in conn_status.globalConnections():
-                        if connection.ijk() not in connection_open_time:
-                            connection_open_time[connection.ijk()] = 0.0
-                        elif connection.isOpen():
-                            connection_open_time[connection.ijk()] += (
-                                time - prev_time
-                            ).total_seconds()
-                        else:
-                            connection_open_time[connection.ijk()] += 0.0
-
-                    prev_time = time
-
-                xyz_values = np.zeros((1, 3), dtype=np.float64)
-                total_open_time = sum(connection_open_time.values())
-
-                if total_open_time > 0:
-                    for connection, open_time in connection_open_time.items():
-                        xyz_values += np.multiply(
-                            np.array(self._grid.get_xyz(ijk=connection)),
-                            open_time / total_open_time,
-                        )
-                else:
-                    for connection, open_time in connection_open_time.items():
-                        xyz_values += np.divide(
-                            np.array(self._grid.get_xyz(ijk=connection)),
-                            len(connection_open_time.items()),
-                        )
-
-                xyz = tuple(*xyz_values)
-
-            else:
-                raise Exception(
-                    f"perforation strategy {self._perforation_handling_strategy} unknown"
-                )
-
-            coord_append([well_name, *xyz])
-
-        return pd.DataFrame(coords, columns=["WELL_NAME", "X", "Y", "Z"])
+        return perforation_strategy_method(df).sort_values(["DATE"])
 
     def _well_logs(self) -> pd.DataFrame:
         """
@@ -188,8 +155,6 @@ class FlowData(FromSource):
 
         df_production_data = pd.DataFrame()
 
-        start_date = self._get_start_date()
-
         # Suppress a depreciation warning inside LibEcl
         warnings.simplefilter("ignore", category=DeprecationWarning)
         with warnings.catch_warnings():
@@ -208,30 +173,6 @@ class FlowData(FromSource):
                         )
                     except KeyError:
                         df[f"{prod_key}"] = np.nan
-
-                # Find number of leading empty rows (with only nan or 0 values)
-                zero = df.fillna(0).eq(0).all(1).sum()
-
-                if zero < df.shape[0]:
-                    # If there are no empty rows, prepend one for the start date
-                    if zero == 0:
-                        df1 = df.head(1)
-                        as_list = df1.index.tolist()
-                        idx = as_list.index(df1.index)
-                        as_list[idx] = pd.to_datetime(start_date)
-                        df1.index = as_list
-                        df = pd.concat([df1, df])
-                        for col in df.columns:
-                            df[col].values[0] = 0
-                        zero = 1
-
-                    # Keep only the last empty row (well activation date)
-                    df = df.iloc[max(zero - 1, 0) :]
-
-                    # Assign well targets to the correct schedule dates
-                    df = df.shift(-1)
-                    # Make sure the row for the final date is not empty
-                    df.iloc[-1] = df.iloc[-2]
 
                 # Set columns that have only exact zero values to np.nan
                 df.loc[:, (df == 0).all(axis=0)] = np.nan
@@ -262,6 +203,7 @@ class FlowData(FromSource):
 
         df_production_data["WSTAT"] = df_production_data["WSTAT"].map(
             {
+                0: wstat_default,
                 1: "OPEN",  # Producer OPEN
                 2: "OPEN",  # Injector OPEN
                 3: "SHUT",
@@ -386,9 +328,9 @@ class FlowData(FromSource):
         return self._production_data()
 
     @property
-    def coordinates(self) -> pd.DataFrame:
-        """dataframe with all coordinates"""
-        return self._coordinates()
+    def well_connections(self) -> pd.DataFrame:
+        """dataframe with all well connection coordinates"""
+        return self._well_connections()
 
     @property
     def well_logs(self) -> pd.DataFrame:

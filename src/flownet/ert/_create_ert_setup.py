@@ -1,4 +1,5 @@
 import os
+import subprocess
 import pathlib
 import argparse
 import pickle
@@ -215,6 +216,10 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         _MODULE_FOLDER / ".." / "static" / "SAVE_ITERATION_ANALYTICS_WORKFLOW_JOB",
         output_folder / "SAVE_ITERATION_ANALYTICS_WORKFLOW_JOB",
     )
+
+    shutil.copyfile(args.config, output_folder / args.config.name)
+    with open(os.path.join(output_folder, "pipfreeze.output"), "w") as fh:
+        subprocess.call(["pip", "freeze"], stdout=fh)
 
     for section in ["RUNSPEC", "PROPS", "SOLUTION", "SCHEDULE"]:
         static_source_path = pathlib.Path(static_path) / f"{section}.inc"

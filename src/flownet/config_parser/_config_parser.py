@@ -315,6 +315,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     "perforation_handling_strategy": {
                         MK.Type: types.String,
                         MK.Default: "bottom_point",
+                        MK.Description: "Strategy to be used when creating perforations. Valid options are "
+                        "'bottom'_point', 'top_point', 'multiple', 'time_avg_open_location' and "
+                        "'multiple_based_on_workovers'.",
                     },
                     "fast_pyscal": {
                         MK.Type: types.Bool,
@@ -326,6 +329,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     "fault_tolerance": {MK.Type: types.Number, MK.Default: 1.0e-5},
                     "max_distance": {MK.Type: types.Number, MK.Default: 1e12},
                     "max_distance_fraction": {MK.Type: types.Number, MK.Default: 0},
+                    "prod_control_mode": {
+                        MK.Type: types.String,
+                        MK.Default: "RESV",
+                    },
+                    "inj_control_mode": {
+                        MK.Type: types.String,
+                        MK.Default: "RATE",
+                    },
                 },
             },
             "ert": {
@@ -988,6 +999,21 @@ def parse_config(
             f"The equil scheme "
             f"'{config.model_parameters.equil.scheme}' is not valid.\n"
             f"Valid options are 'global', 'regions_from_sim' or 'individual'."
+        )
+
+    prod_control_modes = {"ORAT", "GRAT", "WRAT", "LRAT", "RESV", "BHP"}
+    if config.flownet.prod_control_mode not in prod_control_modes:
+        raise ValueError(
+            f"The injection control mode "
+            f"'{config.flownet.prod_control_mode}' is not valid.\n"
+            f"Valid options are {prod_control_modes}. "
+        )
+    inj_control_modes = {"RATE", "BHP"}
+    if config.flownet.inj_control_mode not in inj_control_modes:
+        raise ValueError(
+            f"The injection control mode "
+            f"'{config.flownet.inj_control_mode}' is not valid.\n"
+            f"Valid options are {inj_control_modes}. "
         )
 
     if config.model_parameters.equil.scheme == "regions_from_sim":
