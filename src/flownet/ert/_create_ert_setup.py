@@ -51,7 +51,7 @@ def _create_observation_file(
 
     #TODO Create a trainin, test and complete observation files for yaml and ert. Later make a test to check both files has the same information
 
-
+    # Creating complete observation file
     if yaml:
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
         with open(obs_file, "w") as fh:
@@ -65,6 +65,58 @@ def _create_observation_file(
             )
     else:
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
+        with open(obs_file, "w") as fh:
+            fh.write(
+                template.render(
+                    {
+                        "schedule": schedule,
+                        "error_config": config.flownet.data_source.simulation.vectors,
+                        "num_training_dates": num_training_dates,
+                    }
+                )
+            )
+
+    # Creating training observation file
+    if yaml:
+        template = _TEMPLATE_ENVIRONMENT.get_template("observations_training.yamlobs.jinja2")
+        with open(obs_file, "w") as fh:
+            fh.write(
+                template.render(
+                    {
+                        "schedule": schedule,
+                        "error_config": config.flownet.data_source.simulation.vectors,
+                    }
+                )
+            )
+    else:
+        template = _TEMPLATE_ENVIRONMENT.get_template("observations_training.ertobs.jinja2")
+        with open(obs_file, "w") as fh:
+            fh.write(
+                template.render(
+                    {
+                        "schedule": schedule,
+                        "error_config": config.flownet.data_source.simulation.vectors,
+                        "num_training_dates": num_training_dates,
+                    }
+                )
+            )                    
+    
+    
+    
+    # Creating test observation file    
+    if yaml:
+        template = _TEMPLATE_ENVIRONMENT.get_template("observations_test.yamlobs.jinja2")
+        with open(obs_file, "w") as fh:
+            fh.write(
+                template.render(
+                    {
+                        "schedule": schedule,
+                        "error_config": config.flownet.data_source.simulation.vectors,
+                    }
+                )
+            )
+    else:
+        template = _TEMPLATE_ENVIRONMENT.get_template("observations_test.ertobs.jinja2")
         with open(obs_file, "w") as fh:
             fh.write(
                 template.render(
