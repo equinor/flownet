@@ -7,6 +7,7 @@ from operator import attrgetter
 import numpy as np
 import pandas as pd
 
+from configsuite import ConfigSuite
 from ._simulation_keywords import Keyword, COMPDAT, WCONHIST, WCONINJH, WELSPECS
 from ..network_model import NetworkModel
 
@@ -15,21 +16,25 @@ class Schedule:
     """
     Python class to to store all schedule items for the Flownet run.
 
+    Args:
+        network: FlowNet network instance
+        df_production_data: Dataframe with all production data
+        config: Information from the FlowNet config yaml
+
     """
 
     def __init__(
         self,
         network: NetworkModel,
         df_production_data: pd.DataFrame,
-        case_name: str,
-        control_mode: str = "RESV",
+        config: ConfigSuite.snapshot,
     ):
         self._schedule_items: List = []
         self._network: NetworkModel = network
         self._df_production_data: pd.DataFrame = df_production_data
-        self._control_mode: str = control_mode
-        self._case_name: str = case_name
-
+        self._prod_control_mode: str = config.flownet.prod_control_mode
+        self._inj_control_mode: str = config.flownet.inj_control_mode
+        self._case_name: str = config.name
         self._create_schedule()
 
     def _create_schedule(self):
@@ -37,33 +42,11 @@ class Schedule:
         Helper function that calls all functions involved in creating the schedule for the FlowNet run.
         """
         print("Creating simulation schedule file...", flush=True, end=" ")
-        self._calculate_entity_dates()
         self._calculate_compdat()
         self._calculate_welspecs()
         self._calculate_wconhist()
         self._calculate_wconinjh()
         print("done.", flush=True)
-
-    def _calculate_entity_dates(self):
-        """
-        Helper function that calculate the start dates of all entities.
-
-        Returns:
-            Nothing
-
-        """
-        self._df_production_data["ent_date"] = np.nan
-        for _, row in self._network.df_entity_connections.iterrows():
-            for entity in ["start_entity", "end_entity"]:
-                date = None
-                well_name = row[[entity]][0]
-                if row[[entity]].values[0] and row[[entity]].values[0] != "aquifer":
-                    date = self._retrieve_date_first_non_zero_prodinj(
-                        self._df_production_data, well_name
-                    )
-                self._df_production_data.loc[
-                    self._df_production_data["WELL_NAME"] == well_name, "ent_date"
-                ] = date
 
     def _calculate_compdat(self):
         """
@@ -76,30 +59,75 @@ class Schedule:
         for index, row in self._network.df_entity_connections.iterrows():
             for e_index, entity in enumerate(["start_entity", "end_entity"]):
                 if row[[entity]].values[0] and row[[entity]].values[0] != "aquifer":
+
                     entity_index = 0 - e_index  # first, or last
                     grid_mask = self._network.active_mask(model_index=index)
                     i = self._network.grid[grid_mask].index[entity_index]
 
-                    date = self._retrieve_date_first_non_zero_prodinj(
-                        self._df_production_data, row[[entity]][0]
-                    )
-                    if date:
+                    for (
+                        _,
+                        well_connection_state,
+                    ) in self._network.df_well_connections.loc[
+                        (
+                            self._network.df_well_connections["WELL_NAME"]
+                            == row[[entity]].values[0]
+                        )
+                        & (
+                            (
+                                (
+                                    np.isclose(
+                                        self._network.df_well_connections["X"],
+                                        row["xstart"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Y"],
+                                        row["ystart"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Z"],
+                                        row["zstart"],
+                                    )
+                                )
+                            )
+                            | (
+                                (
+                                    np.isclose(
+                                        self._network.df_well_connections["X"],
+                                        row["xend"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Y"],
+                                        row["yend"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Z"],
+                                        row["zend"],
+                                    )
+                                )
+                            )
+                        )
+                    ].iterrows():
                         self.append(
                             COMPDAT(
-                                date=date,
+                                date=well_connection_state["DATE"],
                                 well_name=row[[entity]][0],
                                 i=i,
                                 j=0,
                                 k1=0,
                                 k2=0,
                                 rw=0.22,
-                                status="OPEN",
+                                status="OPEN"
+                                if well_connection_state["OPEN"]
+                                else "SHUT",
                             )
-                        )
-                    else:
-                        print(
-                            f"Skipping COMPDAT for well {row[[entity]][0]} as no positive production or "
-                            f"injection data has been supplied."
                         )
 
     def _calculate_welspecs(self):
@@ -111,33 +139,25 @@ class Schedule:
 
         """
         for well_name in self._df_production_data["WELL_NAME"].unique():
-            date = self._retrieve_date_first_non_zero_prodinj(
-                self._df_production_data, well_name
+            date = self._network.df_well_connections[
+                self._network.df_well_connections["WELL_NAME"] == well_name
+            ]["DATE"].values[0]
+
+            phase = self._df_production_data[
+                (self._df_production_data["WELL_NAME"] == well_name)
+            ]["PHASE"].values[0]
+
+            self.append(
+                WELSPECS(
+                    date=date,
+                    well_name=well_name,
+                    group_name="WELLS",  # Wells directly connected to FIELD gives
+                    # segmentation fault in Flow
+                    i=self.get_compdat(well_name)[0].i,
+                    j=self.get_compdat(well_name)[0].j,
+                    phase=phase,
+                )
             )
-
-            if date:
-                well_dates = self._df_production_data[
-                    (self._df_production_data["WELL_NAME"] == well_name)
-                    & (self._df_production_data["date"] == date)
-                ]
-
-                phase = well_dates["PHASE"].values[0]
-                self.append(
-                    WELSPECS(
-                        date=date,
-                        well_name=well_name,
-                        group_name="WELLS",  # Wells directly connected to FIELD gives
-                        # segmentation fault in Flow
-                        i=self.get_compdat(well_name)[0].i,
-                        j=self.get_compdat(well_name)[0].j,
-                        phase=phase,
-                    )
-                )
-            else:
-                print(
-                    f"Skipping WELSPECS for well {well_name} as no positive production or injection data"
-                    f" has been supplied."
-                )
 
     def _calculate_wconhist(self):
         """
@@ -162,7 +182,7 @@ class Schedule:
                         date=value["date"],
                         well_name=value["WELL_NAME"],
                         status=value["WSTAT"],
-                        control_mode=self._control_mode,
+                        prod_control_mode=self._prod_control_mode,
                         vfp_table=vfp_tables[value["WELL_NAME"]],
                         oil_rate=value["WOPR"],
                         water_rate=value["WWPR"],
@@ -197,6 +217,7 @@ class Schedule:
                         rate=value["WWIR"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
+                        inj_control_mode=self._inj_control_mode,
                     )
                 )
             elif value["TYPE"] == "GI" and start_date and value["date"] >= start_date:
@@ -209,6 +230,7 @@ class Schedule:
                         rate=value["WGIR"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
+                        inj_control_mode=self._inj_control_mode,
                     )
                 )
 
@@ -494,35 +516,30 @@ class Schedule:
         num_training_dates = round(len(self.get_dates()) * training_set_fraction)
         i = 0
 
-        for date in self.get_dates()[0 : num_training_dates - 1]:
+        for date in self.get_dates()[1 : num_training_dates - 1]:
             keywords_wconhist: List[Keyword] = self.get_keywords(
                 date=date, kw_class="WCONHIST"
             )
             if keywords_wconhist:
                 for keyword_wconhist in keywords_wconhist:
-                    if not self.get_well_start_date(keyword_wconhist.well_name) == date:
-                        if not np.isnan(keyword_wconhist.oil_rate):
-                            i += 1
-                        if not np.isnan(keyword_wconhist.gas_rate):
-                            i += 1
-                        if not np.isnan(keyword_wconhist.bhp):
-                            i += 1
-                        if not np.isnan(keyword_wconhist.thp):
-                            i += 1
+                    if not np.isnan(keyword_wconhist.oil_rate):
+                        i += 1
+                    if not np.isnan(keyword_wconhist.gas_rate):
+                        i += 1
+                    if not np.isnan(keyword_wconhist.bhp):
+                        i += 1
+                    if not np.isnan(keyword_wconhist.thp):
+                        i += 1
 
             keywords_wconinjh: List[Keyword] = self.get_keywords(
                 date=date, kw_class="WCONINJH"
             )
             if keywords_wconinjh:
                 for keyword__wconinjh in keywords_wconinjh:
-                    if (
-                        not self.get_well_start_date(keyword__wconinjh.well_name)
-                        == date
-                    ):
-                        if not np.isnan(keyword__wconinjh.bhp):
-                            i += 1
-                        if not np.isnan(keyword__wconinjh.thp):
-                            i += 1
+                    if not np.isnan(keyword__wconinjh.bhp):
+                        i += 1
+                    if not np.isnan(keyword__wconinjh.thp):
+                        i += 1
 
         return i
 

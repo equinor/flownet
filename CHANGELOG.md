@@ -5,7 +5,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- [#221](https://github.com/equinor/flownet/pull/221) For traceability and reproducibility, the FlowNet configuration file is now automatically copied to the output folder. The content of 'pip freeze' is stored in the file 'pipfreeze.output' in the output folder.
+- [#220](https://github.com/equinor/flownet/pull/220) User can now provide the historical _control mode_ in the production wells and _control mode_/_target_ in the injection wells. One value for each, applied to all wells.
 - [#199](https://github.com/equinor/flownet/pull/199) Added the possibility of defining a 'base' value for all parameters related to relative permeability. This provides the opportunity to interpolate between three relative permeability models. All the 'min' values will be used to construct a pessimistic or low model, the 'base' values are used for a 'base' model, and the 'high' values are used for an optimistic or high model value. The history matching can then be done with only one (two for three phase models - oil/water and gas/oil interpolated independently) relative permeability parameter(s) per SATNUM region.
+- [#197](https://github.com/equinor/flownet/pull/197) Added opening/closing of connections based on straddling/plugging/perforations through time. This PR also adds a new perforation strategy `multiple_based_on_workovers` which models the well connections with as few connections as possible taking into account opening/closing of groups of connections. 
 - [#188](https://github.com/equinor/flownet/pull/188) The possibility to extract regions from an input simulation model extended to also include SATNUM regions. For relative permeability, the scheme keyword can be set to 'regions_from_sim' in the configuration file.
 - [#189](https://github.com/equinor/flownet/pull/189) User can now provide both a _base_ configuration file, and an optional extra configuration file which will be used to override the base settings.
 

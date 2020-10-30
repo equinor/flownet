@@ -320,7 +320,7 @@ def run_flownet_history_matching(
         perforation_handling_strategy=config.flownet.perforation_handling_strategy,
     )
     df_production_data: pd.DataFrame = field_data.production
-    df_coordinates: pd.DataFrame = field_data.coordinates
+    df_well_connections: pd.DataFrame = field_data.well_connections
 
     # Load fault data if required
     df_fault_planes: Optional[pd.DataFrame] = (
@@ -331,19 +331,22 @@ def run_flownet_history_matching(
     if config.flownet.data_source.concave_hull:
         concave_hull_bounding_boxes = field_data.grid_cell_bounding_boxes
 
-    df_connections: pd.DataFrame = create_connections(
-        df_coordinates, config, concave_hull_bounding_boxes=concave_hull_bounding_boxes
+    df_entity_connections: pd.DataFrame = create_connections(
+        df_well_connections[["WELL_NAME", "X", "Y", "Z"]].drop_duplicates(keep="first"),
+        config,
+        concave_hull_bounding_boxes=concave_hull_bounding_boxes,
     )
 
     network = NetworkModel(
-        df_connections,
+        df_entity_connections=df_entity_connections,
+        df_well_connections=df_well_connections,
         cell_length=cell_length,
         area=area,
         fault_planes=df_fault_planes,
         fault_tolerance=config.flownet.fault_tolerance,
     )
 
-    schedule = Schedule(network, df_production_data, config.name)
+    schedule = Schedule(network, df_production_data, config)
 
     #########################################
     # Set the range on uncertain parameters #
@@ -389,7 +392,7 @@ def run_flownet_history_matching(
     relperm_parameters = config.model_parameters.relative_permeability.regions[
         0
     ]._asdict()
-    relperm_parameters.popitem(last=False)
+    relperm_parameters.pop("id", None)
 
     relperm_dict = {
         key: values

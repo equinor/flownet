@@ -12,15 +12,15 @@ on:
       - published
   schedule:
     # Run CI daily and check that tests are working with latest dependencies
-    - cron:  '0 0 * * *'
+    - cron: "0 0 * * *"
 
 jobs:
   FlowNet:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        python-version: ['3.6', '3.7']
-        flownet-model: ['norne','egg', 'brugge']
+        python-version: ["3.6", "3.7", "3.8"]
+        flownet-model: ["norne", "egg", "brugge"]
 
     env:
       VENV_PATH: ${{ github.workspace }}/flownet_venv
@@ -63,7 +63,7 @@ jobs:
         run: |
           source $VENV_PATH/bin/activate
           pip install .[tests]
-      
+
       - name: 🧾 List all installed packages
         run: |
           source $VENV_PATH/bin/activate
@@ -118,7 +118,7 @@ jobs:
           git checkout --track origin/gh-pages
           git clean -f -f -d -x
           git rm -r *
-        
+
           cp -R ../_build/html/* .
           git add .
           if git diff-index --quiet HEAD; then
