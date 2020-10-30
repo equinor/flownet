@@ -20,7 +20,7 @@ smry:
    {%- elif not loop.first: %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.gas_rate }}
-      error: {{ [error_config.WGPR.rel_error * kw.oil_rate, error_config.WGPR.min_error] | max }}
+      error: {{ [error_config.WGPR.rel_error * kw.gas_rate, error_config.WGPR.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
    {%- endif -%}
@@ -32,7 +32,7 @@ smry:
    {%- elif not loop.first: %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.water_rate }}
-      error: {{ [error_config.WWPR.rel_error * kw.oil_rate, error_config.WWPR.min_error] | max }}
+      error: {{ [error_config.WWPR.rel_error * kw.water_rate, error_config.WWPR.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
    {%- endif -%}
@@ -44,7 +44,7 @@ smry:
    {%- elif not loop.first: %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.bhp }}
-      error: {{ [error_config.WBHP.rel_error * kw.oil_rate, error_config.WBHP.min_error] | max }}
+      error: {{ [error_config.WBHP.rel_error * kw.bhp, error_config.WBHP.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
    {%- endif -%}
@@ -56,7 +56,7 @@ smry:
    {%- elif not loop.first: %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.thp }}
-      error: {{ [error_config.WTHP.rel_error * kw.oil_rate, error_config.WTHP.min_error] | max }}
+      error: {{ [error_config.WTHP.rel_error * kw.thp, error_config.WTHP.min_error] | max }}
    {%- endif -%}
    {%- endfor %}
    {%- endif -%}
