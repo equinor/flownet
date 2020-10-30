@@ -201,20 +201,6 @@
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="flownet.data.from_flow.FlowData._coordinates">
-<code class="sig-name descname">_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.from_flow.FlowData._coordinates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to extract well coordinates from an Flow simulation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>WELL_NAME, X, Y, Z</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>columns</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt id="flownet.data.from_flow.FlowData._faults">
 <code class="sig-name descname">_faults</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.from_flow.FlowData._faults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to read fault plane data using ecl2df.</p>
@@ -272,9 +258,19 @@ following vectors to the summary file: WOPR, WGPR, WWPR, WBHP, WTHP, WGIR, WWIR<
 </dd></dl>
 
 <dl class="py method">
-<dt id="flownet.data.from_flow.FlowData.coordinates">
-<em class="property">property </em><code class="sig-name descname">coordinates</code><a class="headerlink" href="#flownet.data.from_flow.FlowData.coordinates" title="Permalink to this definition">¶</a></dt>
-<dd><p>dataframe with all coordinates</p>
+<dt id="flownet.data.from_flow.FlowData._well_connections">
+<code class="sig-name descname">_well_connections</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.from_flow.FlowData._well_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to extract well connection coordinates from an Flow simulation including their
+opening and closure time. The output of this function will be filtered based on the
+configured perforation strategy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>WELL_NAME, X, Y, Z, DATE, OPEN</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>columns</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -311,6 +307,12 @@ following vectors to the summary file: WOPR, WGPR, WWPR, WBHP, WTHP, WGIR, WWIR<
 <dt id="flownet.data.from_flow.FlowData.production">
 <em class="property">property </em><code class="sig-name descname">production</code><a class="headerlink" href="#flownet.data.from_flow.FlowData.production" title="Permalink to this definition">¶</a></dt>
 <dd><p>dataframe with all production data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="flownet.data.from_flow.FlowData.well_connections">
+<em class="property">property </em><code class="sig-name descname">well_connections</code><a class="headerlink" href="#flownet.data.from_flow.FlowData.well_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>dataframe with all well connection coordinates</p>
 </dd></dl>
 
 </dd></dl>

@@ -10,6 +10,7 @@ Submodules
    flownet.data.from_flow
    flownet.data.from_pdm
    flownet.data.from_source
+   flownet.data.perforation_strategy
 
 Module contents
 ---------------
