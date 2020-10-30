@@ -1,6 +1,6 @@
 import warnings
 from pathlib import Path
-from typing import Union
+from typing import Union, List
 
 import numpy as np
 import pandas as pd
