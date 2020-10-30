@@ -201,6 +201,12 @@
 <p>Convert input string to absolute path</p>
 <div class="cs_children" id="cs_simulation_inpu_children">
 <p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>well_logs</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: bool</p>
 </div><br></div><br></div><br><div class="cs_container" id="cs_which_vectors_t_container">
 <div class="cs_header">
 <h3>vectors</h3><br></div><br><div class="cs_content" id="cs_which_vectors_t_content">
@@ -332,6 +338,80 @@
 <div class="cs_children" id="cs_default_title_children">
 <p>:type: bool</p>
 </div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>constraining</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>kriging</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<div class="cs_container" id="cs_switch_to_enabl_container">
+<div class="cs_header">
+<h3>enabled</h3><br></div><br><div class="cs_content" id="cs_switch_to_enabl_content">
+<p>Switch to enable or disable kriging on well log data.</p>
+<div class="cs_children" id="cs_switch_to_enabl_children">
+<p>:type: bool</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_number_of_krige_container">
+<div class="cs_header">
+<h3>n</h3><br></div><br><div class="cs_content" id="cs_number_of_krige_content">
+<p>Number of kriged values in each direct. E.g, n = 10 -&gt; 10x10x10 = 1000 values.</p>
+<div class="cs_children" id="cs_number_of_krige_children">
+<p>:type: integer</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_number_of_avera_container">
+<div class="cs_header">
+<h3>n_lags</h3><br></div><br><div class="cs_content" id="cs_number_of_avera_content">
+<p>Number of averaging bins for the semivariogram.</p>
+<div class="cs_children" id="cs_number_of_avera_children">
+<p>:type: integer</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_scalar_stretchi_container">
+<div class="cs_header">
+<h3>anisotropy_scaling_z</h3><br></div><br><div class="cs_content" id="cs_scalar_stretchi_content">
+<p>Scalar stretching value to take into account anisotropy. </p>
+<div class="cs_children" id="cs_scalar_stretchi_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_specifies_which_container">
+<div class="cs_header">
+<h3>variogram_model</h3><br></div><br><div class="cs_content" id="cs_specifies_which_content">
+<p>Specifies which variogram model to use. See PyKridge documentation for valid options.</p>
+<div class="cs_children" id="cs_specifies_which_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_parameters_that_container">
+<div class="cs_header">
+<h3>permeability_variogram_parameters</h3><br></div><br><div class="cs_content" id="cs_parameters_that_content">
+<p>Parameters that define the specified variogram model. Permeability model sill and nugget are in log scale. See PyKridge documentation for valid options.</p>
+<div class="cs_children" id="cs_parameters_that_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>Key</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>Value</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_parameters_that_container">
+<div class="cs_header">
+<h3>porosity_variogram_parameters</h3><br></div><br><div class="cs_content" id="cs_parameters_that_content">
+<p>Parameters that define the specified variogram model. See PyKridge documentation for valid options.</p>
+<div class="cs_children" id="cs_parameters_that_children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>Key</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>Value</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
 <div class="cs_header">
 <h3>pvt</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
 <p></p>

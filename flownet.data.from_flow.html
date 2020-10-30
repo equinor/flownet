@@ -274,6 +274,20 @@ configured perforation strategy.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="flownet.data.from_flow.FlowData._well_logs">
+<code class="sig-name descname">_well_logs</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.from_flow.FlowData._well_logs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to extract well log information from a Flow simulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>WELL_NAME, X, Y, Z, PERM (mD), PORO (-)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>columns</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="flownet.data.from_flow.FlowData.faults">
 <em class="property">property </em><code class="sig-name descname">faults</code><a class="headerlink" href="#flownet.data.from_flow.FlowData.faults" title="Permalink to this definition">¶</a></dt>
 <dd><p>dataframe with all fault data</p>
@@ -313,6 +327,12 @@ configured perforation strategy.</p>
 <dt id="flownet.data.from_flow.FlowData.well_connections">
 <em class="property">property </em><code class="sig-name descname">well_connections</code><a class="headerlink" href="#flownet.data.from_flow.FlowData.well_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>dataframe with all well connection coordinates</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="flownet.data.from_flow.FlowData.well_logs">
+<em class="property">property </em><code class="sig-name descname">well_logs</code><a class="headerlink" href="#flownet.data.from_flow.FlowData.well_logs" title="Permalink to this definition">¶</a></dt>
+<dd><p>dataframe with all well log</p>
 </dd></dl>
 
 </dd></dl>

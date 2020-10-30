@@ -8,6 +8,7 @@ Submodules
    :maxdepth: 4
 
    flownet.utils.constants
+   flownet.utils.kriging
    flownet.utils.raytracing
    flownet.utils.types
    flownet.utils.write_grdecl_file
