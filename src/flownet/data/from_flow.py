@@ -105,9 +105,7 @@ class FlowData(FromSource):
             ].drop_duplicates(subset=["I", "J", "K1", "K2"])
             for _, connection in unique_connections.iterrows():
                 ijk = (connection["I"] - 1, connection["J"] - 1, connection["K1"] - 1)
-                xyz = self._grid.get_xyz(
-                    ijk=ijk
-                )
+                xyz = self._grid.get_xyz(ijk=ijk)
 
                 perm_kw = self._init.iget_named_kw("PERMX", 0)
                 poro_kw = self._init.iget_named_kw("PORO", 0)
