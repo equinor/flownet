@@ -12,15 +12,15 @@ on:
       - published
   schedule:
     # Run CI daily and check that tests are working with latest dependencies
-    - cron:  '0 0 * * *'
+    - cron: "0 0 * * *"
 
 jobs:
   FlowNet:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        python-version: ['3.6', '3.7', '3.8']
-        flownet-model: ['norne','egg', 'brugge']
+        python-version: ["3.6", "3.7", "3.8"]
+        flownet-model: ["norne", "egg", "brugge"]
 
     env:
       VENV_PATH: ${{ github.workspace }}/flownet_venv
@@ -46,10 +46,10 @@ jobs:
           INPUT_MODEL_FOLDER: ./flownet-testdata/${{ matrix.flownet-model }}/input_model
           # If you want the CI to (temporarily) run against your fork of the testdada,
           # change the value her from "equinor" to your username.
-          TESTDATA_REPO_OWNER: equinor
+          TESTDATA_REPO_OWNER: wouterjdb
           # If you want the CI to (temporarily) run against another branch than master,
           # change the value her from "master" to the relevant branch name.
-          TESTDATA_REPO_BRANCH: master
+          TESTDATA_REPO_BRANCH: add-new-perf-strat
         run: |
           git clone --depth 1 --branch $TESTDATA_REPO_BRANCH https://github.com/$TESTDATA_REPO_OWNER/flownet-testdata.git --recursive
           for f in $INPUT_MODEL_FOLDER/*.tar.gz; do tar -zxvf "$f" -C $INPUT_MODEL_FOLDER; done
@@ -63,7 +63,7 @@ jobs:
         run: |
           source $VENV_PATH/bin/activate
           pip install .[tests]
-      
+
       - name: 🧾 List all installed packages
         run: |
           source $VENV_PATH/bin/activate
@@ -118,7 +118,7 @@ jobs:
           git checkout --track origin/gh-pages
           git clean -f -f -d -x
           git rm -r *
-        
+
           cp -R ../_build/html/* .
           git add .
           if git diff-index --quiet HEAD; then
