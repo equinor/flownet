@@ -280,9 +280,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
             # Otherwise create an empty one.
             (output_folder / f"{section}.inc").touch()
             
-    ert_output_file_names = [output_folder / "observations.ertobs", output_folder / "training_observations.ertobs", output_folder / "test_observations.ertobs"]
+    ert_output_file_names = [output_folder / "observations.ertobs", output_folder / "observations_training.ertobs", output_folder / "observations_test.ertobs"]
     
-    yaml_output_file_names = [output_folder / "observations.yamlobs", output_folder / "training_observations.yamlobs", output_folder / "test_observations.yamlobs"]
+    yaml_output_file_names = [output_folder / "observations.yamlobs", output_folder / "observations_training.yamlobs", output_folder / "observations_test.yamlobs"]
 
     if not prediction_setup:
         if parameters is not None:
