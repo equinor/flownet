@@ -14,6 +14,7 @@ REQUIREMENTS = [
     "opm>=2020.10",
     "pandas~=1.0",
     "pyarrow>=0.14",
+    "pykrige>=1.5",
     "pyscal~=0.6.1",
     "pyvista>=0.23",
     "pyyaml>=5.2",

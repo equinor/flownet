@@ -1,5 +1,5 @@
 import argparse
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Dict
 import json
 import pathlib
 from operator import add
@@ -14,6 +14,7 @@ from ..realization import Schedule
 from ..network_model import NetworkModel
 from ..network_model import create_connections
 from ._assisted_history_matching import AssistedHistoryMatching
+from ..utils import kriging
 
 from ..parameters import (
     PorvPoroTrans,
@@ -215,6 +216,99 @@ def _get_distribution(
     return df
 
 
+def _constrain_using_well_logs(
+    porv_poro_trans_dist_values: pd.DataFrame,
+    data: np.ndarray,
+    network: NetworkModel,
+    measurement_type: str,
+    config: ConfigSuite.snapshot,
+) -> pd.DataFrame:
+    """
+    Function to constrain permeability and porosity distributions of flow tubes by using 3D kriging of
+    porosity and permeability values from well logs.
+
+    Args:
+        porv_poro_trans_dist_values: pre-constraining dataframe
+        data: well log data
+        network: FlowNet network model
+        measurement_type: 'prorosity' or 'permeability' (always log10)
+        config: FlowNet configparser snapshot
+
+    Returns:
+        Well-log constrained "porv_poro_trans_dist_values" DataFrame
+
+    """
+    n = config.flownet.constraining.kriging.n
+    n_lags = config.flownet.constraining.kriging.n_lags
+    anisotropy_scaling_z = config.flownet.constraining.kriging.anisotropy_scaling_z
+    variogram_model = config.flownet.constraining.kriging.variogram_model
+
+    if measurement_type == "permeability":
+        data[:, 3] = np.log10(data[:, 3])
+
+    variogram_parameters: Optional[Dict] = None
+    if measurement_type == "permeability":
+        variogram_parameters = dict(
+            config.flownet.constraining.kriging.permeability_variogram_parameters
+        )
+    elif measurement_type == "porosity":
+        variogram_parameters = dict(
+            config.flownet.constraining.kriging.porosity_variogram_parameters
+        )
+
+    if not variogram_parameters:
+        variogram_parameters = None
+
+    k3d3_interpolator, ss3d_interpolator = kriging.execute(
+        data,
+        n=n,
+        n_lags=n_lags,
+        variogram_model=variogram_model,
+        variogram_parameters=variogram_parameters,
+        anisotropy_scaling_z=anisotropy_scaling_z,
+    )
+
+    parameter_min_kriging = k3d3_interpolator(
+        network.connection_midpoints
+    ) - 2 * np.sqrt(ss3d_interpolator(network.connection_midpoints))
+
+    parameter_max_kriging = k3d3_interpolator(
+        network.connection_midpoints
+    ) + 2 * np.sqrt(ss3d_interpolator(network.connection_midpoints))
+
+    if measurement_type == "permeability":
+        parameter_min_kriging = np.power(10, parameter_min_kriging)
+        parameter_max_kriging = np.power(10, parameter_max_kriging)
+
+    parameter_min = np.maximum(
+        np.minimum(
+            parameter_min_kriging,
+            porv_poro_trans_dist_values[f"maximum_{measurement_type}"].values,
+        ),
+        porv_poro_trans_dist_values[f"minimum_{measurement_type}"].values,
+    )
+    parameter_max = np.minimum(
+        np.maximum(
+            parameter_max_kriging,
+            porv_poro_trans_dist_values[f"minimum_{measurement_type}"].values,
+        ),
+        porv_poro_trans_dist_values[f"maximum_{measurement_type}"].values,
+    )
+
+    # Set NaN's to the full original range as set in the config
+    parameter_min[np.isnan(parameter_min)] = porv_poro_trans_dist_values[
+        f"minimum_{measurement_type}"
+    ].values[0]
+    parameter_max[np.isnan(parameter_max)] = porv_poro_trans_dist_values[
+        f"maximum_{measurement_type}"
+    ].values[0]
+
+    porv_poro_trans_dist_values[f"minimum_{measurement_type}"] = parameter_min
+    porv_poro_trans_dist_values[f"maximum_{measurement_type}"] = parameter_max
+
+    return porv_poro_trans_dist_values
+
+
 def update_distribution(
     parameters: List[Parameter], ahm_case: pathlib.Path
 ) -> List[Parameter]:
@@ -322,6 +416,13 @@ def run_flownet_history_matching(
     df_production_data: pd.DataFrame = field_data.production
     df_well_connections: pd.DataFrame = field_data.well_connections
 
+    # Load log data if required
+    df_well_logs: Optional[pd.DataFrame] = (
+        field_data.well_logs
+        if config.flownet.data_source.simulation.well_logs
+        else None
+    )
+
     # Load fault data if required
     df_fault_planes: Optional[pd.DataFrame] = (
         field_data.faults if config.model_parameters.fault_mult else None
@@ -364,6 +465,23 @@ def run_flownet_history_matching(
         config.model_parameters,
         network.grid.model.unique(),
     )
+
+    if df_well_logs is not None:
+        # Use well logs to constrain priors.
+
+        perm_data = df_well_logs[["X", "Y", "Z", "PERM"]].values
+        poro_data = df_well_logs[["X", "Y", "Z", "PORO"]].values
+
+        porv_poro_trans_dist_values = _constrain_using_well_logs(
+            porv_poro_trans_dist_values,
+            perm_data,
+            network,
+            "permeability",
+            config=config,
+        )
+        porv_poro_trans_dist_values = _constrain_using_well_logs(
+            porv_poro_trans_dist_values, poro_data, network, "porosity", config=config
+        )
 
     #########################################
     # Relative Permeability                 #

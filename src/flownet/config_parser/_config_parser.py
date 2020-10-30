@@ -56,7 +56,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
     @configsuite.transformation_msg("Convert input string to absolute path")
     def _to_abs_path(path: Optional[str]) -> str:
         """
-        Helper function for the configsuite. Take in a path as a string and
+        Helper function for the configsuite. Takes in a path as a string and
         attempts to convert it to an absolute path.
 
         Args:
@@ -92,6 +92,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                         MK.Type: types.String,
                                         MK.Transformation: _to_abs_path,
                                         MK.Description: "Simulation input case to be used as data source for FlowNet",
+                                    },
+                                    "well_logs": {
+                                        MK.Type: types.Bool,
+                                        MK.AllowNone: True,
                                     },
                                     "vectors": {
                                         MK.Type: types.NamedDict,
@@ -207,6 +211,62 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 },
                             },
                             "concave_hull": {MK.Type: types.Bool, MK.AllowNone: True},
+                        },
+                    },
+                    "constraining": {
+                        MK.Type: types.NamedDict,
+                        MK.Content: {
+                            "kriging": {
+                                MK.Type: types.NamedDict,
+                                MK.Content: {
+                                    "enabled": {
+                                        MK.Type: types.Bool,
+                                        MK.Default: False,
+                                        MK.Description: "Switch to enable or disable kriging on well log data.",
+                                    },
+                                    "n": {
+                                        MK.Type: types.Integer,
+                                        MK.Default: 20,
+                                        MK.Description: "Number of kriged values in each direct. E.g, n = 10 -> "
+                                        "10x10x10 = 1000 values.",
+                                    },
+                                    "n_lags": {
+                                        MK.Type: types.Integer,
+                                        MK.Default: 6,
+                                        MK.Description: "Number of averaging bins for the semivariogram.",
+                                    },
+                                    "anisotropy_scaling_z": {
+                                        MK.Type: types.Number,
+                                        MK.Default: 10,
+                                        MK.Description: "Scalar stretching value to take into account anisotropy. ",
+                                    },
+                                    "variogram_model": {
+                                        MK.Type: types.String,
+                                        MK.Default: "spherical",
+                                        MK.Description: "Specifies which variogram model to use. See PyKridge "
+                                        "documentation for valid options.",
+                                    },
+                                    "permeability_variogram_parameters": {
+                                        MK.Type: types.Dict,
+                                        MK.Description: "Parameters that define the specified variogram model. "
+                                        "Permeability model sill and nugget are in log scale. See "
+                                        "PyKridge documentation for valid options.",
+                                        MK.Content: {
+                                            MK.Key: {MK.Type: types.String},
+                                            MK.Value: {MK.Type: types.Number},
+                                        },
+                                    },
+                                    "porosity_variogram_parameters": {
+                                        MK.Type: types.Dict,
+                                        MK.Description: "Parameters that define the specified variogram model. See "
+                                        "PyKridge documentation for valid options.",
+                                        MK.Content: {
+                                            MK.Key: {MK.Type: types.String},
+                                            MK.Value: {MK.Type: types.Number},
+                                        },
+                                    },
+                                },
+                            },
                         },
                     },
                     "pvt": {
@@ -1185,6 +1245,15 @@ def parse_config(
         raise ValueError(
             "Ambiguous configuration input: 'size_in_bulkvolumes' in 'aquifer' needs to be defined using "
             "'min', 'max' and 'log_unif'. Currently one or more parameters are missing."
+        )
+
+    if (
+        config.flownet.constraining.kriging.enabled
+        and not config.flownet.data_source.simulation.well_logs
+    ):
+        raise ValueError(
+            "Ambiguous configuration input: well log data needs to be loaded (from the simulation model) in order "
+            "to allow for enabling of kriging."
         )
 
     return config

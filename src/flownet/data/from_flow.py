@@ -1,6 +1,6 @@
 import warnings
 from pathlib import Path
-from typing import Union
+from typing import Union, List
 
 import numpy as np
 import pandas as pd
@@ -34,6 +34,7 @@ class FlowData(FromSource):
 
         self._input_case: Path = Path(input_case)
         self._eclsum = EclSum(str(self._input_case))
+        self._init = EclFile(str(self._input_case.with_suffix(".INIT")))
         self._grid = EclGrid(str(self._input_case.with_suffix(".EGRID")))
         self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
         self._init = EclInitFile(self._grid, str(self._input_case.with_suffix(".INIT")))
@@ -87,6 +88,44 @@ class FlowData(FromSource):
             ) from attribute_error
 
         return perforation_strategy_method(df).sort_values(["DATE"])
+
+    def _well_logs(self) -> pd.DataFrame:
+        """
+        Function to extract well log information from a Flow simulation.
+
+        Returns:
+            columns: WELL_NAME, X, Y, Z, PERM (mD), PORO (-)
+
+        """
+        coords: List = []
+
+        for well_name in self._wells["WELL"].unique():
+            unique_connections = self._wells[
+                self._wells["WELL"] == well_name
+            ].drop_duplicates(subset=["I", "J", "K1", "K2"])
+            for _, connection in unique_connections.iterrows():
+                ijk = (connection["I"] - 1, connection["J"] - 1, connection["K1"] - 1)
+                xyz = self._grid.get_xyz(ijk=ijk)
+
+                perm_kw = self._init.iget_named_kw("PERMX", 0)
+                poro_kw = self._init.iget_named_kw("PORO", 0)
+
+                coords.append(
+                    [
+                        well_name,
+                        *xyz,
+                        perm_kw[
+                            self._grid.cell(i=ijk[0], j=ijk[1], k=ijk[2]).active_index
+                        ],
+                        poro_kw[
+                            self._grid.cell(i=ijk[0], j=ijk[1], k=ijk[2]).active_index
+                        ],
+                    ]
+                )
+
+        return pd.DataFrame(
+            coords, columns=["WELL_NAME", "X", "Y", "Z", "PERM", "PORO"]
+        )
 
     def _production_data(self) -> pd.DataFrame:
         """
@@ -294,6 +333,11 @@ class FlowData(FromSource):
     def well_connections(self) -> pd.DataFrame:
         """dataframe with all well connection coordinates"""
         return self._well_connections()
+
+    @property
+    def well_logs(self) -> pd.DataFrame:
+        """dataframe with all well log"""
+        return self._well_logs()
 
     @property
     def grid(self) -> EclGrid:

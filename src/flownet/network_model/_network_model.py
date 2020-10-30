@@ -98,6 +98,28 @@ class NetworkModel:
         return (coordinates_start + coordinates_end) / 2
 
     @property
+    def connection_midpoints(self) -> np.ndarray:
+        """
+        Returns a numpy array with the midpoint of each connection in the network
+
+        Returns:
+            (Nx3) np.ndarray with connection midpoint coordinates.
+
+        """
+        coordinates_start = self._df_entity_connections[
+            ["xstart", "ystart", "zstart"]
+        ].values
+        coordinates_end = self._df_entity_connections[
+            [
+                "xend",
+                "yend",
+                "zend",
+            ]
+        ].values
+
+        return (coordinates_start + coordinates_end) / 2
+
+    @property
     def aquifers_xyz(self) -> List[Coordinate]:
         """
         Returns a list of zero-offset i,j,k coordinates for all aquifers in the model
