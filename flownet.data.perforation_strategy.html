@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>flownet.data.perforation_strategy module &mdash; FlowNet  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/configsuite_ext.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/configsuite_ext.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="flownet.ert package" href="flownet.ert.html" />
+    <link rel="prev" title="flownet.data.from_source module" href="flownet.data.from_source.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #eeeeee" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/flownet_logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_file.html">Configuration file example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">FlowNet Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html#flownet-package">flownet package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About FlowNet</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">FlowNet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="api.html">FlowNet Python API</a> &raquo;</li>
+        
+          <li><a href="flownet.data.html">flownet.data package</a> &raquo;</li>
+        
+      <li>flownet.data.perforation_strategy module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/flownet.data.perforation_strategy.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-flownet.data.perforation_strategy">
+<span id="flownet-data-perforation-strategy-module"></span><h1>flownet.data.perforation_strategy module<a class="headerlink" href="#module-flownet.data.perforation_strategy" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="flownet.data.perforation_strategy.bottom_point">
+<code class="sig-prename descclassname">flownet.data.perforation_strategy.</code><code class="sig-name descname">bottom_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.perforation_strategy.bottom_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the bottom point of the well (assuming it is the last open connection specified, anywhere
+in time).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> – connection DataFrame</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>bottom point connections</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.data.perforation_strategy.multiple">
+<code class="sig-prename descclassname">flownet.data.perforation_strategy.</code><code class="sig-name descname">multiple</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.perforation_strategy.multiple" title="Permalink to this definition">¶</a></dt>
+<dd><p>This strategy creates multiple connections per well, as many as there is data available. Connections that
+repeatedly have the same state through time are reduced to only having records for state changes.</p>
+<dl class="simple">
+<dt>NB. This may lead to a lot of connections in the FlowNet with potentially numerical issues as a result. When</dt><dd><p>generating a FlowNet that is not aware of geological layering, it is questionable whether having many
+connections per well will lead to useful results.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> – Dataframe with all well connections, through time, including state.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame will all connections</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.data.perforation_strategy.multiple_based_on_workovers">
+<code class="sig-prename descclassname">flownet.data.perforation_strategy.</code><code class="sig-name descname">multiple_based_on_workovers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.perforation_strategy.multiple_based_on_workovers" title="Permalink to this definition">¶</a></dt>
+<dd><p>This strategy creates multiple connections per well when the well during the historic production period has been
+straddled or plugged (i.e., individual connections have been shut).</p>
+<p>The following steps are performed:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Split connections into groups of connections per well, based on their open/closing history. That is,
+connections that have seen opening or closure at the same moment in time are considered a group. This is
+done by generating a hash value based on opening state booleans through time.</p></li>
+<li><p>For each group a bounding box will be created and it will be verified that no foreign connections (i.e.,
+connections from other groups) are inside of the bounding box.</p></li>
+<li><p>If connections of other groups are found inside of the bounding box a line will be fitted through the
+connections of the group being checked and a perpendicular splitting plane will be created at the center of
+foreign connections. Two new groups now exist that both will be checked via step 2.</p></li>
+<li><p>When all groups have no foreign connections in their bounding boxes the average location of the groups
+are returned, including their respective open/closing times.</p></li>
+</ol>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> – Dataframe with all well connections, through time, including state.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dataframe with 1 or more connections per will depending on the historic straddles / plugs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.data.perforation_strategy.time_avg_open_location">
+<code class="sig-prename descclassname">flownet.data.perforation_strategy.</code><code class="sig-name descname">time_avg_open_location</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.perforation_strategy.time_avg_open_location" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> – </p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.data.perforation_strategy.top_point">
+<code class="sig-prename descclassname">flownet.data.perforation_strategy.</code><code class="sig-name descname">top_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.perforation_strategy.top_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the top point of the well (assuming it is the first open connection specified, anywhere
+in time).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> – connection DataFrame</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>bottom point connections</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="flownet.ert.html" class="btn btn-neutral float-right" title="flownet.ert package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="flownet.data.from_source.html" class="btn btn-neutral float-left" title="flownet.data.from_source module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Equinor
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

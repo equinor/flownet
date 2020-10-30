@@ -1,0 +1,8 @@
+flownet.data.perforation\_strategy module
+=========================================
+
+.. automodule:: flownet.data.perforation_strategy
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
