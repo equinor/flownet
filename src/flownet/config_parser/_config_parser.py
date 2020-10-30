@@ -255,6 +255,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     "perforation_handling_strategy": {
                         MK.Type: types.String,
                         MK.Default: "bottom_point",
+                        MK.Description: "Strategy to be used when creating perforations. Valid options are "
+                        "'bottom'_point', 'top_point', 'multiple', 'time_avg_open_location' and "
+                        "'multiple_based_on_workovers'.",
                     },
                     "fast_pyscal": {
                         MK.Type: types.Bool,

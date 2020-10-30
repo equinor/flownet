@@ -42,33 +42,11 @@ class Schedule:
         Helper function that calls all functions involved in creating the schedule for the FlowNet run.
         """
         print("Creating simulation schedule file...", flush=True, end=" ")
-        self._calculate_entity_dates()
         self._calculate_compdat()
         self._calculate_welspecs()
         self._calculate_wconhist()
         self._calculate_wconinjh()
         print("done.", flush=True)
-
-    def _calculate_entity_dates(self):
-        """
-        Helper function that calculate the start dates of all entities.
-
-        Returns:
-            Nothing
-
-        """
-        self._df_production_data["ent_date"] = np.nan
-        for _, row in self._network.df_entity_connections.iterrows():
-            for entity in ["start_entity", "end_entity"]:
-                date = None
-                well_name = row[[entity]][0]
-                if row[[entity]].values[0] and row[[entity]].values[0] != "aquifer":
-                    date = self._retrieve_date_first_non_zero_prodinj(
-                        self._df_production_data, well_name
-                    )
-                self._df_production_data.loc[
-                    self._df_production_data["WELL_NAME"] == well_name, "ent_date"
-                ] = date
 
     def _calculate_compdat(self):
         """
@@ -81,30 +59,75 @@ class Schedule:
         for index, row in self._network.df_entity_connections.iterrows():
             for e_index, entity in enumerate(["start_entity", "end_entity"]):
                 if row[[entity]].values[0] and row[[entity]].values[0] != "aquifer":
+
                     entity_index = 0 - e_index  # first, or last
                     grid_mask = self._network.active_mask(model_index=index)
                     i = self._network.grid[grid_mask].index[entity_index]
 
-                    date = self._retrieve_date_first_non_zero_prodinj(
-                        self._df_production_data, row[[entity]][0]
-                    )
-                    if date:
+                    for (
+                        _,
+                        well_connection_state,
+                    ) in self._network.df_well_connections.loc[
+                        (
+                            self._network.df_well_connections["WELL_NAME"]
+                            == row[[entity]].values[0]
+                        )
+                        & (
+                            (
+                                (
+                                    np.isclose(
+                                        self._network.df_well_connections["X"],
+                                        row["xstart"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Y"],
+                                        row["ystart"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Z"],
+                                        row["zstart"],
+                                    )
+                                )
+                            )
+                            | (
+                                (
+                                    np.isclose(
+                                        self._network.df_well_connections["X"],
+                                        row["xend"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Y"],
+                                        row["yend"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Z"],
+                                        row["zend"],
+                                    )
+                                )
+                            )
+                        )
+                    ].iterrows():
                         self.append(
                             COMPDAT(
-                                date=date,
+                                date=well_connection_state["DATE"],
                                 well_name=row[[entity]][0],
                                 i=i,
                                 j=0,
                                 k1=0,
                                 k2=0,
                                 rw=0.22,
-                                status="OPEN",
+                                status="OPEN"
+                                if well_connection_state["OPEN"]
+                                else "SHUT",
                             )
-                        )
-                    else:
-                        print(
-                            f"Skipping COMPDAT for well {row[[entity]][0]} as no positive production or "
-                            f"injection data has been supplied."
                         )
 
     def _calculate_welspecs(self):
@@ -116,33 +139,25 @@ class Schedule:
 
         """
         for well_name in self._df_production_data["WELL_NAME"].unique():
-            date = self._retrieve_date_first_non_zero_prodinj(
-                self._df_production_data, well_name
+            date = self._network.df_well_connections[
+                self._network.df_well_connections["WELL_NAME"] == well_name
+            ]["DATE"].values[0]
+
+            phase = self._df_production_data[
+                (self._df_production_data["WELL_NAME"] == well_name)
+            ]["PHASE"].values[0]
+
+            self.append(
+                WELSPECS(
+                    date=date,
+                    well_name=well_name,
+                    group_name="WELLS",  # Wells directly connected to FIELD gives
+                    # segmentation fault in Flow
+                    i=self.get_compdat(well_name)[0].i,
+                    j=self.get_compdat(well_name)[0].j,
+                    phase=phase,
+                )
             )
-
-            if date:
-                well_dates = self._df_production_data[
-                    (self._df_production_data["WELL_NAME"] == well_name)
-                    & (self._df_production_data["date"] == date)
-                ]
-
-                phase = well_dates["PHASE"].values[0]
-                self.append(
-                    WELSPECS(
-                        date=date,
-                        well_name=well_name,
-                        group_name="WELLS",  # Wells directly connected to FIELD gives
-                        # segmentation fault in Flow
-                        i=self.get_compdat(well_name)[0].i,
-                        j=self.get_compdat(well_name)[0].j,
-                        phase=phase,
-                    )
-                )
-            else:
-                print(
-                    f"Skipping WELSPECS for well {well_name} as no positive production or injection data"
-                    f" has been supplied."
-                )
 
     def _calculate_wconhist(self):
         """
