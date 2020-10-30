@@ -99,11 +99,15 @@ class FlowData(FromSource):
         """
         coords: List = []
 
-        for well_name in self._wells.allWellNames():
-            global_conns = self._wells[well_name][0].globalConnections()
-            for global_conn in global_conns:
-                ijk = global_conn.ijk()
-                xyz = self._grid.get_xyz(ijk=ijk)
+        for well_name in self._wells["WELL"].unique():
+            unique_connections = self._wells[
+                self._wells["WELL"] == well_name
+            ].drop_duplicates(subset=["I", "J", "K1", "K2"])
+            for _, connection in unique_connections.iterrows():
+                ijk = (connection["I"] - 1, connection["J"] - 1, connection["K1"] - 1)
+                xyz = self._grid.get_xyz(
+                    ijk=ijk
+                )
 
                 perm_kw = self._init.iget_named_kw("PERMX", 0)
                 poro_kw = self._init.iget_named_kw("PORO", 0)
