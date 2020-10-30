@@ -49,6 +49,9 @@ def _create_observation_file(
     """
     num_training_dates = round(len(schedule.get_dates()) * training_set_fraction)
 
+    #TODO Create a trainin, test and complete observation files for yaml and ert. Later make a test to check both files has the same information
+
+
     if yaml:
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
         with open(obs_file, "w") as fh:
