@@ -47,8 +47,10 @@ def _create_observation_file(
         Nothing
 
     """
-    num_training_dates = round(len(schedule.get_dates()) * training_set_fraction)
-
+    num_dates = len(schedule.get_dates()) 
+    num_training_dates = round(num_dates * training_set_fraction)
+    
+    
     #TODO Create a trainin, test and complete observation files for yaml and ert. Later make a test to check both files has the same information
     print("Hello primor")
     print(obs_file)
