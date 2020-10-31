@@ -102,28 +102,32 @@ def _create_observation_file(
                     {
                         "schedule": schedule,
                         "error_config": config.flownet.data_source.simulation.vectors,
+                        "num_beginning_date": 1,
+                        "num_end_date":num_dates
                     }
                 )
             )
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations_training.ertobs.jinja2")
+        template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
         with open(obs_file[1], "w") as fh:
             fh.write(
                 template.render(
                     {
                         "schedule": schedule,
                         "error_config": config.flownet.data_source.simulation.vectors,
-                        "num_training_dates": num_training_dates,
+                        "num_beginning_date": 1,
+                        "num_end_date":num_training_dates
                     }
                 )
             )                      
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations_test.ertobs.jinja2")
+        template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
         with open(obs_file[2], "w") as fh:
             fh.write(
                 template.render(
                     {
                         "schedule": schedule,
                         "error_config": config.flownet.data_source.simulation.vectors,
-                        "num_training_dates": num_training_dates,
+                        "num_beginning_date": num_training_dates+1,
+                        "num_end_date":num_dates
                     }
                 )
             )
