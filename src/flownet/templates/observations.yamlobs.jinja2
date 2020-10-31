@@ -6,9 +6,11 @@ smry:
  - key: WOPR:{{ well_name }}
    observations:
    {%- elif not loop.first: %}
+   {%- if ( schedule.get_dates()[num_beginning_date-1] < kw.date)  and (kw.date < schedule.get_dates()[num_end_date-1]) %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.oil_rate }}
       error: {{ [error_config.WOPR.rel_error * kw.oil_rate, error_config.WOPR.min_error] | max }}
+   {%- endif -%} 
    {%- endif -%}
    {%- endfor %}
    {%- endif -%}

@@ -47,14 +47,15 @@ def _create_observation_file(
         Nothing
 
     """
-    num_training_dates = round(len(schedule.get_dates()) * training_set_fraction)
+    num_dates          = len(schedule.get_dates())
+    num_training_dates = round(num_dates * training_set_fraction)
     
     
     #TODO Create a trainin, test and complete observation files for yaml and ert. Later make a test to check both files has the same information
-    print("Hello primor")
-    print(obs_file)
-    print("Ques es lo que")
-
+    print("training set")
+    print(num_training_dates)
+    print("total set")
+    print(num_dates)
     # Creating complete observation file
     if yaml:
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
@@ -64,26 +65,32 @@ def _create_observation_file(
                     {
                         "schedule": schedule,
                         "error_config": config.flownet.data_source.simulation.vectors,
+                        "num_beginning_date": 1,
+                        "num_end_date": num_dates
                     }
                 )
             )
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations_training.yamlobs.jinja2")
+        template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
         with open(obs_file[1], "w") as fh:
             fh.write(
                 template.render(
                     {
                         "schedule": schedule,
                         "error_config": config.flownet.data_source.simulation.vectors,
+                        "num_beginning_date": 1,
+                        "num_end_date": num_training_dates
                     }
                 )
             )                      
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations_test.yamlobs.jinja2")
+        template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
         with open(obs_file[2], "w") as fh:
             fh.write(
                 template.render(
                     {
                         "schedule": schedule,
                         "error_config": config.flownet.data_source.simulation.vectors,
+                        "num_beginning_date": num_training_dates+1,
+                        "num_end_date":num_dates
                     }
                 )
             )                                      
@@ -296,7 +303,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
             _create_observation_file(
                 schedule,
                 yaml_output_file_names,
-                config, yaml=True
+                config,
+                training_set_fraction, yaml=True
             )
 
         _create_ert_parameter_file(parameters, output_folder)
