@@ -51,13 +51,8 @@ def _create_observation_file(
     num_training_dates = round(num_dates * training_set_fraction)
     
     
-    #TODO Create a trainin, test and complete observation files for yaml and ert. Later make a test to check both files has the same information
-    print("training set")
-    print(num_training_dates)
-    print("total set")
-    print(num_dates)
-    # Creating complete observation file
     if yaml:
+        # Creating YAML complete observation file
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
         with open(obs_file[0], "w") as fh:
             fh.write(
@@ -70,6 +65,7 @@ def _create_observation_file(
                     }
                 )
             )
+        # Creating YAML training observation file
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
         with open(obs_file[1], "w") as fh:
             fh.write(
@@ -81,7 +77,8 @@ def _create_observation_file(
                         "num_end_date": num_training_dates
                     }
                 )
-            )                      
+            )
+        # Creating YAML test observation file                    
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
         with open(obs_file[2], "w") as fh:
             fh.write(
@@ -95,6 +92,7 @@ def _create_observation_file(
                 )
             )                                      
     else:
+        # Creating ERT complete observation file
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
         with open(obs_file[0], "w") as fh:
             fh.write(
@@ -107,6 +105,7 @@ def _create_observation_file(
                     }
                 )
             )
+        # Creating ERT training observation file                  
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
         with open(obs_file[1], "w") as fh:
             fh.write(
@@ -118,7 +117,8 @@ def _create_observation_file(
                         "num_end_date":num_training_dates
                     }
                 )
-            )                      
+            )
+        # Creating ERT test observation file                   
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
         with open(obs_file[2], "w") as fh:
             fh.write(
