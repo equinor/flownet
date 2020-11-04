@@ -6,7 +6,7 @@ smry:
  - key: WOPR:{{ well_name }}
    observations:
    {%- elif not loop.first: %}
-   {%- if ( schedule.get_dates()[num_beginning_date-1] < kw.date)  and (kw.date < schedule.get_dates()[num_end_date-1]) %}
+   {%- if ( schedule.get_dates()[num_beginning_date-1].toordinal() <= kw.date.toordinal())  and (kw.date.toordinal() <= schedule.get_dates()[num_end_date-1].toordinal()) %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.oil_rate }}
       error: {{ [error_config.WOPR.rel_error * kw.oil_rate, error_config.WOPR.min_error] | max }}
@@ -20,7 +20,7 @@ smry:
  - key: WGPR:{{ well_name }}
    observations:
    {%- elif not loop.first: %}
-   {%- if ( schedule.get_dates()[num_beginning_date-1] < kw.date)  and (kw.date < schedule.get_dates()[num_end_date-1]) %}
+   {%- if ( schedule.get_dates()[num_beginning_date-1].toordinal() <= kw.date.toordinal())  and (kw.date.toordinal() <= schedule.get_dates()[num_end_date-1].toordinal()) %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.gas_rate }}
       error: {{ [error_config.WGPR.rel_error * kw.gas_rate, error_config.WGPR.min_error] | max }}
@@ -34,7 +34,7 @@ smry:
  - key: WWPR:{{ well_name }}
    observations:
    {%- elif not loop.first: %}
-   {%- if ( schedule.get_dates()[num_beginning_date-1] < kw.date)  and (kw.date < schedule.get_dates()[num_end_date-1]) %}
+   {%- if ( schedule.get_dates()[num_beginning_date-1].toordinal() <= kw.date.toordinal())  and (kw.date.toordinal() <= schedule.get_dates()[num_end_date-1].toordinal()) %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.water_rate }}
       error: {{ [error_config.WWPR.rel_error * kw.water_rate, error_config.WWPR.min_error] | max }}
@@ -48,7 +48,7 @@ smry:
  - key: WBHP:{{ well_name }}
    observations:
    {%- elif not loop.first: %}
-   {%- if ( schedule.get_dates()[num_beginning_date-1] < kw.date)  and (kw.date < schedule.get_dates()[num_end_date-1]) %}
+   {%- if ( schedule.get_dates()[num_beginning_date-1].toordinal() <= kw.date.toordinal())  and (kw.date.toordinal() <= schedule.get_dates()[num_end_date-1].toordinal()) %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.bhp }}
       error: {{ [error_config.WBHP.rel_error * kw.bhp, error_config.WBHP.min_error] | max }}
@@ -62,7 +62,7 @@ smry:
  - key: WTHP:{{ well_name }}
    observations:
    {%- elif not loop.first: %}
-   {%- if ( schedule.get_dates()[num_beginning_date-1] < kw.date)  and (kw.date < schedule.get_dates()[num_end_date-1]) %}
+   {%- if ( schedule.get_dates()[num_beginning_date-1].toordinal() <= kw.date.toordinal())  and (kw.date.toordinal() <= schedule.get_dates()[num_end_date-1].toordinal()) %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.thp }}
       error: {{ [error_config.WTHP.rel_error * kw.thp, error_config.WTHP.min_error] | max }}
@@ -79,7 +79,7 @@ smry:
  - key: WBHP:{{ well_name }}
    observations:
    {%- elif not loop.first: %}
-   {%- if ( schedule.get_dates()[num_beginning_date-1] < kw.date)  and (kw.date < schedule.get_dates()[num_end_date-1]) %}
+   {%- if ( schedule.get_dates()[num_beginning_date-1].toordinal() <= kw.date.toordinal())  and (kw.date.toordinal() <= schedule.get_dates()[num_end_date-1].toordinal()) %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.bhp }}
       error: {{ [error_config.WBHP.rel_error * kw.bhp, error_config.WBHP.min_error] | max }}
@@ -93,7 +93,7 @@ smry:
  - key: WTHP:{{ well_name }}
    observations:
    {%- elif not loop.first: %}
-   {%- if ( schedule.get_dates()[num_beginning_date-1] < kw.date)  and (kw.date < schedule.get_dates()[num_end_date-1]) %}
+   {%- if ( schedule.get_dates()[num_beginning_date-1].toordinal() <= kw.date.toordinal())  and (kw.date.toordinal() <= schedule.get_dates()[num_end_date-1].toordinal()) %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.bhp }}
       error: {{ [error_config.WTHP.rel_error * kw.thp, error_config.WTHP.min_error] | max }}
@@ -107,7 +107,7 @@ smry:
  - key: WGIR:{{ well_name }}
    observations:
    {%- elif not loop.first and kw.inj_type == "GAS": %}
-   {%- if ( schedule.get_dates()[num_beginning_date-1] < kw.date)  and (kw.date < schedule.get_dates()[num_end_date-1]) %}
+   {%- if ( schedule.get_dates()[num_beginning_date-1].toordinal() <= kw.date.toordinal())  and (kw.date.toordinal() <= schedule.get_dates()[num_end_date-1].toordinal()) %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.rate }}
       error: {{ [error_config.WGIR.rel_error * kw.rate, error_config.WGIR.min_error] | max }}
@@ -121,7 +121,7 @@ smry:
  - key: WWIR:{{ well_name }}
    observations:
    {%- elif not loop.first and kw.inj_type == "WATER": %}
-   {%- if ( schedule.get_dates()[num_beginning_date-1] < kw.date)  and (kw.date < schedule.get_dates()[num_end_date-1]) %}
+   {%- if ( schedule.get_dates()[num_beginning_date-1].toordinal() <= kw.date.toordinal())  and (kw.date.toordinal() <= schedule.get_dates()[num_end_date-1].toordinal()) %}
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.rate }}
       error: {{ [error_config.WWIR.rel_error * kw.rate, error_config.WWIR.min_error] | max }}
