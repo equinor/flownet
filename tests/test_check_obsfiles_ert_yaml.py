@@ -62,10 +62,10 @@ def test_method():
     yaml_obs = {}
     for item in parsed_yaml_file:
         print (item, ": ", type(item))
-        print "VERGA"
         for list_item in parsed_yaml_file[item]:
             #print (list_item, ": ", type(list_item))
             print list_item["key"]
+            #print ert_obs[list_item["key"]]
             for lost_item in list_item["observations"]:
                 #print lost_item
                 #print(lost_item["date"])
@@ -76,9 +76,34 @@ def test_method():
                 yaml_obs[list_item["key"]][0].append(lost_item["date"])        
                 yaml_obs[list_item["key"]][1].append(float(lost_item["value"]))
                 yaml_obs[list_item["key"]][2].append(float(lost_item["error"]))
+            if yaml_obs[list_item["key"]][1]==ert_obs[list_item["key"]][1][1:]:
+                print("Values Are Equal")
+            else :
+                print("Values Are NOT Equal")
+                print("YAML_OBS")
+                print(yaml_obs[list_item["key"]][1])
+                print("--------------------------------------")
+                print("ERT_OBS")
+                print(ert_obs[list_item["key"]][1][1:])
+                print("--------------------------------------")
+                print("--------------------------------------")
+
+            if yaml_obs[list_item["key"]][2]==ert_obs[list_item["key"]][2][1:]:
+                print("Error Are Equal")
+            else :
+                print("Error Are NOT Equal")
+                print("YAML_OBS")
+                print(yaml_obs[list_item["key"]][2])
+                print("--------------------------------------")
+                print("ERT_OBS")
+                print(ert_obs[list_item["key"]][2][1:])
+                print("--------------------------------------")
+                print("--------------------------------------")
+
+
                 ##, ": "lost_item["error"])
             ##for second_list_item in parsed_yaml_file[item]:
             ##print list_item["value"]
-    print(yaml_obs)        
+    #print(yaml_obs)        
     assert os.path.exists(ERT_OBS_FILE) == 1
     assert os.path.exists(YAML_OBS_FILE) == 1    
