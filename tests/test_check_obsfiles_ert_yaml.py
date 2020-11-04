@@ -13,19 +13,20 @@ def test_method():
     YAML_OBS_FILE = "../output_test/observations.yamlobs"
     
     
-    #data =  yaml.load(YAML_OBS_FILE, Loader=yaml.FullLoader)
-    #print(data)
-    
-    #sorted = yaml.dump(data, sort_keys=True)
-    #print(sorted)
-    
+   # Reading YALM file
     a_yaml_file = open(YAML_OBS_FILE,'r')
+    yaml.allow_duplicate_keys = True
+
     parsed_yaml_file = yaml.load(a_yaml_file, Loader=yaml.FullLoader)
 
     print("YAML type var")
 
-    print(type(parsed_yaml_file))
+    #print(parsed_yaml_file)
+    
+    
 
+    
+    #Reading ERT file
     a_ert_file = open(ERT_OBS_FILE, 'r')
     
     ert_obs = {}
@@ -53,6 +54,24 @@ def test_method():
 
     print("ERT type var")
     print(type(ert_obs))
+
+    #for item in ert_obs:
+        #print ("{",item, ": ", ert_obs[item][0], " }")
+        
+    for item in parsed_yaml_file:
+        print (item, ": ", type(item))
+        print "VERGA"
+        for list_item in parsed_yaml_file[item]:
+            #print (list_item, ": ", type(list_item))
+            print list_item["key"]
+            for lost_item in list_item["observations"]:
+                print lost_item
+                print(lost_item["date"])
+                print(lost_item["error"])
+                print(lost_item["value"])#, ": "lost_item["error"])
+            #for second_list_item in parsed_yaml_file[item]:
+            #print list_item["value"]
+            
     assert os.path.exists(ERT_OBS_FILE) == 1
     assert os.path.exists(YAML_OBS_FILE) == 1    
     
