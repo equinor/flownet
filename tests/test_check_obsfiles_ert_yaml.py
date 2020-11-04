@@ -53,11 +53,13 @@ def test_method():
                     ert_obs[dic["KEY"]][2].append(float(dic["ERROR"]))
 
     print("ERT type var")
+    #print(ert_obs)
     print(type(ert_obs))
 
-    #for item in ert_obs:
+
+    #for item in ert_obs:    
         #print ("{",item, ": ", ert_obs[item][0], " }")
-        
+    yaml_obs = {}
     for item in parsed_yaml_file:
         print (item, ": ", type(item))
         print "VERGA"
@@ -65,13 +67,18 @@ def test_method():
             #print (list_item, ": ", type(list_item))
             print list_item["key"]
             for lost_item in list_item["observations"]:
-                print lost_item
-                print(lost_item["date"])
-                print(lost_item["error"])
-                print(lost_item["value"])#, ": "lost_item["error"])
-            #for second_list_item in parsed_yaml_file[item]:
-            #print list_item["value"]
-            
+                #print lost_item
+                #print(lost_item["date"])
+                #print(lost_item["error"])
+                #print(lost_item["value"])
+                if not list_item["key"] in yaml_obs:
+                        yaml_obs[list_item["key"]] = [[],[],[]]
+                yaml_obs[list_item["key"]][0].append(lost_item["date"])        
+                yaml_obs[list_item["key"]][1].append(float(lost_item["value"]))
+                yaml_obs[list_item["key"]][2].append(float(lost_item["error"]))
+                ##, ": "lost_item["error"])
+            ##for second_list_item in parsed_yaml_file[item]:
+            ##print list_item["value"]
+    print(yaml_obs)        
     assert os.path.exists(ERT_OBS_FILE) == 1
     assert os.path.exists(YAML_OBS_FILE) == 1    
-    
