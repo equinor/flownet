@@ -28,7 +28,7 @@ def run_flownet_hyperparameter(
     fmin(fn=fmin_objective, space=hyperparameters, algo=tpe.suggest, max_evals=n_runs)
 
 
-def flownet_ahm_run(x, args):
+def flownet_ahm_run(x: list, args: argparse.Namespace):
 
     config = create_ahm_config(base_config=args.config, hyperparameter_values=x)
 
@@ -40,5 +40,5 @@ def flownet_ahm_run(x, args):
         )
         run_flownet_history_matching(config, args)
 
-        # Here the metric need to be read....!
+        # Here the metric needs to be read....!
         mlflow.log_param("MAE", 1)

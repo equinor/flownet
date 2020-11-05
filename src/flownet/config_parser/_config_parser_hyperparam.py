@@ -1,13 +1,15 @@
+from typing import Tuple
 import pathlib
 
 from configsuite import ConfigSuite
 from hyperopt import hp
+from hyperopt.pyll.base import Apply
 import yaml
 
 from ._config_parser import create_schema
 
 
-def create_hyperopt_space(key: str, name: str, values: list):
+def create_hyperopt_space(key: str, name: str, values: list) -> Apply:
     if name in ("UNIFORM_CHOICE", "CHOICE"):
         result = hp.choice(key, values)
     elif name == "UNIFORM":
@@ -18,7 +20,7 @@ def create_hyperopt_space(key: str, name: str, values: list):
     return result
 
 
-def list_hyperparameters(config_dict: dict, hyper_dict: list):
+def list_hyperparameters(config_dict: dict, hyper_dict: list) -> list:
     for key, value in config_dict.items():
         if isinstance(value, dict):
             hyper_dict += list_hyperparameters(value, hyper_dict=[])
@@ -37,7 +39,7 @@ def parse_hyperparam_config(base_config: pathlib.Path):
     return list_hyperparameters(hyper_config, hyper_dict=[])
 
 
-def update_hyper_config(hyper_dict, hyperparameter_values, i=0) -> dict:
+def update_hyper_config(hyper_dict, hyperparameter_values, i=0) -> Tuple[dict, int]:
     for key, value in hyper_dict.items():
         if isinstance(value, dict):
             value, i = update_hyper_config(value, hyperparameter_values, i=i)
@@ -49,7 +51,9 @@ def update_hyper_config(hyper_dict, hyperparameter_values, i=0) -> dict:
     return hyper_dict, i
 
 
-def create_ahm_config(base_config: pathlib.Path, hyperparameter_values: list):
+def create_ahm_config(
+    base_config: pathlib.Path, hyperparameter_values: list
+) -> ConfigSuite.snapshot:
     with open(base_config) as file:
         hyper_config = yaml.load(file, Loader=yaml.FullLoader)
         hyper_config = update_hyper_config(hyper_config, hyperparameter_values)[0]
