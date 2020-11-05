@@ -125,7 +125,7 @@ def _create_observation_file(
                     {
                         "schedule": schedule,
                         "error_config": config.flownet.data_source.simulation.vectors,
-                        "num_beginning_date": num_training_dates + 1,
+                        "num_beginning_date": num_training_dates,
                         "num_end_date": num_dates,
                     }
                 )
@@ -303,7 +303,10 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     if not prediction_setup:
         if parameters is not None:
             _create_observation_file(
-                schedule, ert_output_file_names, config, training_set_fraction,
+                schedule,
+                ert_output_file_names,
+                config,
+                training_set_fraction,
             )
 
             _create_observation_file(
