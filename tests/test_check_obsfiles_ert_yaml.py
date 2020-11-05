@@ -47,28 +47,13 @@ def read_yaml_obs(yaml_obs_file_name):
 
     return yaml.load(a_yaml_file, Loader=yaml.FullLoader)
 
-def test_method():
-    ERT_OBS_FILE = "../output_test/observations.ertobs"
-    YAML_OBS_FILE = "../output_test/observations.yamlobs"
-    
-    
-    
-    #Reading ERT file
-    ert_obs = read_ert_obs(ERT_OBS_FILE)
-    print("ERT type var")
-    print(type(ert_obs))
 
-
-
-    parsed_yaml_file = read_yaml_obs(YAML_OBS_FILE)
-    print("YAML type var")
-
-    #for item in ert_obs:    
-        #print ("{",item, ": ", ert_obs[item][0], " }")
+def compare(ert_obs_dict, yaml_obs_dict):
     yaml_obs = {}
-    for item in parsed_yaml_file:
+    equal = True
+    for item in yaml_obs_dict:
         print (item, ": ", type(item))
-        for list_item in parsed_yaml_file[item]:
+        for list_item in yaml_obs_dict[item]:
             #print (list_item, ": ", type(list_item))
             print list_item["key"]
             #print ert_obs[list_item["key"]]
@@ -82,42 +67,79 @@ def test_method():
                 yaml_obs[list_item["key"]][1].append(float(lost_item["value"]))
                 yaml_obs[list_item["key"]][2].append(float(lost_item["error"]))
             #assert yaml_obs[list_item["key"]][0] == ert_obs[list_item["key"]][0]
-            if yaml_obs[list_item["key"]][0]!=ert_obs[list_item["key"]][0][1:]:
+            if yaml_obs[list_item["key"]][0]!=ert_obs_dict[list_item["key"]][0][1:]:
                 print("Values Are NOT Equal")
                 print("YAML_OBS")
-                print(yaml_obs[list_item["key"]][1])
+                print(yaml_obs[list_item["key"]][0])
                 print("--------------------------------------")
                 print("ERT_OBS")
-                print(ert_obs[list_item["key"]][1])
+                print(ert_obs_dict[list_item["key"]][0][1:])
                 print("--------------------------------------")
                 print("--------------------------------------")
+                equal = False
                 
-            if yaml_obs[list_item["key"]][1]!=ert_obs[list_item["key"]][1][1:]:
+            if yaml_obs[list_item["key"]][1]!=ert_obs_dict[list_item["key"]][1][1:]:
                 print("Values Are NOT Equal")
                 print("YAML_OBS")
                 print(yaml_obs[list_item["key"]][1])
                 print("--------------------------------------")
                 print("ERT_OBS")
-                print(ert_obs[list_item["key"]][1])
+                print(ert_obs_dict[list_item["key"]][1][1:])
                 print("--------------------------------------")
                 print("--------------------------------------")
+                equal = False
 
-            if yaml_obs[list_item["key"]][2]!=ert_obs[list_item["key"]][2][1:]:
+            if yaml_obs[list_item["key"]][2]!=ert_obs_dict[list_item["key"]][2][1:]:
                 print("Error Are NOT Equal")
                 print("YAML_OBS")
                 print(yaml_obs[list_item["key"]][2])
                 print("--------------------------------------")
                 print("ERT_OBS")
-                print(ert_obs[list_item["key"]][2])
+                print(ert_obs_dict[list_item["key"]][2][1:])
                 print("--------------------------------------")
                 print("--------------------------------------")
-            assert yaml_obs[list_item["key"]][0] == ert_obs[list_item["key"]][0][1:]               
-            assert yaml_obs[list_item["key"]][1] == ert_obs[list_item["key"]][1][1:]
-            assert yaml_obs[list_item["key"]][2] == ert_obs[list_item["key"]][2][1:]
+                equal = False
+            assert yaml_obs[list_item["key"]][0] == ert_obs_dict[list_item["key"]][0][1:]               
+            assert yaml_obs[list_item["key"]][1] == ert_obs_dict[list_item["key"]][1][1:]
+            assert yaml_obs[list_item["key"]][2] == ert_obs_dict[list_item["key"]][2][1:]
+            return equal
 
-                ##, ": "lost_item["error"])
-            ##for second_list_item in parsed_yaml_file[item]:
-            ##print list_item["value"]
-    #print(yaml_obs)        
+
+def test_method():
+    ERT_OBS_FILE = "../output_test/observations.ertobs"
+    YAML_OBS_FILE = "../output_test/observations.yamlobs"
+
+    ERT_TRAINING_OBS_FILE = "../output_test/observations_training.ertobs"
+    ERT_TEST_OBS_FILE = "../output_test/observations_test.ertobs"
+
+    YAML_TRAINING_OBS_FILE = "../output_test/observations_training.yamlobs"    
+    YAML_TEST_OBS_FILE = "../output_test/observations_test.yamlobs"    
+
+    # Comparing the complete observation data
+    #Reading ERT file
+    ert_obs = read_ert_obs(ERT_OBS_FILE)
+
+    #Reading YAML file
+    parsed_yaml_file = read_yaml_obs(YAML_OBS_FILE)
+
+    assert compare(ert_obs,parsed_yaml_file) == True
     
+    
+    # Comparing the training observation data
+    #Reading ERT file
+    ert_obs = read_ert_obs(ERT_TRAINING_OBS_FILE)
+
+    #Reading YAML file
+    parsed_yaml_file = read_yaml_obs(YAML_TRAINING_OBS_FILE)
+
+    assert compare(ert_obs,parsed_yaml_file) == True   
        
+       
+    # Comparing the Test observation data
+    #Reading ERT file
+    ert_obs = read_ert_obs(ERT_TEST_OBS_FILE)
+
+    #Reading YAML file
+    parsed_yaml_file = read_yaml_obs(YAML_TEST_OBS_FILE)
+
+    assert compare(ert_obs,parsed_yaml_file) == True          
