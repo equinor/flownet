@@ -29,7 +29,16 @@ def run_flownet_hyperparameter(
 
 
 def flownet_ahm_run(x: list, args: argparse.Namespace):
+    """[summary]
 
+    Args:
+        x (list): [description]
+        args (argparse.Namespace): [description]
+
+    Returns:
+        Nothing
+
+    """
     config = create_ahm_config(base_config=args.config, hyperparameter_values=x)
 
     mlflow.set_tracking_uri(str(args.output_folder))
