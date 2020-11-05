@@ -7,10 +7,11 @@ from hyperopt.pyll.base import Apply
 import yaml
 
 from ._config_parser import create_schema
+from ._merge_configs import merge_configs
 
 
 def create_hyperopt_space(key: str, name: str, values: list) -> Apply:
-    """Function to create a hyperopt search space for a single hyper parameter.
+    """Function to create a hyperopt search space for a single hyperparameter.
 
     Args:
         key: Key in yaml file for the hyperparameter search space
@@ -39,7 +40,7 @@ def list_hyperparameters(config_dict: dict, hyperparameters: list) -> list:
 
     Args:
         config_dict: configuration as dictionary
-        hyperparameters: list of hyper parameters already found (used for
+        hyperparameters: list of hyperparameters already found (used for
                          recursive calling of the function.)
 
     Returns:
@@ -88,7 +89,7 @@ def update_hyper_config(hyper_dict, hyperparameter_values, i=0) -> Tuple[dict, i
 
 
 def create_ahm_config(
-    base_config: pathlib.Path, hyperparameter_values: list
+    base_config: pathlib.Path, hyperparameter_values: list, update_config: pathlib.Path
 ) -> ConfigSuite.snapshot:
     """Create a flownet ahm config file from a hyperparameter config file and
     the known drawn values for the hyperparameters.
@@ -96,6 +97,7 @@ def create_ahm_config(
     Args:
         base_config: Path to the hyperparameter config file.
         hyperparameter_values: List of actual hyperparameter values to be run.
+        update_config: Path to config used for updating, like CI.
 
     Raises:
         ValueError: If the resulting ConfigSuite is invalid.
@@ -104,9 +106,14 @@ def create_ahm_config(
         A validated ConfigSuite with filled-in hyperparameter values ready to be
         run in flownet ahm.
     """
-    with open(base_config) as file:
-        hyper_config = yaml.load(file, Loader=yaml.FullLoader)
-        hyper_config = update_hyper_config(hyper_config, hyperparameter_values)[0]
+    if update_config is None:
+        hyper_config = yaml.safe_load(base_config.read_text())
+    else:
+        hyper_config = merge_configs(
+            yaml.safe_load(base_config.read_text()),
+            yaml.safe_load(update_config.read_text()),
+        )
+    hyper_config = update_hyper_config(hyper_config, hyperparameter_values)[0]
 
     suite = ConfigSuite(
         hyper_config,

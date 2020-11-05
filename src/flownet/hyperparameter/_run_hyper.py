@@ -1,8 +1,9 @@
+import copy
 import pathlib
 from functools import partial
 import argparse
 
-from hyperopt import fmin, tpe
+from hyperopt import fmin, tpe, STATUS_OK
 import mlflow
 
 from ..ahm import run_flownet_history_matching
@@ -10,14 +11,14 @@ from ..config_parser._config_parser_hyperparam import create_ahm_config
 
 
 def run_flownet_hyperparameter(
-    args: argparse.Namespace, hyperparameters: list, n_runs=1
+    args: argparse.Namespace, hyperparameters: list, n_runs=10
 ):
     """
     Run flownet in hyperparamater exploration or optimization mode.
 
     Args:
         args: The argparse namespace given by the user
-        hyperparameters: Dictionary with hyper parameters
+        hyperparameters: Dictionary with hyperparameters
 
 
     Returns:
@@ -40,15 +41,22 @@ def flownet_ahm_run(x: list, args: argparse.Namespace):
         Nothing
 
     """
-    config = create_ahm_config(base_config=args.config, hyperparameter_values=x)
+    config = create_ahm_config(
+        base_config=args.config,
+        hyperparameter_values=x,
+        update_config=args.update_config,
+    )
 
     mlflow.set_tracking_uri(str(args.output_folder))
     mlflow.set_experiment(f"{config.name}")
     with mlflow.start_run(run_name=config.name):
-        args.output_folder = pathlib.Path(
+        tmp_args = copy.deepcopy(args)
+        tmp_args.output_folder = pathlib.Path(
             mlflow.get_artifact_uri().rsplit("artifacts")[0] + "flownet_run"
         )
-        run_flownet_history_matching(config, args)
+        run_flownet_history_matching(config, tmp_args)
 
         # Here the metric needs to be read....!
         mlflow.log_param("MAE", 1)
+
+    return {"loss": 1, "status": STATUS_OK}

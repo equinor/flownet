@@ -254,6 +254,12 @@ def main():
         help="Folder to hyperparameter exploration or optimization results.",
     )
     parser_hyperparam.add_argument(
+        "--update-config",
+        type=pathlib.Path,
+        default=None,
+        help="Optional configuration file which values will update the main config.",
+    )
+    parser_hyperparam.add_argument(
         "--overwrite",
         action="store_true",
         help="Overwrite output directory if it already exists",
