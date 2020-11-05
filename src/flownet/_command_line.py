@@ -253,7 +253,6 @@ def main():
         type=pathlib.Path,
         help="Folder to hyperparameter exploration or optimization results.",
     )
-
     parser_hyperparam.add_argument(
         "--overwrite",
         action="store_true",

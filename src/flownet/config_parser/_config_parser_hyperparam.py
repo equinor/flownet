@@ -50,14 +50,14 @@ def list_hyperparameters(config_dict: dict, hyperparameters: list) -> list:
         if isinstance(value, dict):
             hyperparameters += list_hyperparameters(value, hyperparameters=[])
         if isinstance(value, list):
-            if value[0] in ["UNIFORM_CHOICE", "UNIFORM"]:
+            if value[0] in ["UNIFORM_CHOICE", "UNIFORM", "CHOICE"]:
                 value = create_hyperopt_space(key=key, name=value[0], values=value[1:])
                 hyperparameters.append(value)
 
     return hyperparameters
 
 
-def parse_hyperparam_config(base_config: pathlib.Path):
+def parse_hyperparam_config(base_config: pathlib.Path) -> list:
     """Parse a flownet configuration file for hyperparameter tuning. This function
     will not parse the entire file and check for errors. It will merely extract
     the hyperparameters.
@@ -80,7 +80,7 @@ def update_hyper_config(hyper_dict, hyperparameter_values, i=0) -> Tuple[dict, i
         if isinstance(value, dict):
             value, i = update_hyper_config(value, hyperparameter_values, i=i)
         if isinstance(value, list):
-            if value[0] in ["UNIFORM_CHOICE", "UNIFORM"]:
+            if value[0] in ["UNIFORM_CHOICE", "UNIFORM", "CHOICE"]:
                 hyper_dict[key] = hyperparameter_values[i]
                 i += 1
 
