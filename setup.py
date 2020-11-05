@@ -10,6 +10,7 @@ REQUIREMENTS = [
     "fmu-ensemble>=1.2",
     "jinja2>=2.10",
     "matplotlib>=3.1",
+    "mlflow>=1.11.0",
     "numpy>=1.17",
     "opm>=2020.10",
     "pandas~=1.0",
