@@ -7,15 +7,10 @@ import os.path
 
 import yaml
 
-
-def test_method():
-    ERT_OBS_FILE = "../output_test/observations.ertobs"
-    YAML_OBS_FILE = "../output_test/observations.yamlobs"
-    
-    
+def read_ert_obs(ert_obs_file_name):
     #Reading ERT file
-    assert os.path.exists(ERT_OBS_FILE) == 1
-    a_ert_file = open(ERT_OBS_FILE, 'r')
+    assert os.path.exists(ert_obs_file_name) == 1
+    a_ert_file = open(ert_obs_file_name, 'r')
     
     ert_obs = {}
     text =""
@@ -39,19 +34,33 @@ def test_method():
                     ert_obs[dic["KEY"]][0].append(datetime.strptime(dic["DATE"], '%d/%m/%Y').toordinal())
                     ert_obs[dic["KEY"]][1].append(float(dic["VALUE"]))
                     ert_obs[dic["KEY"]][2].append(float(dic["ERROR"]))
+    
+    return ert_obs
 
+
+
+def read_yaml_obs(yaml_obs_file_name):
+    #Reading YALM file
+    assert os.path.exists(yaml_obs_file_name) == 1 
+    a_yaml_file = open(yaml_obs_file_name,'r')
+    yaml.allow_duplicate_keys = True
+
+    return yaml.load(a_yaml_file, Loader=yaml.FullLoader)
+
+def test_method():
+    ERT_OBS_FILE = "../output_test/observations.ertobs"
+    YAML_OBS_FILE = "../output_test/observations.yamlobs"
+    
+    
+    
+    #Reading ERT file
+    ert_obs = read_ert_obs(ERT_OBS_FILE)
     print("ERT type var")
-    #print(ert_obs)
     print(type(ert_obs))
 
 
-    #Reading YALM file
-    assert os.path.exists(YAML_OBS_FILE) == 1 
-    a_yaml_file = open(YAML_OBS_FILE,'r')
-    yaml.allow_duplicate_keys = True
 
-    parsed_yaml_file = yaml.load(a_yaml_file, Loader=yaml.FullLoader)
-
+    parsed_yaml_file = read_yaml_obs(YAML_OBS_FILE)
     print("YAML type var")
 
     #for item in ert_obs:    
