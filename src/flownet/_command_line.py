@@ -117,8 +117,8 @@ def flownet_hyperparam(args: argparse.Namespace) -> None:
                 f"{args.output_folder} already exists. Add --overwrite or change output folder."
             )
 
-    config = parse_hyperparam_config(args.config)
-    run_flownet_hyperparameter(config, args)
+    hyper_parameters = parse_hyperparam_config(args.config)
+    run_flownet_hyperparameter(args, hyper_parameters)
 
 
 def main():
