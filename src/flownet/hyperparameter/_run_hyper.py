@@ -13,7 +13,7 @@ def run_flownet_hyperparameter(
     args: argparse.Namespace, hyperparameters: list, n_runs=1
 ):
     """
-    Run flownet in hyper paramater exploration or optimization mode.
+    Run flownet in hyperparamater exploration or optimization mode.
 
     Args:
         args: The argparse namespace given by the user
@@ -29,11 +29,12 @@ def run_flownet_hyperparameter(
 
 
 def flownet_ahm_run(x: list, args: argparse.Namespace):
-    """[summary]
+    """
+    Run individual ahm using the actual hyperparameter values for the run.
 
     Args:
-        x (list): [description]
-        args (argparse.Namespace): [description]
+        x: Actual values for the hyperparameters.
+        args: The argparse namespace given by the user.
 
     Returns:
         Nothing

@@ -235,7 +235,7 @@ def main():
 
     parser_pred.set_defaults(func=flownet_pred)
 
-    # Add hyper parameter tuning/sensitivity checks:
+    # Add hyperparameter tuning/sensitivity checks:
     parser_hyperparam = subparsers.add_parser(
         "hyperparam",
         help="Run flownet in hyperparameter exploration or optimization mode.",
