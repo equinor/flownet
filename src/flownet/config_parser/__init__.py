@@ -1,2 +1,3 @@
 from ._config_parser import parse_config
 from ._config_parser_pred import parse_pred_config
+from ._config_parser_hyperparam import parse_hyperparam_config

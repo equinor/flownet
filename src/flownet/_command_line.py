@@ -4,7 +4,7 @@ import shutil
 import pathlib
 import subprocess
 
-from .config_parser import parse_config, parse_pred_config
+from .config_parser import parse_config, parse_pred_config, parse_hyperparam_config
 from .ahm import run_flownet_history_matching
 from .prediction import run_flownet_prediction
 from .hyperparameter import run_flownet_hyperparameter
@@ -117,7 +117,7 @@ def flownet_hyperparam(args: argparse.Namespace) -> None:
                 f"{args.output_folder} already exists. Add --overwrite or change output folder."
             )
 
-    config = parse_config(args.config)
+    config = parse_hyperparam_config(args.config)
     run_flownet_hyperparameter(config, args)
 
 

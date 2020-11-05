@@ -17,4 +17,4 @@ def run_flownet_hyperparameter(config, args):
     mlflow.set_experiment(f"{config.name}")
 
     with mlflow.start_run(run_name=config.name):
-        mlflow.log_param("a", 1)
+        mlflow.log_param("MAE", 1)
