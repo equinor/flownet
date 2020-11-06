@@ -566,7 +566,11 @@ def run_flownet_history_matching(
                 for key in relperm_parameters
             ]
             for i, item in enumerate(low_optimistic):
-                if item: interp_info[0][i], interp_info[2][i] = interp_info[2][i], interp_info[0][i]
+                if item:
+                    interp_info[0][i], interp_info[2][i] = (
+                        interp_info[2][i],
+                        interp_info[0][i],
+                    )
 
             info: List = [["interpolate"], [-1], [1], [False], [i]]
             if {"oil", "gas", "water"}.issubset(config.flownet.phases):

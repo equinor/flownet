@@ -554,7 +554,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         "If 'low_optimistic' is set to True, the minimum value for "
                                                         "this model parameter will be used to generated the high case "
                                                         "SCAL recommendation curves, and the maximum value will be "
-                                                        "used for the low case SCAL recommendation curves."
+                                                        "used for the low case SCAL recommendation curves.",
                                                     },
                                                 },
                                             },
