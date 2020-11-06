@@ -512,11 +512,12 @@ def run_flownet_history_matching(
     ]._asdict()
     relperm_parameters.pop("id", None)
 
-    relperm_dict = {
-        key: values
-        for key, values in relperm_parameters.items()
-        if not all(value is None for value in values)
-    }
+    relperm_dict = {}
+    for key, values in relperm_parameters.items():
+        values = values._asdict()
+        values.pop("low_optimistic", None)
+        if not all(value is None for _, value in values.items()):
+            relperm_dict[key] = values
 
     relperm_parameters = {key: relperm_dict[key] for key in relperm_dict}
 
