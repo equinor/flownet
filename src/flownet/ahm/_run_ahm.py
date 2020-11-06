@@ -565,11 +565,11 @@ def run_flownet_history_matching(
                 getattr(relp_config_satnum[idx], key).low_optimistic
                 for key in relperm_parameters
             ]
-            for i, item in enumerate(low_optimistic):
-                if item:
-                    interp_info[0][i], interp_info[2][i] = (
-                        interp_info[2][i],
-                        interp_info[0][i],
+            for j, val in enumerate(low_optimistic):
+                if val:
+                    interp_info[0][j], interp_info[2][j] = (
+                        interp_info[2][j],
+                        interp_info[0][j],
                     )
 
             info: List = [["interpolate"], [-1], [1], [False], [i]]
