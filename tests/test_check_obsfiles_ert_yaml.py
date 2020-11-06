@@ -67,41 +67,41 @@ def compare(ert_obs_dict, yaml_obs_dict):
                 yaml_obs[list_item["key"]][1].append(float(lost_item["value"]))
                 yaml_obs[list_item["key"]][2].append(float(lost_item["error"]))
             #assert yaml_obs[list_item["key"]][0] == ert_obs[list_item["key"]][0]
-            if yaml_obs[list_item["key"]][0]!=ert_obs_dict[list_item["key"]][0][1:]:
+            if yaml_obs[list_item["key"]][0]!=ert_obs_dict[list_item["key"]][0]:
                 print("Values Are NOT Equal")
                 print("YAML_OBS")
                 print(yaml_obs[list_item["key"]][0])
                 print("--------------------------------------")
                 print("ERT_OBS")
-                print(ert_obs_dict[list_item["key"]][0][1:])
+                print(ert_obs_dict[list_item["key"]][0])
                 print("--------------------------------------")
                 print("--------------------------------------")
                 equal = False
                 
-            if yaml_obs[list_item["key"]][1]!=ert_obs_dict[list_item["key"]][1][1:]:
+            if yaml_obs[list_item["key"]][1]!=ert_obs_dict[list_item["key"]][1]:
                 print("Values Are NOT Equal")
                 print("YAML_OBS")
                 print(yaml_obs[list_item["key"]][1])
                 print("--------------------------------------")
                 print("ERT_OBS")
-                print(ert_obs_dict[list_item["key"]][1][1:])
+                print(ert_obs_dict[list_item["key"]][1])
                 print("--------------------------------------")
                 print("--------------------------------------")
                 equal = False
 
-            if yaml_obs[list_item["key"]][2]!=ert_obs_dict[list_item["key"]][2][1:]:
+            if yaml_obs[list_item["key"]][2]!=ert_obs_dict[list_item["key"]][2]:
                 print("Error Are NOT Equal")
                 print("YAML_OBS")
                 print(yaml_obs[list_item["key"]][2])
                 print("--------------------------------------")
                 print("ERT_OBS")
-                print(ert_obs_dict[list_item["key"]][2][1:])
+                print(ert_obs_dict[list_item["key"]][2])
                 print("--------------------------------------")
                 print("--------------------------------------")
                 equal = False
-            assert yaml_obs[list_item["key"]][0] == ert_obs_dict[list_item["key"]][0][1:]               
-            assert yaml_obs[list_item["key"]][1] == ert_obs_dict[list_item["key"]][1][1:]
-            assert yaml_obs[list_item["key"]][2] == ert_obs_dict[list_item["key"]][2][1:]
+            assert yaml_obs[list_item["key"]][0] == ert_obs_dict[list_item["key"]][0]               
+            assert yaml_obs[list_item["key"]][1] == ert_obs_dict[list_item["key"]][1]
+            assert yaml_obs[list_item["key"]][2] == ert_obs_dict[list_item["key"]][2]
             return equal
 
 
