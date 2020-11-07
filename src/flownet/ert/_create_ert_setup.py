@@ -51,9 +51,12 @@ def _create_observation_file(
     num_training_dates = round(num_dates * training_set_fraction)
 
     if yaml:
+        observations_yamlobs = obs_file[0]
+        observations_training_yamlobs = obs_file[1]
+        observations_test_yamlobs = obs_file[2]
         # Creating YAML complete observation file
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
-        with open(obs_file[0], "w") as fh:
+        with open(observations_yamlobs, "w") as fh:
             fh.write(
                 template.render(
                     {
@@ -66,7 +69,7 @@ def _create_observation_file(
             )
         # Creating YAML training observation file
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
-        with open(obs_file[1], "w") as fh:
+        with open(observations_training_yamlobs, "w") as fh:
             fh.write(
                 template.render(
                     {
@@ -79,7 +82,7 @@ def _create_observation_file(
             )
         # Creating YAML test observation file
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
-        with open(obs_file[2], "w") as fh:
+        with open(observations_test_yamlobs, "w") as fh:
             fh.write(
                 template.render(
                     {
@@ -91,9 +94,12 @@ def _create_observation_file(
                 )
             )
     else:
+        observations_ertobs = obs_file[0]
+        observations_training_ertobs = obs_file[1]
+        observations_test_ertobs = obs_file[2]
         # Creating ERT complete observation file
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
-        with open(obs_file[0], "w") as fh:
+        with open(observations_ertobs, "w") as fh:
             fh.write(
                 template.render(
                     {
@@ -106,7 +112,7 @@ def _create_observation_file(
             )
         # Creating ERT training observation file
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
-        with open(obs_file[1], "w") as fh:
+        with open(observations_training_ertobs, "w") as fh:
             fh.write(
                 template.render(
                     {
@@ -119,7 +125,7 @@ def _create_observation_file(
             )
         # Creating ERT test observation file
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
-        with open(obs_file[2], "w") as fh:
+        with open(observations_test_ertobs, "w") as fh:
             fh.write(
                 template.render(
                     {
@@ -303,10 +309,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     if not prediction_setup:
         if parameters is not None:
             _create_observation_file(
-                schedule,
-                ert_output_file_names,
-                config,
-                training_set_fraction,
+                schedule, ert_output_file_names, config, training_set_fraction,
             )
 
             _create_observation_file(
