@@ -48,51 +48,6 @@ def read_yaml_obs(yaml_obs_file_name):
     return yaml.load(a_yaml_file, Loader=yaml.FullLoader)
 
 
-# def compare_and_show(ert_obs_dict, yaml_obs_dict):
-# yaml_obs = {}
-# equal = True
-# for item in yaml_obs_dict:
-# for list_item in yaml_obs_dict[item]:
-# for lost_item in list_item["observations"]:
-# if not list_item["key"] in yaml_obs:
-# yaml_obs[list_item["key"]] = [[], [], []]
-# yaml_obs[list_item["key"]][0].append(lost_item["date"].toordinal())
-# yaml_obs[list_item["key"]][1].append(float(lost_item["value"]))
-# yaml_obs[list_item["key"]][2].append(float(lost_item["error"]))
-# if yaml_obs[list_item["key"]][0] != ert_obs_dict[list_item["key"]][0]:
-# print("Values Are NOT Equal")
-# print("YAML_OBS")
-# print(yaml_obs[list_item["key"]][0])
-# print("--------------------------------------")
-# print("ERT_OBS")
-# print(ert_obs_dict[list_item["key"]][0])
-# print("--------------------------------------")
-# print("--------------------------------------")
-# equal = False
-
-# if yaml_obs[list_item["key"]][1] != ert_obs_dict[list_item["key"]][1]:
-# print("Values Are NOT Equal")
-# print("YAML_OBS")
-# print(yaml_obs[list_item["key"]][1])
-# print("--------------------------------------")
-# print("ERT_OBS")
-# print(ert_obs_dict[list_item["key"]][1])
-# print("--------------------------------------")
-# print("--------------------------------------")
-# equal = False
-
-# if yaml_obs[list_item["key"]][2] != ert_obs_dict[list_item["key"]][2]:
-# print("Error Are NOT Equal")
-# print("YAML_OBS")
-# print(yaml_obs[list_item["key"]][2])
-# print("--------------------------------------")
-# print("ERT_OBS")
-# print(ert_obs_dict[list_item["key"]][2])
-# print("--------------------------------------")
-# print("--------------------------------------")
-# equal = False
-
-
 def compare(ert_obs_dict, yaml_obs_dict):
     yaml_obs = {}
     equal = True
@@ -127,7 +82,6 @@ def test_check_obsfiles_ert_yaml():
     # Reading YAML file
     parsed_yaml_file = read_yaml_obs(yaml_obs_file_name)
 
-    # compare_and_show(ert_obs, parsed_yaml_file)
     assert compare(ert_obs, parsed_yaml_file) is True
 
     # Comparing the training observation data
