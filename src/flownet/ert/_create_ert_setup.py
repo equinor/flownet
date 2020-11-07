@@ -25,7 +25,7 @@ _MODULE_FOLDER = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
 
 def _create_observation_file(
     schedule: Schedule,
-    obs_file: pathlib.Path,
+    obs_file: str,
     config: ConfigSuite.snapshot,
     training_set_fraction: float = 1,
     yaml: bool = False,
