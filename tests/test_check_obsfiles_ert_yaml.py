@@ -108,7 +108,7 @@ def compare(ert_obs_dict, yaml_obs_dict):
             return equal
 
 
-def test_method():
+def test_check_obsfiles_ert_yaml():
     ERT_OBS_FILE = "../output_test/observations.ertobs"
     YAML_OBS_FILE = "../output_test/observations.yamlobs"
 
