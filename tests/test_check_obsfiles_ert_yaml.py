@@ -10,15 +10,14 @@ import yaml
 def read_ert_obs(ert_obs_file_name):
     #Reading ERT file
     assert os.path.exists(ert_obs_file_name) == 1
-    a_ert_file = open(ert_obs_file_name, 'r')
-    
+    a_ert_file = open(ert_obs_file_name, 'r')    
     ert_obs = {}
-    text =""
+    text = ""
     for line in a_ert_file:
         text = text + line
     a_ert_file.close()
 
-    text = text.replace(" ","")
+    text = text.replace(" ", "")
     text = text.split("};")
 
     for item in text:
@@ -30,7 +29,7 @@ def read_ert_obs(ert_obs_file_name):
                         if len(tmp2) > 1:
                             dic[tmp2[0]] = tmp2[1]
                     if not dic["KEY"] in ert_obs:
-                        ert_obs[dic["KEY"]] = [[],[],[]]
+                        ert_obs[dic["KEY"]] = [[], [], []]
                     ert_obs[dic["KEY"]][0].append(datetime.strptime(dic["DATE"], '%d/%m/%Y').toordinal())
                     ert_obs[dic["KEY"]][1].append(float(dic["VALUE"]))
                     ert_obs[dic["KEY"]][2].append(float(dic["ERROR"]))
@@ -42,32 +41,23 @@ def read_ert_obs(ert_obs_file_name):
 def read_yaml_obs(yaml_obs_file_name):
     #Reading YALM file
     assert os.path.exists(yaml_obs_file_name) == 1 
-    a_yaml_file = open(yaml_obs_file_name,'r')
+    a_yaml_file = open(yaml_obs_file_name, 'r')
     yaml.allow_duplicate_keys = True
 
     return yaml.load(a_yaml_file, Loader=yaml.FullLoader)
 
-
-def compare(ert_obs_dict, yaml_obs_dict):
+def compare_and_show(ert_obs_dict, yaml_obs_dict):
     yaml_obs = {}
     equal = True
     for item in yaml_obs_dict:
-        print (item, ": ", type(item))
         for list_item in yaml_obs_dict[item]:
-            #print (list_item, ": ", type(list_item))
-            print list_item["key"]
-            #print ert_obs[list_item["key"]]
             for lost_item in list_item["observations"]:
-                #print lost_item
-                #print(lost_item["error"])
-                #print(lost_item["value"])
                 if not list_item["key"] in yaml_obs:
-                        yaml_obs[list_item["key"]] = [[],[],[]]
+                        yaml_obs[list_item["key"]] = [[], [], []]
                 yaml_obs[list_item["key"]][0].append(lost_item["date"].toordinal())        
                 yaml_obs[list_item["key"]][1].append(float(lost_item["value"]))
                 yaml_obs[list_item["key"]][2].append(float(lost_item["error"]))
-            #assert yaml_obs[list_item["key"]][0] == ert_obs[list_item["key"]][0]
-            if yaml_obs[list_item["key"]][0]!=ert_obs_dict[list_item["key"]][0]:
+            if yaml_obs[list_item["key"]][0] != ert_obs_dict[list_item["key"]][0]:
                 print("Values Are NOT Equal")
                 print("YAML_OBS")
                 print(yaml_obs[list_item["key"]][0])
@@ -78,7 +68,7 @@ def compare(ert_obs_dict, yaml_obs_dict):
                 print("--------------------------------------")
                 equal = False
                 
-            if yaml_obs[list_item["key"]][1]!=ert_obs_dict[list_item["key"]][1]:
+            if yaml_obs[list_item["key"]][1] != ert_obs_dict[list_item["key"]][1]:
                 print("Values Are NOT Equal")
                 print("YAML_OBS")
                 print(yaml_obs[list_item["key"]][1])
@@ -89,7 +79,7 @@ def compare(ert_obs_dict, yaml_obs_dict):
                 print("--------------------------------------")
                 equal = False
 
-            if yaml_obs[list_item["key"]][2]!=ert_obs_dict[list_item["key"]][2]:
+            if yaml_obs[list_item["key"]][2] != ert_obs_dict[list_item["key"]][2]:
                 print("Error Are NOT Equal")
                 print("YAML_OBS")
                 print(yaml_obs[list_item["key"]][2])
@@ -99,6 +89,19 @@ def compare(ert_obs_dict, yaml_obs_dict):
                 print("--------------------------------------")
                 print("--------------------------------------")
                 equal = False
+
+        
+def compare(ert_obs_dict, yaml_obs_dict):
+    yaml_obs = {}
+    equal = True
+    for item in yaml_obs_dict:
+        for list_item in yaml_obs_dict[item]:
+            for lost_item in list_item["observations"]:
+                if not list_item["key"] in yaml_obs:
+                        yaml_obs[list_item["key"]] = [[], [], []]
+                yaml_obs[list_item["key"]][0].append(lost_item["date"].toordinal())        
+                yaml_obs[list_item["key"]][1].append(float(lost_item["value"]))
+                yaml_obs[list_item["key"]][2].append(float(lost_item["error"]))
             assert yaml_obs[list_item["key"]][0] == ert_obs_dict[list_item["key"]][0]               
             assert yaml_obs[list_item["key"]][1] == ert_obs_dict[list_item["key"]][1]
             assert yaml_obs[list_item["key"]][2] == ert_obs_dict[list_item["key"]][2]
@@ -122,7 +125,8 @@ def test_method():
     #Reading YAML file
     parsed_yaml_file = read_yaml_obs(YAML_OBS_FILE)
 
-    assert compare(ert_obs,parsed_yaml_file) == True
+    #compare_and_show(ert_obs, parsed_yaml_file)
+    assert compare(ert_obs, parsed_yaml_file) == True
     
     
     # Comparing the training observation data
@@ -132,7 +136,7 @@ def test_method():
     #Reading YAML file
     parsed_yaml_file = read_yaml_obs(YAML_TRAINING_OBS_FILE)
 
-    assert compare(ert_obs,parsed_yaml_file) == True   
+    assert compare(ert_obs, parsed_yaml_file) == True   
        
        
     # Comparing the Test observation data
@@ -142,4 +146,4 @@ def test_method():
     #Reading YAML file
     parsed_yaml_file = read_yaml_obs(YAML_TEST_OBS_FILE)
 
-    assert compare(ert_obs,parsed_yaml_file) == True          
+    assert compare(ert_obs, parsed_yaml_file) == True          
