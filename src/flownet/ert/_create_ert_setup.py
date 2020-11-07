@@ -50,11 +50,11 @@ def _create_observation_file(
     num_dates = len(schedule.get_dates())
     num_training_dates = round(num_dates * training_set_fraction)
 
-    if yaml:        
+    if yaml:
         observations_yamlobs = obs_file
         prefix_name = os.path.splitext(obs_file)
-        observations_training_yamlobs =   prefix_name[0]+ "_training.yamlobs"
-        observations_test_yamlobs =  prefix_name[0]+ "_test.yamlobs"
+        observations_training_yamlobs = prefix_name[0] + "_training.yamlobs"
+        observations_test_yamlobs = prefix_name[0] + "_test.yamlobs"
         # Creating YAML complete observation file
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
         with open(observations_yamlobs, "w") as fh:
@@ -97,8 +97,8 @@ def _create_observation_file(
     else:
         observations_ertobs = obs_file
         prefix_name = os.path.splitext(obs_file)
-        observations_training_ertobs =  prefix_name[0]+ "_training.ertobs"
-        observations_test_ertobs =  prefix_name[0]+ "_test.ertobs"
+        observations_training_ertobs = prefix_name[0] + "_training.ertobs"
+        observations_test_ertobs = prefix_name[0] + "_test.ertobs"
         # Creating ERT complete observation file
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
         with open(observations_ertobs, "w") as fh:
