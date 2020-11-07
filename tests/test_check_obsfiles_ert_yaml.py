@@ -109,14 +109,14 @@ def compare(ert_obs_dict, yaml_obs_dict):
 
 
 def test_check_obsfiles_ert_yaml():
-    ERT_OBS_FILE = "../output_test/observations.ertobs"
-    YAML_OBS_FILE = "../output_test/observations.yamlobs"
+    ERT_OBS_FILE = "./observation_files/observations.ertobs"
+    YAML_OBS_FILE = "./observation_files/observations.yamlobs"
 
-    ERT_TRAINING_OBS_FILE = "../output_test/observations_training.ertobs"
-    ERT_TEST_OBS_FILE = "../output_test/observations_test.ertobs"
+    ERT_TRAINING_OBS_FILE = "./observation_files/observations_training.ertobs"
+    ERT_TEST_OBS_FILE = "./observation_files/observations_test.ertobs"
 
-    YAML_TRAINING_OBS_FILE = "../output_test/observations_training.yamlobs"    
-    YAML_TEST_OBS_FILE = "../output_test/observations_test.yamlobs"    
+    YAML_TRAINING_OBS_FILE = "./observation_files/observations_training.yamlobs"    
+    YAML_TEST_OBS_FILE = "./observation_files/observations_test.yamlobs"    
 
     # Comparing the complete observation data
     #Reading ERT file
