@@ -66,14 +66,16 @@ def compare(ert_obs_dict, yaml_obs_dict):
 
 
 def test_check_obsfiles_ert_yaml():
-    ert_obs_file_name = "./observation_files/observations.ertobs"
-    yaml_obs_file_name = "./observation_files/observations.yamlobs"
+    ert_obs_file_name = "./tests/observation_files/observations.ertobs"
+    yaml_obs_file_name = "./tests/observation_files/observations.yamlobs"
 
-    training_obs_file_name = "./observation_files/observations_training.ertobs"
-    test_ert_obs_file_name = "./observation_files/observations_test.ertobs"
+    training_obs_file_name = "./tests/observation_files/observations_training.ertobs"
+    test_ert_obs_file_name = "./tests/observation_files/observations_test.ertobs"
 
-    training_yaml_obs_file_name = "./observation_files/observations_training.yamlobs"
-    test_yaml_obs_file_name = "./observation_files/observations_test.yamlobs"
+    training_yaml_obs_file_name = (
+        "./tests/observation_files/observations_training.yamlobs"
+    )
+    test_yaml_obs_file_name = "./tests/observation_files/observations_test.yamlobs"
 
     # Comparing the complete observation data
     # Reading ERT file
