@@ -309,7 +309,10 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     if not prediction_setup:
         if parameters is not None:
             _create_observation_file(
-                schedule, ert_output_file_names, config, training_set_fraction,
+                schedule,
+                ert_output_file_names,
+                config,
+                training_set_fraction,
             )
 
             _create_observation_file(
