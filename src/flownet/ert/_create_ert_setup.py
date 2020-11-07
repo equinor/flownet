@@ -50,10 +50,11 @@ def _create_observation_file(
     num_dates = len(schedule.get_dates())
     num_training_dates = round(num_dates * training_set_fraction)
 
-    if yaml:
-        observations_yamlobs = obs_file[0]
-        observations_training_yamlobs = obs_file[1]
-        observations_test_yamlobs = obs_file[2]
+    if yaml:        
+        observations_yamlobs = obs_file
+        prefix_name = os.path.splitext(obs_file)
+        observations_training_yamlobs =   prefix_name[0]+ "_training.yamlobs"
+        observations_test_yamlobs =  prefix_name[0]+ "_test.yamlobs"
         # Creating YAML complete observation file
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
         with open(observations_yamlobs, "w") as fh:
@@ -94,9 +95,10 @@ def _create_observation_file(
                 )
             )
     else:
-        observations_ertobs = obs_file[0]
-        observations_training_ertobs = obs_file[1]
-        observations_test_ertobs = obs_file[2]
+        observations_ertobs = obs_file
+        prefix_name = os.path.splitext(obs_file)
+        observations_training_ertobs =  prefix_name[0]+ "_training.ertobs"
+        observations_test_ertobs =  prefix_name[0]+ "_test.ertobs"
         # Creating ERT complete observation file
         template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
         with open(observations_ertobs, "w") as fh:
@@ -294,17 +296,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
             # Otherwise create an empty one.
             (output_folder / f"{section}.inc").touch()
 
-    ert_output_file_names = [
-        output_folder / "observations.ertobs",
-        output_folder / "observations_training.ertobs",
-        output_folder / "observations_test.ertobs",
-    ]
+    ert_output_file_names = os.path.join(output_folder, "observations.ertobs")
 
-    yaml_output_file_names = [
-        output_folder / "observations.yamlobs",
-        output_folder / "observations_training.yamlobs",
-        output_folder / "observations_test.yamlobs",
-    ]
+    yaml_output_file_names = os.path.join(output_folder, "observations.yamlobs")
 
     if not prediction_setup:
         if parameters is not None:
