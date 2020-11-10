@@ -1,7 +1,5 @@
 from datetime import datetime
 import os.path
-
-# import pytest
 import yaml
 
 
