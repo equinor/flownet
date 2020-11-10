@@ -84,7 +84,7 @@ def test_check_obsfiles_ert_yaml():
     # Reading YAML file
     parsed_yaml_file = read_yaml_obs(yaml_obs_file_name)
 
-    assert compare(ert_obs, parsed_yaml_file) is True
+    assert compare(ert_obs, parsed_yaml_file)
 
     # Comparing the training observation data
     # Reading ERT file
@@ -93,7 +93,7 @@ def test_check_obsfiles_ert_yaml():
     # Reading YAML file
     parsed_yaml_file = read_yaml_obs(training_yaml_obs_file_name)
 
-    assert compare(ert_obs, parsed_yaml_file) is True
+    assert compare(ert_obs, parsed_yaml_file)
 
     # Comparing the Test observation data
     # Reading ERT file
@@ -102,4 +102,4 @@ def test_check_obsfiles_ert_yaml():
     # Reading YAML file
     parsed_yaml_file = read_yaml_obs(test_yaml_obs_file_name)
 
-    assert compare(ert_obs, parsed_yaml_file) is True
+    assert compare(ert_obs, parsed_yaml_file)
