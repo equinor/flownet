@@ -37,7 +37,7 @@ def read_ert_obs(ert_obs_file_name: str) -> dict:
     return ert_obs
 
 
-def read_yaml_obs(yaml_obs_file_name):
+def read_yaml_obs(yaml_obs_file_name: str) -> dict:
     # Reading YALM file
     assert os.path.exists(yaml_obs_file_name) == 1
     a_yaml_file = open(yaml_obs_file_name, "r")
