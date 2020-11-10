@@ -1,25 +1,23 @@
 from datetime import datetime
-
 import os.path
 
 # import pytest
-
 import yaml
 
 
-def read_ert_obs(ert_obs_file_name):
+def read_ert_obs(ert_obs_file_name: str) -> dict:
     # Reading ERT file
     assert os.path.exists(ert_obs_file_name) == 1
-    a_ert_file = open(ert_obs_file_name, "r")
     ert_obs = {}
     text = ""
-    for line in a_ert_file:
-        text = text + line
-    a_ert_file.close()
+    with open(ert_obs_file_name, "r") as a_ert_file:
+        for line in a_ert_file:
+            text = text + line
+            print(line)
+    # a_ert_file.close()
 
     text = text.replace(" ", "")
     text = text.split("};")
-
     for item in text:
         if "SUMMARY_OBSERVATION" in item:
             tmp = item.split("{")[1].split(";")
