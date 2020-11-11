@@ -1376,34 +1376,7 @@ def parse_config(
     for parameter in ["bulkvolume_mult", "porosity", "permeability", "fault_mult"]:
         if not getattr(config.model_parameters, parameter):
             continue
-        if (
-            getattr(config.model_parameters, parameter).min is not None
-            and getattr(config.model_parameters, parameter).max is not None
-            and getattr(config.model_parameters, parameter).mean is not None
-        ):
-            raise ValueError(
-                f"You have set min, max and mean for parameter '{parameter}' - please only specify two at a time."
-            )
-        if (
-            getattr(config.model_parameters, parameter).mean
-            and getattr(config.model_parameters, parameter).max
-            < getattr(config.model_parameters, parameter).mean
-        ):
-            raise ValueError(
-                f"The {parameter} setting 'max' is set to a value "
-                f"({getattr(config.model_parameters, parameter).max}) which is smaller than the value "
-                f"set as 'mean' ({getattr(config.model_parameters, parameter).mean})."
-            )
-        if (
-            getattr(config.model_parameters, parameter).min
-            and getattr(config.model_parameters, parameter).max
-            < getattr(config.model_parameters, parameter).min
-        ):
-            raise ValueError(
-                f"The {parameter} setting 'max' is set to a value "
-                f"({getattr(config.model_parameters, parameter).max}) which is smaller than the value "
-                f"set as 'min' ({getattr(config.model_parameters, parameter).min})."
-            )
+        _check_distribution(config.model_parameters, parameter)
 
     for suffix in [".DATA", ".EGRID", ".UNRST", ".UNSMRY", ".SMSPEC"]:
         input_file = pathlib.Path(
@@ -1458,46 +1431,46 @@ def parse_config(
     return config
 
 
-def _check_distribution(region, parameter) -> bool:
+def _check_distribution(configpath, parameter) -> bool:
     """
 
     Args:
-        region:
+        configpath:
         parameter:
 
     Returns:
        True if distribution is properly defined
     """
     if (
-        getattr(region, parameter).distribution == "uniform"
-        or getattr(region, parameter).distribution == "logunif"
-        or getattr(region, parameter).distribution == "truncated_normal"
+        getattr(configpath, parameter).distribution == "uniform"
+        or getattr(configpath, parameter).distribution == "logunif"
+        or getattr(configpath, parameter).distribution == "truncated_normal"
     ):
-        _check_if_defined(region, parameter, {"min", "max"})
-        if getattr(region, parameter).min > getattr(region, parameter).max:
+        _check_if_defined(configpath, parameter, {"min", "max"})
+        if getattr(configpath, parameter).min > getattr(configpath, parameter).max:
             raise ValueError(
                 f"Ambiguous configuration input: The {parameter} setting 'max' is higher\n"
                 f"than the 'min'."
             )
 
     if (
-        getattr(region, parameter).distribution == "normal"
-        or getattr(region, parameter).distribution == "lognormal"
-        or getattr(region, parameter).distribution == "truncated_normal"
+        getattr(configpath, parameter).distribution == "normal"
+        or getattr(configpath, parameter).distribution == "lognormal"
+        or getattr(configpath, parameter).distribution == "truncated_normal"
     ):
-        _check_if_defined(region, parameter, {"mean", "stddev"})
-    if getattr(region, parameter).distribution == "const":
-        _check_if_defined(region, parameter, "base")
-    if getattr(region, parameter).distribution == "triangular":
-        _check_if_defined(region, parameter, "base")
+        _check_if_defined(configpath, parameter, {"mean", "stddev"})
+    if getattr(configpath, parameter).distribution == "const":
+        _check_if_defined(configpath, parameter, "base")
+    if getattr(configpath, parameter).distribution == "triangular":
+        _check_if_defined(configpath, parameter, "base")
     return True
 
 
-def _check_order(region, parameter, low, high):
+def _check_order(configpath, parameter, low, high):
     """
 
     Args:
-        region:
+        configpath:
         parameter:
         low:
         high:
@@ -1505,8 +1478,8 @@ def _check_order(region, parameter, low, high):
     Returns:
 
     """
-    if getattr(getattr(region, parameter), low) > getattr(
-        getattr(region, parameter), high
+    if getattr(getattr(configpath, parameter), low) > getattr(
+        getattr(configpath, parameter), high
     ):
         raise ValueError(
             f"Ambiguous configuration input: The {parameter} setting {low} is higher\n"
@@ -1514,34 +1487,34 @@ def _check_order(region, parameter, low, high):
         )
 
 
-def _check_if_defined(region, parameter, attributes):
+def _check_if_defined(configpath, parameter, attributes):
     """
 
     Args:
         parameter:
-        region:
+        configpath:
 
     Returns:
 
     """
     for attr in attributes:
-        if getattr(getattr(region, parameter), attr) is None:
+        if getattr(getattr(configpath, parameter), attr) is None:
             raise ValueError(
                 f"Ambiguous configuration input: The attribute {attr} for parameter {parameter} missing\n"
                 f"or not properly defined."
             )
 
 
-def _check_if_not_defined(region, parameter):
+def _check_if_not_defined(configpath, parameter):
     """
 
     Args:
-        region:
+        configpath:
         parameter:
 
     Returns:
 
     """
     for attr in {"min", "max", "base", "stddev", "mean"}:
-        if getattr(getattr(region, parameter), attr) is not None:
+        if getattr(getattr(configpath, parameter), attr) is not None:
             raise ValueError(f"The {parameter} parameter should not be specified.")
