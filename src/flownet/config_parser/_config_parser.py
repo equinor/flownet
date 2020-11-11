@@ -552,7 +552,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Description: "This only has effect if interpolation "
                                                         "between low/base/high relative permeability curves is chosen. "
                                                         "If 'low_optimistic' is set to True, the minimum value for "
-                                                        "this model parameter will be used to generated the high case "
+                                                        "this model parameter will be used to generate the high case "
                                                         "SCAL recommendation curves, and the maximum value will be "
                                                         "used for the low case SCAL recommendation curves.",
                                                     },
