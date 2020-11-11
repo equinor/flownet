@@ -211,8 +211,8 @@ def _get_distribution(
 
         df[f"minimum_{parameter}"] = dist_min
         df[f"maximum_{parameter}"] = dist_max
-        df[f"loguniform_{parameter}"] = parameter_config.loguniform
-
+        #        df[f"loguniform_{parameter}"] = parameter_config.loguniform
+        df[f"loguniform_{parameter}"] = False
     return df
 
 

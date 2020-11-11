@@ -451,8 +451,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Content: {
                             "min": {MK.Type: types.Number, MK.AllowNone: True},
                             "mean": {MK.Type: types.Number, MK.AllowNone: True},
-                            "max": {MK.Type: types.Number},
-                            "loguniform": {MK.Type: types.Bool, MK.Default: True},
+                            "max": {MK.Type: types.Number, MK.AllowNone: True},
+                            "base": {MK.Type: types.Number, MK.AllowNone: True},
+                            "stddev": {MK.Type: types.Number, MK.AllowNone: True},
+                            "distribution": {
+                                MK.Type: types.String,
+                                MK.Default: "uniform",
+                                MK.Transformation: _to_lower,
+                            },
                         },
                     },
                     "porosity": {
@@ -463,8 +469,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Content: {
                             "min": {MK.Type: types.Number, MK.AllowNone: True},
                             "mean": {MK.Type: types.Number, MK.AllowNone: True},
-                            "max": {MK.Type: types.Number},
-                            "loguniform": {MK.Type: types.Bool, MK.Default: False},
+                            "max": {MK.Type: types.Number, MK.AllowNone: True},
+                            "base": {MK.Type: types.Number, MK.AllowNone: True},
+                            "stddev": {MK.Type: types.Number, MK.AllowNone: True},
+                            "distribution": {
+                                MK.Type: types.String,
+                                MK.Default: "uniform",
+                                MK.Transformation: _to_lower,
+                            },
                         },
                     },
                     "bulkvolume_mult": {
@@ -478,8 +490,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Content: {
                             "min": {MK.Type: types.Number, MK.AllowNone: True},
                             "mean": {MK.Type: types.Number, MK.AllowNone: True},
-                            "max": {MK.Type: types.Number},
-                            "loguniform": {MK.Type: types.Bool, MK.Default: True},
+                            "max": {MK.Type: types.Number, MK.AllowNone: True},
+                            "base": {MK.Type: types.Number, MK.AllowNone: True},
+                            "stddev": {MK.Type: types.Number, MK.AllowNone: True},
+                            "distribution": {
+                                MK.Type: types.String,
+                                MK.Default: "uniform",
+                                MK.Transformation: _to_lower,
+                            },
                         },
                     },
                     "fault_mult": {
@@ -491,7 +509,13 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             "min": {MK.Type: types.Number, MK.AllowNone: True},
                             "mean": {MK.Type: types.Number, MK.AllowNone: True},
                             "max": {MK.Type: types.Number, MK.AllowNone: True},
-                            "loguniform": {MK.Type: types.Bool, MK.AllowNone: True},
+                            "base": {MK.Type: types.Number, MK.AllowNone: True},
+                            "stddev": {MK.Type: types.Number, MK.AllowNone: True},
+                            "distribution": {
+                                MK.Type: types.String,
+                                MK.Default: "uniform",
+                                MK.Transformation: _to_lower,
+                            },
                         },
                     },
                     "relative_permeability": {
@@ -516,6 +540,13 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 "per SATNUM region. Only available for three phase problems.",
                                 MK.Default: False,
                             },
+                            "interpolate_distribution": {
+                                MK.Type: types.String,
+                                MK.Description: "Prior probability distribution for the interpolation factors "
+                                "(on the interval -1 to 1). Available options are 'uniform', 'logunif' and "
+                                "truncated_normal",
+                                MK.Default: "uniform",
+                            },
                             "regions": {
                                 MK.Type: types.List,
                                 MK.Content: {
@@ -534,7 +565,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "base": {
+                                                    "mean": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -542,9 +573,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
+                                                    "base": {
+                                                        MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -555,7 +595,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "base": {
+                                                    "mean": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -563,9 +603,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
+                                                    "base": {
+                                                        MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -576,7 +625,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "base": {
+                                                    "mean": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -584,9 +633,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
+                                                    "base": {
+                                                        MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -597,7 +655,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "base": {
+                                                    "mean": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -605,9 +663,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
+                                                    "base": {
+                                                        MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -618,7 +685,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "base": {
+                                                    "mean": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -626,9 +693,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
+                                                    "base": {
+                                                        MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -639,7 +715,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "base": {
+                                                    "mean": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -647,9 +723,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
+                                                    "base": {
+                                                        MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -660,7 +745,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "base": {
+                                                    "mean": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -668,9 +753,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
+                                                    "base": {
+                                                        MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -681,7 +775,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "base": {
+                                                    "mean": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -689,9 +783,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
+                                                    "base": {
+                                                        MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -702,7 +805,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "base": {
+                                                    "mean": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -710,9 +813,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
+                                                    "base": {
+                                                        MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -723,7 +835,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "base": {
+                                                    "mean": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -731,9 +843,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
+                                                    "base": {
+                                                        MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -744,13 +865,26 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "base": {
+                                                    "mean": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
                                                     "max": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "base": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -761,7 +895,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "base": {
+                                                    "mean": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -769,9 +903,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
+                                                    "base": {
+                                                        MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -782,7 +925,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "base": {
+                                                    "mean": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
@@ -790,9 +933,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
-                                                    "loguniform": {
-                                                        MK.Type: types.Bool,
+                                                    "base": {
+                                                        MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -843,9 +995,26 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
+                                                    "mean": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
                                                     "max": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "base": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -856,9 +1025,26 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
+                                                    "mean": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
                                                     "max": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "base": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -869,9 +1055,26 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
                                                     },
+                                                    "mean": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
                                                     "max": {
                                                         MK.Type: types.Number,
                                                         MK.AllowNone: True,
+                                                    },
+                                                    "base": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
                                                     },
                                                 },
                                             },
@@ -930,13 +1133,26 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                         MK.Type: types.Number,
                                         MK.AllowNone: True,
                                     },
+                                    "mean": {
+                                        MK.Type: types.Number,
+                                        MK.AllowNone: True,
+                                    },
                                     "max": {
                                         MK.Type: types.Number,
                                         MK.AllowNone: True,
                                     },
-                                    "loguniform": {
-                                        MK.Type: types.Bool,
+                                    "base": {
+                                        MK.Type: types.Number,
                                         MK.AllowNone: True,
+                                    },
+                                    "stddev": {
+                                        MK.Type: types.Number,
+                                        MK.AllowNone: True,
+                                    },
+                                    "distribution": {
+                                        MK.Type: types.String,
+                                        MK.Default: "uniform",
+                                        MK.Transformation: _to_lower,
                                     },
                                 },
                             },
@@ -1132,19 +1348,7 @@ def parse_config(
                 )
         else:
             for satreg in config.model_parameters.relative_permeability.regions:
-                if (
-                    getattr(satreg, parameter).min is None
-                    or getattr(satreg, parameter).max is None
-                ):
-                    raise ValueError(
-                        f"Ambiguous configuration input: The {parameter} parameter is missing\n"
-                        f"or not properly defined in one of the satnum regions."
-                    )
-                if getattr(satreg, parameter).max < getattr(satreg, parameter).min:
-                    raise ValueError(
-                        f"Ambiguous configuration input: The {parameter} setting 'max' is higher\n"
-                        f"than the 'min' in one of the satnum regions."
-                    )
+                _check_distribution(satreg, parameter)
                 if (
                     config.model_parameters.relative_permeability.interpolate
                     and getattr(satreg, parameter).base is None
@@ -1160,12 +1364,7 @@ def parse_config(
         - set(["id"])
     ):
         for satreg in config.model_parameters.relative_permeability.regions:
-            if (
-                getattr(satreg, parameter).min is not None
-                and getattr(satreg, parameter).max is not None
-                and getattr(satreg, parameter).base is not None
-            ):
-                raise ValueError(f"The {parameter} parameter should not be specified.")
+            _check_if_not_defined(satreg, parameter)
 
     if config.ert.queue.system.upper() != "LOCAL" and (
         config.ert.queue.name is None or config.ert.queue.server is None
@@ -1232,15 +1431,15 @@ def parse_config(
         or any(config.model_parameters.aquifer.size_in_bulkvolumes)
     ) and not (
         all(config.model_parameters.aquifer[0:3])
-        and all(config.model_parameters.aquifer.size_in_bulkvolumes)
+        and _check_distribution(config.model_parameters.aquifer, "size_in_bulkvolumes")
     ):
         raise ValueError(
             "Ambiguous configuration input: 'aquifer' needs to be defined using "
-            "'scheme', 'fraction', 'delta_depth' and a 'size_in_bulkvolumes' distribution ('min', 'max', 'logunif')."
+            "'scheme', 'fraction', 'delta_depth' and a 'size_in_bulkvolumes' distribution."
             "Currently one or more parameters are missing."
         )
-    if all(config.model_parameters.aquifer[0:3]) and not all(
-        config.model_parameters.aquifer.size_in_bulkvolumes
+    if all(config.model_parameters.aquifer[0:3]) and not _check_distribution(
+        config.model_parameters.aquifer, "size_in_bulkvolumes"
     ):
         raise ValueError(
             "Ambiguous configuration input: 'size_in_bulkvolumes' in 'aquifer' needs to be defined using "
@@ -1257,3 +1456,92 @@ def parse_config(
         )
 
     return config
+
+
+def _check_distribution(region, parameter) -> bool:
+    """
+
+    Args:
+        region:
+        parameter:
+
+    Returns:
+       True if distribution is properly defined
+    """
+    if (
+        getattr(region, parameter).distribution == "uniform"
+        or getattr(region, parameter).distribution == "logunif"
+        or getattr(region, parameter).distribution == "truncated_normal"
+    ):
+        _check_if_defined(region, parameter, {"min", "max"})
+        if getattr(region, parameter).min > getattr(region, parameter).max:
+            raise ValueError(
+                f"Ambiguous configuration input: The {parameter} setting 'max' is higher\n"
+                f"than the 'min'."
+            )
+
+    if (
+        getattr(region, parameter).distribution == "normal"
+        or getattr(region, parameter).distribution == "lognormal"
+        or getattr(region, parameter).distribution == "truncated_normal"
+    ):
+        _check_if_defined(region, parameter, {"mean", "stddev"})
+    if getattr(region, parameter).distribution == "const":
+        _check_if_defined(region, parameter, "base")
+    if getattr(region, parameter).distribution == "triangular":
+        _check_if_defined(region, parameter, "base")
+    return True
+
+
+def _check_order(region, parameter, low, high):
+    """
+
+    Args:
+        region:
+        parameter:
+        low:
+        high:
+
+    Returns:
+
+    """
+    if getattr(getattr(region, parameter), low) > getattr(
+        getattr(region, parameter), high
+    ):
+        raise ValueError(
+            f"Ambiguous configuration input: The {parameter} setting {low} is higher\n"
+            f"than {high}."
+        )
+
+
+def _check_if_defined(region, parameter, attributes):
+    """
+
+    Args:
+        parameter:
+        region:
+
+    Returns:
+
+    """
+    for attr in attributes:
+        if getattr(getattr(region, parameter), attr) is None:
+            raise ValueError(
+                f"Ambiguous configuration input: The attribute {attr} for parameter {parameter} missing\n"
+                f"or not properly defined."
+            )
+
+
+def _check_if_not_defined(region, parameter):
+    """
+
+    Args:
+        region:
+        parameter:
+
+    Returns:
+
+    """
+    for attr in {"min", "max", "base", "stddev", "mean"}:
+        if getattr(getattr(region, parameter), attr) is not None:
+            raise ValueError(f"The {parameter} parameter should not be specified.")
