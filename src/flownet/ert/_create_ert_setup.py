@@ -50,94 +50,122 @@ def _create_observation_file(
     num_dates = len(schedule.get_dates())
     num_training_dates = round(num_dates * training_set_fraction)
 
-    if yaml:
-        observations_yamlobs = obs_file
-        prefix_name = os.path.splitext(obs_file)
-        observations_training_yamlobs = prefix_name[0] + "_training.yamlobs"
-        observations_test_yamlobs = prefix_name[0] + "_test.yamlobs"
-        # Creating YAML complete observation file
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
-        with open(observations_yamlobs, "w") as fh:
-            fh.write(
-                template.render(
-                    {
-                        "schedule": schedule,
-                        "error_config": config.flownet.data_source.simulation.vectors,
-                        "num_beginning_date": 1,
-                        "num_end_date": num_dates,
-                    }
+
+    export_settings = [ 
+                        ["", 1, num_dates],
+                        ["_training", 1, num_training_dates],
+                        ["_test", num_training_dates + 1, num_dates]
+                      ]
+
+    prefix_name = os.path.splitext(obs_file)
+
+    for _, setting in enumerate(export_settings):
+        if yaml:
+            obs_export_type = "yamlobs"
+        else:
+            obs_export_type = "ertobs"
+        export_filename = f"{prefix_name[0]}{setting[0]}.{obs_export_type}"
+        template = _TEMPLATE_ENVIRONMENT.get_template(f"observations.{obs_export_type}.jinja2")
+        with open(export_filename , "w") as fh:
+                fh.write(
+                    template.render(
+                        {
+                            "schedule": schedule,
+                            "error_config": config.flownet.data_source.simulation.vectors,
+                            "num_beginning_date": setting[1],
+                            "num_end_date": setting[2],
+                        }
+                    )
                 )
-            )
-        # Creating YAML training observation file
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
-        with open(observations_training_yamlobs, "w") as fh:
-            fh.write(
-                template.render(
-                    {
-                        "schedule": schedule,
-                        "error_config": config.flownet.data_source.simulation.vectors,
-                        "num_beginning_date": 1,
-                        "num_end_date": num_training_dates,
-                    }
-                )
-            )
-        # Creating YAML test observation file
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
-        with open(observations_test_yamlobs, "w") as fh:
-            fh.write(
-                template.render(
-                    {
-                        "schedule": schedule,
-                        "error_config": config.flownet.data_source.simulation.vectors,
-                        "num_beginning_date": num_training_dates + 1,
-                        "num_end_date": num_dates,
-                    }
-                )
-            )
-    else:
-        observations_ertobs = obs_file
-        prefix_name = os.path.splitext(obs_file)
-        observations_training_ertobs = prefix_name[0] + "_training.ertobs"
-        observations_test_ertobs = prefix_name[0] + "_test.ertobs"
-        # Creating ERT complete observation file
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
-        with open(observations_ertobs, "w") as fh:
-            fh.write(
-                template.render(
-                    {
-                        "schedule": schedule,
-                        "error_config": config.flownet.data_source.simulation.vectors,
-                        "num_beginning_date": 1,
-                        "num_end_date": num_dates,
-                    }
-                )
-            )
-        # Creating ERT training observation file
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
-        with open(observations_training_ertobs, "w") as fh:
-            fh.write(
-                template.render(
-                    {
-                        "schedule": schedule,
-                        "error_config": config.flownet.data_source.simulation.vectors,
-                        "num_beginning_date": 1,
-                        "num_end_date": num_training_dates,
-                    }
-                )
-            )
-        # Creating ERT test observation file
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
-        with open(observations_test_ertobs, "w") as fh:
-            fh.write(
-                template.render(
-                    {
-                        "schedule": schedule,
-                        "error_config": config.flownet.data_source.simulation.vectors,
-                        "num_beginning_date": num_training_dates,
-                        "num_end_date": num_dates,
-                    }
-                )
-            )
+
+    #if yaml:
+        #observations_yamlobs = obs_file
+        #prefix_name = os.path.splitext(obs_file)
+        #observations_training_yamlobs = prefix_name[0] + "_training.yamlobs"
+        #observations_test_yamlobs = prefix_name[0] + "_test.yamlobs"
+        ## Creating YAML complete observation file
+        #template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
+        #with open(observations_yamlobs, "w") as fh:
+            #fh.write(
+                #template.render(
+                    #{
+                        #"schedule": schedule,
+                        #"error_config": config.flownet.data_source.simulation.vectors,
+                        #"num_beginning_date": 1,
+                        #"num_end_date": num_dates,
+                    #}
+                #)
+            #)
+        ## Creating YAML training observation file
+        #template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
+        #with open(observations_training_yamlobs, "w") as fh:
+            #fh.write(
+                #template.render(
+                    #{
+                        #"schedule": schedule,
+                        #"error_config": config.flownet.data_source.simulation.vectors,
+                        #"num_beginning_date": 1,
+                        #"num_end_date": num_training_dates,
+                    #}
+                #)
+            #)
+        ## Creating YAML test observation file
+        #template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
+        #with open(observations_test_yamlobs, "w") as fh:
+            #fh.write(
+                #template.render(
+                    #{
+                        #"schedule": schedule,
+                        #"error_config": config.flownet.data_source.simulation.vectors,
+                        #"num_beginning_date": num_training_dates + 1,
+                        #"num_end_date": num_dates,
+                    #}
+                #)
+            #)
+    #else:
+        #observations_ertobs = obs_file
+        #prefix_name = os.path.splitext(obs_file)
+        #observations_training_ertobs = prefix_name[0] + "_training.ertobs"
+        #observations_test_ertobs = prefix_name[0] + "_test.ertobs"
+        ## Creating ERT complete observation file
+        #template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
+        #with open(observations_ertobs, "w") as fh:
+            #fh.write(
+                #template.render(
+                    #{
+                        #"schedule": schedule,
+                        #"error_config": config.flownet.data_source.simulation.vectors,
+                        #"num_beginning_date": 1,
+                        #"num_end_date": num_dates,
+                    #}
+                #)
+            #)
+        ## Creating ERT training observation file
+        #template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
+        #with open(observations_training_ertobs, "w") as fh:
+            #fh.write(
+                #template.render(
+                    #{
+                        #"schedule": schedule,
+                        #"error_config": config.flownet.data_source.simulation.vectors,
+                        #"num_beginning_date": 1,
+                        #"num_end_date": num_training_dates,
+                    #}
+                #)
+            #)
+        ## Creating ERT test observation file
+        #template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
+        #with open(observations_test_ertobs, "w") as fh:
+            #fh.write(
+                #template.render(
+                    #{
+                        #"schedule": schedule,
+                        #"error_config": config.flownet.data_source.simulation.vectors,
+                        #"num_beginning_date": num_training_dates,
+                        #"num_end_date": num_dates,
+                    #}
+                #)
+            #)
 
 
 def _create_ert_parameter_file(
@@ -295,7 +323,6 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         else:
             # Otherwise create an empty one.
             (output_folder / f"{section}.inc").touch()
-
     if not prediction_setup:
         if parameters is not None:
             _create_observation_file(
