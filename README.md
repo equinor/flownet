@@ -2,7 +2,7 @@
   <img height="175" src="https://raw.githubusercontent.com/equinor/flownet/master/docs/_static/flownet_logo.svg">
 </p>
 
-<h2 align="center">FlowNet: Data-Driven Reservoir Predictions</h2>
+<h2 align="center">FlowNet: Data-Driven Reservoir Predictions TEST</h2>
 
 <p align="center">
 <a href="https://badge.fury.io/py/flownet"><img src="https://badge.fury.io/py/flownet.svg"></a>
