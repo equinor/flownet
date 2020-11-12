@@ -89,7 +89,7 @@ jobs:
           flownet ahm ./config/assisted_history_matching.yml ./some_ahm_run --update-config ./ci_config/assisted_history_matching.yml
           flownet ahm ./config/assisted_history_matching.yml ./some_ahm_run2 --update-config ./ci_config/assisted_history_matching.yml --restart-folder ./some_ahm_run
           flownet pred ./config/prediction.yml ./some_pred_run ./some_ahm_run  --update-config ./ci_config/prediction.yml
-          test -f ./config/hyperparameter.yml && flownet hyperparam ./config/hyperparameter.yml ./hyper --update-config ./ci_config/assisted_history_matching.yml
+          '(test -f ./config/hyperparameter.yml && flownet hyperparam ./config/hyperparameter.yml ./hyper --update-config ./ci_config/assisted_history_matching.yml) || echo Skipping hyperparameter run...'
 
       - name: 📚 Build documentation
         run: |
