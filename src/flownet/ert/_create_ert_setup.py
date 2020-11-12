@@ -296,22 +296,18 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
             # Otherwise create an empty one.
             (output_folder / f"{section}.inc").touch()
 
-    ert_output_file_names = os.path.join(output_folder, "observations.ertobs")
-
-    yaml_output_file_names = os.path.join(output_folder, "observations.yamlobs")
-
     if not prediction_setup:
         if parameters is not None:
             _create_observation_file(
                 schedule,
-                ert_output_file_names,
+                output_folder / "observations.ertobs",
                 config,
                 training_set_fraction,
             )
 
             _create_observation_file(
                 schedule,
-                yaml_output_file_names,
+                output_folder / "observations.yamlobs",
                 config,
                 training_set_fraction,
                 yaml=True,
