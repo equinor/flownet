@@ -1,5 +1,7 @@
 from datetime import datetime
+
 import os.path
+
 import yaml
 
 
@@ -11,8 +13,6 @@ def read_ert_obs(ert_obs_file_name: str) -> dict:
     with open(ert_obs_file_name, "r") as a_ert_file:
         for line in a_ert_file:
             text = text + line
-            print(line)
-    # a_ert_file.close()
 
     text = text.replace(" ", "")
     text = text.split("};")
@@ -44,7 +44,7 @@ def read_yaml_obs(yaml_obs_file_name: str) -> dict:
     return yaml.load(a_yaml_file, Loader=yaml.FullLoader)
 
 
-def compare(ert_obs_dict, yaml_obs_dict):
+def compare(ert_obs_dict:dict, yaml_obs_dict: dict)-> bool:
     yaml_obs = {}
     equal = True
     for item in yaml_obs_dict:
@@ -61,7 +61,7 @@ def compare(ert_obs_dict, yaml_obs_dict):
             return equal
 
 
-def test_check_obsfiles_ert_yaml():
+def test_check_obsfiles_ert_yaml()-> None:
     ert_obs_file_name = "./tests/observation_files/observations.ertobs"
     yaml_obs_file_name = "./tests/observation_files/observations.yamlobs"
 
