@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, List
 import pathlib
 
 from configsuite import ConfigSuite
@@ -33,6 +33,33 @@ def create_hyperopt_space(key: str, name: str, values: list) -> Apply:
         raise ValueError(f"'{name}' is not a supported search space for '{key}'.")
 
     return result
+
+
+def list_hyperparameters_names(
+    config_dict: dict, hyperparameters: List[str], in_config: str = ""
+) -> List[str]:
+    """List all hyperparameter names defined in a yaml configuration file.
+
+    Args:
+        config_dict: configuration as dictionary
+        hyperparameters: list of hyperparameters already found (used for
+                         recursive calling of the function.)
+        in_config: path in the config file
+
+    Returns:
+        Return a list of strings of names of the hyperparameters
+
+    """
+    for key, value in config_dict.items():
+        if isinstance(value, dict):
+            hyperparameters += list_hyperparameters_names(
+                value, hyperparameters=[], in_config=f"{key}."
+            )
+        if isinstance(value, list):
+            if value[0] in ["UNIFORM_CHOICE", "UNIFORM", "CHOICE"]:
+                hyperparameters.append(f"{in_config}{key}")
+
+    return hyperparameters
 
 
 def list_hyperparameters(config_dict: dict, hyperparameters: list) -> list:
