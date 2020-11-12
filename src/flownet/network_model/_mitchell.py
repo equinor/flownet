@@ -1,5 +1,6 @@
 from typing import List, Optional
 import time
+import logging
 
 from scipy.spatial import Delaunay  # pylint: disable=no-name-in-module
 import numpy as np
@@ -47,7 +48,7 @@ def mitchell_best_candidate_modified_3d(
     """
     np.random.seed(random_seed)
     start = time.time()
-    print("Adding flow nodes:  0%", end="")
+    logging.info("Adding flow nodes:  0%", end="")
 
     # Read list of coordinate tuples and convert to 1D-numpy arrays
     x, y, z = (np.asarray(t) for t in zip(*perforations))
@@ -95,7 +96,7 @@ def mitchell_best_candidate_modified_3d(
         mid = time.time()
         if mid - start > 4:
             start = mid
-            print(
+            logging.info(
                 f"\rAdding flow nodes:  {int(((i-num_points)/num_added_flow_nodes)*100)}%",
                 end="",
             )
@@ -184,7 +185,7 @@ def mitchell_best_candidate_modified_3d(
         y = np.append(y, y_candidate[best_candidate])
         z = np.append(z, z_candidate[best_candidate])
 
-    print("\rAdding flow nodes:  100%\ndone.")
+    logging.info("\rAdding flow nodes:  100%\ndone.")
 
     # Return the real/original and added flow node coordinates as a list of tuples.
     return [(x[i], y[i], z[i]) for i in range(len(x))]
