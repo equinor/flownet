@@ -1295,7 +1295,7 @@ def parse_config(
                 f"Key {key} is not defined as an analysis quantity ({config.flownet.hyperopt.loss.keys})."
             )
 
-    if config.flownet.hyperopt.loss.metric not in config.ert.analysis.metric:
+    if config.ert.analysis.metric and config.flownet.hyperopt.loss.metric not in config.ert.analysis.metric:
         raise ValueError(
             f"Key {config.flownet.hyperopt.loss.metric} is not defined as an analysis"
             "quantity ({config.ert.analysis.metric})."
