@@ -95,6 +95,6 @@ Publications
 A first version FlowNet was presented at the 17th European Conference on the Mathematics of Oil Recovery
 (ECMOR XVII) held 14-17 September 2020. The reference for the conference paper is
 
-Kiaer, A., O.P. Lodoen, W. de Bruin, E. Barros and O. Leeuwenburgh, Evaluation of a Data-Driven
+A.F. Kiær, O.P. Lødøen, W.J. de Bruin, E. Barros and O. Leeuwenburgh, Evaluation of a Data-Driven
 Flow Network Model (FlowNet) for Reservoir Prediction and Optimzation, Conference Proceedings, ECMOR XVII,
 Sep 2020, Volume 2020, p.1-18, DOI: https://doi.org/10.3997/2214-4609.202035099
