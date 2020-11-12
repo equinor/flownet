@@ -117,9 +117,9 @@ def normalize_data(data_opm_reference, data_ensembles_flownet):
 
     matrix_data = np.append(data_opm_reference, tmp, axis=1)
 
-    if np.close(data_opm_reference.max(), data_opm_reference.min()):
-        if np.close(data_opm_reference.max(), 0.0):
-            scale = 1
+    if np.isclose(data_opm_reference.max(), data_opm_reference.min()):
+        if np.isclose(data_opm_reference.max(), 0.0):
+            scale = np.tile(1.0, matrix_data.shape[0])
         else:
             scale = 1 / (np.tile(data_opm_reference.max(), matrix_data.shape[0]))
     else:
