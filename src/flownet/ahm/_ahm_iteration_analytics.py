@@ -373,11 +373,6 @@ def save_iteration_analytics():
         help="Name of output file containing metrics over iterations.",
     )
     args = parser.parse_args()
-    print("########\n")
-    print(args.metrics)
-    print(args.quantity)
-    print(args.start)
-    print("########\n")
     args.runpath = args.runpath.replace("%d", "*")
 
     print("Saving iteration analytics...", end=" ")
