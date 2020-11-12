@@ -345,6 +345,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                         MK.Content: {
                                             MK.Item: {
                                                 MK.Type: types.String,
+                                                MK.AllowNone: True,
                                             },
                                         },
                                         MK.Description: "List of keys, as defined in the analysis section, "
@@ -352,7 +353,12 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                     },
                                     "factors": {
                                         MK.Type: types.List,
-                                        MK.Content: {MK.Item: {MK.Type: types.Number}},
+                                        MK.Content: {
+                                            MK.Item: {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            }
+                                        },
                                         MK.Description: "List of factors to scale the keys.",
                                     },
                                     "metric": {
