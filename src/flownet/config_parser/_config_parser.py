@@ -113,12 +113,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Content: {
                                                     "rel_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                     "min_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                 },
@@ -128,12 +126,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Content: {
                                                     "rel_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                     "min_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                 },
@@ -143,12 +139,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Content: {
                                                     "rel_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                     "min_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                 },
@@ -158,12 +152,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Content: {
                                                     "rel_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                     "min_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                 },
@@ -173,12 +165,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Content: {
                                                     "rel_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                     "min_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                 },
@@ -188,12 +178,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Content: {
                                                     "rel_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                     "min_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                 },
@@ -203,12 +191,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Content: {
                                                     "rel_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                     "min_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                 },
@@ -343,6 +329,53 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     "inj_control_mode": {
                         MK.Type: types.String,
                         MK.Default: "RATE",
+                    },
+                    "hyperopt": {
+                        MK.Type: types.NamedDict,
+                        MK.Content: {
+                            "n_runs": {
+                                MK.Type: types.Number,
+                                MK.Default: 10,
+                                MK.Description: "Number of runs flownet ahm runs in Hyperopt run.",
+                            },
+                            "mode": {
+                                MK.Type: types.String,
+                                MK.Default: "random",
+                                MK.Description: "Hyperopt mode to run with. Valid options are 'random', "
+                                "'tpe' and 'adaptive_tpe'.",
+                            },
+                            "loss": {
+                                MK.Type: types.NamedDict,
+                                MK.Content: {
+                                    "keys": {
+                                        MK.Type: types.List,
+                                        MK.Content: {
+                                            MK.Item: {
+                                                MK.Type: types.String,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                        MK.Description: "List of keys, as defined in the analysis section, "
+                                        "to be used as loss function for Hyperopt.",
+                                    },
+                                    "factors": {
+                                        MK.Type: types.List,
+                                        MK.Content: {
+                                            MK.Item: {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            }
+                                        },
+                                        MK.Description: "List of factors to scale the keys.",
+                                    },
+                                    "metric": {
+                                        MK.Type: types.String,
+                                        MK.Default: "RMSE",
+                                        MK.Description: "Metric to be used in Hyperopt.",
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
             },
@@ -1337,5 +1370,36 @@ def parse_config(
             "Ambiguous configuration input: well log data needs to be loaded (from the simulation model) in order "
             "to allow for enabling of kriging."
         )
+
+    if (config.flownet.hyperopt.mode) not in ("random", "tpe", "adaptive_tpe"):
+        raise ValueError(
+            f"The hyperopt mode '{config.flownet.hyperopt.mode}' is not valid."
+            "Valid options are ('random', 'tpe', 'adaptive_tpe')."
+        )
+
+    for key in config.flownet.hyperopt.loss.keys:
+        if not key in config.ert.analysis.quantity:
+            raise ValueError(
+                f"Key {key} is not defined as an analysis quantity ({config.flownet.hyperopt.loss.keys})."
+            )
+
+    if (
+        config.ert.analysis.metric
+        and config.flownet.hyperopt.loss.metric not in config.ert.analysis.metric
+    ):
+        raise ValueError(
+            f"Key {config.flownet.hyperopt.loss.metric} is not defined as an analysis"
+            "quantity ({config.ert.analysis.metric})."
+        )
+
+    if len(config.flownet.hyperopt.loss.keys) is not len(
+        config.flownet.hyperopt.loss.factors
+    ):
+        raise ValueError(
+            "For each loss function metric specified, factors need to be specified as well."
+        )
+
+    if config.flownet.hyperopt.n_runs < 1:
+        raise ValueError("The minimum number of hyperopt runs 'n_runs' is 1.")
 
     return config
