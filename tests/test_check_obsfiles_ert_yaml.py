@@ -6,6 +6,7 @@ import pathlib
 
 import yaml
 
+
 def read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
     # Reading ERT file
     assert os.path.exists(ert_obs_file_name) == 1
@@ -111,15 +112,19 @@ def test_check_obsfiles_ert_yaml() -> None:
     ERT_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations.ertobs")
     YAML_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations.yamlobs")
 
-    TRAINING_ERT_OBS_FILE_NAME = (
-        pathlib.Path("./tests/observation_files/observations_training.ertobs")
+    TRAINING_ERT_OBS_FILE_NAME = pathlib.Path(
+        "./tests/observation_files/observations_training.ertobs"
     )
-    TEST_ERT_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations_test.ertobs")
+    TEST_ERT_OBS_FILE_NAME = pathlib.Path(
+        "./tests/observation_files/observations_test.ertobs"
+    )
 
-    TRAINING_YAML_OBS_FILE_NAME = (
-        pathlib.Path("./tests/observation_files/observations_training.yamlobs")
+    TRAINING_YAML_OBS_FILE_NAME = pathlib.Path(
+        "./tests/observation_files/observations_training.yamlobs"
     )
-    TEST_YAML_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations_test.yamlobs")
+    TEST_YAML_OBS_FILE_NAME = pathlib.Path(
+        "./tests/observation_files/observations_test.yamlobs"
+    )
 
     # Comparing the complete observation data
     # Reading ERT file
