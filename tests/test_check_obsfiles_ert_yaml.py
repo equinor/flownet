@@ -1,10 +1,28 @@
-from datetime import datetime
+import pathlib
 
 import os.path
 
-import pathlib
+from datetime import datetime
 
 import yaml
+
+
+ERT_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations.ertobs")
+YAML_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations.yamlobs")
+
+TRAINING_ERT_OBS_FILE_NAME = pathlib.Path(
+    "./tests/observation_files/observations_training.ertobs"
+)
+TEST_ERT_OBS_FILE_NAME = pathlib.Path(
+    "./tests/observation_files/observations_test.ertobs"
+)
+
+TRAINING_YAML_OBS_FILE_NAME = pathlib.Path(
+    "./tests/observation_files/observations_training.yamlobs"
+)
+TEST_YAML_OBS_FILE_NAME = pathlib.Path(
+    "./tests/observation_files/observations_test.yamlobs"
+)
 
 
 def read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
@@ -48,7 +66,6 @@ def read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
 
 def compare_and_show(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
     yaml_obs = {}
-    equal = True
     for item in yaml_obs_dict:
         for list_item in yaml_obs_dict[item]:
             for lost_item in list_item["observations"]:
@@ -66,7 +83,6 @@ def compare_and_show(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
                 print(ert_obs_dict[list_item["key"]][0])
                 print("--------------------------------------")
                 print("--------------------------------------")
-                equal = False
 
             if yaml_obs[list_item["key"]][1] != ert_obs_dict[list_item["key"]][1]:
                 print("Values Are NOT Equal")
@@ -77,7 +93,6 @@ def compare_and_show(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
                 print(ert_obs_dict[list_item["key"]][1])
                 print("--------------------------------------")
                 print("--------------------------------------")
-                equal = False
 
             if yaml_obs[list_item["key"]][2] != ert_obs_dict[list_item["key"]][2]:
                 print("Error Are NOT Equal")
@@ -88,7 +103,6 @@ def compare_and_show(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
                 print(ert_obs_dict[list_item["key"]][2])
                 print("--------------------------------------")
                 print("--------------------------------------")
-                equal = False
 
 
 def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
@@ -109,22 +123,6 @@ def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
 
 
 def test_check_obsfiles_ert_yaml() -> None:
-    ERT_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations.ertobs")
-    YAML_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations.yamlobs")
-
-    TRAINING_ERT_OBS_FILE_NAME = pathlib.Path(
-        "./tests/observation_files/observations_training.ertobs"
-    )
-    TEST_ERT_OBS_FILE_NAME = pathlib.Path(
-        "./tests/observation_files/observations_test.ertobs"
-    )
-
-    TRAINING_YAML_OBS_FILE_NAME = pathlib.Path(
-        "./tests/observation_files/observations_training.yamlobs"
-    )
-    TEST_YAML_OBS_FILE_NAME = pathlib.Path(
-        "./tests/observation_files/observations_test.yamlobs"
-    )
 
     # Comparing the complete observation data
     # Reading ERT file
