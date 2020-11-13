@@ -315,8 +315,7 @@ class Schedule:
 
     def get_keywords(
         self,
-        date: datetime.date = None,
-        dates: List[datetime.date] = None,
+        date: List[datetime.date] = None,
         kw_class: Optional[Union[Keyword, str]] = None,
         well_name: str = None,
         ignore_nan: str = None,
@@ -326,8 +325,7 @@ class Schedule:
         particular keyword class.
 
         Args:
-            date: Date at which to lookup keywords
-            dates: Dates at which to lookup keywords
+            date: Date or list of dates at which to lookup keywords
             kw_class: keyword class or class name string
             well_name: well name
             ignore_nan: keyword attribute to ignore nan values
@@ -336,16 +334,12 @@ class Schedule:
             keywords at specified date and/or with a specific well name and/or of a specific keyword class
 
         """
+
+        if isinstance(date, datetime.date):
+            date = [date]
+
         if date and not kw_class and not well_name:
-            output = [kw for kw in self._schedule_items if kw.date == date]
-        elif dates and kw_class and well_name:
-            output = [
-                kw
-                for kw in self._schedule_items
-                if kw.date in dates
-                and kw.__class__.__name__ == kw_class
-                and kw.well_name == well_name
-            ]
+            output = [kw for kw in self._schedule_items if kw.date in date]
         elif kw_class and not date and not well_name:
             output = [
                 kw for kw in self._schedule_items if kw.__class__.__name__ == kw_class
@@ -354,7 +348,7 @@ class Schedule:
             output = [
                 kw
                 for kw in self._schedule_items
-                if kw.date == date and kw.__class__.__name__ == kw_class
+                if kw.date in date and kw.__class__.__name__ == kw_class
             ]
         elif well_name and not date and not kw_class:
             output = [kw for kw in self._schedule_items if kw.well_name == well_name]
@@ -362,7 +356,7 @@ class Schedule:
             output = [
                 kw
                 for kw in self._schedule_items
-                if kw.date == date and kw.well_name == well_name
+                if kw.date in date and kw.well_name == well_name
             ]
         elif kw_class and not date and well_name:
             output = [
@@ -374,7 +368,7 @@ class Schedule:
             output = [
                 kw
                 for kw in self._schedule_items
-                if kw.date == date
+                if kw.date in date
                 and kw.__class__.__name__ == kw_class
                 and kw.well_name == well_name
             ]
