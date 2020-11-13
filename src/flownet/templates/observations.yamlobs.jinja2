@@ -1,7 +1,7 @@
 smry:
  {%- for well_name in schedule.get_wells(kw_class="WCONHIST") -%}
    {%- if (error_config.WOPR.rel_error is not none) and (error_config.WOPR.min_error is not none) -%}
-   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="oil_rate", dates=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="oil_rate", date=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
    {% if loop.first and not loop.last: %}
  - key: WOPR:{{ well_name }}
    observations:
@@ -16,7 +16,7 @@ smry:
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WGPR.rel_error is not none) and (error_config.WGPR.min_error is not none) -%}
-   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="gas_rate", dates=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="gas_rate", date=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
    {% if loop.first and not loop.last: %}
  - key: WGPR:{{ well_name }}
    observations:
@@ -31,7 +31,7 @@ smry:
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WWPR.rel_error is not none) and (error_config.WWPR.min_error is not none) -%}
-   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="water_rate", dates=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="water_rate", date=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
    {% if loop.first and not loop.last: %}
  - key: WWPR:{{ well_name }}
    observations:
@@ -46,7 +46,7 @@ smry:
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WBHP.rel_error is not none) and (error_config.WBHP.min_error is not none) -%}
-   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="bhp", dates=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="bhp", date=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
    {% if loop.first and not loop.last: %}
  - key: WBHP:{{ well_name }}
    observations:
@@ -61,7 +61,7 @@ smry:
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WTHP.rel_error is not none) and (error_config.WTHP.min_error is not none) -%}
-   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="thp", dates=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="thp", date=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
    {% if loop.first and not loop.last: %}
  - key: WTHP:{{ well_name }}
    observations:
@@ -79,7 +79,7 @@ smry:
 
 {% for well_name in schedule.get_wells(kw_class="WCONINJH") %}
    {%- if (error_config.WBHP.rel_error is not none) and (error_config.WBHP.min_error is not none) -%}
-   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="bhp", dates=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="bhp", date=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
    {% if loop.first and not loop.last: %}
  - key: WBHP:{{ well_name }}
    observations:
@@ -94,7 +94,7 @@ smry:
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WTHP.rel_error is not none) and (error_config.WTHP.min_error is not none) -%}
-   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", dates=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", date=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
    {% if loop.first and not loop.last: %}
  - key: WTHP:{{ well_name }}
    observations:
@@ -109,7 +109,7 @@ smry:
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WGIR.rel_error is not none) and (error_config.WGIR.min_error is not none) -%}
-   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", dates=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", date=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
    {% if loop.first and not loop.last: %}
  - key: WGIR:{{ well_name }}
    observations:
@@ -124,7 +124,7 @@ smry:
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WWIR.rel_error is not none) and (error_config.WWIR.min_error is not none) -%}
-   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", dates=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", date=schedule.get_dates()[num_beginning_date:num_end_date]) -%}
    {% if loop.first and not loop.last: %}
  - key: WWIR:{{ well_name }}
    observations:
