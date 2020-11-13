@@ -1,7 +1,7 @@
 import pytest
 
 from flownet.network_model._mitchell import mitchell_best_candidate_modified_3d
-from ..utils.types import Coordinate
+from src.flownet.utils.types import Coordinate
 
 
 def test_mitchells_3D() -> None:
@@ -17,7 +17,6 @@ def test_mitchells_3D() -> None:
             random_seed=999,
         )
     ]
-    assert 
 
 
 def test_mitchells_2D() -> None:
