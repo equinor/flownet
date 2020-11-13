@@ -1,7 +1,6 @@
 import argparse
 import glob
 import itertools
-import math
 import os
 import pathlib
 import re
@@ -166,7 +165,7 @@ def accuracy_metric(data_reference, data_test, metric):
     if metric in ("MSE", "RMSE", "NRMSE"):
         score = mean_squared_error(data_reference, data_test)
         if metric in ("RMSE", "NRMSE"):
-            score = math.sqrt(score)
+            score = mean_squared_error(data_reference, data_test, squared=False)
             if metric == "NRMSE":
                 score = score / (np.amax(data_reference) - np.amin(data_reference))
     elif metric in ("MAE", "NMAE"):
@@ -190,8 +189,9 @@ def _load_simulations(runpath: str, ecl_base: str) -> EclSum:
     Returns:
         EclSum
     """
-
-    return EclSum(str(pathlib.Path(runpath) / pathlib.Path(ecl_base)))
+    if os.path.exists(pathlib.Path(runpath) / pathlib.Path(ecl_base + ".UNSMRY")):
+        return EclSum(str(pathlib.Path(runpath) / pathlib.Path(ecl_base)))
+    return None
 
 
 def load_csv_file(csv_file, csv_columns):
@@ -243,7 +243,7 @@ def compute_metric_ensemble(obs, list_ensembles, metrics, str_key, iteration):
     return dict_metric
 
 
-def make_dataframe_simulation_data(path, eclbase_file, keys):
+def make_dataframe_simulation_data(path, eclbase_file, keys, end_date):
     """
     Internal helper function to generate dataframe containing
     data from ensemble of simulations from selected simulation keys
@@ -252,6 +252,7 @@ def make_dataframe_simulation_data(path, eclbase_file, keys):
         path: path to folder containing ensemble of simulations
         eclbase_file: name of simulation case file
         keys: list of prefix of quantities of interest to be loaded
+        end_date: end date of time period for accuracy analysis
 
     Returns:
         df_sim: Pandas dataframe contained data from ensemble of simulations
@@ -271,35 +272,43 @@ def make_dataframe_simulation_data(path, eclbase_file, keys):
     # Prepare dataframe
     # pylint: disable-msg=too-many-locals
     df_sim = pd.DataFrame()
-    for id_real, runpath in enumerate(realizations_dict.keys()):
+    id_real = 0
+    for runpath in realizations_dict:
         df_tmp = pd.DataFrame()
-        dates = realizations_dict[runpath].dates
-        if id_real == 0:
-            df_sim["DATE"] = pd.Series(dates)
-            df_sim["REAL_ID"] = pd.Series(id_real * np.ones(len(dates)), dtype=int)
-        df_tmp["DATE"] = pd.Series(dates)
-        df_tmp["REAL_ID"] = pd.Series(id_real * np.ones(len(dates)), dtype=int)
-
-        if id_real == 0:
-            for counter, k in enumerate(keys):
-                if counter == 0:
-                    key_list_data = [
-                        x for x in realizations_dict[runpath] if x.startswith(k)
-                    ]
-                else:
-                    key_list_data.extend(
-                        [x for x in realizations_dict[runpath] if x.startswith(k)]
-                    )
-
-        for key in key_list_data:
+        if (realizations_dict[runpath] is not None) and (
+            np.datetime64(realizations_dict[runpath].dates[-1]) >= end_date
+        ):
+            dates = realizations_dict[runpath].dates
             if id_real == 0:
-                df_sim[key] = pd.Series(realizations_dict[runpath].numpy_vector(key))
-            df_tmp[key] = pd.Series(realizations_dict[runpath].numpy_vector(key))
+                df_sim["DATE"] = pd.Series(dates)
+                df_sim["REAL_ID"] = pd.Series(id_real * np.ones(len(dates)), dtype=int)
+            df_tmp["DATE"] = pd.Series(dates)
+            df_tmp["REAL_ID"] = pd.Series(id_real * np.ones(len(dates)), dtype=int)
 
-        if id_real > 0:
-            df_sim = df_sim.append(df_tmp, ignore_index=True)
+            if id_real == 0:
+                for counter, k in enumerate(keys):
+                    if counter == 0:
+                        key_list_data = [
+                            x for x in realizations_dict[runpath] if x.startswith(k)
+                        ]
+                    else:
+                        key_list_data.extend(
+                            [x for x in realizations_dict[runpath] if x.startswith(k)]
+                        )
 
-    return df_sim, realizations_dict, iteration
+            for key in key_list_data:
+                if id_real == 0:
+                    df_sim[key] = pd.Series(
+                        realizations_dict[runpath].numpy_vector(key)
+                    )
+                df_tmp[key] = pd.Series(realizations_dict[runpath].numpy_vector(key))
+
+            if id_real > 0:
+                df_sim = df_sim.append(df_tmp, ignore_index=True)
+
+            id_real = id_real + 1
+
+    return df_sim, iteration, id_real
 
 
 def save_plots_metrics(df_metrics, metrics, str_key):
@@ -381,10 +390,11 @@ def save_iteration_analytics():
     metrics = list(args.metrics.replace("[", "").replace("]", "").split(","))
 
     # Load ensemble of FlowNet
-    (df_sim, realizations_dict, iteration,) = make_dataframe_simulation_data(
+    (df_sim, iteration, nb_real) = make_dataframe_simulation_data(
         args.runpath,
         args.eclbase,
         list(args.quantity.replace("[", "").replace("]", "").split(",")),
+        np.datetime64(args.end),
     )
 
     # Load reference simulation (OPM-Flow/Eclipse)
@@ -433,9 +443,7 @@ def save_iteration_analytics():
         truth_data = truth_data.fillna(0)
         truth_data = truth_data[list(set(truth_data.columns) & set(df_sim.columns))]
 
-        obs_opm = prepare_opm_reference_data(
-            truth_data, str_key, len(realizations_dict)
-        )
+        obs_opm = prepare_opm_reference_data(truth_data, str_key, nb_real)
 
         # Prepare data from ensemble of FlowNet
         ens_flownet = []
@@ -448,7 +456,7 @@ def save_iteration_analytics():
                     np.datetime64(args.end),
                 ),
                 str_key,
-                len(realizations_dict),
+                nb_real,
             )
         )
 
