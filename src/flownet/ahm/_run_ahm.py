@@ -187,32 +187,44 @@ def _get_distribution(
     for parameter in parameters:
         parameter_config = getattr(parameters_config, parameter)
 
-        if parameter_config.mean is not None:
-            mean = parameter_config.mean
-
-            if parameter_config.loguniform is True:
-                # pylint: disable=cell-var-from-loop
+        if parameter_config.distribution == "uniform":
+            if parameter_config.mean is not None:
+                dist_mean = parameter_config.mean
                 if parameter_config.max is not None:
                     dist_max = parameter_config.max
-                    dist_min = _find_dist_minmax(None, dist_max, mean)
+                    dist_min = dist_mean - (dist_max - dist_mean)
                 else:
                     dist_min = parameter_config.min
-                    dist_max = _find_dist_minmax(dist_min, None, mean)
+                    dist_max = dist_mean + (dist_mean - dist_min)
             else:
+                dist_min = parameter_config.min
+                dist_max = parameter_config.max
+            dist_stddev = None
+            dist_base = None
+            dist_mean = None
+        if parameter_config.distribution == "logunif":
+            if parameter_config.mean is not None:
+                # pylint: disable=cell-var-from-loop
+                dist_mean = parameter_config.mean
                 if parameter_config.max is not None:
                     dist_max = parameter_config.max
-                    dist_min = mean - (dist_max - mean)
+                    dist_min = _find_dist_minmax(None, dist_max, dist_mean)
                 else:
                     dist_min = parameter_config.min
-                    dist_max = mean + (mean - dist_min)
-        else:
-            dist_min = parameter_config.min
-            dist_max = parameter_config.max
+                    dist_max = _find_dist_minmax(dist_min, None, dist_mean)
+            else:
+                dist_min = parameter_config.min
+                dist_max = parameter_config.max
+            dist_base = None
+            dist_stdev = None
+            dist_mean = None
 
         df[f"minimum_{parameter}"] = dist_min
         df[f"maximum_{parameter}"] = dist_max
-        #        df[f"loguniform_{parameter}"] = parameter_config.loguniform
-        df[f"loguniform_{parameter}"] = False
+        df[f"mean_{parameter}"] = dist_mean
+        df[f"base_{parameter}"] = dist_base
+        df[f"stddev_{parameter}"] = dist_stddev
+        df[f"distribution_{parameter}"] = parameter_config.distribution
     return df
 
 
