@@ -4,8 +4,9 @@ from functools import partial
 import argparse
 
 import yaml
-from hyperopt import fmin, tpe, atpe, rand, STATUS_OK
+from hyperopt import fmin, tpe, atpe, rand, STATUS_OK, STATUS_FAIL
 import mlflow
+from mlflow.entities import RunStatus
 import pandas as pd
 
 from ..ahm import run_flownet_history_matching
@@ -70,11 +71,13 @@ def flownet_ahm_run(x: list, args: argparse.Namespace):
 
     mlflow.set_tracking_uri(str(args.output_folder))
     mlflow.set_experiment(f"{config.name}")
-    with mlflow.start_run(run_name=config.name):
-        run_args = copy.deepcopy(args)
-        run_args.output_folder = pathlib.Path(
-            mlflow.get_artifact_uri().rsplit("artifacts")[0] + "flownet_run"
-        )
+    mlflow.start_run(run_name=config.name)
+
+    run_args = copy.deepcopy(args)
+    run_args.output_folder = pathlib.Path(
+        mlflow.get_artifact_uri().rsplit("artifacts")[0] + "flownet_run"
+    )
+    try:
         run_flownet_history_matching(config, run_args)
 
         df_analytics = pd.read_csv(
@@ -112,4 +115,10 @@ def flownet_ahm_run(x: list, args: argparse.Namespace):
         for (parameter, param_value) in zip(parameters, x):
             mlflow.log_param(key=parameter, value=param_value)
 
-    return {"loss": hyperopt_loss, "status": STATUS_OK}
+        mlflow.end_run(status=RunStatus.to_string(RunStatus.FINISHED))
+        return {"loss": hyperopt_loss, "status": STATUS_OK}
+
+    except Exception:  # pylint: disable=broad-except
+
+        mlflow.end_run(status=RunStatus.to_string(RunStatus.FAILED))
+        return {"status": STATUS_FAIL}
