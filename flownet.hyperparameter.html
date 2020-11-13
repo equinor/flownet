@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>flownet.ert._run_subprocess module &mdash; FlowNet  documentation</title>
+  <title>flownet.hyperparameter package &mdash; FlowNet  documentation</title>
   
 
   
@@ -39,8 +39,8 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="flownet.hyperparameter package" href="flownet.hyperparameter.html" />
-    <link rel="prev" title="flownet.ert._create_synthetic_refcase module" href="flownet.ert._create_synthetic_refcase.html" /> 
+    <link rel="next" title="flownet.hyperparameter._run_hyper module" href="flownet.hyperparameter._run_hyper.html" />
+    <link rel="prev" title="flownet.ert._run_subprocess module" href="flownet.ert._run_subprocess.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -143,15 +143,13 @@
         
           <li><a href="api.html">FlowNet Python API</a> &raquo;</li>
         
-          <li><a href="flownet.ert.html">flownet.ert package</a> &raquo;</li>
-        
-      <li>flownet.ert._run_subprocess module</li>
+      <li>flownet.hyperparameter package</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/flownet.ert._run_subprocess.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/flownet.hyperparameter.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -164,29 +162,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-flownet.ert._run_subprocess">
-<span id="flownet-ert-run-subprocess-module"></span><h1>flownet.ert._run_subprocess module<a class="headerlink" href="#module-flownet.ert._run_subprocess" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="flownet.ert._run_subprocess.run_ert_subprocess">
-<code class="sig-prename descclassname">flownet.ert._run_subprocess.</code><code class="sig-name descname">run_ert_subprocess</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">cwd</span><span class="p">:</span> <span class="n">pathlib.Path</span></em>, <em class="sig-param"><span class="n">runpath</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#flownet.ert._run_subprocess.run_ert_subprocess" title="Permalink to this definition">¶</a></dt>
-<dd><p>Helper function to run a ERT setup.</p>
-<p>Should revert here to use the much simpler subprocess.run when
-<a class="reference external" href="https://github.com/equinor/libres/issues/984">https://github.com/equinor/libres/issues/984</a> is closed. See
-<a class="reference external" href="https://github.com/equinor/flownet/pull/119">https://github.com/equinor/flownet/pull/119</a> on changes to revert.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>command</strong> – Command to run.</p></li>
-<li><p><strong>cwd</strong> – The folder to run the command from.</p></li>
-<li><p><strong>runpath</strong> – Runpath variable given to ERT.</p></li>
+  <div class="section" id="flownet-hyperparameter-package">
+<h1>flownet.hyperparameter package<a class="headerlink" href="#flownet-hyperparameter-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="flownet.hyperparameter._run_hyper.html">flownet.hyperparameter._run_hyper module</a></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Nothing</p>
-</dd>
-</dl>
-</dd></dl>
-
+</div>
+</div>
+<div class="section" id="module-flownet.hyperparameter">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-flownet.hyperparameter" title="Permalink to this headline">¶</a></h2>
+</div>
 </div>
 
 
@@ -197,10 +185,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="flownet.hyperparameter.html" class="btn btn-neutral float-right" title="flownet.hyperparameter package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="flownet.hyperparameter._run_hyper.html" class="btn btn-neutral float-right" title="flownet.hyperparameter._run_hyper module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="flownet.ert._create_synthetic_refcase.html" class="btn btn-neutral float-left" title="flownet.ert._create_synthetic_refcase module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="flownet.ert._run_subprocess.html" class="btn btn-neutral float-left" title="flownet.ert._run_subprocess module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
