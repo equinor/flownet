@@ -579,6 +579,15 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: False,
+                                                        MK.Description: "This only has effect if interpolation "
+                                                        "between low/base/high relative permeability curves is chosen. "
+                                                        "If 'low_optimistic' is set to True, the minimum value for "
+                                                        "this model parameter will be used to generate the high case "
+                                                        "SCAL recommendation curves, and the maximum value will be "
+                                                        "used for the low case SCAL recommendation curves.",
                                                     },
                                                 },
                                             },
@@ -609,6 +618,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: False,
                                                     },
                                                 },
                                             },
@@ -639,6 +651,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: False,
                                                     },
                                                 },
                                             },
@@ -669,6 +684,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: True,
                                                     },
                                                 },
                                             },
@@ -699,6 +717,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: True,
                                                     },
                                                 },
                                             },
@@ -729,6 +750,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: False,
                                                     },
                                                 },
                                             },
@@ -759,6 +783,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: False,
                                                     },
                                                 },
                                             },
@@ -789,6 +816,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: True,
                                                     },
                                                 },
                                             },
@@ -819,6 +849,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: True,
                                                     },
                                                 },
                                             },
@@ -849,6 +882,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: False,
                                                     },
                                                 },
                                             },
@@ -879,6 +915,13 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    "loguniform": {
+                                                        MK.Type: types.Bool,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: False,
                                                     },
                                                 },
                                             },
@@ -909,6 +952,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: True,
                                                     },
                                                 },
                                             },
@@ -939,6 +985,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: True,
                                                     },
                                                 },
                                             },
