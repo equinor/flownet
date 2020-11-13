@@ -316,6 +316,7 @@ class Schedule:
     def get_keywords(
         self,
         date: datetime.date = None,
+        dates: List[datetime.date] = None,
         kw_class: Optional[Union[Keyword, str]] = None,
         well_name: str = None,
         ignore_nan: str = None,
@@ -336,6 +337,17 @@ class Schedule:
         """
         if date and not kw_class and not well_name:
             output = [kw for kw in self._schedule_items if kw.date == date]
+        elif dates and kw_class and well_name:
+            print(well_name)
+            print(kw_class)
+            print(len(dates))
+            output = [
+                kw
+                for kw in self._schedule_items
+                if kw.date in dates
+                and kw.__class__.__name__ == kw_class
+                and kw.well_name == well_name
+            ]
         elif kw_class and not date and not well_name:
             output = [
                 kw for kw in self._schedule_items if kw.__class__.__name__ == kw_class
