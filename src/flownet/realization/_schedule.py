@@ -315,7 +315,7 @@ class Schedule:
 
     def get_keywords(
         self,
-        date: List[datetime.date] = None,
+        date: Optional[List[datetime.date], datetime.date] = None,
         kw_class: Optional[Union[Keyword, str]] = None,
         well_name: str = None,
         ignore_nan: str = None,
