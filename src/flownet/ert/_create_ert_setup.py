@@ -159,8 +159,13 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     with open(output_folder / "parameters.pickled", "wb") as fh:
         pickle.dump(parameters, fh)
 
-    analysis_metric = "[" + ",".join(list(config.ert.analysis.metric)) + "]"
-    analysis_quantity = "[" + ",".join(list(config.ert.analysis.quantity)) + "]"
+    print(hasattr(config.ert, "analysis"))
+    if hasattr(config.ert, "analysis"):
+        analysis_metric = "[" + ",".join(list(config.ert.analysis.metric)) + "]"
+        analysis_quantity = "[" + ",".join(list(config.ert.analysis.quantity)) + "]"
+    else:
+        analysis_metric = None
+        analysis_quantity = None
 
     configuration = {
         "pickled_network": output_folder.resolve() / "network.pickled",
