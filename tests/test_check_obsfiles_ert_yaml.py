@@ -108,45 +108,45 @@ def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
 
 
 def test_check_obsfiles_ert_yaml() -> None:
-    ert_obs_file_name = "./tests/observation_files/observations.ertobs"
-    yaml_obs_file_name = "./tests/observation_files/observations.yamlobs"
+    ERT_OBS_FILE_NAME = "./tests/observation_files/observations.ertobs"
+    YAML_OBS_FILE_NAME = "./tests/observation_files/observations.yamlobs"
 
-    training_ert_obs_file_name = (
+    TRAINING_ERT_OBS_FILE_NAME = (
         "./tests/observation_files/observations_training.ertobs"
     )
-    test_ert_obs_file_name = "./tests/observation_files/observations_test.ertobs"
+    TEST_ERT_OBS_FILE_NAME = "./tests/observation_files/observations_test.ertobs"
 
-    training_yaml_obs_file_name = (
+    TRAINING_YAML_OBS_FILE_NAME = (
         "./tests/observation_files/observations_training.yamlobs"
     )
-    test_yaml_obs_file_name = "./tests/observation_files/observations_test.yamlobs"
+    TEST_YAML_OBS_FILE_NAME = "./tests/observation_files/observations_test.yamlobs"
 
     # Comparing the complete observation data
     # Reading ERT file
-    ert_obs = read_ert_obs(ert_obs_file_name)
+    ert_obs = read_ert_obs(ERT_OBS_FILE_NAME)
 
     # Reading YAML file
-    parsed_yaml_file = read_yaml_obs(yaml_obs_file_name)
+    parsed_yaml_file = read_yaml_obs(YAML_OBS_FILE_NAME)
 
     compare_and_show(ert_obs, parsed_yaml_file)
     assert compare(ert_obs, parsed_yaml_file)
 
     # Comparing the training observation data
     # Reading ERT file
-    training_ert_obs = read_ert_obs(training_ert_obs_file_name)
+    training_ert_obs = read_ert_obs(TRAINING_ERT_OBS_FILE_NAME)
 
     # Reading YAML file
-    training_parsed_yaml_file = read_yaml_obs(training_yaml_obs_file_name)
+    training_parsed_yaml_file = read_yaml_obs(TRAINING_YAML_OBS_FILE_NAME)
 
     compare_and_show(training_ert_obs, training_parsed_yaml_file)
     assert compare(training_ert_obs, training_parsed_yaml_file)
 
     # Comparing the Test observation data
     # Reading ERT file
-    test_ert_obs = read_ert_obs(test_ert_obs_file_name)
+    test_ert_obs = read_ert_obs(TEST_ERT_OBS_FILE_NAME)
 
     # Reading YAML file
-    test_parsed_yaml_file = read_yaml_obs(test_yaml_obs_file_name)
+    test_parsed_yaml_file = read_yaml_obs(TEST_YAML_OBS_FILE_NAME)
 
     compare_and_show(test_ert_obs, test_parsed_yaml_file)
     assert compare(test_ert_obs, test_parsed_yaml_file)
