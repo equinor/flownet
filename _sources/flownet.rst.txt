@@ -11,6 +11,7 @@ Subpackages
    flownet.config_parser
    flownet.data
    flownet.ert
+   flownet.hyperparameter
    flownet.network_model
    flownet.parameters
    flownet.prediction

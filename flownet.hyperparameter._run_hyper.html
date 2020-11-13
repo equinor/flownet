@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>flownet.ert._run_subprocess module &mdash; FlowNet  documentation</title>
+  <title>flownet.hyperparameter._run_hyper module &mdash; FlowNet  documentation</title>
   
 
   
@@ -39,8 +39,8 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="flownet.hyperparameter package" href="flownet.hyperparameter.html" />
-    <link rel="prev" title="flownet.ert._create_synthetic_refcase module" href="flownet.ert._create_synthetic_refcase.html" /> 
+    <link rel="next" title="flownet.network_model package" href="flownet.network_model.html" />
+    <link rel="prev" title="flownet.hyperparameter package" href="flownet.hyperparameter.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -143,15 +143,15 @@
         
           <li><a href="api.html">FlowNet Python API</a> &raquo;</li>
         
-          <li><a href="flownet.ert.html">flownet.ert package</a> &raquo;</li>
+          <li><a href="flownet.hyperparameter.html">flownet.hyperparameter package</a> &raquo;</li>
         
-      <li>flownet.ert._run_subprocess module</li>
+      <li>flownet.hyperparameter._run_hyper module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/flownet.ert._run_subprocess.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/flownet.hyperparameter._run_hyper.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -164,21 +164,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-flownet.ert._run_subprocess">
-<span id="flownet-ert-run-subprocess-module"></span><h1>flownet.ert._run_subprocess module<a class="headerlink" href="#module-flownet.ert._run_subprocess" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-flownet.hyperparameter._run_hyper">
+<span id="flownet-hyperparameter-run-hyper-module"></span><h1>flownet.hyperparameter._run_hyper module<a class="headerlink" href="#module-flownet.hyperparameter._run_hyper" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="flownet.ert._run_subprocess.run_ert_subprocess">
-<code class="sig-prename descclassname">flownet.ert._run_subprocess.</code><code class="sig-name descname">run_ert_subprocess</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">cwd</span><span class="p">:</span> <span class="n">pathlib.Path</span></em>, <em class="sig-param"><span class="n">runpath</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#flownet.ert._run_subprocess.run_ert_subprocess" title="Permalink to this definition">¶</a></dt>
-<dd><p>Helper function to run a ERT setup.</p>
-<p>Should revert here to use the much simpler subprocess.run when
-<a class="reference external" href="https://github.com/equinor/libres/issues/984">https://github.com/equinor/libres/issues/984</a> is closed. See
-<a class="reference external" href="https://github.com/equinor/flownet/pull/119">https://github.com/equinor/flownet/pull/119</a> on changes to revert.</p>
+<dt id="flownet.hyperparameter._run_hyper.flownet_ahm_run">
+<code class="sig-prename descclassname">flownet.hyperparameter._run_hyper.</code><code class="sig-name descname">flownet_ahm_run</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">argparse.Namespace</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.hyperparameter._run_hyper.flownet_ahm_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run individual ahm using the actual hyperparameter values for the run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>command</strong> – Command to run.</p></li>
-<li><p><strong>cwd</strong> – The folder to run the command from.</p></li>
-<li><p><strong>runpath</strong> – Runpath variable given to ERT.</p></li>
+<li><p><strong>x</strong> – Actual values for the hyperparameters.</p></li>
+<li><p><strong>args</strong> – The argparse namespace given by the user.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.hyperparameter._run_hyper.run_flownet_hyperparameter">
+<code class="sig-prename descclassname">flownet.hyperparameter._run_hyper.</code><code class="sig-name descname">run_flownet_hyperparameter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">argparse.Namespace</span></em>, <em class="sig-param"><span class="n">hyperparameters</span><span class="p">:</span> <span class="n">list</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.hyperparameter._run_hyper.run_flownet_hyperparameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run flownet in hyperparamater exploration or optimization mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – The argparse namespace given by the user</p></li>
+<li><p><strong>hyperparameters</strong> – Dictionary with hyperparameters</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -197,10 +210,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="flownet.hyperparameter.html" class="btn btn-neutral float-right" title="flownet.hyperparameter package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="flownet.network_model.html" class="btn btn-neutral float-right" title="flownet.network_model package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="flownet.ert._create_synthetic_refcase.html" class="btn btn-neutral float-left" title="flownet.ert._create_synthetic_refcase module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="flownet.hyperparameter.html" class="btn btn-neutral float-left" title="flownet.hyperparameter package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
