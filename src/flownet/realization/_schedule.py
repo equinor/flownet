@@ -335,7 +335,7 @@ class Schedule:
         Returns:
             keywords at specified date and/or with a specific well name and/or of a specific keyword class
 
-        """       
+        """
         if date and not kw_class and not well_name:
             output = [kw for kw in self._schedule_items if kw.date == date]
         elif dates and kw_class and well_name:
