@@ -327,6 +327,7 @@ class Schedule:
 
         Args:
             date: Date at which to lookup keywords
+            dates: Dates at which to lookup keywords
             kw_class: keyword class or class name string
             well_name: well name
             ignore_nan: keyword attribute to ignore nan values
@@ -334,13 +335,10 @@ class Schedule:
         Returns:
             keywords at specified date and/or with a specific well name and/or of a specific keyword class
 
-        """
+        """       
         if date and not kw_class and not well_name:
             output = [kw for kw in self._schedule_items if kw.date == date]
         elif dates and kw_class and well_name:
-            print(well_name)
-            print(kw_class)
-            print(len(dates))
             output = [
                 kw
                 for kw in self._schedule_items
