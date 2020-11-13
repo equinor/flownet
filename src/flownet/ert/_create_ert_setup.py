@@ -50,12 +50,11 @@ def _create_observation_file(
     num_dates = len(schedule.get_dates())
     num_training_dates = round(num_dates * training_set_fraction)
 
-
-    export_settings = [ 
-                        ["", 1, num_dates],
-                        ["_training", 1, num_training_dates],
-                        ["_test", num_training_dates + 1, num_dates]
-                      ]
+    export_settings = [
+        ["", 1, num_dates],
+        ["_training", 1, num_training_dates],
+        ["_test", num_training_dates + 1, num_dates],
+    ]
 
     prefix_name = os.path.splitext(obs_file)
 
@@ -65,18 +64,20 @@ def _create_observation_file(
         else:
             obs_export_type = "ertobs"
         export_filename = f"{prefix_name[0]}{setting[0]}.{obs_export_type}"
-        template = _TEMPLATE_ENVIRONMENT.get_template(f"observations.{obs_export_type}.jinja2")
-        with open(export_filename , "w") as fh:
-                fh.write(
-                    template.render(
-                        {
-                            "schedule": schedule,
-                            "error_config": config.flownet.data_source.simulation.vectors,
-                            "num_beginning_date": setting[1],
-                            "num_end_date": setting[2],
-                        }
-                    )
-                )    
+        template = _TEMPLATE_ENVIRONMENT.get_template(
+            f"observations.{obs_export_type}.jinja2"
+        )
+        with open(export_filename, "w") as fh:
+            fh.write(
+                template.render(
+                    {
+                        "schedule": schedule,
+                        "error_config": config.flownet.data_source.simulation.vectors,
+                        "num_beginning_date": setting[1],
+                        "num_end_date": setting[2],
+                    }
+                )
+            )
 
 
 def _create_ert_parameter_file(
