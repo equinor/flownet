@@ -91,7 +91,6 @@ def compare_and_show(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
 
 def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
     yaml_obs = {}
-    equal = True
     for item in yaml_obs_dict:
         for list_item in yaml_obs_dict[item]:
             for lost_item in list_item["observations"]:
@@ -104,7 +103,7 @@ def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
             assert yaml_obs[list_item["key"]][1] == ert_obs_dict[list_item["key"]][1]
             assert yaml_obs[list_item["key"]][2] == ert_obs_dict[list_item["key"]][2]
 
-    return equal
+    return true
 
 
 def test_check_obsfiles_ert_yaml() -> None:
