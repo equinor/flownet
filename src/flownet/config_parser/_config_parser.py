@@ -53,6 +53,13 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
 
         return [x.lower() for x in input_data]
 
+    @configsuite.transformation_msg("Convert string to upper case")
+    def _to_upper(input_data: Union[List[str], str]) -> Union[List[str], str]:
+        if isinstance(input_data, str):
+            return input_data.upper()
+
+        return [x.upper() for x in input_data]
+
     @configsuite.transformation_msg("Convert input string to absolute path")
     def _to_abs_path(path: Optional[str]) -> str:
         """
@@ -458,13 +465,26 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     "analysis": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
-                            "metric": {MK.Type: types.String, MK.AllowNone: True},
-                            "quantity": {
-                                MK.Type: types.String,
-                                MK.AllowNone: True,
+                            "metric": {
+                                MK.Type: types.List,
+                                MK.Content: {
+                                    MK.Item: {MK.Type: types.String, MK.AllowNone: True}
+                                },
+                                MK.Transformation: _to_upper,
+                                MK.Description: "List of accuracy metrics to be computed "
+                                "in FlowNet analysis workflow",
                             },
-                            "start": {MK.Type: types.String, MK.AllowNone: True},
-                            "end": {MK.Type: types.String, MK.AllowNone: True},
+                            "quantity": {
+                                MK.Type: types.List,
+                                MK.Content: {
+                                    MK.Item: {MK.Type: types.String, MK.AllowNone: True}
+                                },
+                                MK.Transformation: _to_upper,
+                                MK.Description: "List of summary vectors for which accuracy "
+                                "is to be computed",
+                            },
+                            "start": {MK.Type: types.Date, MK.AllowNone: True},
+                            "end": {MK.Type: types.Date, MK.AllowNone: True},
                             "outfile": {
                                 MK.Type: types.String,
                                 MK.AllowNone: True,
