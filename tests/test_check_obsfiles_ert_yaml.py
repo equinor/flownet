@@ -2,10 +2,12 @@ from datetime import datetime
 
 import os.path
 
+import pathlib
+
 import yaml
 
 
-def read_ert_obs(ert_obs_file_name: str) -> dict:
+def read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
     # Reading ERT file
     assert os.path.exists(ert_obs_file_name) == 1
     ert_obs = {}
@@ -35,7 +37,7 @@ def read_ert_obs(ert_obs_file_name: str) -> dict:
     return ert_obs
 
 
-def read_yaml_obs(yaml_obs_file_name: str) -> dict:
+def read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
     # Reading YALM file
     assert os.path.exists(yaml_obs_file_name) == 1
     a_yaml_file = open(yaml_obs_file_name, "r")
@@ -103,7 +105,7 @@ def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
             assert yaml_obs[list_item["key"]][1] == ert_obs_dict[list_item["key"]][1]
             assert yaml_obs[list_item["key"]][2] == ert_obs_dict[list_item["key"]][2]
 
-    return true
+    return True
 
 
 def test_check_obsfiles_ert_yaml() -> None:
