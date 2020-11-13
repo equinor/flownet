@@ -44,7 +44,52 @@ def read_yaml_obs(yaml_obs_file_name: str) -> dict:
     return yaml.load(a_yaml_file, Loader=yaml.FullLoader)
 
 
-def compare(ert_obs_dict:dict, yaml_obs_dict: dict)-> bool:
+def compare_and_show(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
+    yaml_obs = {}
+    equal = True
+    for item in yaml_obs_dict:
+        for list_item in yaml_obs_dict[item]:
+            for lost_item in list_item["observations"]:
+                if not list_item["key"] in yaml_obs:
+                    yaml_obs[list_item["key"]] = [[], [], []]
+                yaml_obs[list_item["key"]][0].append(lost_item["date"].toordinal())
+                yaml_obs[list_item["key"]][1].append(float(lost_item["value"]))
+                yaml_obs[list_item["key"]][2].append(float(lost_item["error"]))
+            if yaml_obs[list_item["key"]][0] != ert_obs_dict[list_item["key"]][0]:
+                print("Values Are NOT Equal")
+                print("YAML_OBS")
+                print(yaml_obs[list_item["key"]][0])
+                print("--------------------------------------")
+                print("ERT_OBS")
+                print(ert_obs_dict[list_item["key"]][0])
+                print("--------------------------------------")
+                print("--------------------------------------")
+                equal = False
+
+            if yaml_obs[list_item["key"]][1] != ert_obs_dict[list_item["key"]][1]:
+                print("Values Are NOT Equal")
+                print("YAML_OBS")
+                print(yaml_obs[list_item["key"]][1])
+                print("--------------------------------------")
+                print("ERT_OBS")
+                print(ert_obs_dict[list_item["key"]][1])
+                print("--------------------------------------")
+                print("--------------------------------------")
+                equal = False
+
+            if yaml_obs[list_item["key"]][2] != ert_obs_dict[list_item["key"]][2]:
+                print("Error Are NOT Equal")
+                print("YAML_OBS")
+                print(yaml_obs[list_item["key"]][2])
+                print("--------------------------------------")
+                print("ERT_OBS")
+                print(ert_obs_dict[list_item["key"]][2])
+                print("--------------------------------------")
+                print("--------------------------------------")
+                equal = False
+
+
+def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
     yaml_obs = {}
     equal = True
     for item in yaml_obs_dict:
@@ -58,14 +103,17 @@ def compare(ert_obs_dict:dict, yaml_obs_dict: dict)-> bool:
             assert yaml_obs[list_item["key"]][0] == ert_obs_dict[list_item["key"]][0]
             assert yaml_obs[list_item["key"]][1] == ert_obs_dict[list_item["key"]][1]
             assert yaml_obs[list_item["key"]][2] == ert_obs_dict[list_item["key"]][2]
-            return equal
+
+    return equal
 
 
-def test_check_obsfiles_ert_yaml()-> None:
+def test_check_obsfiles_ert_yaml() -> None:
     ert_obs_file_name = "./tests/observation_files/observations.ertobs"
     yaml_obs_file_name = "./tests/observation_files/observations.yamlobs"
 
-    training_obs_file_name = "./tests/observation_files/observations_training.ertobs"
+    training_ert_obs_file_name = (
+        "./tests/observation_files/observations_training.ertobs"
+    )
     test_ert_obs_file_name = "./tests/observation_files/observations_test.ertobs"
 
     training_yaml_obs_file_name = (
@@ -80,22 +128,25 @@ def test_check_obsfiles_ert_yaml()-> None:
     # Reading YAML file
     parsed_yaml_file = read_yaml_obs(yaml_obs_file_name)
 
+    compare_and_show(ert_obs, parsed_yaml_file)
     assert compare(ert_obs, parsed_yaml_file)
 
     # Comparing the training observation data
     # Reading ERT file
-    ert_obs = read_ert_obs(training_obs_file_name)
+    training_ert_obs = read_ert_obs(training_ert_obs_file_name)
 
     # Reading YAML file
-    parsed_yaml_file = read_yaml_obs(training_yaml_obs_file_name)
+    training_parsed_yaml_file = read_yaml_obs(training_yaml_obs_file_name)
 
-    assert compare(ert_obs, parsed_yaml_file)
+    compare_and_show(training_ert_obs, training_parsed_yaml_file)
+    assert compare(training_ert_obs, training_parsed_yaml_file)
 
     # Comparing the Test observation data
     # Reading ERT file
-    ert_obs = read_ert_obs(test_ert_obs_file_name)
+    test_ert_obs = read_ert_obs(test_ert_obs_file_name)
 
     # Reading YAML file
-    parsed_yaml_file = read_yaml_obs(test_yaml_obs_file_name)
+    test_parsed_yaml_file = read_yaml_obs(test_yaml_obs_file_name)
 
-    assert compare(ert_obs, parsed_yaml_file)
+    compare_and_show(test_ert_obs, test_parsed_yaml_file)
+    assert compare(test_ert_obs, test_parsed_yaml_file)
