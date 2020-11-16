@@ -95,7 +95,7 @@ def mitchell_best_candidate_modified_3d(
         z_max = max(z)
 
     # Determine the convex hull of the original or linearly scaled perforations
-    if np.all(i == z[0] for i in z):
+    if np.all([i == z[0] for i in z]):
         # 2D cases
         hull = Delaunay(np.column_stack([x, y]))
     else:
@@ -160,7 +160,7 @@ def mitchell_best_candidate_modified_3d(
 
             else:
                 # Test whether all points are inside the convex hull of the perforations
-                if np.all(i == z[0] for i in z):
+                if np.all([i == z[0] for i in z]):
                     in_hull = hull.find_simplex(candidates[:, (0, 1)]) >= 0
                 else:
                     in_hull = hull.find_simplex(candidates) >= 0
@@ -177,7 +177,7 @@ def mitchell_best_candidate_modified_3d(
             delta_y_relative = np.power(
                 ((y[0:i] - y_candidate[j]) / (y_max - y_min)), 2
             )
-            if np.all(i == z[0] for i in z):
+            if np.all([i == z[0] for i in z]):
                 delta_z_relative = 0
             else:
                 delta_z_relative = np.power(

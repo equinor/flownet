@@ -44,7 +44,7 @@ def test_mitchells_3d() -> None:
     assert np.all([y[1] >= min(y_wells) for y in coordinates])
     assert np.all([y[1] <= max(y_wells) for y in coordinates])
     assert np.all([z[2] >= min(z_wells) for z in coordinates])
-    assert np.all([z[2] <= max(y_wells) for z in coordinates])
+    assert np.all([z[2] <= max(z_wells) for z in coordinates])
 
 
 def test_mitchells_2d() -> None:
