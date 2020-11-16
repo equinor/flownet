@@ -48,7 +48,7 @@ def mitchell_best_candidate_modified_3d(
     """
     np.random.seed(random_seed)
     start = time.time()
-    logging.info("Adding flow nodes:  0%", end="")
+    print("Adding flow nodes:  0%", end="")
 
     # Read list of coordinate tuples and convert to 1D-numpy arrays
     x, y, z = (np.asarray(t) for t in zip(*perforations))
@@ -101,7 +101,7 @@ def mitchell_best_candidate_modified_3d(
         mid = time.time()
         if mid - start > 4:
             start = mid
-            logging.info(
+            print(
                 f"\rAdding flow nodes:  {int(((i-num_points)/num_added_flow_nodes)*100)}%",
                 end="",
             )
@@ -172,9 +172,12 @@ def mitchell_best_candidate_modified_3d(
             delta_y_relative = np.power(
                 ((y[0:i] - y_candidate[j]) / (y_max - y_min)), 2
             )
-            delta_z_relative = np.power(
-                ((z[0:i] - z_candidate[j]) / (z_max - z_min)), 2
-            )
+            if np.all(i == z[0] for i in z):
+                delta_z_relative = 0
+            else:
+                delta_z_relative = np.power(
+                    ((z[0:i] - z_candidate[j]) / (z_max - z_min)), 2
+                )
             dists = np.sqrt(delta_x_relative + delta_y_relative + delta_z_relative)
 
             # Select the shortest distance
@@ -193,7 +196,7 @@ def mitchell_best_candidate_modified_3d(
         y = np.append(y, y_candidate[best_candidate])
         z = np.append(z, z_candidate[best_candidate])
 
-    logging.info("\rAdding flow nodes:  100%\ndone.")
+    print("\rAdding flow nodes:  100%\ndone.")
 
     # Return the real/original and added flow node coordinates as a list of tuples.
     return [(x[i], y[i], z[i]) for i in range(len(x))]
