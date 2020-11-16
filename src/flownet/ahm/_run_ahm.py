@@ -799,7 +799,7 @@ def run_flownet_history_matching(
     if isinstance(network.faults, dict):
         parameters.append(FaultTransmissibility(fault_mult_dist_values, network))
 
-    if args.restart_folder is not None:
+    if hasattr(args, "restart_folder") and args.restart_folder is not None:
         parameters = update_distribution(parameters, args.restart_folder)
 
     ahm = AssistedHistoryMatching(
