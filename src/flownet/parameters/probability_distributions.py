@@ -81,3 +81,13 @@ class LogNormalDistribution(ProbabilityDistribution):
     def ert_gen_kw(self) -> str:
         """string representing an ERT "LOGNORMAL MEAN STDDEV" distribution keyword for use in GEN_KW"""
         return f"LOGNORMAL {self.mean} {self.stddev}"
+
+
+class Constant(ProbabilityDistribution):
+    def __init__(self, constant):
+        self.constant = constant
+
+    @property
+    def ert_gen_kw(self) -> str:
+        """string representing an ERT "CONST CONSTANT" distribution keyword for use in GEN_KW"""
+        return f"CONST {self.constant}"

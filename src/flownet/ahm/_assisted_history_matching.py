@@ -17,7 +17,12 @@ from ..ert import create_ert_setup, run_ert_subprocess
 from ..realization import Schedule
 from ..network_model import NetworkModel
 from ..parameters import Parameter
-from ..parameters.probability_distributions import LogUniformDistribution
+from ..parameters.probability_distributions import (
+    LogUniformDistribution,
+    UniformDistribution,
+    NormalDistribution,
+    TruncatedNormalDistribution,
+)
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
@@ -138,30 +143,36 @@ class AssistedHistoryMatching:
         )
 
         distributions = {
-            (distribution.__class__, distribution.minimum, distribution.maximum)
+            (distribution.__class__)
             for parameter in self._parameters
             for distribution in parameter.random_variables
         }
 
         print("Unique parameter distributions:")
-        print("\nDistribution             Minimum             Mean              Max")
-        print("------------------------------------------------------------------")
-
-        for distribution in distributions:
-            if distribution[0] == LogUniformDistribution:
-                print(
-                    "Loguniform".ljust(15),
-                    f"{distribution[1]:16.8f}",
-                    f"{(distribution[2] - distribution[1]) / np.log(distribution[2] / distribution[1]):16.8f}",
-                    f"{distribution[2]:16.8f}",
-                )
-            else:
-                print(
-                    "Uniform".ljust(15),
-                    f"{distribution[1]:16.8f}",
-                    f"{(distribution[2] + distribution[1]) / 2.0:16.8f}",
-                    f"{distribution[2]:16.8f}",
-                )
+        print(
+            "\nDistribution             Minimum             Mean              Stddev           Max"
+        )
+        print(
+            "-------------------------------------------------------------------------------------"
+        )
+        for parameter in self._parameters:
+            for rv in parameter.random_variables:
+                if rv.distribution == "logunif":
+                    print(
+                        "Loguniform".ljust(15),
+                        f"{rv.min:16.8f}",
+                        f"{(rv.max - rv.min) / np.log(rv.max / rv.min):16.8f}",
+                        f"{np.sqrt((np.log(rv.max / rv.min) * (np.power(rv.max,2)-np.power(rv.min,2)) - 2 * np.power(rv.max-rv.min,2))/(2*np.power(np.log(rv.max/rv.min),2))):16.8f}"
+                        f"{rv.max:16.8f}",
+                    )
+                elif rv.distribution == "uniform":
+                    print(
+                        "Uniform".ljust(15),
+                        f"{rv.min:16.8f}",
+                        f"{(rv.max + rv.min) / 2.0:16.8f}",
+                        f"{np.sqrt(np.power(rv.max-rv.min,2)/12):16.8f}"
+                        f"{rv.max:16.8f}",
+                    )
         print("")
 
 

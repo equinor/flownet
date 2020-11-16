@@ -579,6 +579,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    },
                                                     "low_optimistic": {
                                                         MK.Type: types.Bool,
                                                         MK.Default: False,
@@ -618,6 +619,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    },
                                                     "low_optimistic": {
                                                         MK.Type: types.Bool,
                                                         MK.Default: False,
@@ -651,6 +653,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    },
                                                     "low_optimistic": {
                                                         MK.Type: types.Bool,
                                                         MK.Default: False,
@@ -684,6 +687,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    },
                                                     "low_optimistic": {
                                                         MK.Type: types.Bool,
                                                         MK.Default: True,
@@ -717,6 +721,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    },
                                                     "low_optimistic": {
                                                         MK.Type: types.Bool,
                                                         MK.Default: True,
@@ -750,6 +755,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    },
                                                     "low_optimistic": {
                                                         MK.Type: types.Bool,
                                                         MK.Default: False,
@@ -783,6 +789,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    },
                                                     "low_optimistic": {
                                                         MK.Type: types.Bool,
                                                         MK.Default: False,
@@ -816,6 +823,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    },
                                                     "low_optimistic": {
                                                         MK.Type: types.Bool,
                                                         MK.Default: True,
@@ -849,6 +857,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    },
                                                     "low_optimistic": {
                                                         MK.Type: types.Bool,
                                                         MK.Default: True,
@@ -882,6 +891,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    },
                                                     "low_optimistic": {
                                                         MK.Type: types.Bool,
                                                         MK.Default: False,
@@ -915,6 +925,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    },
                                                     "loguniform": {
                                                         MK.Type: types.Bool,
                                                         MK.AllowNone: True,
@@ -952,6 +963,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    },
                                                     "low_optimistic": {
                                                         MK.Type: types.Bool,
                                                         MK.Default: True,
@@ -985,6 +997,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.Type: types.String,
                                                         MK.Default: "uniform",
                                                         MK.Transformation: _to_lower,
+                                                    },
                                                     "low_optimistic": {
                                                         MK.Type: types.Bool,
                                                         MK.Default: True,
@@ -1027,8 +1040,31 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                             "datum_pressure": {
                                                 MK.Type: types.NamedDict,
                                                 MK.Content: {
-                                                    "min": {MK.Type: types.Number},
-                                                    "max": {MK.Type: types.Number},
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "mean": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "base": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
+                                                    },
                                                 },
                                             },
                                             "owc_depth": {
@@ -1423,9 +1459,8 @@ def parse_config(
             "'reference_pressure', 'min' and 'max'. Currently one or more parameters are missing."
         )
 
-    if (
-        any(config.model_parameters.aquifer[0:3])
-        or any(config.model_parameters.aquifer.size_in_bulkvolumes)
+    if any(config.model_parameters.aquifer[0:3]) or any(
+        config.model_parameters.aquifer.size_in_bulkvolumes
     ):
         if not all(config.model_parameters.aquifer[0:3]):
             raise ValueError(

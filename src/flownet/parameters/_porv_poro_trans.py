@@ -9,6 +9,11 @@ from ..utils import write_grdecl_file
 from .probability_distributions import (
     UniformDistribution,
     LogUniformDistribution,
+    NormalDistribution,
+    TruncatedNormalDistribution,
+    TriangularDistribution,
+    Constant,
+    LogNormalDistribution,
     ProbabilityDistribution,
 )
 from ._base_parameter import Parameter
@@ -18,6 +23,39 @@ _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
     undefined=jinja2.StrictUndefined,
 )
+
+
+def _probability_distribution(row, param: str) -> ProbabilityDistribution:
+    """
+
+    Args:
+        row:
+        param:
+
+    Returns:
+
+    """
+    if row[f"distribution_{param}"] == "uniform":
+        return UniformDistribution(row[f"minimum_{param}"], row[f"maximum_{param}"])
+    if row[f"distribution_{param}"] == "logunif":
+        return LogUniformDistribution(row[f"minimum_{param}"], row[f"maximum_{param}"])
+    if row[f"distribution_{param}"] == "normal":
+        return NormalDistribution(row[f"mean_{param}"], row[f"stddev_{param}"])
+    if row[f"distribution_{param}"] == "lognormal":
+        return LogNormalDistribution(row[f"mean_{param}"], row[f"stddev_{param}"])
+    if row[f"distribution_{param}"] == "truncated_normal":
+        return TruncatedNormalDistribution(
+            row[f"mean_{param}"],
+            row[f"stddev_{param}"],
+            row[f"minimum_{param}"],
+            row[f"maximum_{param}"],
+        )
+    if row[f"distribution_{param}"] == "triangular":
+        return TriangularDistribution(
+            row[f"minimum_{param}"], row[f"base_{param}"], row[f"maximum_{param}"]
+        )
+    if row[f"distribution_{param}"] == "constant":
+        return Constant(row[f"constant_{param}"])
 
 
 def _transmissibility(  # pylint: disable=too-many-arguments
@@ -109,31 +147,15 @@ class PorvPoroTrans(Parameter):
 
         self._random_variables: List[ProbabilityDistribution] = (
             [  # Add random variables for bulk volume multipliers
-                LogUniformDistribution(
-                    row["minimum_bulkvolume_mult"], row["maximum_bulkvolume_mult"]
-                )
-                if row["loguniform_bulkvolume_mult"]
-                else UniformDistribution(
-                    row["minimum_bulkvolume_mult"], row["maximum_bulkvolume_mult"]
-                )
+                _probability_distribution(row, "bulkvolume_mult")
                 for _, row in distribution_values.iterrows()
             ]
             + [  # Add random variables for porosity
-                LogUniformDistribution(row["minimum_porosity"], row["maximum_porosity"])
-                if row["loguniform_porosity"]
-                else UniformDistribution(
-                    row["minimum_porosity"], row["maximum_porosity"]
-                )
+                _probability_distribution(row, "porosity")
                 for _, row in distribution_values.iterrows()
             ]
             + [  # Add random variables for permeability
-                LogUniformDistribution(
-                    row["minimum_permeability"], row["maximum_permeability"]
-                )
-                if row["loguniform_permeability"]
-                else UniformDistribution(
-                    row["minimum_permeability"], row["maximum_permeability"]
-                )
+                _probability_distribution(row, "permeability")
                 for _, row in distribution_values.iterrows()
             ]
         )

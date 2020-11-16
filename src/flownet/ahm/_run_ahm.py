@@ -187,6 +187,12 @@ def _get_distribution(
     for parameter in parameters:
         parameter_config = getattr(parameters_config, parameter)
 
+        if parameter_config.distribution == "normal":
+            dist_mean = parameter_config.mean
+            dist_stddev = parameter_config.stddev
+            dist_min = None
+            dist_max = None
+            dist_base = None
         if parameter_config.distribution == "uniform":
             if parameter_config.mean is not None:
                 dist_mean = parameter_config.mean
@@ -216,7 +222,7 @@ def _get_distribution(
                 dist_min = parameter_config.min
                 dist_max = parameter_config.max
             dist_base = None
-            dist_stdev = None
+            dist_stddev = None
             dist_mean = None
 
         df[f"minimum_{parameter}"] = dist_min
@@ -478,7 +484,7 @@ def run_flownet_history_matching(
         network.grid.model.unique(),
     )
 
-    if df_well_logs is not None:
+    if df_well_logs is not None and config.flownet.constraining.kriging.enabled:
         # Use well logs to constrain priors.
 
         perm_data = df_well_logs[["X", "Y", "Z", "PERM"]].values
@@ -516,7 +522,16 @@ def run_flownet_history_matching(
 
     # Create a pandas dataframe with all parameter definition for each individual tube
     relperm_dist_values = pd.DataFrame(
-        columns=["parameter", "minimum", "maximum", "loguniform", "satnum"]
+        columns=[
+            "parameter",
+            "minimum",
+            "maximum",
+            "mean",
+            "base",
+            "stddev",
+            "distribution",
+            "satnum",
+        ]
     )
 
     relperm_parameters = config.model_parameters.relative_permeability.regions[
@@ -602,7 +617,22 @@ def run_flownet_history_matching(
                     getattr(relp_config_satnum[idx], key).max
                     for key in relperm_parameters
                 ],
-                [False] * len(relperm_parameters),
+                [
+                    getattr(relp_config_satnum[idx], key).mean
+                    for key in relperm_parameters
+                ],
+                [
+                    getattr(relp_config_satnum[idx], key).base
+                    for key in relperm_parameters
+                ],
+                [
+                    getattr(relp_config_satnum[idx], key).stddev
+                    for key in relperm_parameters
+                ],
+                [
+                    getattr(relp_config_satnum[idx], key).distribution
+                    for key in relperm_parameters
+                ],
                 [i] * len(relperm_parameters),
             ]
 
@@ -618,7 +648,16 @@ def run_flownet_history_matching(
         relperm_dist_values = relperm_dist_values.append(
             pd.DataFrame(
                 list(map(list, zip(*info))),
-                columns=["parameter", "minimum", "maximum", "loguniform", "satnum"],
+                columns=[
+                    "parameter",
+                    "minimum",
+                    "maximum",
+                    "mean",
+                    "base",
+                    "stddev",
+                    "distribution",
+                    "satnum",
+                ],
             ),
             ignore_index=True,
         )
@@ -644,7 +683,16 @@ def run_flownet_history_matching(
 
     # Create a pandas dataframe with all parameter definition for each individual tube
     equil_dist_values = pd.DataFrame(
-        columns=["parameter", "minimum", "maximum", "loguniform", "eqlnum"]
+        columns=[
+            "parameter",
+            "minimum",
+            "maximum",
+            "mean",
+            "base",
+            "stddev",
+            "distribution",
+            "eqlnum",
+        ]
     )
 
     defined_eqlnum_regions = []
@@ -689,19 +737,75 @@ def run_flownet_history_matching(
                 if equil_config_eqlnum[idx].goc_depth is None
                 else equil_config_eqlnum[idx].goc_depth.max,
             ],
-            [False] * 4,
+            [
+                equil_config_eqlnum[idx].datum_pressure.mean,
+                None
+                if equil_config_eqlnum[idx].owc_depth is None
+                else equil_config_eqlnum[idx].owc_depth.mean,
+                None
+                if equil_config_eqlnum[idx].gwc_depth is None
+                else equil_config_eqlnum[idx].gwc_depth.mean,
+                None
+                if equil_config_eqlnum[idx].goc_depth is None
+                else equil_config_eqlnum[idx].goc_depth.mean,
+            ],
+            [
+                equil_config_eqlnum[idx].datum_pressure.base,
+                None
+                if equil_config_eqlnum[idx].owc_depth is None
+                else equil_config_eqlnum[idx].owc_depth.base,
+                None
+                if equil_config_eqlnum[idx].gwc_depth is None
+                else equil_config_eqlnum[idx].gwc_depth.base,
+                None
+                if equil_config_eqlnum[idx].goc_depth is None
+                else equil_config_eqlnum[idx].goc_depth.base,
+            ],
+            [
+                equil_config_eqlnum[idx].datum_pressure.stddev,
+                None
+                if equil_config_eqlnum[idx].owc_depth is None
+                else equil_config_eqlnum[idx].owc_depth.stddev,
+                None
+                if equil_config_eqlnum[idx].gwc_depth is None
+                else equil_config_eqlnum[idx].gwc_depth.stddev,
+                None
+                if equil_config_eqlnum[idx].goc_depth is None
+                else equil_config_eqlnum[idx].goc_depth.stddev,
+            ],
+            [
+                equil_config_eqlnum[idx].datum_pressure.distribution,
+                None
+                if equil_config_eqlnum[idx].owc_depth is None
+                else equil_config_eqlnum[idx].owc_depth.distribution,
+                None
+                if equil_config_eqlnum[idx].gwc_depth is None
+                else equil_config_eqlnum[idx].gwc_depth.distribution,
+                None
+                if equil_config_eqlnum[idx].goc_depth is None
+                else equil_config_eqlnum[idx].goc_depth.distribution,
+            ],
             [i] * 4,
         ]
 
         equil_dist_values = equil_dist_values.append(
             pd.DataFrame(
                 list(map(list, zip(*info))),
-                columns=["parameter", "minimum", "maximum", "loguniform", "eqlnum"],
+                columns=[
+                    "parameter",
+                    "minimum",
+                    "maximum",
+                    "mean",
+                    "base",
+                    "stddev",
+                    "distribution",
+                    "eqlnum",
+                ],
             ),
             ignore_index=True,
         )
 
-    equil_dist_values.dropna(inplace=True)
+    equil_dist_values = equil_dist_values[equil_dist_values.isnull().sum(axis=1) < 5]
 
     #########################################
     # Fault transmissibility                #
@@ -718,7 +822,7 @@ def run_flownet_history_matching(
     # Aquifer                               #
     #########################################
 
-    if all(config.model_parameters.aquifer) and all(
+    if any(config.model_parameters.aquifer[0:3]) or any(
         config.model_parameters.aquifer.size_in_bulkvolumes
     ):
 
@@ -740,7 +844,16 @@ def run_flownet_history_matching(
 
         # Create a pandas dataframe with all parameter definition for each individual tube
         aquifer_dist_values = pd.DataFrame(
-            columns=["parameter", "minimum", "maximum", "loguniform", "aquid"]
+            columns=[
+                "parameter",
+                "minimum",
+                "maximum",
+                "mean",
+                "base",
+                "stddev",
+                "distribution",
+                "aquid",
+            ]
         )
 
         aquifer_parameters = {
@@ -754,14 +867,26 @@ def run_flownet_history_matching(
                 aquifer_parameters.keys(),
                 [param.min for param in aquifer_parameters.values()],
                 [param.max for param in aquifer_parameters.values()],
-                [param.loguniform for param in aquifer_parameters.values()],
+                [param.mean for param in aquifer_parameters.values()],
+                [param.base for param in aquifer_parameters.values()],
+                [param.stddev for param in aquifer_parameters.values()],
+                [param.distribution for param in aquifer_parameters.values()],
                 [i] * len(aquifer_parameters),
             ]
 
             aquifer_dist_values = aquifer_dist_values.append(
                 pd.DataFrame(
                     list(map(list, zip(*info))),
-                    columns=["parameter", "minimum", "maximum", "loguniform", "aquid"],
+                    columns=[
+                        "parameter",
+                        "minimum",
+                        "maximum",
+                        "mean",
+                        "base",
+                        "stddev",
+                        "distribution",
+                        "aquid",
+                    ],
                 ),
                 ignore_index=True,
             )
@@ -801,7 +926,7 @@ def run_flownet_history_matching(
             ),
         )
 
-    if all(config.model_parameters.aquifer) and all(
+    if all(config.model_parameters.aquifer) and any(
         config.model_parameters.aquifer.size_in_bulkvolumes
     ):
         parameters.append(

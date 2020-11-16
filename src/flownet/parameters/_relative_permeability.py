@@ -11,9 +11,44 @@ from ..utils.constants import H_CONSTANT
 from .probability_distributions import (
     UniformDistribution,
     LogUniformDistribution,
+    NormalDistribution,
+    LogNormalDistribution,
+    TruncatedNormalDistribution,
+    TriangularDistribution,
+    Constant,
     ProbabilityDistribution,
 )
 from ._base_parameter import Parameter
+
+
+def _probability_distribution(row) -> ProbabilityDistribution:
+    """
+
+    Args:
+        row:
+
+    Returns:
+
+    """
+    if row[f"distribution"] == "uniform":
+        return UniformDistribution(row[f"minimum"], row[f"maximum"])
+    if row[f"distribution"] == "logunif":
+        return LogUniformDistribution(row[f"minimum"], row[f"maximum"])
+    if row[f"distribution"] == "normal":
+        return NormalDistribution(row[f"mean"], row[f"stddev"])
+    if row[f"distribution"] == "lognormal":
+        return LogNormalDistribution(row[f"mean"], row[f"stddev"])
+    if row[f"distribution"] == "truncated_normal":
+        return TruncatedNormalDistribution(
+            row[f"mean"],
+            row[f"stddev"],
+            row[f"minimum"],
+            row[f"maximum"],
+        )
+    if row[f"distribution"] == "triangular":
+        return TriangularDistribution(row[f"minimum"], row[f"base"], row[f"maximum"])
+    if row[f"distribution"] == "constant":
+        return Constant(row[f"constant"])
 
 
 def gen_wog(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOilGas:
@@ -143,10 +178,7 @@ class RelativePermeability(Parameter):
     ):
         self._ti2ci: pd.DataFrame = ti2ci
         self._random_variables: List[ProbabilityDistribution] = [
-            LogUniformDistribution(row["minimum"], row["maximum"])
-            if row["loguniform"]
-            else UniformDistribution(row["minimum"], row["maximum"])
-            for _, row in distribution_values.iterrows()
+            _probability_distribution(row) for _, row in distribution_values.iterrows()
         ]
 
         self._unique_satnums: List[int] = list(distribution_values["satnum"].unique())
