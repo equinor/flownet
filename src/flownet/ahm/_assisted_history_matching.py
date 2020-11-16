@@ -157,21 +157,22 @@ class AssistedHistoryMatching:
         )
         for parameter in self._parameters:
             for rv in parameter.random_variables:
-                if rv.distribution == "logunif":
+                #TODO: Add more distributions
+                if rv.distribution == LogUniformDistribution:
                     print(
                         "Loguniform".ljust(15),
-                        f"{rv.min:16.8f}",
-                        f"{(rv.max - rv.min) / np.log(rv.max / rv.min):16.8f}",
-                        f"{np.sqrt((np.log(rv.max / rv.min) * (np.power(rv.max,2)-np.power(rv.min,2)) - 2 * np.power(rv.max-rv.min,2))/(2*np.power(np.log(rv.max/rv.min),2))):16.8f}"
-                        f"{rv.max:16.8f}",
+                        f"{rv.minimum:16.8f}",
+                        f"{(rv.maximum - rv.minimum) / np.log(rv.maximum / rv.minimum):16.8f}",
+                        f"{np.sqrt((np.log(rv.maximum / rv.minimum) * (np.power(rv.maximum,2)-np.power(rv.minimum,2)) - 2 * np.power(rv.maximum-rv.minimum,2))/(2*np.power(np.log(rv.maximum/rv.minimum),2))):16.8f}"
+                        f"{rv.maximum:16.8f}",
                     )
-                elif rv.distribution == "uniform":
+                elif rv.distribution == UniformDistribution:
                     print(
                         "Uniform".ljust(15),
-                        f"{rv.min:16.8f}",
-                        f"{(rv.max + rv.min) / 2.0:16.8f}",
-                        f"{np.sqrt(np.power(rv.max-rv.min,2)/12):16.8f}"
-                        f"{rv.max:16.8f}",
+                        f"{rv.minimum:16.8f}",
+                        f"{(rv.maximum + rv.minimum) / 2.0:16.8f}",
+                        f"{np.sqrt(np.power(rv.maximum-rv.minimum,2)/12):16.8f}"
+                        f"{rv.maximum:16.8f}",
                     )
         print("")
 
