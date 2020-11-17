@@ -4,56 +4,14 @@ import jinja2
 import pandas as pd
 
 from ..network_model import NetworkModel
-from .probability_distributions import (
-    UniformDistribution,
-    LogUniformDistribution,
-    NormalDistribution,
-    LogNormalDistribution,
-    TriangularDistribution,
-    TruncatedNormalDistribution,
-    Constant,
-    ProbabilityDistribution,
-)
-from ._base_parameter import Parameter
+from .probability_distributions import ProbabilityDistribution
+from ._base_parameter import Parameter, parameter_probability_distribution_class
 
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
     undefined=jinja2.StrictUndefined,
 )
-
-
-def _probability_distribution(row, param: str) -> ProbabilityDistribution:
-    """
-
-    Args:
-        row:
-        param:
-
-    Returns:
-
-    """
-    if row[f"distribution_{param}"] == "uniform":
-        return UniformDistribution(row[f"minimum_{param}"], row[f"maximum_{param}"])
-    if row[f"distribution_{param}"] == "logunif":
-        return LogUniformDistribution(row[f"minimum_{param}"], row[f"maximum_{param}"])
-    if row[f"distribution_{param}"] == "normal":
-        return NormalDistribution(row[f"mean_{param}"], row[f"stddev_{param}"])
-    if row[f"distribution_{param}"] == "lognormal":
-        return LogNormalDistribution(row[f"mean_{param}"], row[f"stddev_{param}"])
-    if row[f"distribution_{param}"] == "truncated_normal":
-        return TruncatedNormalDistribution(
-            row[f"mean_{param}"],
-            row[f"stddev_{param}"],
-            row[f"minimum_{param}"],
-            row[f"maximum_{param}"],
-        )
-    if row[f"distribution_{param}"] == "triangular":
-        return TriangularDistribution(
-            row[f"minimum_{param}"], row[f"base_{param}"], row[f"maximum_{param}"]
-        )
-    if row[f"distribution_{param}"] == "constant":
-        return Constant(row[f"constant_{param}"])
 
 
 class FaultTransmissibility(Parameter):
@@ -74,7 +32,7 @@ class FaultTransmissibility(Parameter):
 
     def __init__(self, distribution_values: pd.DataFrame, network: NetworkModel):
         self._random_variables: List[ProbabilityDistribution] = [
-            _probability_distribution(row, "fault_mult")
+            parameter_probability_distribution_class(row, "fault_mult")
             for _, row in distribution_values.iterrows()
         ]
 

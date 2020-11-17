@@ -17,15 +17,6 @@ from ..ert import create_ert_setup, run_ert_subprocess
 from ..realization import Schedule
 from ..network_model import NetworkModel
 from ..parameters import Parameter
-from ..parameters.probability_distributions import (
-    LogUniformDistribution,
-    UniformDistribution,
-    NormalDistribution,
-    TruncatedNormalDistribution,
-    LogNormalDistribution,
-    TriangularDistribution,
-    Constant,
-)
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
@@ -153,63 +144,21 @@ class AssistedHistoryMatching:
             "-------------------------------------------------------------------------------------"
         )
         for parameter in self._parameters:
-            for rv in parameter.random_variables:
-                if rv.__class__ == LogUniformDistribution:
-                    print(
-                        "Loguniform".ljust(17),
-                        f"{rv.minimum:16.8f}",
-                        f"{(rv.maximum - rv.minimum) / np.log(rv.maximum / rv.minimum):16.8f}",
-                        f"{np.sqrt((np.log(rv.maximum / rv.minimum) * (np.power(rv.maximum,2)-np.power(rv.minimum,2)) - 2 * np.power(rv.maximum-rv.minimum,2))/(2*np.power(np.log(rv.maximum/rv.minimum),2))):16.8f}"
-                        f"{rv.maximum:16.8f}",
-                    )
-                if rv.__class__ == UniformDistribution:
-                    print(
-                        "Uniform".ljust(17),
-                        f"{rv.minimum:16.8f}",
-                        f"{(rv.maximum + rv.minimum) / 2.0:16.8f}",
-                        f"{np.sqrt(np.power(rv.maximum-rv.minimum,2)/12):16.8f}"
-                        f"{rv.maximum:16.8f}",
-                    )
-                if rv.__class__ == NormalDistribution:
-                    print(
-                        "Normal".ljust(17),
-                        "         N/A    ",
-                        f"{rv.mean:16.8f}",
-                        f"{rv.stddev:16.8f}",
-                        f"         N/A    ",
-                    )
-                if rv.__class__ == LogNormalDistribution:
-                    print(
-                        "Lognormal".ljust(17),
-                        "         N/A    ",
-                        f"{rv.mean:16.8f}",
-                        f"{rv.stddev:16.8f}",
-                        "         N/A    ",
-                    )
-                if rv.__class__ == TruncatedNormalDistribution:
-                    print(
-                        "Truncated normal".ljust(17),
-                        f"{rv.minimum:16.8f}",
-                        f"{rv.mean:16.8f}",
-                        f"{rv.stddev:16.8f}" f"{rv.maximum:16.8f}",
-                    )
-                if rv.__class__ == TriangularDistribution:
-                    print(
-                        "Triangular".ljust(17),
-                        f"{rv.minimum:16.8f}",
-                        f"{(rv.base+rv.minimum+rv.maximum)/3:16.8f}",
-                        f"{(np.power(rv.minimum,2)+np.power(rv.mean,2)+np.power(rv.maximum,2)-rv.minimum*rv.base-rv.minimum*rv.maximum-rv.base*rv.maximum)/18:16.8f}"
-                        f"{rv.maximum:16.8f}",
-                    )
-                if rv.__class__ == Constant:
-                    print(
-                        "Constant".ljust(17),
-                        "         N/A    ",
-                        "         N/A    ",
-                        "         N/A    ",
-                        "         N/A    ",
-                    )
+            for random_var in parameter.random_variables:
 
+                print(
+                    f"{random_var.name}".ljust(17),
+                    f"{random_var.minimum:16.8f}"
+                    if random_var.minimum is not None
+                    else "      None      ",
+                    f"{random_var.mean:16.8f}",
+                    f"{random_var.stddev:16.8f}"
+                    if random_var.stddev is not None
+                    else "      None      ",
+                    f"{random_var.maximum:16.8f}"
+                    if random_var.maximum is not None
+                    else "      None      ",
+                )
         print("")
 
 

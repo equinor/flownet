@@ -7,53 +7,14 @@ import pandas as pd
 
 from ..network_model import NetworkModel
 from ..utils import write_grdecl_file
-from .probability_distributions import (
-    UniformDistribution,
-    LogUniformDistribution,
-    NormalDistribution,
-    LogNormalDistribution,
-    TruncatedNormalDistribution,
-    TriangularDistribution,
-    Constant,
-    ProbabilityDistribution,
-)
-from ._base_parameter import Parameter
+from .probability_distributions import ProbabilityDistribution
+from ._base_parameter import Parameter, parameter_probability_distribution_class
 
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
     undefined=jinja2.StrictUndefined,
 )
-
-
-def _probability_distribution(row) -> ProbabilityDistribution:
-    """
-
-    Args:
-        row:
-
-    Returns:
-
-    """
-    if row[f"distribution"] == "uniform":
-        return UniformDistribution(row[f"minimum"], row[f"maximum"])
-    if row[f"distribution"] == "logunif":
-        return LogUniformDistribution(row[f"minimum"], row[f"maximum"])
-    if row[f"distribution"] == "normal":
-        return NormalDistribution(row[f"mean"], row[f"stddev"])
-    if row[f"distribution"] == "lognormal":
-        return LogNormalDistribution(row[f"mean"], row[f"stddev"])
-    if row[f"distribution"] == "truncated_normal":
-        return TruncatedNormalDistribution(
-            row[f"mean"],
-            row[f"stddev"],
-            row[f"minimum"],
-            row[f"maximum"],
-        )
-    if row[f"distribution"] == "triangular":
-        return TriangularDistribution(row[f"minimum"], row[f"base"], row[f"maximum"])
-    if row[f"distribution"] == "constant":
-        return Constant(row[f"constant"])
 
 
 class Equilibration(Parameter):
@@ -93,8 +54,9 @@ class Equilibration(Parameter):
 
         self._ti2ci: pd.DataFrame = ti2ci
 
-        self._random_variables = [
-            _probability_distribution(row) for _, row in distribution_values.iterrows()
+        self._random_variables: List[ProbabilityDistribution] = [
+            parameter_probability_distribution_class(row)
+            for _, row in distribution_values.iterrows()
         ]
 
         self._unique_eqlnums: List[int] = list(distribution_values["eqlnum"].unique())

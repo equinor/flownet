@@ -3,13 +3,60 @@ from typing import List, Dict, Union
 
 import jinja2
 
-from .probability_distributions import ProbabilityDistribution
+from .probability_distributions import (
+    ProbabilityDistribution,
+    UniformDistribution,
+    LogUniformDistribution,
+    NormalDistribution,
+    LogNormalDistribution,
+    TriangularDistribution,
+    TruncatedNormalDistribution,
+    Constant,
+)
 
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
     undefined=jinja2.StrictUndefined,
 )
+
+
+def parameter_probability_distribution_class(
+    row, param=None
+) -> ProbabilityDistribution:
+    """
+
+    Args:
+        row:
+        param:
+
+    Returns:
+
+    """
+    # pylint: disable=too-many-return-statements
+    param = "_" + param if param is not None else ""
+    if row[f"distribution{param}"] == "uniform":
+        return UniformDistribution(row[f"minimum{param}"], row[f"maximum{param}"])
+    if row[f"distribution{param}"] == "logunif":
+        return LogUniformDistribution(row[f"minimum{param}"], row[f"maximum{param}"])
+    if row[f"distribution{param}"] == "normal":
+        return NormalDistribution(row[f"mean{param}"], row[f"stddev{param}"])
+    if row[f"distribution{param}"] == "lognormal":
+        return LogNormalDistribution(row[f"mean{param}"], row[f"stddev{param}"])
+    if row[f"distribution{param}"] == "truncated_normal":
+        return TruncatedNormalDistribution(
+            row[f"mean{param}"],
+            row[f"stddev{param}"],
+            row[f"minimum{param}"],
+            row[f"maximum{param}"],
+        )
+    if row[f"distribution{param}"] == "triangular":
+        return TriangularDistribution(
+            row[f"minimum{param}"], row[f"base{param}"], row[f"maximum{param}"]
+        )
+    if row[f"distribution{param}"] == "constant":
+        return Constant(row[f"constant{param}"])
+    raise ValueError("Unknown probability distribution class.")
 
 
 class Parameter(abc.ABC):
