@@ -1,6 +1,5 @@
 from typing import List, Optional
 import time
-import logging
 
 from scipy.spatial import Delaunay  # pylint: disable=no-name-in-module
 import numpy as np
