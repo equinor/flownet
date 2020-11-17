@@ -135,8 +135,6 @@ class AssistedHistoryMatching:
         """
 
         # pylint: disable=protected-access
-        NA = "N/A"
-
         print(
             f"Degrees of freedom:     {sum([len(parameter._random_variables) for parameter in self._parameters]):>20}"
         )
@@ -146,12 +144,6 @@ class AssistedHistoryMatching:
         print(
             f"Number of realizations: {self._config.ert.realizations.num_realizations:>20}"
         )
-
-        distributions = {
-            (distribution.__class__)
-            for parameter in self._parameters
-            for distribution in parameter.random_variables
-        }
 
         print("Unique parameter distributions:")
         print(
