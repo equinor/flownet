@@ -1513,8 +1513,8 @@ def parse_config(
             "'reference_pressure', 'min' and 'max'. Currently one or more parameters are missing."
         )
 
-    if any(config.model_parameters.aquifer[0:3]) or any(
-        config.model_parameters.aquifer.size_in_bulkvolumes
+    if any(config.model_parameters.aquifer[0:3]) or _check_defined(
+        config.model_parameters.aquifer, "size_in_bulkvolumes"
     ):
         if not all(config.model_parameters.aquifer[0:3]):
             raise ValueError(
