@@ -1477,7 +1477,8 @@ def parse_config(
         - {"id"}
     ):
         for satreg in config.model_parameters.relative_permeability.regions:
-            _check_if_not_defined(satreg, parameter)
+            if len(_check_defined(satreg, parameter)) > 0:
+                raise ValueError(f"The {parameter} parameter should not be specified.")
 
     if config.ert.queue.system.upper() != "LOCAL" and (
         config.ert.queue.name is None or config.ert.queue.server is None
@@ -1487,7 +1488,7 @@ def parse_config(
         )
 
     for parameter in ["bulkvolume_mult", "porosity", "permeability", "fault_mult"]:
-        if not getattr(config.model_parameters, parameter):
+        if not len(_check_defined(config.model_parameters, parameter)) > 0:
             continue
         _check_distribution(config.model_parameters, parameter)
 
@@ -1789,18 +1790,3 @@ def _check_defined(config_dict, parameter):
     param_dict = getattr(config_dict, parameter)._asdict()
     param_dict.pop("distribution")
     return {key for key, value in param_dict.items() if value is not None}
-
-
-def _check_if_not_defined(config_dict, parameter):
-    """
-
-    Args:
-        config_dict:
-        parameter:
-
-    Returns:
-
-    """
-    for attr in {"min", "max", "base", "stddev", "mean"}:
-        if getattr(getattr(config_dict, parameter), attr) is not None:
-            raise ValueError(f"The {parameter} parameter should not be specified.")
