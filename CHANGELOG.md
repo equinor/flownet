@@ -16,6 +16,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - [#199](https://github.com/equinor/flownet/pull/199) Removed deprecated parameters in pyscal ('krowend', 'krogend') from config file. Added 'kroend' to config file. 
+- [#228](https://github.com/equinor/flownet/pull/228) FlowNet is now `pip` installable without any dependency compilations (also the custom ERT forward model running Flow is installed automatically). Note that any `simulator` part of configuration files need to be removed.
+
 
 ## [0.3.0] - 2020-09-14
 ### Added
