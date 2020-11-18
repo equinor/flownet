@@ -1789,4 +1789,5 @@ def _check_defined(config_dict, parameter):
     """
     param_dict = getattr(config_dict, parameter)._asdict()
     param_dict.pop("distribution")
+    param_dict.pop("low_optimistic", None)
     return {key for key, value in param_dict.items() if value is not None}
