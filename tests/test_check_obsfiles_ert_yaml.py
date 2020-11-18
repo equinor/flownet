@@ -6,7 +6,9 @@ from datetime import datetime
 
 import yaml
 
-
+"""
+Hardcoded path to the observation files complete, training and test for both ERT and YAML version
+"""
 ERT_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations.ertobs")
 YAML_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations.yamlobs")
 
@@ -26,7 +28,12 @@ TEST_YAML_OBS_FILE_NAME = pathlib.Path(
 
 
 def read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
-    # Reading ERT file
+    """This function reads the content of a ERT observation file and returns the information in a dictionary.
+    Args:
+        ert_obs_file_name: path to the ERT observation file
+    Returns:
+        ert_obs: dictionary that contains the information in a ERT observation file
+    """
     assert os.path.exists(ert_obs_file_name) == 1
     ert_obs = {}
     text = ""
@@ -56,7 +63,12 @@ def read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
 
 
 def read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
-    # Reading YALM file
+    """This function reads the content of a YAML observation file and returns the information in a dictionary.
+    Args:
+        yaml_obs_file_name: path to the YAML observation file
+    Returns:
+        dictionary that contains the information in a YAML observation file
+    """
     assert os.path.exists(yaml_obs_file_name) == 1
     a_yaml_file = open(yaml_obs_file_name, "r")
     yaml.allow_duplicate_keys = True
@@ -65,6 +77,14 @@ def read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
 
 
 def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
+    """This function compares if the given dictionaries: ert_obs_dict and yaml_obs_dict contain the same information.
+    Args:
+        ert_obs_dict: dictionary that contains the information in a ERT observation file
+        yaml_obs_dict: dictionary that contains the information in a YAML observation file
+    Returns:
+        True: If the ert_obs_dict and yaml_obs_dict contains the same information
+              Otherwise function stops by assert functions if both dictionaries have diferent information.
+    """
     yaml_obs = {}
     for item in yaml_obs_dict:
         for list_item in yaml_obs_dict[item]:
@@ -82,6 +102,13 @@ def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
 
 
 def test_check_obsfiles_ert_yaml() -> None:
+    """
+    This function checks if the observation files (complete, training, and test) in ERT and YAML version are equal.
+       Args:
+           None. The file names containig the observation files are harcoded as
+       Returns:
+           None
+    """
 
     # Comparing the complete observation data
     # Reading ERT file
