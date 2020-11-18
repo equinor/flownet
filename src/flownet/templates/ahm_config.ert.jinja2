@@ -4,8 +4,8 @@ INSTALL_JOB DELETE_IN_CURRENT_ITERATION ./DELETE_IN_CURRENT_ITERATION
 
 REFCASE <CONFIG_PATH>/SYNTHETIC_REFCASE
 {%- if config.ert.analysis.metric: %}
-DEFINE <ANALYSIS_METRIC> {{ config.ert.analysis.metric }}
-DEFINE <ANALYSIS_QUANTITY> {{ config.ert.analysis.quantity }}
+DEFINE <ANALYSIS_METRIC> {{ analysis_metric }}
+DEFINE <ANALYSIS_QUANTITY> {{ analysis_quantity }}
 DEFINE <ANALYSIS_START> {{ config.ert.analysis.start }}
 DEFINE <ANALYSIS_END> {{ config.ert.analysis.end }}
 DEFINE <ANALYSIS_OUTFILE> {{ config.ert.analysis.outfile }}
