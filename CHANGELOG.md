@@ -2,7 +2,7 @@
 All notable changes to `FlowNet` will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.4.0] - 2020-11-18
 
 ### Added
 - [#234](https://github.com/equinor/flownet/pull/234) Added [mlflow](https://www.mlflow.org/) in combination with [hyperopt](https://github.com/hyperopt/hyperopt) which allows running flownet in batch to explore and optimise hyperparameters.
