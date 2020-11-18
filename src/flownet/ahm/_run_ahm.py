@@ -332,7 +332,7 @@ def update_distribution(
 ) -> List[Parameter]:
     """
     Update the prior distribution min-max for one or more parameters based on
-    the mean of the posterior distribution. It is assumed that the prior min
+    the mean and standard deviation of the posterior distribution. It is assumed that the prior min
     and max values cannot be exceeded.
 
     Args:
@@ -364,9 +364,13 @@ def update_distribution(
             del sorted_random_samples[:n]
             if count_index == 1:
                 parameter.mean_values = random_samples
+                parameter.stddev_values = np.power(random_samples, 2)
             else:
                 parameter.mean_values = list(
                     map(add, parameter.mean_values, random_samples)
+                )
+                parameter.stddev_values = list(
+                    map(add, parameter.stddev_values, np.power(random_samples, 2))
                 )
 
     # compute ensemble-mean values
@@ -374,6 +378,12 @@ def update_distribution(
         parameter.mean_values = [
             value / float(df.shape[0]) for value in parameter.mean_values
         ]
+        parameter.stddev_values = np.sqrt(
+            [
+                value / float(df.shape[0]) - np.power(parameter.mean_values, 2)[i]
+                for i, value in enumerate(parameter.stddev_values)
+            ]
+        )
 
     # update the distributions
     for parameter in parameters:
@@ -382,7 +392,7 @@ def update_distribution(
         for i, var in enumerate(parameter.random_variables):
             mean = parameter.mean_values[i]
 
-            loguniform = var.ert_gen_kw.split()[0] == "LOGUNIF"
+            loguniform = var.name == "LOGUNIF"
             dist_min0 = var.minimum
             dist_max0 = var.maximum
 
