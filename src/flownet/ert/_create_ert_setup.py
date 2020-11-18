@@ -51,7 +51,7 @@ def _create_observation_file(
     num_training_dates = round(num_dates * training_set_fraction)
 
     export_settings = [
-        ["", 1, num_dates],
+        ["_complete", 1, num_dates],
         ["_training", 1, num_training_dates],
         ["_test", num_training_dates + 1, num_dates],
     ]

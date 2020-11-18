@@ -6,8 +6,12 @@ from datetime import datetime
 
 import yaml
 
-ERT_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations.ertobs")
-YAML_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations.yamlobs")
+ERT_OBS_FILE_NAME = pathlib.Path(
+    "./tests/observation_files/observations_complete.ertobs"
+)
+YAML_OBS_FILE_NAME = pathlib.Path(
+    "./tests/observation_files/observations_complete.yamlobs"
+)
 
 TRAINING_ERT_OBS_FILE_NAME = pathlib.Path(
     "./tests/observation_files/observations_training.ertobs"

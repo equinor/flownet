@@ -287,18 +287,12 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         "(valid phases are oil, gas, water, disgas, vapoil",
                     },
                     "cell_length": {MK.Type: types.Number},
-                    "training_set_end_date": {
-                        MK.Type: types.Date,
-                        MK.AllowNone: True,
-                    },
+                    "training_set_end_date": {MK.Type: types.Date, MK.AllowNone: True,},
                     "training_set_fraction": {
                         MK.Type: types.Number,
                         MK.AllowNone: True,
                     },
-                    "additional_flow_nodes": {
-                        MK.Type: types.Integer,
-                        MK.Default: 100,
-                    },
+                    "additional_flow_nodes": {MK.Type: types.Integer, MK.Default: 100,},
                     "additional_node_candidates": {
                         MK.Type: types.Integer,
                         MK.Default: 1000,
@@ -329,14 +323,8 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     "fault_tolerance": {MK.Type: types.Number, MK.Default: 1.0e-5},
                     "max_distance": {MK.Type: types.Number, MK.Default: 1e12},
                     "max_distance_fraction": {MK.Type: types.Number, MK.Default: 0},
-                    "prod_control_mode": {
-                        MK.Type: types.String,
-                        MK.Default: "RESV",
-                    },
-                    "inj_control_mode": {
-                        MK.Type: types.String,
-                        MK.Default: "RATE",
-                    },
+                    "prod_control_mode": {MK.Type: types.String, MK.Default: "RESV",},
+                    "inj_control_mode": {MK.Type: types.String, MK.Default: "RATE",},
                 },
             },
             "ert": {
@@ -346,10 +334,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Type: types.String,
                         MK.Default: "output/runpath/realization-%d/iter-%d",
                     },
-                    "enspath": {
-                        MK.Type: types.String,
-                        MK.Default: "output/storage",
-                    },
+                    "enspath": {MK.Type: types.String, MK.Default: "output/storage",},
                     "eclbase": {
                         MK.Type: types.String,
                         MK.Default: "./eclipse/model/FLOWNET_REALIZATION",
@@ -418,7 +403,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     },
                     "yamlobs": {
                         MK.Type: types.String,
-                        MK.Default: "./observations.yamlobs",
+                        MK.Default: "./observations_complete.yamlobs",
                         MK.Description: "Observation file used by fmu-ensemble "
                         "and webviz",
                     },
@@ -426,16 +411,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Type: types.NamedDict,
                         MK.Content: {
                             "metric": {MK.Type: types.String, MK.AllowNone: True},
-                            "quantity": {
-                                MK.Type: types.String,
-                                MK.AllowNone: True,
-                            },
+                            "quantity": {MK.Type: types.String, MK.AllowNone: True,},
                             "start": {MK.Type: types.String, MK.AllowNone: True},
                             "end": {MK.Type: types.String, MK.AllowNone: True},
-                            "outfile": {
-                                MK.Type: types.String,
-                                MK.AllowNone: True,
-                            },
+                            "outfile": {MK.Type: types.String, MK.AllowNone: True,},
                         },
                     },
                 },
@@ -926,14 +905,8 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 "bulk volume, excluding aquifers, to get aquifer "
                                 "volume).",
                                 MK.Content: {
-                                    "min": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
-                                    "max": {
-                                        MK.Type: types.Number,
-                                        MK.AllowNone: True,
-                                    },
+                                    "min": {MK.Type: types.Number, MK.AllowNone: True,},
+                                    "max": {MK.Type: types.Number, MK.AllowNone: True,},
                                     "loguniform": {
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
@@ -1060,13 +1033,10 @@ def parse_config(
                 f"The {phase} phase is not a valid phase\n"
                 f"The valid phases are 'oil', 'gas', 'water', 'disgas' and 'vapoil'"
             )
-    if (
-        not {"vapoil", "disgas"}.isdisjoint(config.flownet.phases)
-        and not {
-            "oil",
-            "gas",
-        }.issubset(config.flownet.phases)
-    ):
+    if not {"vapoil", "disgas"}.isdisjoint(config.flownet.phases) and not {
+        "oil",
+        "gas",
+    }.issubset(config.flownet.phases):
         raise ValueError(
             "The phases 'vapoil' and 'disgas' can not be defined without the phases 'oil' and 'gas'"
         )
