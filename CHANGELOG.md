@@ -2,9 +2,10 @@
 All notable changes to `FlowNet` will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.4.0] - 2020-11-18
 
 ### Added
+- [#234](https://github.com/equinor/flownet/pull/234) Added [mlflow](https://www.mlflow.org/) in combination with [hyperopt](https://github.com/hyperopt/hyperopt) which allows running flownet in batch to explore and optimise hyperparameters.
 - [#221](https://github.com/equinor/flownet/pull/221) For traceability and reproducibility, the FlowNet configuration file is now automatically copied to the output folder. The content of 'pip freeze' is stored in the file 'pipfreeze.output' in the output folder.
 - [#220](https://github.com/equinor/flownet/pull/220) User can now provide the historical _control mode_ in the production wells and _control mode_/_target_ in the injection wells. One value for each, applied to all wells.
 - [#199](https://github.com/equinor/flownet/pull/199) Added the possibility of defining a 'base' value for all parameters related to relative permeability. This provides the opportunity to interpolate between three relative permeability models. All the 'min' values will be used to construct a pessimistic or low model, the 'base' values are used for a 'base' model, and the 'high' values are used for an optimistic or high model value. The history matching can then be done with only one (two for three phase models - oil/water and gas/oil interpolated independently) relative permeability parameter(s) per SATNUM region.
@@ -15,6 +16,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - [#199](https://github.com/equinor/flownet/pull/199) Removed deprecated parameters in pyscal ('krowend', 'krogend') from config file. Added 'kroend' to config file. 
+- [#228](https://github.com/equinor/flownet/pull/228) FlowNet is now `pip` installable without any dependency compilations (also the custom ERT forward model running Flow is installed automatically). Note that any `simulator` part of configuration files need to be removed.
+
 
 ## [0.3.0] - 2020-09-14
 ### Added

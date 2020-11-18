@@ -512,11 +512,12 @@ def run_flownet_history_matching(
     ]._asdict()
     relperm_parameters.pop("id", None)
 
-    relperm_dict = {
-        key: values
-        for key, values in relperm_parameters.items()
-        if not all(value is None for value in values)
-    }
+    relperm_dict = {}
+    for key, values in relperm_parameters.items():
+        values = values._asdict()
+        values.pop("low_optimistic", None)
+        if not all(value is None for _, value in values.items()):
+            relperm_dict[key] = values
 
     relperm_parameters = {key: relperm_dict[key] for key in relperm_dict}
 
@@ -561,6 +562,17 @@ def run_flownet_history_matching(
                 + ["high"]
                 + [i],
             ]
+            low_optimistic = [
+                getattr(relp_config_satnum[idx], key).low_optimistic
+                for key in relperm_parameters
+            ]
+            for j, val in enumerate(low_optimistic):
+                if val:
+                    interp_info[0][j], interp_info[2][j] = (
+                        interp_info[2][j],
+                        interp_info[0][j],
+                    )
+
             info: List = [["interpolate"], [-1], [1], [False], [i]]
             if {"oil", "gas", "water"}.issubset(config.flownet.phases):
                 add_info = ["interpolate gas", -1, 1, False, i]
@@ -787,7 +799,7 @@ def run_flownet_history_matching(
     if isinstance(network.faults, dict):
         parameters.append(FaultTransmissibility(fault_mult_dist_values, network))
 
-    if args.restart_folder is not None:
+    if hasattr(args, "restart_folder") and args.restart_folder is not None:
         parameters = update_distribution(parameters, args.restart_folder)
 
     ahm = AssistedHistoryMatching(

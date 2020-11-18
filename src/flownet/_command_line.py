@@ -4,9 +4,10 @@ import shutil
 import pathlib
 import subprocess
 
-from .config_parser import parse_config, parse_pred_config
+from .config_parser import parse_config, parse_pred_config, parse_hyperparam_config
 from .ahm import run_flownet_history_matching
 from .prediction import run_flownet_prediction
+from .hyperparameter import run_flownet_hyperparameter
 
 
 def create_webviz(output_folder: pathlib.Path, start_webviz: bool = True):
@@ -97,8 +98,27 @@ def flownet_pred(args: argparse.Namespace) -> None:
         create_webviz(args.output_folder, start_webviz=args.start_webviz)
 
 
-def flownet_hyperparam(args: argparse.Namespace):
-    raise NotImplementedError
+def flownet_hyperparam(args: argparse.Namespace) -> None:
+    """
+    Entrypoint for the hyperparameter exploration and optimization mode.
+
+    Args:
+        args: input namespace from argparse
+
+    Returns:
+        Nothing
+
+    """
+    if args.output_folder.exists():
+        if args.overwrite:
+            shutil.rmtree(args.output_folder)
+        else:
+            raise ValueError(
+                f"{args.output_folder} already exists. Add --overwrite or change output folder."
+            )
+
+    hyper_parameters = parse_hyperparam_config(args.config)
+    run_flownet_hyperparameter(args, hyper_parameters)
 
 
 def main():
@@ -215,12 +235,35 @@ def main():
 
     parser_pred.set_defaults(func=flownet_pred)
 
-    # Add hyper parameter tuning/sensitivity checks:
+    # Add hyperparameter tuning/sensitivity checks:
     parser_hyperparam = subparsers.add_parser(
-        "hyperparam", help="Run flownet in prediction based mode."
+        "hyperparam",
+        help="Run flownet in hyperparameter exploration or optimization mode.",
     )
 
     parser_hyperparam.set_defaults(func=flownet_hyperparam)
+
+    parser_hyperparam.add_argument(
+        "config",
+        type=pathlib.Path,
+        help="Configuration file with hyperparameter ranges to use.",
+    )
+    parser_hyperparam.add_argument(
+        "output_folder",
+        type=pathlib.Path,
+        help="Folder to hyperparameter exploration or optimization results.",
+    )
+    parser_hyperparam.add_argument(
+        "--update-config",
+        type=pathlib.Path,
+        default=None,
+        help="Optional configuration file which values will update the main config.",
+    )
+    parser_hyperparam.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Overwrite output directory if it already exists",
+    )
 
     args = parser.parse_args()
 

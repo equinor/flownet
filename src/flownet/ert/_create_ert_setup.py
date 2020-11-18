@@ -165,6 +165,13 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     with open(output_folder / "parameters.pickled", "wb") as fh:
         pickle.dump(parameters, fh)
 
+    if hasattr(config.ert, "analysis"):
+        analysis_metric = "[" + ",".join(list(config.ert.analysis.metric)) + "]"
+        analysis_quantity = "[" + ",".join(list(config.ert.analysis.quantity)) + "]"
+    else:
+        analysis_metric = str(None)
+        analysis_quantity = str(None)
+
     configuration = {
         "pickled_network": output_folder.resolve() / "network.pickled",
         "pickled_schedule": output_folder.resolve() / "schedule.pickled",
@@ -173,6 +180,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         "random_seed": None,
         "debug": args.debug if hasattr(args, "debug") else False,
         "pred_schedule_file": getattr(config.ert, "pred_schedule_file", None),
+        "analysis_metric": analysis_metric,
+        "analysis_quantity": analysis_quantity,
     }
 
     if not prediction_setup:

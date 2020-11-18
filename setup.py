@@ -6,10 +6,14 @@ with open("README.md", "r") as fh:
 REQUIREMENTS = [
     "configsuite>=0.6",
     "cwrap>=1.6",
+    "ecl>=2.9",
     "ecl2df>=0.8.1",
+    "ert>=2.17",
     "fmu-ensemble>=1.2",
+    "hyperopt>=0.2.5",
     "jinja2>=2.10",
     "matplotlib>=3.1",
+    "mlflow>=1.11.0",
     "numpy>=1.17",
     "opm>=2020.10",
     "pandas~=1.0",
@@ -50,15 +54,17 @@ setup(
     use_scm_version=True,
     package_dir={"": "src"},
     packages=find_packages("src"),
-    package_data={"flownet": ["templates/*", "static/*"]},
+    package_data={"flownet": ["templates/*", "static/*", "ert/FLOW_SIMULATION"]},
     entry_points={
+        "ert": ["flow = flownet.ert._flow_job"],
         "console_scripts": [
             "flownet=flownet._command_line:main",
             "flownet_render_realization=flownet.realization:render_realization",
             "flownet_delete_simulation_output=flownet.ahm:delete_simulation_output",
+            "flownet_run_flow=flownet.ert._flow_job:run_flow",
             "flownet_save_iteration_parameters=flownet.ahm:save_iteration_parameters",
             "flownet_save_iteration_analytics=flownet.ahm:save_iteration_analytics",
-        ]
+        ],
     },
     zip_safe=False,
     classifiers=[
