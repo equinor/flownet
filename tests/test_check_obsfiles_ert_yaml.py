@@ -6,9 +6,6 @@ from datetime import datetime
 
 import yaml
 
-"""
-Hardcoded path to the observation files complete, training and test for both ERT and YAML version
-"""
 ERT_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations.ertobs")
 YAML_OBS_FILE_NAME = pathlib.Path("./tests/observation_files/observations.yamlobs")
 
