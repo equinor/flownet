@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>flownet.config_parser._config_parser module &mdash; FlowNet  documentation</title>
+  <title>flownet.ert._flow_job module &mdash; FlowNet  documentation</title>
   
 
   
@@ -39,8 +39,8 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="flownet.config_parser._config_parser_hyperparam module" href="flownet.config_parser._config_parser_hyperparam.html" />
-    <link rel="prev" title="flownet.config_parser package" href="flownet.config_parser.html" /> 
+    <link rel="next" title="flownet.ert._run_subprocess module" href="flownet.ert._run_subprocess.html" />
+    <link rel="prev" title="flownet.ert._create_synthetic_refcase module" href="flownet.ert._create_synthetic_refcase.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -143,15 +143,15 @@
         
           <li><a href="api.html">FlowNet Python API</a> &raquo;</li>
         
-          <li><a href="flownet.config_parser.html">flownet.config_parser package</a> &raquo;</li>
+          <li><a href="flownet.ert.html">flownet.ert package</a> &raquo;</li>
         
-      <li>flownet.config_parser._config_parser module</li>
+      <li>flownet.ert._flow_job module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/flownet.config_parser._config_parser.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/flownet.ert._flow_job.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -164,44 +164,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-flownet.config_parser._config_parser">
-<span id="flownet-config-parser-config-parser-module"></span><h1>flownet.config_parser._config_parser module<a class="headerlink" href="#module-flownet.config_parser._config_parser" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-flownet.ert._flow_job">
+<span id="flownet-ert-flow-job-module"></span><h1>flownet.ert._flow_job module<a class="headerlink" href="#module-flownet.ert._flow_job" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="flownet.config_parser._config_parser.create_schema">
-<code class="sig-prename descclassname">flownet.config_parser._config_parser.</code><code class="sig-name descname">create_schema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_folder</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>pathlib.Path<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#flownet.config_parser._config_parser.create_schema" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a configsuite type schema, where configuration value types are defined, together
-with which values are optional and/or has default values.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>_to_abs_path</strong> – Use absolute path transformation</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Dictionary to be used as configsuite type schema</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="flownet.config_parser._config_parser.create_schema_without_arguments">
-<code class="sig-prename descclassname">flownet.config_parser._config_parser.</code><code class="sig-name descname">create_schema_without_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#flownet.config_parser._config_parser.create_schema_without_arguments" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.ert._flow_job.installable_jobs">
+<code class="sig-prename descclassname">flownet.ert._flow_job.</code><code class="sig-name descname">installable_jobs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._flow_job.installable_jobs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt id="flownet.config_parser._config_parser.parse_config">
-<code class="sig-prename descclassname">flownet.config_parser._config_parser.</code><code class="sig-name descname">parse_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">base_config</span><span class="p">:</span> <span class="n">pathlib.Path</span></em>, <em class="sig-param"><span class="n">update_config</span><span class="p">:</span> <span class="n">pathlib.Path</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; &lt;property object at 0x7fc802b66c28&gt;<a class="headerlink" href="#flownet.config_parser._config_parser.parse_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes in path to a yaml configuration file, parses it, populates with default values
-where that is defined and the has not provided his/her own value. Also error checks input
-arguments, and making sure they are of expected type.</p>
+<dt id="flownet.ert._flow_job.run_flow">
+<code class="sig-prename descclassname">flownet.ert._flow_job.</code><code class="sig-name descname">run_flow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._flow_job.run_flow" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is what the FLOW_SIMULATION forward model actually run.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>base_cofnig</strong> – Path to the main configuration file.</p></li>
-<li><p><strong>update_config</strong> – Optional configuration file with
-key/values to override in main configuration file.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Parsed config, where values can be extracted like e.g. ‘config.ert.queue.system’.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Nothing</p>
 </dd>
 </dl>
 </dd></dl>
@@ -216,10 +192,10 @@ key/values to override in main configuration file.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="flownet.config_parser._config_parser_hyperparam.html" class="btn btn-neutral float-right" title="flownet.config_parser._config_parser_hyperparam module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="flownet.ert._run_subprocess.html" class="btn btn-neutral float-right" title="flownet.ert._run_subprocess module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="flownet.config_parser.html" class="btn btn-neutral float-left" title="flownet.config_parser package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="flownet.ert._create_synthetic_refcase.html" class="btn btn-neutral float-left" title="flownet.ert._create_synthetic_refcase module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
