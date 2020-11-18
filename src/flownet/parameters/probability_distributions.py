@@ -7,6 +7,14 @@ import numpy as np
 
 
 class ProbabilityDistribution(abc.ABC):
+    def __init__(self, minimum, maximum, mean, mode, stddev, name):
+        self.minimum = minimum
+        self.maximum = maximum
+        self.mean = mean
+        self.mode = mode
+        self.stddev = stddev
+        self.name = name
+
     @property
     @abc.abstractmethod
     def ert_gen_kw(self):
@@ -15,11 +23,14 @@ class ProbabilityDistribution(abc.ABC):
 
 class UniformDistribution(ProbabilityDistribution):
     def __init__(self, minimum, maximum):
-        self.minimum = minimum
-        self.maximum = maximum
-        self.mean = (minimum + maximum) / 2
-        self.stddev = np.sqrt(np.power(maximum - minimum, 2) / 12)
-        self.name = "UNIFORM"
+        super().__init__(
+            minimum,
+            maximum,
+            (minimum + maximum) / 2,
+            None,
+            np.sqrt(np.power(maximum - minimum, 2) / 12),
+            "UNIFORM",
+        )
 
     @property
     def ert_gen_kw(self) -> str:
@@ -29,18 +40,21 @@ class UniformDistribution(ProbabilityDistribution):
 
 class LogUniformDistribution(ProbabilityDistribution):
     def __init__(self, minimum, maximum):
-        self.minimum = minimum
-        self.maximum = maximum
-        self.mean = (maximum - minimum) / np.log(maximum / minimum)
-        self.stddev = np.sqrt(
-            (
-                np.log(maximum / minimum)
-                * (np.power(maximum, 2) - np.power(minimum, 2))
-                - 2 * np.power(maximum - minimum, 2)
-            )
-            / (2 * np.power(np.log(maximum / minimum), 2))
+        super().__init__(
+            minimum,
+            maximum,
+            (maximum - minimum) / np.log(maximum / minimum),
+            minimum,
+            np.sqrt(
+                (
+                    np.log(maximum / minimum)
+                    * (np.power(maximum, 2) - np.power(minimum, 2))
+                    - 2 * np.power(maximum - minimum, 2)
+                )
+                / (2 * np.power(np.log(maximum / minimum), 2))
+            ),
+            "LOGUNIF",
         )
-        self.name = "LOGUNIF"
 
     @property
     def ert_gen_kw(self) -> str:
@@ -50,19 +64,22 @@ class LogUniformDistribution(ProbabilityDistribution):
 
 class TriangularDistribution(ProbabilityDistribution):
     def __init__(self, minimum, maximum, mode):
-        self.mode = mode
-        self.minimum = minimum
-        self.maximum = maximum
-        self.mean = (mode + minimum + maximum) / 3
-        self.stddev = (
-            np.power(minimum, 2)
-            + np.power(mode, 2)
-            + np.power(maximum, 2)
-            - (minimum * mode)
-            - (minimum * maximum)
-            - (mode * maximum)
-        ) / 18
-        self.name = "TRIANGULAR"
+        super().__init__(
+            minimum,
+            maximum,
+            (mode + minimum + maximum) / 3,
+            mode,
+            (
+                np.power(minimum, 2)
+                + np.power(mode, 2)
+                + np.power(maximum, 2)
+                - (minimum * mode)
+                - (minimum * maximum)
+                - (mode * maximum)
+            )
+            / 18,
+            "TRIANGULAR",
+        )
 
     @property
     def ert_gen_kw(self) -> str:
@@ -72,11 +89,14 @@ class TriangularDistribution(ProbabilityDistribution):
 
 class NormalDistribution(ProbabilityDistribution):
     def __init__(self, mean, stddev):
-        self.mean = mean
-        self.stddev = stddev
-        self.minimum = None
-        self.maximum = None
-        self.name = "NORMAL"
+        super().__init__(
+            None,
+            None,
+            mean,
+            mean,
+            stddev,
+            "NORMAL",
+        )
 
     @property
     def ert_gen_kw(self) -> str:
@@ -86,11 +106,14 @@ class NormalDistribution(ProbabilityDistribution):
 
 class TruncatedNormalDistribution(ProbabilityDistribution):
     def __init__(self, mean, stddev, minimum, maximum):
-        self.mean = mean
-        self.stddev = stddev
-        self.minimum = minimum
-        self.maximum = maximum
-        self.name = "TRUNCATED_NORMAL"
+        super().__init__(
+            minimum,
+            maximum,
+            mean,
+            mean,
+            stddev,
+            "TRUNCATED_NORMAL",
+        )
 
     @property
     def ert_gen_kw(self) -> str:
@@ -100,11 +123,14 @@ class TruncatedNormalDistribution(ProbabilityDistribution):
 
 class LogNormalDistribution(ProbabilityDistribution):
     def __init__(self, mean, stddev):
-        self.mean = mean
-        self.stddev = stddev
-        self.minimum = None
-        self.maximum = None
-        self.name = "LOGNORMAL"
+        super().__init__(
+            None,
+            None,
+            mean,
+            None,
+            stddev,
+            "LOGNORMAL",
+        )
 
     @property
     def ert_gen_kw(self) -> str:
@@ -114,11 +140,14 @@ class LogNormalDistribution(ProbabilityDistribution):
 
 class Constant(ProbabilityDistribution):
     def __init__(self, constant):
-        self.mean = constant
-        self.minimum = None
-        self.maximum = None
-        self.stddev = None
-        self.name = "CONST"
+        super().__init__(
+            constant,
+            constant,
+            constant,
+            constant,
+            0,
+            "CONST",
+        )
 
     @property
     def ert_gen_kw(self) -> str:

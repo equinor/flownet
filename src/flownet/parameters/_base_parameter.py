@@ -91,13 +91,23 @@ class Parameter(abc.ABC):
 
     @property
     def mean_values(self) -> List[float]:
-        """List of all random values for each distribution for the Parameter"""
+        """List of all mean values for each distribution for the Parameter"""
         return self._mean_values
 
     @mean_values.setter
     def mean_values(self, values: List[float]):
-        """Setter for the Parameter random samples."""
+        """Setter for the Parameter mean samples."""
         self._mean_values = values
+
+    @property
+    def stddev_values(self) -> List[float]:
+        """List of all standard deviation values for each distribution for the Parameter"""
+        return self._stddev_values
+
+    @stddev_values.setter
+    def stddev_values(self, values: List[float]):
+        """Setter for the Parameter standard deviation samples."""
+        self._stddev_values = values
 
     # pylint: disable=no-self-use
     def get_dims(self) -> Union[None, Dict[str, int]]:
