@@ -1505,6 +1505,15 @@ def parse_config(
                 "'scheme', 'fraction', and 'delta_depth'."
                 "Currently one or more parameters are missing."
             )
+        if (
+            config.model_parameters.aquifer.scheme != "global"
+            and config.model_parameters.aquifer.scheme != "individual"
+        ):
+            raise ValueError(
+                f"The aquifer scheme "
+                f"'{config.model_parameters.aquifer.scheme}' is not valid.\n"
+                f"Valid options are 'global' or 'individual'."
+            )
         _check_distribution(config.model_parameters.aquifer, "size_in_bulkvolumes")
 
     if (

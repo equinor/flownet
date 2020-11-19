@@ -3,6 +3,7 @@ from typing import Union, List, Optional, Dict
 import json
 import pathlib
 from operator import add
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -361,8 +362,11 @@ def update_distribution(
         for parameter in parameters:
             n = len(parameter.random_variables)
             random_samples = sorted_random_samples[:n]
+            names = sorted_names[:n]
             del sorted_random_samples[:n]
+            del sorted_names[:n]
             if count_index == 1:
+                parameter.names = names
                 parameter.mean_values = random_samples
                 parameter.stddev_values = np.power(random_samples, 2)
             else:
@@ -391,23 +395,33 @@ def update_distribution(
 
         for i, var in enumerate(parameter.random_variables):
             mean = parameter.mean_values[i]
+            stddev = parameter.stddev_values[i]
+            # if mean in posterior is close to min/max in prior raise warning
+            if (mean - var.minimum)/(var.mean-var.minimum)<0.1 or (var.maximum-mean)/(var.maximum-var.mean)<0.1:
+                warnings.warn(
+                    f"The mean value for the posterior ensemble for {parameter.names[i]} is close to "
+                    f"the upper or lower bounds in the prior. This will give a very narrow prior range "
+                    f"in this run. Consider updating before running again. "
+                )
 
-            loguniform = var.name == "LOGUNIF"
-            dist_min0 = var.minimum
-            dist_max0 = var.maximum
-
-            if loguniform is True:
-                dist_max = dist_max0
-                dist_min = _find_dist_minmax(None, dist_max, mean)
-                if dist_min < dist_min0:
-                    dist_min = dist_min0
+            if var.name == "LOGUINF":
+                # if posterior mean < prior mean decrease max
+                if mean < var.mean:
+                    dist_min = var.minimum
                     dist_max = _find_dist_minmax(dist_min, None, mean)
-            else:
-                dist_max = dist_max0
-                dist_min = mean - (dist_max - mean)
-                if dist_min < dist_min0:
-                    dist_min = dist_min0
+                else:
+                    dist_max = var.maximum
+                    dist_min = _find_dist_minmax(None, dist_max, mean)
+            if var.name == "UNIFORM":
+                # if posterior mean < prior mean decrease max
+                if mean < var.mean:
+                    dist_min = var.minimum
                     dist_max = mean + (mean - dist_min)
+                else:
+                    dist_max = var.maximum
+                    dist_min = mean - (dist_max - mean)
+#            if var.name == "NORMAL":
+
             var.minimum = dist_min
             var.maximum = dist_max
 
@@ -844,12 +858,6 @@ def run_flownet_history_matching(
             )
         elif aquifer_config.scheme == "global":
             df_aquid = pd.DataFrame([1] * len(network.aquifers_xyz), columns=["AQUID"])
-        else:
-            raise ValueError(
-                f"The aquifer scheme "
-                f"'{aquifer_config['scheme']}' is not valid.\n"
-                f"Valid options are 'global' or 'individual'."
-            )
 
         # Create a pandas dataframe with all parameter definition for each individual tube
         aquifer_dist_values = pd.DataFrame(
