@@ -17,7 +17,7 @@ pages:
         {%- for iteration in [iterations[0], iterations[-1]] %}
          - iter-{{ iteration }}
         {%- endfor %}
-        observation_file: ./observations_complete.yamlobs
+        observation_file: ./observations_training.yamlobs
  - title: Parameter distribution
    content: 
     - ParameterDistribution:
@@ -32,7 +32,7 @@ pages:
         {%- for iteration in [iterations[0], iterations[-1]] %}
          - iter-{{ iteration }}
         {%- endfor %}
-        obsfile: ./observations_complete.yamlobs
+        obsfile: ./observations_training.yamlobs
         sampling: monthly
         options:
           visualization: statistics
