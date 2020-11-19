@@ -2,6 +2,11 @@
 All notable changes to `FlowNet` will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### Fixes
+- [#256](https://github.com/equinor/flownet/pull/256) Fixes issues with duplicates names in hyperopt by using the full path in yaml for hyperopt parameter names.
+
 ## [0.4.0] - 2020-11-18
 
 ### Added
