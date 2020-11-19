@@ -61,17 +61,6 @@ def create_schema(_to_abs_path) -> Dict:
                             "max_runtime": {MK.Type: types.Integer, MK.Default: 300},
                         },
                     },
-                    "simulator": {
-                        MK.Type: types.NamedDict,
-                        MK.Content: {
-                            "name": {
-                                MK.Type: types.String,
-                                MK.Transformation: lambda name: name.lower(),
-                                MK.Default: "flow",
-                            },
-                            "version": {MK.Type: types.String, MK.AllowNone: True},
-                        },
-                    },
                     "queue": {
                         MK.Type: types.NamedDict,
                         MK.Content: {

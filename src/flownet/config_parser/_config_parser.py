@@ -427,23 +427,6 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             },
                         },
                     },
-                    "simulator": {
-                        MK.Type: types.NamedDict,
-                        MK.Content: {
-                            "name": {
-                                MK.Type: types.String,
-                                MK.Transformation: _to_lower,
-                                MK.Default: "flow",
-                                MK.Description: "Simulator to use (typically either "
-                                "'flow' or 'eclipse'",
-                            },
-                            "version": {
-                                MK.Type: types.String,
-                                MK.AllowNone: True,
-                                MK.Description: "Version of the simulator to use",
-                            },
-                        },
-                    },
                     "queue": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
