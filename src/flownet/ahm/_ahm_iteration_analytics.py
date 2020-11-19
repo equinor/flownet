@@ -298,7 +298,7 @@ def make_dataframe_simulation_data(
     nb_real = 0
     for runpath in realizations_dict:
         df_tmp = pd.DataFrame()
-        if realizations_dict[runpath] and (
+        if (realizations_dict[runpath] is not None) and (
             np.datetime64(realizations_dict[runpath].dates[-1]) >= end_date
         ):
             dates = realizations_dict[runpath].dates
