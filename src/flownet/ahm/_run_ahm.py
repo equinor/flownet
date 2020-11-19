@@ -395,7 +395,6 @@ def update_distribution(
 
         for i, var in enumerate(parameter.random_variables):
             mean = parameter.mean_values[i]
-            stddev = parameter.stddev_values[i]
             # if mean in posterior is close to min/max in prior raise warning
             if (mean - var.minimum) / (var.mean - var.minimum) < 0.1 or (
                 var.maximum - mean
@@ -405,6 +404,14 @@ def update_distribution(
                     f"the upper or lower bounds in the prior. This will give a very narrow prior range \n"
                     f"in this run. Consider updating before running again. "
                 )
+            if var.stddev is not None:
+                stddev = parameter.stddev_values[i]
+                if stddev / var.stddev < 0.1:
+                    warnings.warn(
+                        f"The standard deviation for the posterior ensemble for {parameter.names[i]} is much lower \n"
+                        f"than the standard deviation in the prior. This will give a very narrow prior range \n"
+                        f"in this run. Consider updating before running again. "
+                    )
 
             if var.name == "LOGUINF":
                 # if posterior mean < prior mean decrease max
