@@ -833,9 +833,7 @@ def run_flownet_history_matching(
     # Aquifer                               #
     #########################################
 
-    if any(config.model_parameters.aquifer[0:3]) or any(
-        config.model_parameters.aquifer.size_in_bulkvolumes
-    ):
+    if any(config.model_parameters.aquifer[0:3]):
 
         aquifer_config = config.model_parameters.aquifer
 
