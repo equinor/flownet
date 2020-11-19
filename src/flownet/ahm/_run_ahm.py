@@ -397,10 +397,12 @@ def update_distribution(
             mean = parameter.mean_values[i]
             stddev = parameter.stddev_values[i]
             # if mean in posterior is close to min/max in prior raise warning
-            if (mean - var.minimum)/(var.mean-var.minimum)<0.1 or (var.maximum-mean)/(var.maximum-var.mean)<0.1:
+            if (mean - var.minimum) / (var.mean - var.minimum) < 0.1 or (
+                var.maximum - mean
+            ) / (var.maximum - var.mean) < 0.1:
                 warnings.warn(
-                    f"The mean value for the posterior ensemble for {parameter.names[i]} is close to "
-                    f"the upper or lower bounds in the prior. This will give a very narrow prior range "
+                    f"The mean value for the posterior ensemble for {parameter.names[i]} is close to \n"
+                    f"the upper or lower bounds in the prior. This will give a very narrow prior range \n"
                     f"in this run. Consider updating before running again. "
                 )
 
@@ -420,7 +422,7 @@ def update_distribution(
                 else:
                     dist_max = var.maximum
                     dist_min = mean - (dist_max - mean)
-#            if var.name == "NORMAL":
+            #            if var.name == "NORMAL":
 
             var.minimum = dist_min
             var.maximum = dist_max
