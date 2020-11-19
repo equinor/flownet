@@ -56,14 +56,14 @@ def _create_observation_file(
         ["_test", num_training_dates + 1, num_dates],
     ]
 
-    prefix_name = os.path.splitext(obs_file)
+    file_root = os.path.splitext(obs_file)[0]
 
-    for _, setting in enumerate(export_settings):
+    for setting in export_settings:
         if yaml:
             obs_export_type = "yamlobs"
         else:
             obs_export_type = "ertobs"
-        export_filename = f"{prefix_name[0]}{setting[0]}.{obs_export_type}"
+        export_filename = f"{file_root}{setting[0]}.{obs_export_type}"
         template = _TEMPLATE_ENVIRONMENT.get_template(
             f"observations.{obs_export_type}.jinja2"
         )
