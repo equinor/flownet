@@ -248,7 +248,7 @@ class Schedule:
         if isinstance(item, int):
             output = self._schedule_items[item]
         elif isinstance(item, datetime.date):
-            output = self.get_keywords(date=item)
+            output = self.get_keywords(dates=item)
         elif isinstance(item, Keyword):
             output = self.get_keywords(kw_class=item)
         else:
@@ -277,7 +277,7 @@ class Schedule:
             Date-sorted schedule items
 
         """
-        return sorted(self._schedule_items, key=attrgetter("date"))
+        return sorted(self._schedule_items, key=attrgetter("dates"))
 
     def append(self, _keyword):
         """
@@ -522,7 +522,7 @@ class Schedule:
 
         for date in self.get_dates()[1 : num_training_dates - 1]:
             keywords_wconhist: List[Keyword] = self.get_keywords(
-                date=date, kw_class="WCONHIST"
+                dates=date, kw_class="WCONHIST"
             )
             if keywords_wconhist:
                 for keyword_wconhist in keywords_wconhist:
@@ -536,7 +536,7 @@ class Schedule:
                         i += 1
 
             keywords_wconinjh: List[Keyword] = self.get_keywords(
-                date=date, kw_class="WCONINJH"
+                dates=date, kw_class="WCONINJH"
             )
             if keywords_wconinjh:
                 for keyword__wconinjh in keywords_wconinjh:

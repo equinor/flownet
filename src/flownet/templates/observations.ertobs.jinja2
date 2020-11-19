@@ -1,7 +1,7 @@
 {%- for date in schedule.get_dates()[num_beginning_date:num_end_date] -%}
 
-{%- if schedule.get_keywords(date=date, kw_class="WCONHIST"): %}
-{%- for kw in schedule.get_keywords(date=date, kw_class="WCONHIST"): -%}
+{%- if schedule.get_keywords(dates=date, kw_class="WCONHIST"): %}
+{%- for kw in schedule.get_keywords(dates=date, kw_class="WCONHIST"): -%}
 
 {%- set index_name = date.strftime('%d_%m_%Y') -%}
 {%- set date_formatted = date.strftime('%d/%m/%Y') %}
@@ -25,8 +25,8 @@ SUMMARY_OBSERVATION WTHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.thp
 {% endfor %}
 {%- endif %}
 
-{%- if schedule.get_keywords(date=date, kw_class="WCONINJH"): %}
-{%- for kw in schedule.get_keywords(date=date, kw_class="WCONINJH"): -%}
+{%- if schedule.get_keywords(dates=date, kw_class="WCONINJH"): %}
+{%- for kw in schedule.get_keywords(dates=date, kw_class="WCONINJH"): -%}
 
 {%- set index_name = date.strftime('%d_%m_%Y') -%}
 {%- set date_formatted = date.strftime('%d/%m/%Y') %}
