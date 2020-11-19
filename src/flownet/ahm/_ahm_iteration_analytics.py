@@ -4,6 +4,7 @@ import itertools
 import os
 import pathlib
 import re
+from typing import Any, Dict, Optional, List
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
@@ -16,7 +17,9 @@ from ecl.summary import EclSum
 from ..data import FlowData
 
 
-def filter_dataframe(df_in, key_filter, min_value, max_value):
+def filter_dataframe(
+    df_in: pd.DataFrame, key_filter: str, min_value: Any, max_value: Any
+) -> pd.DataFrame:
     """
     This function filters the rows of a Pandas dataframe
     based on a range of values of a specified column
@@ -36,7 +39,9 @@ def filter_dataframe(df_in, key_filter, min_value, max_value):
     return df_in[(df_in[key_filter] >= min_value) & (df_in[key_filter] < max_value)]
 
 
-def prepare_opm_reference_data(df_opm, str_key, n_real):
+def prepare_opm_reference_data(
+    df_opm: pd.DataFrame, str_key: str, n_real: int
+) -> np.array:
     """
     This function extracts data from selected columns of the Pandas dataframe
     containing data from reference simulation, rearranges it into a stacked
@@ -61,7 +66,9 @@ def prepare_opm_reference_data(df_opm, str_key, n_real):
     return data
 
 
-def prepare_flownet_data(df_flownet, str_key, n_real):
+def prepare_flownet_data(
+    df_flownet: pd.DataFrame, str_key: str, n_real: int
+) -> np.array:
     """
     This function extracts data from selected columns of the Pandas dataframe
     containing data from an ensemble of FlowNet simulations, rearranges it into
@@ -88,7 +95,9 @@ def prepare_flownet_data(df_flownet, str_key, n_real):
     return data
 
 
-def normalize_data(data_opm_reference, data_ensembles_flownet):
+def normalize_data(
+    data_opm_reference: np.array, data_ensembles_flownet: List[np.array]
+) -> (np.array, List[np.array]):
     """
     This function normalizes data from a 2D numpy array containing data from the
     reference simulation and multiple ensembles of FlowNet simulations,
@@ -143,7 +152,9 @@ def normalize_data(data_opm_reference, data_ensembles_flownet):
     return norm_data_opm_reference, norm_data_ensembles_flownet
 
 
-def accuracy_metric(data_reference, data_test, metric):
+def accuracy_metric(
+    data_reference: pd.DataFrame, data_test: np.array, metric: str
+) -> float:
     """
     This function computes a score value based on the specified accuracy metric
     by calculating discrepancy between columns of two 2D numpy arrays:
@@ -162,46 +173,50 @@ def accuracy_metric(data_reference, data_test, metric):
         data from reference simulation
     """
 
-    if metric in ("MSE", "RMSE", "NRMSE"):
+    if metric == "MSE":
         score = mean_squared_error(data_reference, data_test)
-        if metric in ("RMSE", "NRMSE"):
-            score = mean_squared_error(data_reference, data_test, squared=False)
-            if metric == "NRMSE":
-                score = score / (np.amax(data_reference) - np.amin(data_reference))
-    elif metric in ("MAE", "NMAE"):
+    elif metric == "RMSE":
+        score = mean_squared_error(data_reference, data_test, squared=False)
+    elif metric == "NRMSE":
+        score = mean_squared_error(data_reference, data_test, squared=False) / (
+            np.amax(data_reference) - np.amin(data_reference)
+        )
+    elif metric == "MAE":
         score = mean_absolute_error(data_reference, data_test)
-        if metric == "NMAE":
-            score = score / (np.amax(data_reference) - np.amin(data_reference))
+    elif metric == "NMAE":
+        score = mean_absolute_error(data_reference, data_test) / (
+            np.amax(data_reference) - np.amin(data_reference)
+        )
     elif metric == "R2":
         score = r2_score(data_reference, data_test, multioutput="variance_weighted")
     else:
-        raise ValueError(f"Unknown metric {metric}")
+        raise ValueError(f"The metric {metric} is not supported.")
 
     return score
 
 
-def _load_simulations(runpath: str, ecl_base: str) -> EclSum:
+def _load_simulations(runpath: str, ecl_base: str) -> Optional[EclSum]:
     """
     Internal helper function to simulation results in parallel.
     Args:
         runpath: Path to where the realization is run.
         ecl_base: Path to where the realization is run.
     Returns:
-        EclSum
+        EclSum, or None in case of failed simulation (inexistent .UNSMRY file)
     """
     if os.path.exists(pathlib.Path(runpath) / pathlib.Path(ecl_base + ".UNSMRY")):
         return EclSum(str(pathlib.Path(runpath) / pathlib.Path(ecl_base)))
     return None
 
 
-def load_csv_file(csv_file, csv_columns):
+def load_csv_file(csv_file: str, csv_columns: List[str]) -> pd.DataFrame:
     """
     Internal helper function to generate dataframe containing
     selected observations and respective dates
 
     Args:
         csv_file: name of CSV file
-        csv_columns: name of columns of CSV file
+        csv_columns: list of names of columns of CSV file
 
     Returns:
         Pandas dataframe containing data from existing CSV file or
@@ -216,7 +231,13 @@ def load_csv_file(csv_file, csv_columns):
     return df_csv
 
 
-def compute_metric_ensemble(obs, list_ensembles, metrics, str_key, iteration):
+def compute_metric_ensemble(
+    obs: np.array,
+    list_ensembles: List[np.array],
+    metrics: List[str],
+    str_key: str,
+    iteration: int,
+) -> Dict:
     """
     Internal helper function to generate dataframe containing
     selected observations and respective dates
@@ -243,7 +264,9 @@ def compute_metric_ensemble(obs, list_ensembles, metrics, str_key, iteration):
     return dict_metric
 
 
-def make_dataframe_simulation_data(path, eclbase_file, keys, end_date):
+def make_dataframe_simulation_data(
+    path: str, eclbase_file: str, keys: List[str], end_date: np.datetime64
+) -> (pd.DataFrame, int, int):
     """
     Internal helper function to generate dataframe containing
     data from ensemble of simulations from selected simulation keys
@@ -256,8 +279,8 @@ def make_dataframe_simulation_data(path, eclbase_file, keys, end_date):
 
     Returns:
         df_sim: Pandas dataframe contained data from ensemble of simulations
-        realizations_dict: dictionary containing path to loaded simulations
         iteration: current AHM iteration number
+        nb_real: number of realizations
     """
 
     iteration = int(re.findall(r"[0-9]+", sorted(glob.glob(path))[-1])[-1])
@@ -272,20 +295,20 @@ def make_dataframe_simulation_data(path, eclbase_file, keys, end_date):
     # Prepare dataframe
     # pylint: disable-msg=too-many-locals
     df_sim = pd.DataFrame()
-    id_real = 0
+    nb_real = 0
     for runpath in realizations_dict:
         df_tmp = pd.DataFrame()
-        if (realizations_dict[runpath] is not None) and (
+        if realizations_dict[runpath] and (
             np.datetime64(realizations_dict[runpath].dates[-1]) >= end_date
         ):
             dates = realizations_dict[runpath].dates
-            if id_real == 0:
+            if nb_real == 0:
                 df_sim["DATE"] = pd.Series(dates)
-                df_sim["REAL_ID"] = pd.Series(id_real * np.ones(len(dates)), dtype=int)
+                df_sim["REAL_ID"] = pd.Series(nb_real * np.ones(len(dates)), dtype=int)
             df_tmp["DATE"] = pd.Series(dates)
-            df_tmp["REAL_ID"] = pd.Series(id_real * np.ones(len(dates)), dtype=int)
+            df_tmp["REAL_ID"] = pd.Series(nb_real * np.ones(len(dates)), dtype=int)
 
-            if id_real == 0:
+            if nb_real == 0:
                 for counter, k in enumerate(keys):
                     if counter == 0:
                         key_list_data = [
@@ -297,21 +320,21 @@ def make_dataframe_simulation_data(path, eclbase_file, keys, end_date):
                         )
 
             for key in key_list_data:
-                if id_real == 0:
+                if nb_real == 0:
                     df_sim[key] = pd.Series(
                         realizations_dict[runpath].numpy_vector(key)
                     )
                 df_tmp[key] = pd.Series(realizations_dict[runpath].numpy_vector(key))
 
-            if id_real > 0:
+            if nb_real > 0:
                 df_sim = df_sim.append(df_tmp, ignore_index=True)
 
-            id_real = id_real + 1
+            nb_real = nb_real + 1
 
-    return df_sim, iteration, id_real
+    return df_sim, iteration, nb_real
 
 
-def save_plots_metrics(df_metrics, metrics, str_key):
+def save_plots_metrics(df_metrics: pd.DataFrame, metrics: List[str], str_key: str):
     """
     Internal helper function to generate and save plots of evolution of
     accuracy metrics over iterations
