@@ -6,26 +6,31 @@ from datetime import datetime
 
 import yaml
 
-ERT_OBS_FILE_NAME = pathlib.Path(
-    "./tests/observation_files/observations_complete.ertobs"
-)
-YAML_OBS_FILE_NAME = pathlib.Path(
-    "./tests/observation_files/observations_complete.yamlobs"
-)
+from flownet.data import FlowData
 
-TRAINING_ERT_OBS_FILE_NAME = pathlib.Path(
-    "./tests/observation_files/observations_training.ertobs"
-)
-TEST_ERT_OBS_FILE_NAME = pathlib.Path(
-    "./tests/observation_files/observations_test.ertobs"
-)
+from flownet.network_model import create_connections
 
-TRAINING_YAML_OBS_FILE_NAME = pathlib.Path(
-    "./tests/observation_files/observations_training.yamlobs"
+from configsuite import ConfigSuite
+
+from flownet.realization import Schedule
+
+from flownet.network_model import NetworkModel
+
+from flownet.config_parser import parse_config
+
+from flownet.ert import create_ert_setup
+
+import jinja2
+
+import numpy as np
+
+import pandas as pd
+
+_TEMPLATE_ENVIRONMENT = jinja2.Environment(
+    loader=jinja2.PackageLoader("flownet", "templates"),
+    undefined=jinja2.StrictUndefined,
 )
-TEST_YAML_OBS_FILE_NAME = pathlib.Path(
-    "./tests/observation_files/observations_test.yamlobs"
-)
+_TEMPLATE_ENVIRONMENT.globals["isnan"] = np.isnan
 
 
 def read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
@@ -110,30 +115,103 @@ def test_check_obsfiles_ert_yaml() -> None:
        Returns:
            None
     """
+    PRODUCTION_FILE_NAME = pathlib.Path(
+        "/home/manuel/repos/Flownet_October/flownet-testdata/norne_test/input_model/norne/NORNE_ATW2013"
+    )
+    CONFIG_FILE_NAME = pathlib.Path(
+        "/home/manuel/repos/Flownet_October/flownet-testdata/norne_test/config/assisted_history_matching.yml"
+    )
 
-    # Comparing the complete observation data
-    # Reading ERT file
-    ert_obs = read_ert_obs(ERT_OBS_FILE_NAME)
+    # Load Config
+    config = parse_config(CONFIG_FILE_NAME, None)
 
-    # Reading YAML file
-    parsed_yaml_file = read_yaml_obs(YAML_OBS_FILE_NAME)
+    # Load production and well coordinate data
+    field_data = FlowData(
+        PRODUCTION_FILE_NAME,
+        "bottom_point",
+    )
 
-    assert compare(ert_obs, parsed_yaml_file)
+    df_production_data: pd.DataFrame = field_data.production
+    df_well_connections: pd.DataFrame = field_data.well_connections
 
-    # Comparing the training observation data
-    # Reading ERT file
-    training_ert_obs = read_ert_obs(TRAINING_ERT_OBS_FILE_NAME)
+    df_entity_connections: pd.DataFrame = create_connections(
+        df_well_connections[["WELL_NAME", "X", "Y", "Z"]].drop_duplicates(keep="first"),
+        config,
+        None,
+    )
 
-    # Reading YAML file
-    training_parsed_yaml_file = read_yaml_obs(TRAINING_YAML_OBS_FILE_NAME)
+    network = NetworkModel(
+        df_entity_connections=df_entity_connections,
+        df_well_connections=df_well_connections,
+        cell_length=1,
+        area=1,
+        fault_planes=None,
+        fault_tolerance=1,
+    )
 
-    assert compare(training_ert_obs, training_parsed_yaml_file)
+    schedule = Schedule(network, df_production_data, config)
 
-    # Comparing the Test observation data
-    # Reading ERT file
-    test_ert_obs = read_ert_obs(TEST_ERT_OBS_FILE_NAME)
+    training_set_fraction = 0.75
+    num_dates = len(schedule.get_dates())
+    num_training_dates = round(num_dates * training_set_fraction)
 
-    # Reading YAML file
-    test_parsed_yaml_file = read_yaml_obs(TEST_YAML_OBS_FILE_NAME)
+    export_settings = [
+        ["_complete", 1, num_dates],
+        ["_training", 1, num_training_dates],
+        ["_test", num_training_dates + 1, num_dates],
+    ]
 
-    assert compare(test_ert_obs, test_parsed_yaml_file)
+    file_root = pathlib.Path("./tests/observation_files/observations")
+    obs_export_types = ["yamlobs", "ertobs"]
+    print("WRITING the files")
+    for obs_export_type in obs_export_types:
+        for setting in export_settings:
+            # if yaml:
+            # obs_export_type = "yamlobs"
+            # else:
+            # obs_export_type = "ertobs"
+            export_filename = f"{file_root}{setting[0]}.{obs_export_type}"
+            template = _TEMPLATE_ENVIRONMENT.get_template(
+                f"observations.{obs_export_type}.jinja2"
+            )
+            with open(export_filename, "w") as fh:
+                fh.write(
+                    template.render(
+                        {
+                            "schedule": schedule,
+                            "error_config": config.flownet.data_source.simulation.vectors,
+                            "num_beginning_date": setting[1],
+                            "num_end_date": setting[2],
+                        }
+                    )
+                )
+
+    print("READING the files")
+
+    for setting in export_settings:
+        ert_obs_file_name = f"{file_root}{setting[0]}.ertobs"
+        yaml_obs_file_name = f"{file_root}{setting[0]}.yamlobs"
+        # Comparing the complete observation data
+        # Reading ERT file
+        ert_obs = read_ert_obs(ert_obs_file_name)
+        # Reading YAML file
+        parsed_yaml_file = read_yaml_obs(yaml_obs_file_name)
+        assert compare(ert_obs, parsed_yaml_file)
+
+    ## Comparing the training observation data
+    ## Reading ERT file
+    # training_ert_obs = read_ert_obs(TRAINING_ERT_OBS_FILE_NAME)
+
+    ## Reading YAML file
+    # training_parsed_yaml_file = read_yaml_obs(TRAINING_YAML_OBS_FILE_NAME)
+
+    # assert compare(training_ert_obs, training_parsed_yaml_file)
+
+    ## Comparing the Test observation data
+    ## Reading ERT file
+    # test_ert_obs = read_ert_obs(TEST_ERT_OBS_FILE_NAME)
+
+    ## Reading YAML file
+    # test_parsed_yaml_file = read_yaml_obs(TEST_YAML_OBS_FILE_NAME)
+
+    # assert compare(test_ert_obs, test_parsed_yaml_file)
