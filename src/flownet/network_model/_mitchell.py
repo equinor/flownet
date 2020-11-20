@@ -171,7 +171,7 @@ def mitchell_best_candidate_modified_3d(
             delta_y_relative = np.power(
                 ((y[0:i] - y_candidate[j]) / (y_max - y_min)), 2
             )
-            if np.all([i == z[0] for i in z]):
+            if np.all(z==z[0]):
                 delta_z_relative = 0
             else:
                 delta_z_relative = np.power(
