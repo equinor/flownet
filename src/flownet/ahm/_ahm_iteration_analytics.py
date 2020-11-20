@@ -4,7 +4,7 @@ import itertools
 import os
 import pathlib
 import re
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, Optional, List, Tuple
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
@@ -97,7 +97,7 @@ def prepare_flownet_data(
 
 def normalize_data(
     data_opm_reference: np.array, data_ensembles_flownet: List[np.array]
-) -> (np.array, List[np.array]):
+) -> Tuple[np.array, List[np.array]]:
     """
     This function normalizes data from a 2D numpy array containing data from the
     reference simulation and multiple ensembles of FlowNet simulations,
@@ -266,7 +266,7 @@ def compute_metric_ensemble(
 
 def make_dataframe_simulation_data(
     path: str, eclbase_file: str, keys: List[str], end_date: np.datetime64
-) -> (pd.DataFrame, int, int):
+) -> Tuple[pd.DataFrame, int, int]:
     """
     Internal helper function to generate dataframe containing
     data from ensemble of simulations from selected simulation keys
@@ -298,7 +298,7 @@ def make_dataframe_simulation_data(
     nb_real = 0
     for runpath in realizations_dict:
         df_tmp = pd.DataFrame()
-        if (realizations_dict[runpath] is not None) and (
+        if realizations_dict[runpath] and (
             np.datetime64(realizations_dict[runpath].dates[-1]) >= end_date
         ):
             dates = realizations_dict[runpath].dates
