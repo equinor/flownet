@@ -286,7 +286,7 @@ def make_dataframe_simulation_data(
     iteration = int(re.findall(r"[0-9]+", sorted(glob.glob(path))[-1])[-1])
     runpath_list = glob.glob(path[::-1].replace("*", str(iteration), 1)[::-1])
 
-    realizations_dict = {}
+    realizations_dict: Dict[str, Any] = {}
     # Load summary files of latest iteration
     # with concurrent.futures.ProcessPoolExecutor() as executor:
     for runpath, eclbase in list(zip(runpath_list, itertools.repeat(eclbase_file))):
@@ -298,7 +298,7 @@ def make_dataframe_simulation_data(
     nb_real = 0
     for runpath in realizations_dict:
         df_tmp = pd.DataFrame()
-        if realizations_dict[runpath] and (
+        if isinstance(realizations_dict[runpath], EclSum) and (
             np.datetime64(realizations_dict[runpath].dates[-1]) >= end_date
         ):
             dates = realizations_dict[runpath].dates
