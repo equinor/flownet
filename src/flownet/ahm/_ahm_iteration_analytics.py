@@ -1,6 +1,7 @@
 import argparse
+from multiprocessing.pool import ThreadPool
+import functools
 import glob
-import itertools
 import os
 import pathlib
 import re
@@ -195,18 +196,23 @@ def accuracy_metric(
     return score
 
 
-def _load_simulations(runpath: str, ecl_base: str) -> Optional[EclSum]:
+def _load_simulations(runpath: str, ecl_base: str) -> Tuple[str, Optional[EclSum]]:
     """
     Internal helper function to simulation results in parallel.
     Args:
         runpath: Path to where the realization is run.
         ecl_base: Path to where the realization is run.
     Returns:
-        EclSum, or None in case of failed simulation (inexistent .UNSMRY file)
+        (runpath, EclSum), or (runpath, None) in case of failed simulation (inexistent .UNSMRY file)
     """
-    if os.path.exists(pathlib.Path(runpath) / pathlib.Path(ecl_base + ".UNSMRY")):
-        return EclSum(str(pathlib.Path(runpath) / pathlib.Path(ecl_base)))
-    return None
+    try:
+        eclsum = EclSum(str(pathlib.Path(runpath) / pathlib.Path(ecl_base)))
+    except KeyboardInterrupt:
+        raise
+    except:
+        raise
+
+    return runpath, eclsum
 
 
 def load_csv_file(csv_file: str, csv_columns: List[str]) -> pd.DataFrame:
@@ -288,9 +294,13 @@ def make_dataframe_simulation_data(
 
     realizations_dict: Dict[str, Any] = {}
     # Load summary files of latest iteration
-    # with concurrent.futures.ProcessPoolExecutor() as executor:
-    for runpath, eclbase in list(zip(runpath_list, itertools.repeat(eclbase_file))):
-        realizations_dict[runpath] = _load_simulations(runpath, eclbase)
+    partial_load_simulations = functools.partial(
+        _load_simulations, ecl_base=eclbase_file
+    )
+
+    realizations_dict = dict(
+        ThreadPool(processes=None).map(partial_load_simulations, runpath_list)
+    )
 
     # Prepare dataframe
     # pylint: disable-msg=too-many-locals
