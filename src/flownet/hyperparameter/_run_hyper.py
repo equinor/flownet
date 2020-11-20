@@ -113,7 +113,7 @@ def flownet_ahm_run(x: list, args: argparse.Namespace):
                         ]
                     )
 
-                    mlflow.log_metric("hyperopt_loss", value=hyperopt_loss)
+                    mlflow.log_metric("hyperopt_loss", value=hyperopt_loss, step=row[1])
 
         mlflow.end_run(status=RunStatus.to_string(RunStatus.FINISHED))
         return {"loss": hyperopt_loss, "status": STATUS_OK}
