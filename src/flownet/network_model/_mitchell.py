@@ -47,7 +47,7 @@ def mitchell_best_candidate_modified_3d(
     """
     np.random.seed(random_seed)
     start = time.time()
-    print("Adding flow nodes:  0%", end=" ")
+    print("Adding flow nodes:  0%", end="")
 
     # Read list of coordinate tuples and convert to 1D-numpy arrays
     x, y, z = (np.asarray(t) for t in zip(*perforations))
