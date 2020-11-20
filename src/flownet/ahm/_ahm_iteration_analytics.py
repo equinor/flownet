@@ -210,7 +210,7 @@ def _load_simulations(runpath: str, ecl_base: str) -> Tuple[str, Optional[EclSum
     except KeyboardInterrupt:
         raise
     except:
-        raise
+        eclsum = None
 
     return runpath, eclsum
 
