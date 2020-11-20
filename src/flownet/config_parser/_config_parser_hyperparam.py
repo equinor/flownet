@@ -62,13 +62,16 @@ def list_hyperparameters_names(
     return hyperparameters
 
 
-def list_hyperparameters(config_dict: dict, hyperparameters: list) -> list:
+def list_hyperparameters(
+    config_dict: dict, hyperparameters: list, in_config: str = ""
+) -> list:
     """List all hyperparameters defined in a yaml configuration file.
 
     Args:
         config_dict: configuration as dictionary
         hyperparameters: list of hyperparameters already found (used for
                          recursive calling of the function.)
+        in_config: path in the config file
 
     Returns:
         Return a list of all hyperparameters in the config.
@@ -76,10 +79,14 @@ def list_hyperparameters(config_dict: dict, hyperparameters: list) -> list:
     """
     for key, value in config_dict.items():
         if isinstance(value, dict):
-            hyperparameters += list_hyperparameters(value, hyperparameters=[])
+            hyperparameters += list_hyperparameters(
+                value, hyperparameters=[], in_config=f"{key}."
+            )
         if isinstance(value, list):
             if value[0] in ["UNIFORM_CHOICE", "UNIFORM", "CHOICE"]:
-                value = create_hyperopt_space(key=key, name=value[0], values=value[1:])
+                value = create_hyperopt_space(
+                    key=f"{in_config}{key}", name=value[0], values=value[1:]
+                )
                 hyperparameters.append(value)
 
     return hyperparameters
