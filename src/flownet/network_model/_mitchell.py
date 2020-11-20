@@ -88,7 +88,7 @@ def mitchell_best_candidate_modified_3d(
         z_max = max(z)
 
     # Determine the convex hull of the original or linearly scaled perforations
-    if np.all([i == z[0] for i in z]):
+    if np.all(z==z[0]):
         # 2D cases
         hull = Delaunay(np.column_stack([x, y]))
     else:
