@@ -154,7 +154,7 @@ def mitchell_best_candidate_modified_3d(
 
             else:
                 # Test whether all points are inside the convex hull of the perforations
-                if np.all([i == z[0] for i in z]):
+                if np.all(z==z[0]):
                     in_hull = hull.find_simplex(candidates[:, (0, 1)]) >= 0
                 else:
                     in_hull = hull.find_simplex(candidates) >= 0
