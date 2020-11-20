@@ -1,6 +1,7 @@
 from typing import List
 
 import numpy as np
+
 from flownet.network_model._mitchell import mitchell_best_candidate_modified_3d
 from src.flownet.utils.types import Coordinate
 
