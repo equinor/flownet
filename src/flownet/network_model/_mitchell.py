@@ -88,7 +88,12 @@ def mitchell_best_candidate_modified_3d(
         z_max = max(z)
 
     # Determine the convex hull of the original or linearly scaled perforations
-    hull = Delaunay(np.column_stack([x, y, z]))
+    if np.all(z == z[0]):
+        # 2D cases
+        hull = Delaunay(np.column_stack([x, y]))
+    else:
+        # 3D cases
+        hull = Delaunay(np.column_stack([x, y, z]))
 
     # Generate all new flow nodes
     for i in range(num_points, num_points + num_added_flow_nodes):
@@ -149,7 +154,10 @@ def mitchell_best_candidate_modified_3d(
 
             else:
                 # Test whether all points are inside the convex hull of the perforations
-                in_hull = hull.find_simplex(candidates) >= 0
+                if np.all(z == z[0]):
+                    in_hull = hull.find_simplex(candidates[:, (0, 1)]) >= 0
+                else:
+                    in_hull = hull.find_simplex(candidates) >= 0
 
         best_distance = 0
         best_candidate = 0
@@ -163,9 +171,12 @@ def mitchell_best_candidate_modified_3d(
             delta_y_relative = np.power(
                 ((y[0:i] - y_candidate[j]) / (y_max - y_min)), 2
             )
-            delta_z_relative = np.power(
-                ((z[0:i] - z_candidate[j]) / (z_max - z_min)), 2
-            )
+            if np.all(z == z[0]):
+                delta_z_relative = 0
+            else:
+                delta_z_relative = np.power(
+                    ((z[0:i] - z_candidate[j]) / (z_max - z_min)), 2
+                )
             dists = np.sqrt(delta_x_relative + delta_y_relative + delta_z_relative)
 
             # Select the shortest distance
