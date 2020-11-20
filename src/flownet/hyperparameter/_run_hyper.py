@@ -78,6 +78,13 @@ def flownet_ahm_run(x: list, args: argparse.Namespace):
         mlflow.get_artifact_uri().rsplit("artifacts")[0] + "flownet_run"
     )
     try:
+        parameters = list_hyperparameters_names(
+            yaml.safe_load(args.config.read_text()), []
+        )
+
+        for (parameter, param_value) in zip(parameters, x):
+            mlflow.log_param(key=parameter, value=param_value)
+
         run_flownet_history_matching(config, run_args)
 
         df_analytics = pd.read_csv(
@@ -108,17 +115,10 @@ def flownet_ahm_run(x: list, args: argparse.Namespace):
 
                     mlflow.log_metric("hyperopt_loss", value=hyperopt_loss)
 
-        parameters = list_hyperparameters_names(
-            yaml.safe_load(args.config.read_text()), []
-        )
-
-        for (parameter, param_value) in zip(parameters, x):
-            mlflow.log_param(key=parameter, value=param_value)
-
         mlflow.end_run(status=RunStatus.to_string(RunStatus.FINISHED))
         return {"loss": hyperopt_loss, "status": STATUS_OK}
 
-    except Exception:  # pylint: disable=broad-except
-
+    except Exception as exception:  # pylint: disable=broad-except
+        print(exception)
         mlflow.end_run(status=RunStatus.to_string(RunStatus.FAILED))
         return {"status": STATUS_FAIL}
