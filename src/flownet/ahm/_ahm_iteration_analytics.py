@@ -209,7 +209,7 @@ def _load_simulations(runpath: str, ecl_base: str) -> Tuple[str, Optional[EclSum
         eclsum = EclSum(str(pathlib.Path(runpath) / pathlib.Path(ecl_base)))
     except KeyboardInterrupt:
         raise
-    except:
+    except:  # pylint: disable=broad-except
         eclsum = None
 
     return runpath, eclsum
