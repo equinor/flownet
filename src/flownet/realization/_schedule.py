@@ -25,9 +25,9 @@ class Schedule:
 
     def __init__(
         self,
-        network: Optional[NetworkModel] = None,
-        df_production_data: Optional[pd.DataFrame] = None,
-        config: Optional[ConfigSuite.snapshot] = None,
+        network: NetworkModel = None,
+        df_production_data: pd.DataFrame = None,
+        config: ConfigSuite.snapshot = None,
     ):
         self._schedule_items: List = []
         self._network: NetworkModel = network
