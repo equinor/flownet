@@ -26,6 +26,13 @@ import numpy as np
 
 import pandas as pd
 
+_PRODUCTION_FILE_NAME = pathlib.Path(
+    "/home/manuel/repos/Flownet_October/flownet-testdata/norne_test/input_model/norne/NORNE_ATW2013"
+)
+_CONFIG_FILE_NAME = pathlib.Path(
+    "/home/manuel/repos/Flownet_October/flownet-testdata/norne_test/config/assisted_history_matching.yml"
+)
+
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
     undefined=jinja2.StrictUndefined,
@@ -115,19 +122,13 @@ def test_check_obsfiles_ert_yaml() -> None:
        Returns:
            None
     """
-    PRODUCTION_FILE_NAME = pathlib.Path(
-        "/home/manuel/repos/Flownet_October/flownet-testdata/norne_test/input_model/norne/NORNE_ATW2013"
-    )
-    CONFIG_FILE_NAME = pathlib.Path(
-        "/home/manuel/repos/Flownet_October/flownet-testdata/norne_test/config/assisted_history_matching.yml"
-    )
 
     # Load Config
-    config = parse_config(CONFIG_FILE_NAME, None)
+    config = parse_config(_CONFIG_FILE_NAME, None)
 
     # Load production and well coordinate data
     field_data = FlowData(
-        PRODUCTION_FILE_NAME,
+        _PRODUCTION_FILE_NAME,
         "bottom_point",
     )
 
@@ -151,6 +152,15 @@ def test_check_obsfiles_ert_yaml() -> None:
 
     schedule = Schedule(network, df_production_data, config)
 
+    # This printing just helps to see what it is inside schedule
+    # print(schedule._df_production_data)
+    # print(schedule.get_vfp())
+    # print(schedule._schedule_items)
+
+    # schedule_2 = Schedule
+    # schedule_2._schedule_items = schedule._schedule_items
+    # schedule_2._schedule_items =
+
     training_set_fraction = 0.75
     num_dates = len(schedule.get_dates())
     num_training_dates = round(num_dates * training_set_fraction)
@@ -166,10 +176,6 @@ def test_check_obsfiles_ert_yaml() -> None:
     print("WRITING the files")
     for obs_export_type in obs_export_types:
         for setting in export_settings:
-            # if yaml:
-            # obs_export_type = "yamlobs"
-            # else:
-            # obs_export_type = "ertobs"
             export_filename = f"{file_root}{setting[0]}.{obs_export_type}"
             template = _TEMPLATE_ENVIRONMENT.get_template(
                 f"observations.{obs_export_type}.jinja2"
@@ -196,22 +202,5 @@ def test_check_obsfiles_ert_yaml() -> None:
         ert_obs = read_ert_obs(ert_obs_file_name)
         # Reading YAML file
         parsed_yaml_file = read_yaml_obs(yaml_obs_file_name)
+        # Comparing observation data
         assert compare(ert_obs, parsed_yaml_file)
-
-    ## Comparing the training observation data
-    ## Reading ERT file
-    # training_ert_obs = read_ert_obs(TRAINING_ERT_OBS_FILE_NAME)
-
-    ## Reading YAML file
-    # training_parsed_yaml_file = read_yaml_obs(TRAINING_YAML_OBS_FILE_NAME)
-
-    # assert compare(training_ert_obs, training_parsed_yaml_file)
-
-    ## Comparing the Test observation data
-    ## Reading ERT file
-    # test_ert_obs = read_ert_obs(TEST_ERT_OBS_FILE_NAME)
-
-    ## Reading YAML file
-    # test_parsed_yaml_file = read_yaml_obs(TEST_YAML_OBS_FILE_NAME)
-
-    # assert compare(test_ert_obs, test_parsed_yaml_file)
