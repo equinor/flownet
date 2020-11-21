@@ -157,6 +157,7 @@ def test_check_obsfiles_ert_yaml() -> None:
     # print(schedule.get_vfp())
     # print(schedule._schedule_items)
 
+    # I was trying to see the minimun  sett variable that we need on schedule_2 but it didn't work
     # schedule_2 = Schedule
     # schedule_2._schedule_items = schedule._schedule_items
     # schedule_2._schedule_items =
