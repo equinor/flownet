@@ -30,12 +30,22 @@ class Schedule:
         config: ConfigSuite.snapshot = None,
     ):
         self._schedule_items: List = []
-        self._network: NetworkModel = network
-        self._df_production_data: pd.DataFrame = df_production_data
-        self._prod_control_mode: str = config.flownet.prod_control_mode
-        self._inj_control_mode: str = config.flownet.inj_control_mode
-        self._case_name: str = config.name
-        self._create_schedule()
+        if not network == None and not df_production_data.empty and not config == None:
+            # All info is given, make a netork
+            self._network: NetworkModel = network
+            self._df_production_data: pd.DataFrame = df_production_data
+            self._prod_control_mode: str = config.flownet.prod_control_mode
+            self._inj_control_mode: str = config.flownet.inj_control_mode
+            self._case_name: str = config.name
+            self._create_schedule()
+        elif network == None and df_production_data.empty and config == None:
+            self._prod_control_mode: str = "RESV"
+            self._inj_control_mode: str = "RATE"
+            self._case_name: str = "none"
+        else:
+            raise ValueError(
+                "Cannot initiate Schedule object. Either supply all arguments to fully initiate a Schedule object or nothing to initiate an empty Schedule object"
+            )
 
     def _create_schedule(self):
         """
