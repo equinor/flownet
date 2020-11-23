@@ -130,21 +130,29 @@ def test_check_obsfiles_ert_yaml() -> None:
     config = parse_config(_CONFIG_FILE_NAME, None)
 
     # Load production 
-
-    df_production_data: pd.DataFrame =  pd.read_csv("Norne_ProductionData.csv")
+    headers = ['date','WOPR','WGPR','WWPR','WBHP','WTHP','WGIR','WWIR','WSTAT','WELL_NAME','PHASE','TYPE','date']
     
-    print(type(df_production_data))
+    #dtypes = {'date': 'str', 'WOPR': 'float', 'WGPR': 'float', 'WWPR': 'float','WBHP': 'float','WTHP': 'float','WGIR': 'float','WWIR': 'float','WSTAT': 'float','WELL_NAME': 'str','PHASE': 'str','TYPE': 'str','date': 'str'}
+    
+    
+    
+    
+    df_production_data: pd.DataFrame =  pd.read_csv("Norne_ProductionData.csv",
+                                                    usecols=headers)
+    
+    print(type(df_production_data.date))
 
-    print(df_production_data)
+    print(df_production_data.date)
+    
+    df_production_data.date = pd.to_datetime(df_production_data.date)
+    
        
     
     schedule_2 = Schedule(df_production_data = df_production_data)
     #schedule_2._schedule_items = schedule._schedule_items
     for _, value in schedule_2._df_production_data.iterrows():
         #start_date = schedule_2.get_well_start_date(value["WELL_NAME"])  
-        print(type(value["date"]))
         start_date = date(1999, 1, 1)
-        print(type(start_date))        
         if value["TYPE"] == "WI" and start_date and value["date"] >= start_date:
             schedule_2.append(
                 WCONINJH(
