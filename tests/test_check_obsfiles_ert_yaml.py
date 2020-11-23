@@ -2,7 +2,7 @@ import pathlib
 
 import os.path
 
-from datetime import datetime
+from datetime import datetime, date
 
 import yaml
 
@@ -19,6 +19,9 @@ from flownet.network_model import NetworkModel
 from flownet.config_parser import parse_config
 
 from flownet.ert import create_ert_setup
+
+from flownet.realization._simulation_keywords import Keyword, WCONHIST, WCONINJH
+
 
 import jinja2
 
@@ -126,44 +129,72 @@ def test_check_obsfiles_ert_yaml() -> None:
     # Load Config
     config = parse_config(_CONFIG_FILE_NAME, None)
 
-    # Load production and well coordinate data
-    field_data = FlowData(
-        _PRODUCTION_FILE_NAME,
-        "bottom_point",
-    )
+    # Load production 
 
-    df_production_data: pd.DataFrame = field_data.production
-    df_well_connections: pd.DataFrame = field_data.well_connections
+    df_production_data: pd.DataFrame =  pd.read_csv("Norne_ProductionData.csv")
+    
+    print(type(df_production_data))
 
-    df_entity_connections: pd.DataFrame = create_connections(
-        df_well_connections[["WELL_NAME", "X", "Y", "Z"]].drop_duplicates(keep="first"),
-        config,
-        None,
-    )
+    print(df_production_data)
+       
+    
+    schedule_2 = Schedule(df_production_data = df_production_data)
+    #schedule_2._schedule_items = schedule._schedule_items
+    for _, value in schedule_2._df_production_data.iterrows():
+        #start_date = schedule_2.get_well_start_date(value["WELL_NAME"])  
+        print(type(value["date"]))
+        start_date = date(1999, 1, 1)
+        print(type(start_date))        
+        if value["TYPE"] == "WI" and start_date and value["date"] >= start_date:
+            schedule_2.append(
+                WCONINJH(
+                    date=value["date"],
+                    well_name=value["WELL_NAME"],
+                    inj_type="WATER",
+                    status=value["WSTAT"],
+                    rate=value["WWIR"],
+                    bhp=value["WBHP"],
+                    thp=value["WTHP"],
+                    inj_control_mode=schedule_2._inj_control_mode,
+                )
+            )
+        elif value["TYPE"] == "GI" and start_date and value["date"] >= start_date:
+            schedule_2.append(
+                WCONINJH(
+                    date=value["date"],
+                    well_name=value["WELL_NAME"],
+                    inj_type="GAS",
+                    status=value["WSTAT"],
+                    rate=value["WGIR"],
+                    bhp=value["WBHP"],
+                    thp=value["WTHP"],
+                    inj_control_mode=schedule_2._inj_control_mode,
+                )
+            )
 
-    network = NetworkModel(
-        df_entity_connections=df_entity_connections,
-        df_well_connections=df_well_connections,
-        cell_length=1,
-        area=1,
-        fault_planes=None,
-        fault_tolerance=1,
-    )
 
-    schedule = Schedule(network, df_production_data, config)
-
-    # This printing just helps to see what it is inside schedule
-    # print(schedule._df_production_data)
-    # print(schedule.get_vfp())
-    # print(schedule._schedule_items)
-
-    # I was trying to see the minimun  sett variable that we need on schedule_2 but it didn't work
-    # schedule_2 = Schedule
-    # schedule_2._schedule_items = schedule._schedule_items
-    # schedule_2._schedule_items =
-
+    #vfp_tables = self.get_vfp()
+    vfp_tables = {'B-4DH': '1*', 'E-3AH': '1*', 'D-1CH': '1*', 'D-3AH': '1*', 'C-3H': '1*', 'E-4AH': '1*', 'K-3H': '1*', 'D-3H': '1*', 'D-1H': '1*', 'E-1H': '1*', 'F-1H': '1*', 'B-2H': '1*', 'E-3H': '1*', 'D-4AH': '1*', 'E-2H': '1*', 'F-2H': '1*', 'D-2H': '1*', 'C-1H': '1*', 'C-2H': '1*', 'B-4BH': '1*', 'E-2AH': '1*', 'C-4H': '1*', 'B-1BH': '1*', 'F-4H': '1*', 'F-3H': '1*', 'B-4AH': '1*', 'B-4H': '1*', 'E-3BH': '1*', 'D-4H': '1*', 'C-4AH': '1*', 'B-3H': '1*', 'B-1AH': '1*', 'B-1H': '1*', 'D-3BH': '1*', 'E-3CH': '1*', 'E-4H': '1*'}
+    for _, value in schedule_2._df_production_data.iterrows():
+        #start_date = self.get_well_start_date(value["WELL_NAME"])
+        start_date = date(1999, 1, 1)
+        if value["TYPE"] == "OP" and start_date and value["date"] >= start_date:
+            schedule_2.append(
+                WCONHIST(
+                    date=value["date"],
+                    well_name=value["WELL_NAME"],
+                    status=value["WSTAT"],
+                    prod_control_mode=schedule_2._prod_control_mode,
+                    vfp_table=vfp_tables[value["WELL_NAME"]],
+                    oil_rate=value["WOPR"],
+                    water_rate=value["WWPR"],
+                    gas_rate=value["WGPR"],
+                    bhp=value["WBHP"],
+                    thp=value["WTHP"],
+                )
+            )             
     training_set_fraction = 0.75
-    num_dates = len(schedule.get_dates())
+    num_dates = len(schedule_2.get_dates())
     num_training_dates = round(num_dates * training_set_fraction)
 
     export_settings = [
@@ -185,7 +216,7 @@ def test_check_obsfiles_ert_yaml() -> None:
                 fh.write(
                     template.render(
                         {
-                            "schedule": schedule,
+                            "schedule": schedule_2,
                             "error_config": config.flownet.data_source.simulation.vectors,
                             "num_beginning_date": setting[1],
                             "num_end_date": setting[2],
