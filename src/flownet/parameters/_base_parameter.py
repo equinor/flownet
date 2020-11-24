@@ -104,7 +104,7 @@ class Parameter(abc.ABC):
         """List of all names for each distribution for the Parameter"""
         return self._names
 
-    @mean_values.setter
+    @names.setter
     def names(self, values: List[float]):
         """Setter for the Parameter names samples."""
         self._names = values
