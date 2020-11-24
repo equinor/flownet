@@ -33,7 +33,7 @@ class Schedule:
         self._prod_control_mode: str
         self._inj_control_mode: str
         self._case_name: str
-        if network and not df_production_data.empty and config:
+        if network and isinstance(df_production_data, pd.DataFrame) and config:
             # All info is given, make a netork
             self._network: NetworkModel = network
             self._df_production_data: pd.DataFrame = df_production_data
