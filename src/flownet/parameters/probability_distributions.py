@@ -64,18 +64,24 @@ class UniformDistribution(ProbabilityDistribution):
             Nothing
         """
         assert (
-            len({"minimum", "maximum", "mean"}.intersection(kwargs)) == 2
+            sum(
+                value is not None
+                for value in list(
+                    map(kwargs.get, {"minimum", "maximum", "mean"}.intersection(kwargs))
+                )
+            )
+            == 2
         ), "Min/mean, min/max or mean/max needs to be defined"
 
-        if "mean" not in kwargs:
+        if "mean" not in kwargs or kwargs.get("mean") is None:
             self.minimum = kwargs.get("minimum")
             self.maximum = kwargs.get("maximum")
             self.mean = (self.minimum + self.maximum) / 2
-        if "minimum" not in kwargs:
+        if "minimum" not in kwargs or kwargs.get("minimum") is None:
             self.mean = kwargs.get("mean")
             self.maximum = kwargs.get("maximum")
             self.minimum = self.mean - (self.maximum - self.mean)
-        if "maximum" not in kwargs:
+        if "maximum" not in kwargs or kwargs.get("maximum") is None:
             self.mean = kwargs.get("mean")
             self.minimum = kwargs.get("minimum")
             self.maximum = self.mean + (self.mean - self.minimum)
@@ -118,22 +124,28 @@ class LogUniformDistribution(ProbabilityDistribution):
             Nothing
         """
         assert (
-            len({"minimum", "maximum", "mean"}.intersection(kwargs)) == 2
+            sum(
+                value is not None
+                for value in list(
+                    map(kwargs.get, {"minimum", "maximum", "mean"}.intersection(kwargs))
+                )
+            )
+            == 2
         ), "Min/mean, min/max or mean/max needs to be defined"
 
-        if "mean" not in kwargs:
+        if "mean" not in kwargs or kwargs.get("mean") is None:
             self.minimum = kwargs.get("minimum")
             self.maximum = kwargs.get("maximum")
             self.mean = (self.maximum - self.minimum) / np.log(
                 self.maximum / self.minimum
             )
-        if "minimum" not in kwargs:
+        if "minimum" not in kwargs or kwargs.get("minimum") is None:
             self.mean = kwargs.get("mean")
             self.maximum = kwargs.get("maximum")
             self._find_dist_minmax(
                 mean_val=self.mean, min_val=None, max_val=self.maximum
             )
-        if "maximum" not in kwargs:
+        if "maximum" not in kwargs or kwargs.get("maximum") is None:
             self.mean = kwargs.get("mean")
             self.minimum = kwargs.get("minimum")
             self._find_dist_minmax(
@@ -224,7 +236,16 @@ class TriangularDistribution(ProbabilityDistribution):
             Nothing
         """
         assert (
-            len(kwargs) >= 3
+            sum(
+                value is not None
+                for value in list(
+                    map(
+                        kwargs.get,
+                        {"minimum", "maximum", "mean", "mode"}.intersection(kwargs),
+                    )
+                )
+            )
+            == 3
         ), "Triangular distributions needs three parameters to be defined"
         assert (
             {"minimum", "mean", "maximum"}.issubset(kwargs)
