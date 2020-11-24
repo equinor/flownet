@@ -21,50 +21,61 @@ import numpy as np
 import pandas as pd
 
 
+_OBSERVATION_FILES = pathlib.Path("./tests/observation_files")
 
-_OBSERVATION_FILES = pathlib.Path(
-    "./tests/observation_files"
-)
-
-_PRODUCTION_DATA_FILE_NAME = pathlib.Path(
-    _OBSERVATION_FILES / "ProductionData.csv"
-)
+_PRODUCTION_DATA_FILE_NAME = pathlib.Path(_OBSERVATION_FILES / "ProductionData.csv")
 
 _TRAINING_SET_FRACTION = 0.75
 
 # Define a fake Config
 _CONFIG = collections.namedtuple("configuration", "flownet")
 _CONFIG.flownet = collections.namedtuple("flownet", "data_source")
-_CONFIG.flownet.data_source = collections.namedtuple("data_source", "simulation")    
-_CONFIG.flownet.data_source.simulation =  collections.namedtuple( "simulation","vectors")
-_CONFIG.flownet.data_source.simulation.vectors = collections.namedtuple( "vectors","WTHP")
-_CONFIG.flownet.data_source.simulation.vectors.WOPR = collections.namedtuple( "WOPR","min_error")
-_CONFIG.flownet.data_source.simulation.vectors.WOPR.min_error= 100
-_CONFIG.flownet.data_source.simulation.vectors.WOPR.rel_error= 0.1
+_CONFIG.flownet.data_source = collections.namedtuple("data_source", "simulation")
+_CONFIG.flownet.data_source.simulation = collections.namedtuple("simulation", "vectors")
+_CONFIG.flownet.data_source.simulation.vectors = collections.namedtuple(
+    "vectors", "WTHP"
+)
+_CONFIG.flownet.data_source.simulation.vectors.WOPR = collections.namedtuple(
+    "WOPR", "min_error"
+)
+_CONFIG.flownet.data_source.simulation.vectors.WOPR.min_error = 100
+_CONFIG.flownet.data_source.simulation.vectors.WOPR.rel_error = 0.1
 
-_CONFIG.flownet.data_source.simulation.vectors.WGPR = collections.namedtuple( "WGPR","min_error")
-_CONFIG.flownet.data_source.simulation.vectors.WGPR.min_error= 100000
-_CONFIG.flownet.data_source.simulation.vectors.WGPR.rel_error= 0.1
+_CONFIG.flownet.data_source.simulation.vectors.WGPR = collections.namedtuple(
+    "WGPR", "min_error"
+)
+_CONFIG.flownet.data_source.simulation.vectors.WGPR.min_error = 100000
+_CONFIG.flownet.data_source.simulation.vectors.WGPR.rel_error = 0.1
 
-_CONFIG.flownet.data_source.simulation.vectors.WWPR = collections.namedtuple( "WWPR","min_error")
-_CONFIG.flownet.data_source.simulation.vectors.WWPR.min_error= 100
-_CONFIG.flownet.data_source.simulation.vectors.WWPR.rel_error= 0.1
+_CONFIG.flownet.data_source.simulation.vectors.WWPR = collections.namedtuple(
+    "WWPR", "min_error"
+)
+_CONFIG.flownet.data_source.simulation.vectors.WWPR.min_error = 100
+_CONFIG.flownet.data_source.simulation.vectors.WWPR.rel_error = 0.1
 
-_CONFIG.flownet.data_source.simulation.vectors.WBHP = collections.namedtuple( "WBHP","min_error")
-_CONFIG.flownet.data_source.simulation.vectors.WBHP.min_error= 10
-_CONFIG.flownet.data_source.simulation.vectors.WBHP.rel_error= 0.05
+_CONFIG.flownet.data_source.simulation.vectors.WBHP = collections.namedtuple(
+    "WBHP", "min_error"
+)
+_CONFIG.flownet.data_source.simulation.vectors.WBHP.min_error = 10
+_CONFIG.flownet.data_source.simulation.vectors.WBHP.rel_error = 0.05
 
-_CONFIG.flownet.data_source.simulation.vectors.WTHP = collections.namedtuple( "WTHP","min_error")
-_CONFIG.flownet.data_source.simulation.vectors.WTHP.min_error= 10
-_CONFIG.flownet.data_source.simulation.vectors.WTHP.rel_error= 0.05   
+_CONFIG.flownet.data_source.simulation.vectors.WTHP = collections.namedtuple(
+    "WTHP", "min_error"
+)
+_CONFIG.flownet.data_source.simulation.vectors.WTHP.min_error = 10
+_CONFIG.flownet.data_source.simulation.vectors.WTHP.rel_error = 0.05
 
-_CONFIG.flownet.data_source.simulation.vectors.WGIR = collections.namedtuple( "WGIR","min_error")
-_CONFIG.flownet.data_source.simulation.vectors.WGIR.min_error= 100000
-_CONFIG.flownet.data_source.simulation.vectors.WGIR.rel_error= 0.1
+_CONFIG.flownet.data_source.simulation.vectors.WGIR = collections.namedtuple(
+    "WGIR", "min_error"
+)
+_CONFIG.flownet.data_source.simulation.vectors.WGIR.min_error = 100000
+_CONFIG.flownet.data_source.simulation.vectors.WGIR.rel_error = 0.1
 
-_CONFIG.flownet.data_source.simulation.vectors.WWIR = collections.namedtuple( "WWIR","min_error")
-_CONFIG.flownet.data_source.simulation.vectors.WWIR.min_error= 100
-_CONFIG.flownet.data_source.simulation.vectors.WWIR.rel_error= 0.1
+_CONFIG.flownet.data_source.simulation.vectors.WWIR = collections.namedtuple(
+    "WWIR", "min_error"
+)
+_CONFIG.flownet.data_source.simulation.vectors.WWIR.min_error = 100
+_CONFIG.flownet.data_source.simulation.vectors.WWIR.rel_error = 0.1
 
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
@@ -155,22 +166,37 @@ def test_check_obsfiles_ert_yaml() -> None:
            None. The file names containig the observation files are harcoded as
        Returns:
            None
-    """                
+    """
 
-    # Load production 
-    print("Reading production data")                        
-    
-    headers = ['date','WOPR','WGPR','WWPR','WBHP','WTHP','WGIR','WWIR','WSTAT','WELL_NAME','PHASE','TYPE','date']           
-    df_production_data: pd.DataFrame =  pd.read_csv(_PRODUCTION_DATA_FILE_NAME,
-                                                    usecols=headers)
-    
+    # Load production
+    print("Reading production data")
+
+    headers = [
+        "date",
+        "WOPR",
+        "WGPR",
+        "WWPR",
+        "WBHP",
+        "WTHP",
+        "WGIR",
+        "WWIR",
+        "WSTAT",
+        "WELL_NAME",
+        "PHASE",
+        "TYPE",
+        "date",
+    ]
+    df_production_data: pd.DataFrame = pd.read_csv(
+        _PRODUCTION_DATA_FILE_NAME, usecols=headers
+    )
+
     df_production_data["date"] = pd.to_datetime(df_production_data["date"])
-       
-    # Create schedule 
+
+    # Create schedule
     schedule = Schedule()
-    
+
     # Feed schedule with production data
-    start_date = date(2005,10,1)
+    start_date = date(2005, 10, 1)
     for _, value in df_production_data.iterrows():
         if value["TYPE"] == "WI" and start_date and value["date"] >= start_date:
             schedule.append(
@@ -205,7 +231,7 @@ def test_check_obsfiles_ert_yaml() -> None:
                     well_name=value["WELL_NAME"],
                     status=value["WSTAT"],
                     prod_control_mode=schedule._prod_control_mode,
-                    vfp_table='1*',
+                    vfp_table="1*",
                     oil_rate=value["WOPR"],
                     water_rate=value["WWPR"],
                     gas_rate=value["WGPR"],
@@ -213,8 +239,8 @@ def test_check_obsfiles_ert_yaml() -> None:
                     thp=value["WTHP"],
                 )
             )
-                                
-    print("Writing observations files")                        
+
+    print("Writing observations files")
     create_observation_file(
         schedule,
         _OBSERVATION_FILES / "observations.ertobs",
@@ -229,9 +255,9 @@ def test_check_obsfiles_ert_yaml() -> None:
         _TRAINING_SET_FRACTION,
         yaml=True,
     )
-                        
+
     print("Reading observations files")
-    
+
     num_dates = len(schedule.get_dates())
     num_training_dates = round(num_dates * _TRAINING_SET_FRACTION)
 
@@ -240,7 +266,7 @@ def test_check_obsfiles_ert_yaml() -> None:
         ["_training", 1, num_training_dates],
         ["_test", num_training_dates + 1, num_dates],
     ]
-    
+
     file_root = pathlib.Path(_OBSERVATION_FILES / "observations")
     for setting in export_settings:
         ert_obs_file_name = f"{file_root}{setting[0]}.ertobs"
