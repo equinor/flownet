@@ -154,8 +154,8 @@ def test_check_obsfiles_ert_yaml() -> None:
     #     _calculate_welspecs()
     #     
     
-    schedule = Schedule(df_production_data = df_production_data)
-    for _, value in schedule._df_production_data.iterrows():
+    schedule = Schedule()
+    for _, value in df_production_data.iterrows():
         #start_date = schedule.get_well_start_date(value["WELL_NAME"])  
         start_date = date(2005,10,1)
         if value["TYPE"] == "WI" and start_date and value["date"] >= start_date:
@@ -188,7 +188,7 @@ def test_check_obsfiles_ert_yaml() -> None:
 
     #vfp_tables = self.get_vfp()
     vfp_tables = {'K-3H': '1*', 'F-1H': '1*', 'F-2H': '1*'}
-    for _, value in schedule._df_production_data.iterrows():
+    for _, value in df_production_data.iterrows():
         #start_date = self.get_well_start_date(value["WELL_NAME"])
         start_date = date(2005,10,1)
         if value["TYPE"] == "OP" and start_date and value["date"] >= start_date:
