@@ -6,11 +6,9 @@ from datetime import datetime, date
 
 import yaml
 
-from configsuite import ConfigSuite
+import collections
 
 from flownet.realization import Schedule
-
-from flownet.config_parser import parse_config
 
 #from flownet.ert import _create_observation_file
 
@@ -21,10 +19,6 @@ import jinja2
 import numpy as np
 
 import pandas as pd
-
-_CONFIG_FILE_NAME = pathlib.Path(
-    "/home/manuel/repos/Flownet_October/flownet-testdata/norne_test/config/assisted_history_matching.yml"
-)
 
 _PRODUCTION_DATA_FILE_NAME = pathlib.Path(
     "./tests/observation_files/Norne_ProductionData.csv"
@@ -123,20 +117,40 @@ def test_check_obsfiles_ert_yaml() -> None:
 ###############################################################################################                   
 ###############################################################################################                   
 
-    # Load Config
-    config = parse_config(_CONFIG_FILE_NAME, None)
+    # Define a fake Config
+    config = collections.namedtuple("configuration", "flownet")
+    config.flownet = collections.namedtuple("flownet", "data_source")
+    config.flownet.data_source = collections.namedtuple("data_source", "simulation")    
+    config.flownet.data_source.simulation =  collections.namedtuple( "simulation","vectors")
+    config.flownet.data_source.simulation.vectors = collections.namedtuple( "vectors","WTHP")
+    config.flownet.data_source.simulation.vectors.WOPR = collections.namedtuple( "WOPR","min_error")
+    config.flownet.data_source.simulation.vectors.WOPR.min_error= 100
+    config.flownet.data_source.simulation.vectors.WOPR.rel_error= 0.1
     
-    #TODO: Create a fake error vector (config.flownet.data_source.simulation.vectors),
-    #      it apear that it needs to be named_dict type.
-    #vectors = configsuite.config.named_dict
-    #print(type(config.flownet.data_source.simulation.vectors))
-    #print(config.flownet.data_source.simulation.vectors)
-    #print(type(vectors))
-    #print(vectors)
-###############################################################################################                   
-
-
+    config.flownet.data_source.simulation.vectors.WGPR = collections.namedtuple( "WGPR","min_error")
+    config.flownet.data_source.simulation.vectors.WGPR.min_error= 100000
+    config.flownet.data_source.simulation.vectors.WGPR.rel_error= 0.1
     
+    config.flownet.data_source.simulation.vectors.WWPR = collections.namedtuple( "WWPR","min_error")
+    config.flownet.data_source.simulation.vectors.WWPR.min_error= 100
+    config.flownet.data_source.simulation.vectors.WWPR.rel_error= 0.1
+    
+    config.flownet.data_source.simulation.vectors.WBHP = collections.namedtuple( "WBHP","min_error")
+    config.flownet.data_source.simulation.vectors.WBHP.min_error= 10
+    config.flownet.data_source.simulation.vectors.WBHP.rel_error= 0.05
+    
+    config.flownet.data_source.simulation.vectors.WTHP = collections.namedtuple( "WTHP","min_error")
+    config.flownet.data_source.simulation.vectors.WTHP.min_error= 10
+    config.flownet.data_source.simulation.vectors.WTHP.rel_error= 0.05   
+    
+    config.flownet.data_source.simulation.vectors.WGIR = collections.namedtuple( "WGIR","min_error")
+    config.flownet.data_source.simulation.vectors.WGIR.min_error= 100000
+    config.flownet.data_source.simulation.vectors.WGIR.rel_error= 0.1
+    
+    config.flownet.data_source.simulation.vectors.WWIR = collections.namedtuple( "WWIR","min_error")
+    config.flownet.data_source.simulation.vectors.WWIR.min_error= 100
+    config.flownet.data_source.simulation.vectors.WWIR.rel_error= 0.1
+
 
     # Load production 
     
@@ -145,16 +159,11 @@ def test_check_obsfiles_ert_yaml() -> None:
                                                     usecols=headers)
     
     df_production_data["date"] = pd.to_datetime(df_production_data["date"])
-    
-###############################################################################################                   
-###############################################################################################
-
-    #TODO Remormulate Schedules functions: I copied and pasted internal lines in _calculate_wconhist() and _calculate_wconinjh(). 
-    #     This functions requires well names and dates already asing by _calculate_compdat()
-    #     _calculate_welspecs()
-    #     
-    
+       
+    # Create schedule 
     schedule = Schedule()
+    
+    # Feed schedule with production data
     start_date = date(2005,10,1)
     for _, value in df_production_data.iterrows():
         if value["TYPE"] == "WI" and start_date and value["date"] >= start_date:
