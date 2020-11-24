@@ -6,22 +6,15 @@ from datetime import datetime, date
 
 import yaml
 
-from flownet.data import FlowData
-
-from flownet.network_model import create_connections
-
 from configsuite import ConfigSuite
 
 from flownet.realization import Schedule
 
-from flownet.network_model import NetworkModel
-
 from flownet.config_parser import parse_config
 
-from flownet.ert import create_ert_setup
+#from flownet.ert import _create_observation_file
 
 from flownet.realization._simulation_keywords import Keyword, WCONHIST, WCONINJH
-
 
 import jinja2
 
@@ -29,11 +22,12 @@ import numpy as np
 
 import pandas as pd
 
-_PRODUCTION_FILE_NAME = pathlib.Path(
-    "/home/manuel/repos/Flownet_October/flownet-testdata/norne_test/input_model/norne/NORNE_ATW2013"
-)
 _CONFIG_FILE_NAME = pathlib.Path(
     "/home/manuel/repos/Flownet_October/flownet-testdata/norne_test/config/assisted_history_matching.yml"
+)
+
+_PRODUCTION_DATA_FILE_NAME = pathlib.Path(
+    "./tests/observation_files/Norne_ProductionData.csv"
 )
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
@@ -126,35 +120,46 @@ def test_check_obsfiles_ert_yaml() -> None:
            None
     """
 
+###############################################################################################                   
+###############################################################################################                   
+
     # Load Config
     config = parse_config(_CONFIG_FILE_NAME, None)
+    
+    #TODO: Create a fake error vector (config.flownet.data_source.simulation.vectors),
+    #      it apear that it needs to be named_dict type.
+    #vectors = configsuite.config.named_dict
+    #print(type(config.flownet.data_source.simulation.vectors))
+    #print(config.flownet.data_source.simulation.vectors)
+    #print(type(vectors))
+    #print(vectors)
+###############################################################################################                   
+
+
+    
 
     # Load production 
-    headers = ['date','WOPR','WGPR','WWPR','WBHP','WTHP','WGIR','WWIR','WSTAT','WELL_NAME','PHASE','TYPE','date']
     
-    #dtypes = {'date': 'str', 'WOPR': 'float', 'WGPR': 'float', 'WWPR': 'float','WBHP': 'float','WTHP': 'float','WGIR': 'float','WWIR': 'float','WSTAT': 'float','WELL_NAME': 'str','PHASE': 'str','TYPE': 'str','date': 'str'}
-    
-    
-    
-    
-    df_production_data: pd.DataFrame =  pd.read_csv("Norne_ProductionData.csv",
+    headers = ['date','WOPR','WGPR','WWPR','WBHP','WTHP','WGIR','WWIR','WSTAT','WELL_NAME','PHASE','TYPE','date']           
+    df_production_data: pd.DataFrame =  pd.read_csv(_PRODUCTION_DATA_FILE_NAME,
                                                     usecols=headers)
     
-    print(type(df_production_data.date))
+    df_production_data["date"] = pd.to_datetime(df_production_data["date"])
+    
+###############################################################################################                   
+###############################################################################################
 
-    print(df_production_data.date)
+    #TODO Remormulate Schedules functions: I copied and pasted internal lines in _calculate_wconhist() and _calculate_wconinjh(). 
+    #     This functions requires well names and dates already asing by _calculate_compdat()
+    #     _calculate_welspecs()
+    #     
     
-    df_production_data.date = pd.to_datetime(df_production_data.date)
-    
-       
-    
-    schedule_2 = Schedule(df_production_data = df_production_data)
-    #schedule_2._schedule_items = schedule._schedule_items
-    for _, value in schedule_2._df_production_data.iterrows():
-        #start_date = schedule_2.get_well_start_date(value["WELL_NAME"])  
-        start_date = date(1999, 1, 1)
+    schedule = Schedule(df_production_data = df_production_data)
+    for _, value in schedule._df_production_data.iterrows():
+        #start_date = schedule.get_well_start_date(value["WELL_NAME"])  
+        start_date = date(2005,10,1)
         if value["TYPE"] == "WI" and start_date and value["date"] >= start_date:
-            schedule_2.append(
+            schedule.append(
                 WCONINJH(
                     date=value["date"],
                     well_name=value["WELL_NAME"],
@@ -163,11 +168,11 @@ def test_check_obsfiles_ert_yaml() -> None:
                     rate=value["WWIR"],
                     bhp=value["WBHP"],
                     thp=value["WTHP"],
-                    inj_control_mode=schedule_2._inj_control_mode,
+                    inj_control_mode=schedule._inj_control_mode,
                 )
             )
         elif value["TYPE"] == "GI" and start_date and value["date"] >= start_date:
-            schedule_2.append(
+            schedule.append(
                 WCONINJH(
                     date=value["date"],
                     well_name=value["WELL_NAME"],
@@ -176,23 +181,23 @@ def test_check_obsfiles_ert_yaml() -> None:
                     rate=value["WGIR"],
                     bhp=value["WBHP"],
                     thp=value["WTHP"],
-                    inj_control_mode=schedule_2._inj_control_mode,
+                    inj_control_mode=schedule._inj_control_mode,
                 )
             )
 
 
     #vfp_tables = self.get_vfp()
-    vfp_tables = {'B-4DH': '1*', 'E-3AH': '1*', 'D-1CH': '1*', 'D-3AH': '1*', 'C-3H': '1*', 'E-4AH': '1*', 'K-3H': '1*', 'D-3H': '1*', 'D-1H': '1*', 'E-1H': '1*', 'F-1H': '1*', 'B-2H': '1*', 'E-3H': '1*', 'D-4AH': '1*', 'E-2H': '1*', 'F-2H': '1*', 'D-2H': '1*', 'C-1H': '1*', 'C-2H': '1*', 'B-4BH': '1*', 'E-2AH': '1*', 'C-4H': '1*', 'B-1BH': '1*', 'F-4H': '1*', 'F-3H': '1*', 'B-4AH': '1*', 'B-4H': '1*', 'E-3BH': '1*', 'D-4H': '1*', 'C-4AH': '1*', 'B-3H': '1*', 'B-1AH': '1*', 'B-1H': '1*', 'D-3BH': '1*', 'E-3CH': '1*', 'E-4H': '1*'}
-    for _, value in schedule_2._df_production_data.iterrows():
+    vfp_tables = {'K-3H': '1*', 'F-1H': '1*', 'F-2H': '1*'}
+    for _, value in schedule._df_production_data.iterrows():
         #start_date = self.get_well_start_date(value["WELL_NAME"])
-        start_date = date(1999, 1, 1)
+        start_date = date(2005,10,1)
         if value["TYPE"] == "OP" and start_date and value["date"] >= start_date:
-            schedule_2.append(
+            schedule.append(
                 WCONHIST(
                     date=value["date"],
                     well_name=value["WELL_NAME"],
                     status=value["WSTAT"],
-                    prod_control_mode=schedule_2._prod_control_mode,
+                    prod_control_mode=schedule._prod_control_mode,
                     vfp_table=vfp_tables[value["WELL_NAME"]],
                     oil_rate=value["WOPR"],
                     water_rate=value["WWPR"],
@@ -200,9 +205,13 @@ def test_check_obsfiles_ert_yaml() -> None:
                     bhp=value["WBHP"],
                     thp=value["WTHP"],
                 )
-            )             
+            )
+###############################################################################################                   
+###############################################################################################                                   
+    # TODO We intend to run _create_observation_file but I wasn't able to import the function
+    #      
     training_set_fraction = 0.75
-    num_dates = len(schedule_2.get_dates())
+    num_dates = len(schedule.get_dates())
     num_training_dates = round(num_dates * training_set_fraction)
 
     export_settings = [
@@ -210,6 +219,8 @@ def test_check_obsfiles_ert_yaml() -> None:
         ["_training", 1, num_training_dates],
         ["_test", num_training_dates + 1, num_dates],
     ]
+
+
 
     file_root = pathlib.Path("./tests/observation_files/observations")
     obs_export_types = ["yamlobs", "ertobs"]
@@ -224,13 +235,15 @@ def test_check_obsfiles_ert_yaml() -> None:
                 fh.write(
                     template.render(
                         {
-                            "schedule": schedule_2,
+                            "schedule": schedule,
                             "error_config": config.flownet.data_source.simulation.vectors,
                             "num_beginning_date": setting[1],
                             "num_end_date": setting[2],
                         }
                     )
                 )
+                        
+###############################################################################################                   
 
     print("READING the files")
 
