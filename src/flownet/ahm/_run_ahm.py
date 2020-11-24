@@ -8,7 +8,6 @@ import warnings
 import numpy as np
 import pandas as pd
 from scipy.stats import mode
-from scipy.optimize import minimize
 from configsuite import ConfigSuite
 
 from ..realization import Schedule
@@ -128,43 +127,6 @@ def _find_training_set_fraction(
     return training_set_fraction
 
 
-def _find_dist_minmax(
-    min_val: Optional[float], max_val: Optional[float], mean_val: float
-) -> float:
-    """
-    Find the distribution min or max for a loguniform distribution, assuming only
-    one of these and the mean are given
-
-    Args:
-        min_val: minimum value for the distribution
-        max_val: maximum value for the distribution
-        mean_val: mean value for the distribution
-
-    Returns:
-        The missing minimum or maximum value
-
-    """
-    # pylint: disable=cell-var-from-loop
-    if min_val is None:
-        result = minimize(
-            lambda x: (mean_val - ((max_val - x) / np.log(max_val / x))) ** 2,
-            x0=mean_val,
-            tol=1e-9,
-            method="L-BFGS-B",
-            bounds=[(1e-9, mean_val)],
-        ).x[0]
-    if max_val is None:
-        result = minimize(
-            lambda x: (mean_val - ((x - min_val) / np.log(x / min_val))) ** 2,
-            x0=mean_val,
-            tol=1e-9,
-            method="L-BFGS-B",
-            bounds=[(mean_val, None)],
-        ).x[0]
-
-    return result
-
-
 def _get_distribution(
     parameters: Union[str, List[str]], parameters_config: dict, index: list
 ) -> pd.DataFrame:
@@ -187,50 +149,11 @@ def _get_distribution(
 
     for parameter in parameters:
         parameter_config = getattr(parameters_config, parameter)
-
-        if parameter_config.distribution == "normal":
-            dist_mean = parameter_config.mean
-            dist_stddev = parameter_config.stddev
-            dist_min = None
-            dist_max = None
-            dist_base = None
-        if parameter_config.distribution == "uniform":
-            if parameter_config.mean is not None:
-                dist_mean = parameter_config.mean
-                if parameter_config.max is not None:
-                    dist_max = parameter_config.max
-                    dist_min = dist_mean - (dist_max - dist_mean)
-                else:
-                    dist_min = parameter_config.min
-                    dist_max = dist_mean + (dist_mean - dist_min)
-            else:
-                dist_min = parameter_config.min
-                dist_max = parameter_config.max
-            dist_stddev = None
-            dist_base = None
-            dist_mean = None
-        if parameter_config.distribution == "logunif":
-            if parameter_config.mean is not None:
-                # pylint: disable=cell-var-from-loop
-                dist_mean = parameter_config.mean
-                if parameter_config.max is not None:
-                    dist_max = parameter_config.max
-                    dist_min = _find_dist_minmax(None, dist_max, dist_mean)
-                else:
-                    dist_min = parameter_config.min
-                    dist_max = _find_dist_minmax(dist_min, None, dist_mean)
-            else:
-                dist_min = parameter_config.min
-                dist_max = parameter_config.max
-            dist_base = None
-            dist_stddev = None
-            dist_mean = None
-
-        df[f"minimum_{parameter}"] = dist_min
-        df[f"maximum_{parameter}"] = dist_max
-        df[f"mean_{parameter}"] = dist_mean
-        df[f"base_{parameter}"] = dist_base
-        df[f"stddev_{parameter}"] = dist_stddev
+        df[f"minimum_{parameter}"] = parameter_config.min
+        df[f"maximum_{parameter}"] = parameter_config.max
+        df[f"mean_{parameter}"] = parameter_config.mean
+        df[f"base_{parameter}"] = parameter_config.base
+        df[f"stddev_{parameter}"] = parameter_config.stddev
         df[f"distribution_{parameter}"] = parameter_config.distribution
     return df
 
@@ -413,26 +336,14 @@ def update_distribution(
                         f"in this run. Consider updating before running again. "
                     )
 
-            if var.name == "LOGUINF":
-                # if posterior mean < prior mean decrease max
                 if mean < var.mean:
-                    dist_min = var.minimum
-                    dist_max = _find_dist_minmax(dist_min, None, mean)
+                    var.update_distribution(
+                        mean=mean, stddev=stddev, minimum=var.minimum, mode=var.mode
+                    )
                 else:
-                    dist_max = var.maximum
-                    dist_min = _find_dist_minmax(None, dist_max, mean)
-            if var.name == "UNIFORM":
-                # if posterior mean < prior mean decrease max
-                if mean < var.mean:
-                    dist_min = var.minimum
-                    dist_max = mean + (mean - dist_min)
-                else:
-                    dist_max = var.maximum
-                    dist_min = mean - (dist_max - mean)
-            #            if var.name == "NORMAL":
-
-            var.minimum = dist_min
-            var.maximum = dist_max
+                    var.update_distribution(
+                        mean=mean, stddev=stddev, maximum=var.maximum, mode=var.mode
+                    )
 
     return parameters
 
