@@ -20,12 +20,14 @@ import numpy as np
 
 import pandas as pd
 
-_PRODUCTION_DATA_FILE_NAME = pathlib.Path(
-    "./tests/observation_files/Norne_ProductionData.csv"
-)
+
 
 _OBSERVATION_FILES = pathlib.Path(
     "./tests/observation_files"
+)
+
+_PRODUCTION_DATA_FILE_NAME = pathlib.Path(
+    _OBSERVATION_FILES / "ProductionData.csv"
 )
 
 _TRAINING_SET_FRACTION = 0.75
@@ -154,9 +156,6 @@ def test_check_obsfiles_ert_yaml() -> None:
        Returns:
            None
     """                
-
- 
-
 
     # Load production 
     print("Reading production data")                        
