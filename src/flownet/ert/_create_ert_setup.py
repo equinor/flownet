@@ -23,7 +23,7 @@ _TEMPLATE_ENVIRONMENT.globals["isnan"] = np.isnan
 _MODULE_FOLDER = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
 
 
-def _create_observation_file(
+def create_observation_file(
     schedule: Schedule,
     obs_file: pathlib.Path,
     config: ConfigSuite.snapshot,
@@ -246,14 +246,14 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
             (output_folder / f"{section}.inc").touch()
     if not prediction_setup:
         if parameters is not None:
-            _create_observation_file(
+            create_observation_file(
                 schedule,
                 output_folder / "observations.ertobs",
                 config,
                 training_set_fraction,
             )
 
-            _create_observation_file(
+            create_observation_file(
                 schedule,
                 output_folder / "observations.yamlobs",
                 config,
