@@ -38,13 +38,10 @@ class Schedule:
             self._inj_control_mode: str = config.flownet.inj_control_mode
             self._case_name: str = config.name
             self._create_schedule()
-        elif not df_production_data.empty and not network  and not config:
-            self._df_production_data: pd.DataFrame = df_production_data
+        elif df_production_data.empty and not network  and not config:
             self._prod_control_mode: str = "RESV"
             self._inj_control_mode: str = "RATE"
             self._case_name: str = "none"
-            self._calculate_wconhist()
-            self._calculate_wconinjh()
         else:
             raise ValueError(
                 "Cannot initiate Schedule object. Either supply all arguments to fully initiate a Schedule object or nothing to initiate an empty Schedule object"
