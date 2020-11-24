@@ -10,7 +10,7 @@ import collections
 
 from flownet.realization import Schedule
 
-#from flownet.ert import _create_observation_file
+from flownet.ert import create_observation_file
 
 from flownet.realization._simulation_keywords import Keyword, WCONHIST, WCONINJH
 
@@ -23,6 +23,12 @@ import pandas as pd
 _PRODUCTION_DATA_FILE_NAME = pathlib.Path(
     "./tests/observation_files/Norne_ProductionData.csv"
 )
+
+_OBSERVATION_FILES = pathlib.Path(
+    "./tests/observation_files"
+)
+
+_TRAINING_SET_FRACTION = 0.75
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
@@ -112,10 +118,7 @@ def test_check_obsfiles_ert_yaml() -> None:
            None. The file names containig the observation files are harcoded as
        Returns:
            None
-    """
-
-###############################################################################################                   
-###############################################################################################                   
+    """                
 
     # Define a fake Config
     config = collections.namedtuple("configuration", "flownet")
@@ -153,6 +156,7 @@ def test_check_obsfiles_ert_yaml() -> None:
 
 
     # Load production 
+    print("Reading production data")                        
     
     headers = ['date','WOPR','WGPR','WWPR','WBHP','WTHP','WGIR','WWIR','WSTAT','WELL_NAME','PHASE','TYPE','date']           
     df_production_data: pd.DataFrame =  pd.read_csv(_PRODUCTION_DATA_FILE_NAME,
@@ -207,47 +211,35 @@ def test_check_obsfiles_ert_yaml() -> None:
                     thp=value["WTHP"],
                 )
             )
-###############################################################################################                   
-###############################################################################################                                   
-    # TODO We intend to run _create_observation_file but I wasn't able to import the function
-    #      
-    training_set_fraction = 0.75
+                                
+    print("Writing observations files")                        
+    create_observation_file(
+        schedule,
+        _OBSERVATION_FILES / "observations.ertobs",
+        config,
+        _TRAINING_SET_FRACTION,
+    )
+
+    create_observation_file(
+        schedule,
+        _OBSERVATION_FILES / "observations.yamlobs",
+        config,
+        _TRAINING_SET_FRACTION,
+        yaml=True,
+    )
+                        
+    print("Reading observations files")
+    
     num_dates = len(schedule.get_dates())
-    num_training_dates = round(num_dates * training_set_fraction)
+    num_training_dates = round(num_dates * _TRAINING_SET_FRACTION)
 
     export_settings = [
         ["_complete", 1, num_dates],
         ["_training", 1, num_training_dates],
         ["_test", num_training_dates + 1, num_dates],
     ]
-
-
-
-    file_root = pathlib.Path("./tests/observation_files/observations")
-    obs_export_types = ["yamlobs", "ertobs"]
-    print("WRITING the files")
-    for obs_export_type in obs_export_types:
-        for setting in export_settings:
-            export_filename = f"{file_root}{setting[0]}.{obs_export_type}"
-            template = _TEMPLATE_ENVIRONMENT.get_template(
-                f"observations.{obs_export_type}.jinja2"
-            )
-            with open(export_filename, "w") as fh:
-                fh.write(
-                    template.render(
-                        {
-                            "schedule": schedule,
-                            "error_config": config.flownet.data_source.simulation.vectors,
-                            "num_beginning_date": setting[1],
-                            "num_end_date": setting[2],
-                        }
-                    )
-                )
-                        
-###############################################################################################                   
-
-    print("READING the files")
-
+    
+    file_root = pathlib.Path(_OBSERVATION_FILES / "observations")
     for setting in export_settings:
         ert_obs_file_name = f"{file_root}{setting[0]}.ertobs"
         yaml_obs_file_name = f"{file_root}{setting[0]}.yamlobs"
