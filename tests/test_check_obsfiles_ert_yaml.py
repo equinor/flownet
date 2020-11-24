@@ -155,9 +155,8 @@ def test_check_obsfiles_ert_yaml() -> None:
     #     
     
     schedule = Schedule()
+    start_date = date(2005,10,1)
     for _, value in df_production_data.iterrows():
-        #start_date = schedule.get_well_start_date(value["WELL_NAME"])  
-        start_date = date(2005,10,1)
         if value["TYPE"] == "WI" and start_date and value["date"] >= start_date:
             schedule.append(
                 WCONINJH(
@@ -184,21 +183,14 @@ def test_check_obsfiles_ert_yaml() -> None:
                     inj_control_mode=schedule._inj_control_mode,
                 )
             )
-
-
-    #vfp_tables = self.get_vfp()
-    vfp_tables = {'K-3H': '1*', 'F-1H': '1*', 'F-2H': '1*'}
-    for _, value in df_production_data.iterrows():
-        #start_date = self.get_well_start_date(value["WELL_NAME"])
-        start_date = date(2005,10,1)
-        if value["TYPE"] == "OP" and start_date and value["date"] >= start_date:
+        elif value["TYPE"] == "OP" and start_date and value["date"] >= start_date:
             schedule.append(
                 WCONHIST(
                     date=value["date"],
                     well_name=value["WELL_NAME"],
                     status=value["WSTAT"],
                     prod_control_mode=schedule._prod_control_mode,
-                    vfp_table=vfp_tables[value["WELL_NAME"]],
+                    vfp_table='1*',
                     oil_rate=value["WOPR"],
                     water_rate=value["WWPR"],
                     gas_rate=value["WGPR"],
