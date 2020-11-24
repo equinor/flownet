@@ -11,11 +11,11 @@ from scipy.optimize import minimize
 class ProbabilityDistribution(abc.ABC):
     def __init__(self, name):
         self.name: str = name
-        self.minimum: Union[float, None]
-        self.maximum: Union[float, None]
-        self.mean: Union[float, None]
+        self.minimum: float
+        self.maximum: float
+        self.mean: float
         self.mode: Union[float, None]
-        self.stddev: Union[float, None]
+        self.stddev: float
 
     @property
     @abc.abstractmethod
@@ -33,9 +33,9 @@ class ProbabilityDistribution(abc.ABC):
 class UniformDistribution(ProbabilityDistribution):
     def __init__(
         self,
-        minimum: Union[float, None] = None,
-        maximum: Union[float, None] = None,
-        mean: Union[float, None] = None,
+        minimum: float = None,
+        maximum: float = None,
+        mean: float = None,
     ):
         super().__init__("UNIFORM")
         self.update_distribution(minimum=minimum, mean=mean, maximum=maximum)
@@ -217,7 +217,7 @@ class TriangularDistribution(ProbabilityDistribution):
 
         """
         assert (
-            len(kwargs) == 3
+            len(kwargs) >= 3
         ), "Triangular distributions needs three parameters to be defined"
         assert (
             {"minimum", "mean", "maximum"}.issubset(kwargs)
@@ -262,8 +262,6 @@ class NormalDistribution(ProbabilityDistribution):
     def __init__(self, mean, stddev):
         super().__init__("NORMAL")
         self.update_distribution(mean=mean, stddev=stddev)
-        self.minimum = None
-        self.maximum = None
 
     @property
     def ert_gen_kw(self) -> str:
@@ -279,6 +277,9 @@ class NormalDistribution(ProbabilityDistribution):
             self.mode = self.mean
         if "stddev" in kwargs:
             self.stddev = kwargs.get("stddev")
+
+        self.minimum = self.mean - 3 * self.stddev
+        self.maximum = self.mean + 3 * self.stddev
 
 
 class TruncatedNormalDistribution(ProbabilityDistribution):
