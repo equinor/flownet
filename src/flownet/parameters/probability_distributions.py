@@ -50,21 +50,22 @@ class UniformDistribution(ProbabilityDistribution):
         **kwargs,
     ):
         """
+        Function that updates the parameters that defines the probability distribution
 
         Args:
-            minimum:
-            maximum:
-            mean:
+            **kwargs: Arbitrary keyword arguments
+
+            Keyword arguments (of which two (and only two)) needs to be defined:
+                minimum: The minimum values of the updated distribution
+                mean: The mean value of the updated distribution
+                maximum: The maximum value of the updated distribution
 
         Returns:
-
+            Nothing
         """
-        assert len(kwargs) == 2, "Needs min/mean, min/max or mean/max to be defined"
         assert (
-            {"minimum", "mean"}.issubset(kwargs)
-            or {"minimum", "maximum"}.issubset(kwargs)
-            or {"maximum", "mean"}.issubset(kwargs)
-        )
+            len({"minimum", "maximum", "mean"}.intersection(kwargs)) == 2
+        ), "Min/mean, min/max or mean/max needs to be defined"
 
         if "mean" not in kwargs:
             self.minimum = kwargs.get("minimum")
@@ -103,21 +104,22 @@ class LogUniformDistribution(ProbabilityDistribution):
         **kwargs,
     ):
         """
+        Function that updates the parameters that defines the probability distribution
 
         Args:
-            minimum:
-            maximum:
-            mean:
+            **kwargs: Arbitrary keyword arguments
+
+            Keyword arguments (of which two (and only two)) needs to be defined:
+                minimum: The minimum values of the updated distribution
+                mean: The mean value of the updated distribution
+                maximum: The maximum value of the updated distribution
 
         Returns:
-
+            Nothing
         """
-        assert len(kwargs) == 2, "Needs min/mean, min/max or mean/max to be defined"
         assert (
-            {"minimum", "mean"}.issubset(kwargs)
-            or {"minimum", "maximum"}.issubset(kwargs)
-            or {"maximum", "mean"}.issubset(kwargs)
-        )
+            len({"minimum", "maximum", "mean"}.intersection(kwargs)) == 2
+        ), "Min/mean, min/max or mean/max needs to be defined"
 
         if "mean" not in kwargs:
             self.minimum = kwargs.get("minimum")
@@ -207,14 +209,19 @@ class TriangularDistribution(ProbabilityDistribution):
         **kwargs,
     ):
         """
+        Function that updates the parameters that defines the probability distribution
 
         Args:
-            minimum:
-            maximum:
-            mean:
+            **kwargs: Arbitrary keyword arguments
+
+            Keyword arguments (of which three (and only three)) needs to be defined:
+                minimum: The minimum values of the updated distribution
+                mean: The mean value of the updated distribution
+                mode: The mode of the updated distribution
+                maximum: The maximum value of the updated distribution
 
         Returns:
-
+            Nothing
         """
         assert (
             len(kwargs) >= 3
@@ -272,6 +279,19 @@ class NormalDistribution(ProbabilityDistribution):
         self,
         **kwargs,
     ):
+        """
+        Function that updates the parameters that defines the probability distribution
+
+        Args:
+            **kwargs: Arbitrary keyword arguments
+
+            Keyword arguments:
+                mean: The mean value of the updated distribution
+                stddev: The standard deviation of the updated distribution
+
+        Returns:
+            Nothing
+        """
         if "mean" in kwargs:
             self.mean = kwargs.get("mean")
             self.mode = self.mean
@@ -299,16 +319,19 @@ class TruncatedNormalDistribution(ProbabilityDistribution):
         **kwargs,
     ):
         """
+        Function that updates the parameters that defines the probability distribution
 
         Args:
-            self:
-            mean:
-            stddev:
-            minimum:
-            maximum:
+            **kwargs: Arbitrary keyword arguments
+
+            Keyword arguments:
+                mean: The mean value of the updated distribution
+                stddev: The standard deviation of the updated distribution
+                minimum: The minimum/lower truncation value of the updated distribution
+                maximum: The maximum/upper truncation value of the updated distribution
 
         Returns:
-
+            Nothing
         """
         for item in {"mean", "stddev", "minimum", "maximum"}:
             if item in kwargs:
@@ -328,14 +351,17 @@ class LogNormalDistribution(ProbabilityDistribution):
 
     def update_distribution(self, **kwargs):
         """
-        If the variable X has a normal distribution, Y=exp(X) has a lognormal distribution.
+        Function that updates the parameters that defines the probability distribution
 
         Args:
-            mean: The mean of X (normal distribution, Y = exp(X) is lognormal)
-            stddev: The standard deviation of X
+            **kwargs: Arbitrary keyword arguments
+
+            Keyword arguments:
+                mean: The mean value of the updated distribution
+                stddev: The standard deviation of the updated distribution
 
         Returns:
-
+            Nothing
         """
         for item in {"mean", "stddev"}:
             if item in kwargs:
