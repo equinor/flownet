@@ -30,7 +30,7 @@ class Schedule:
         config: ConfigSuite.snapshot = None,
     ):
         self._schedule_items: List = []
-        if not network == None and not df_production_data.empty and not config == None:
+        if network and not df_production_data.empty and config:
             # All info is given, make a netork
             self._network: NetworkModel = network
             self._df_production_data: pd.DataFrame = df_production_data
@@ -38,7 +38,7 @@ class Schedule:
             self._inj_control_mode: str = config.flownet.inj_control_mode
             self._case_name: str = config.name
             self._create_schedule()
-        elif df_production_data.empty and not network  and not config:
+        elif not network and not df_production_data and not config:
             self._prod_control_mode: str = "RESV"
             self._inj_control_mode: str = "RATE"
             self._case_name: str = "none"
