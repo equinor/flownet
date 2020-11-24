@@ -44,7 +44,9 @@ class Schedule:
             self._case_name: str = "none"
         else:
             raise ValueError(
-                "Cannot initiate Schedule object. Either supply all arguments to fully initiate a Schedule object or nothing to initiate an empty Schedule object."
+                "Cannot initiate Schedule object. \
+                Either supply all arguments to fully initiate a Schedule object \
+                or nothing to initiate an empty Schedule object."
             )
 
     def _create_schedule(self):
