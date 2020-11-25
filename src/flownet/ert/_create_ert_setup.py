@@ -75,7 +75,7 @@ def create_observation_file(
                         "error_config": config.flownet.data_source.simulation.vectors,
                         "num_beginning_date": setting[1],
                         "num_end_date": setting[2],
-                        "num_training_dates": num_training_dates,
+                        "last_training_date": schedule.get_dates()[num_training_dates-1],
                     }
                 )
             )
