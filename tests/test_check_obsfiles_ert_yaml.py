@@ -10,13 +10,13 @@ import yaml
 
 import jinja2
 
-from flownet.realization import Schedule
-
-from flownet.ert import create_observation_file
-
 import numpy as np
 
 import pandas as pd
+
+from flownet.realization import Schedule
+
+from flownet.ert import create_observation_file
 
 from flownet.realization._simulation_keywords import WCONHIST, WCONINJH
 
@@ -30,8 +30,6 @@ _TRAINING_SET_FRACTION = 0.75
 # Define a fake Config
 _MIN_ERROR = 10
 _REL_ERROR = 0.05
-_CONFIG = collections.namedtuple("configuration", "flownet")
-
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
@@ -122,55 +120,56 @@ def test_check_obsfiles_ert_yaml() -> None:
        Returns:
            None
     """
-    _CONFIG.flownet = collections.namedtuple("flownet", "data_source")
-    _CONFIG.flownet.data_source = collections.namedtuple("data_source", "simulation")
-    _CONFIG.flownet.data_source.simulation = collections.namedtuple(
+    CONFIG = collections.namedtuple("configuration", "flownet")
+    CONFIG.flownet = collections.namedtuple("flownet", "data_source")
+    CONFIG.flownet.data_source = collections.namedtuple("data_source", "simulation")
+    CONFIG.flownet.data_source.simulation = collections.namedtuple(
         "simulation", "vectors"
     )
-    _CONFIG.flownet.data_source.simulation.vectors = collections.namedtuple(
+    CONFIG.flownet.data_source.simulation.vectors = collections.namedtuple(
         "vectors", "WTHP"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WOPR = collections.namedtuple(
+    CONFIG.flownet.data_source.simulation.vectors.WOPR = collections.namedtuple(
         "WOPR", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WOPR.min_error = _MIN_ERROR
-    _CONFIG.flownet.data_source.simulation.vectors.WOPR.rel_error = _REL_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WOPR.min_error = _MIN_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WOPR.rel_error = _REL_ERROR
 
-    _CONFIG.flownet.data_source.simulation.vectors.WGPR = collections.namedtuple(
+    CONFIG.flownet.data_source.simulation.vectors.WGPR = collections.namedtuple(
         "WGPR", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WGPR.min_error = _MIN_ERROR
-    _CONFIG.flownet.data_source.simulation.vectors.WGPR.rel_error = _REL_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WGPR.min_error = _MIN_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WGPR.rel_error = _REL_ERROR
 
-    _CONFIG.flownet.data_source.simulation.vectors.WWPR = collections.namedtuple(
+    CONFIG.flownet.data_source.simulation.vectors.WWPR = collections.namedtuple(
         "WWPR", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WWPR.min_error = _MIN_ERROR
-    _CONFIG.flownet.data_source.simulation.vectors.WWPR.rel_error = _REL_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WWPR.min_error = _MIN_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WWPR.rel_error = _REL_ERROR
 
-    _CONFIG.flownet.data_source.simulation.vectors.WBHP = collections.namedtuple(
+    CONFIG.flownet.data_source.simulation.vectors.WBHP = collections.namedtuple(
         "WBHP", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WBHP.min_error = _MIN_ERROR
-    _CONFIG.flownet.data_source.simulation.vectors.WBHP.rel_error = _REL_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WBHP.min_error = _MIN_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WBHP.rel_error = _REL_ERROR
 
-    _CONFIG.flownet.data_source.simulation.vectors.WTHP = collections.namedtuple(
+    CONFIG.flownet.data_source.simulation.vectors.WTHP = collections.namedtuple(
         "WTHP", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WTHP.min_error = _MIN_ERROR
-    _CONFIG.flownet.data_source.simulation.vectors.WTHP.rel_error = _REL_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WTHP.min_error = _MIN_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WTHP.rel_error = _REL_ERROR
 
-    _CONFIG.flownet.data_source.simulation.vectors.WGIR = collections.namedtuple(
+    CONFIG.flownet.data_source.simulation.vectors.WGIR = collections.namedtuple(
         "WGIR", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WGIR.min_error = _MIN_ERROR
-    _CONFIG.flownet.data_source.simulation.vectors.WGIR.rel_error = _REL_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WGIR.min_error = _MIN_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WGIR.rel_error = _REL_ERROR
 
-    _CONFIG.flownet.data_source.simulation.vectors.WWIR = collections.namedtuple(
+    CONFIG.flownet.data_source.simulation.vectors.WWIR = collections.namedtuple(
         "WWIR", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WWIR.min_error = _MIN_ERROR
-    _CONFIG.flownet.data_source.simulation.vectors.WWIR.rel_error = _REL_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WWIR.min_error = _MIN_ERROR
+    CONFIG.flownet.data_source.simulation.vectors.WWIR.rel_error = _REL_ERROR
     # Load production
     print("Reading production data")
 
@@ -247,14 +246,14 @@ def test_check_obsfiles_ert_yaml() -> None:
     create_observation_file(
         schedule,
         _OBSERVATION_FILES / "observations.ertobs",
-        _CONFIG,
+        CONFIG,
         _TRAINING_SET_FRACTION,
     )
 
     create_observation_file(
         schedule,
         _OBSERVATION_FILES / "observations.yamlobs",
-        _CONFIG,
+        CONFIG,
         _TRAINING_SET_FRACTION,
         yaml=True,
     )
