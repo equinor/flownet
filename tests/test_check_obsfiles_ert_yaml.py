@@ -1,23 +1,15 @@
 import pathlib
-
 import os.path
-
 from datetime import datetime, date
-
 import collections
 
+import numpy as np
+import pandas as pd
 import yaml
-
 import jinja2
 
-import numpy as np
-
-import pandas as pd
-
 from flownet.realization import Schedule
-
 from flownet.ert import create_observation_file
-
 from flownet.realization._simulation_keywords import WCONHIST, WCONINJH
 
 
@@ -27,7 +19,6 @@ _PRODUCTION_DATA_FILE_NAME = pathlib.Path(_OBSERVATION_FILES / "ProductionData.c
 
 _TRAINING_SET_FRACTION = 0.75
 
-# Define a fake Config
 _MIN_ERROR = 10
 _REL_ERROR = 0.05
 
