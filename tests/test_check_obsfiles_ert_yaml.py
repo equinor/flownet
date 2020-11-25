@@ -14,11 +14,11 @@ from flownet.realization import Schedule
 
 from flownet.ert import create_observation_file
 
-from flownet.realization._simulation_keywords import WCONHIST, WCONINJH
-
 import numpy as np
 
 import pandas as pd
+
+from flownet.realization._simulation_keywords import WCONHIST, WCONINJH
 
 
 _OBSERVATION_FILES = pathlib.Path("./tests/observation_files")
@@ -28,6 +28,8 @@ _PRODUCTION_DATA_FILE_NAME = pathlib.Path(_OBSERVATION_FILES / "ProductionData.c
 _TRAINING_SET_FRACTION = 0.75
 
 # Define a fake Config
+_MIN_ERROR = 10
+_REL_ERROR = 0.05
 _CONFIG = collections.namedtuple("configuration", "flownet")
 
 
@@ -131,44 +133,44 @@ def test_check_obsfiles_ert_yaml() -> None:
     _CONFIG.flownet.data_source.simulation.vectors.WOPR = collections.namedtuple(
         "WOPR", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WOPR.min_error = 100
-    _CONFIG.flownet.data_source.simulation.vectors.WOPR.rel_error = 0.1
+    _CONFIG.flownet.data_source.simulation.vectors.WOPR.min_error = _MIN_ERROR
+    _CONFIG.flownet.data_source.simulation.vectors.WOPR.rel_error = _REL_ERROR
 
     _CONFIG.flownet.data_source.simulation.vectors.WGPR = collections.namedtuple(
         "WGPR", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WGPR.min_error = 100000
-    _CONFIG.flownet.data_source.simulation.vectors.WGPR.rel_error = 0.1
+    _CONFIG.flownet.data_source.simulation.vectors.WGPR.min_error = _MIN_ERROR
+    _CONFIG.flownet.data_source.simulation.vectors.WGPR.rel_error = _REL_ERROR
 
     _CONFIG.flownet.data_source.simulation.vectors.WWPR = collections.namedtuple(
         "WWPR", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WWPR.min_error = 100
-    _CONFIG.flownet.data_source.simulation.vectors.WWPR.rel_error = 0.1
+    _CONFIG.flownet.data_source.simulation.vectors.WWPR.min_error = _MIN_ERROR
+    _CONFIG.flownet.data_source.simulation.vectors.WWPR.rel_error = _REL_ERROR
 
     _CONFIG.flownet.data_source.simulation.vectors.WBHP = collections.namedtuple(
         "WBHP", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WBHP.min_error = 10
-    _CONFIG.flownet.data_source.simulation.vectors.WBHP.rel_error = 0.05
+    _CONFIG.flownet.data_source.simulation.vectors.WBHP.min_error = _MIN_ERROR
+    _CONFIG.flownet.data_source.simulation.vectors.WBHP.rel_error = _REL_ERROR
 
     _CONFIG.flownet.data_source.simulation.vectors.WTHP = collections.namedtuple(
         "WTHP", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WTHP.min_error = 10
-    _CONFIG.flownet.data_source.simulation.vectors.WTHP.rel_error = 0.05
+    _CONFIG.flownet.data_source.simulation.vectors.WTHP.min_error = _MIN_ERROR
+    _CONFIG.flownet.data_source.simulation.vectors.WTHP.rel_error = _REL_ERROR
 
     _CONFIG.flownet.data_source.simulation.vectors.WGIR = collections.namedtuple(
         "WGIR", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WGIR.min_error = 100000
-    _CONFIG.flownet.data_source.simulation.vectors.WGIR.rel_error = 0.1
+    _CONFIG.flownet.data_source.simulation.vectors.WGIR.min_error = _MIN_ERROR
+    _CONFIG.flownet.data_source.simulation.vectors.WGIR.rel_error = _REL_ERROR
 
     _CONFIG.flownet.data_source.simulation.vectors.WWIR = collections.namedtuple(
         "WWIR", "min_error"
     )
-    _CONFIG.flownet.data_source.simulation.vectors.WWIR.min_error = 100
-    _CONFIG.flownet.data_source.simulation.vectors.WWIR.rel_error = 0.1
+    _CONFIG.flownet.data_source.simulation.vectors.WWIR.min_error = _MIN_ERROR
+    _CONFIG.flownet.data_source.simulation.vectors.WWIR.rel_error = _REL_ERROR
     # Load production
     print("Reading production data")
 
