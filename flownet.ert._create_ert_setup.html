@@ -185,30 +185,8 @@ and outputs them in an ert parameter definition file</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.ert._create_ert_setup._create_observation_file">
-<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">_create_observation_file</code><span class="sig-paren">(</span><em class="sig-param">schedule: flownet.realization._schedule.Schedule</em>, <em class="sig-param">obs_file: pathlib.Path</em>, <em class="sig-param">config: &lt;property object at 0x7fd826424c78&gt;</em>, <em class="sig-param">training_set_fraction: float = 1</em>, <em class="sig-param">yaml: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup._create_observation_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates an ERT observation file from a given schedule instance.
-It has not yet been decided if schedule is to be given at creation or should be part
-of self.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>schedule</strong> – FlowNet Schedule instance to create observations from.</p></li>
-<li><p><strong>obs_file</strong> – Path to store the observation file.</p></li>
-<li><p><strong>config</strong> – Information from the FlowNet config yaml</p></li>
-<li><p><strong>training_set_fraction</strong> – Fraction of observations in schedule to use in training set</p></li>
-<li><p><strong>yaml</strong> – Flag to indicate whether a yaml observation file is to be stored. False means ertobs.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Nothing</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="flownet.ert._create_ert_setup.create_ert_setup">
-<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">create_ert_setup</code><span class="sig-paren">(</span><em class="sig-param">args: argparse.Namespace</em>, <em class="sig-param">network</em>, <em class="sig-param">schedule: flownet.realization._schedule.Schedule</em>, <em class="sig-param">config: &lt;property object at 0x7fd826424c78&gt;</em>, <em class="sig-param">parameters=None</em>, <em class="sig-param">training_set_fraction: float = 1</em>, <em class="sig-param">prediction_setup: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup.create_ert_setup" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">create_ert_setup</code><span class="sig-paren">(</span><em class="sig-param">args: argparse.Namespace</em>, <em class="sig-param">network</em>, <em class="sig-param">schedule: flownet.realization._schedule.Schedule</em>, <em class="sig-param">config: &lt;property object at 0x7fd186a9ec78&gt;</em>, <em class="sig-param">parameters=None</em>, <em class="sig-param">training_set_fraction: float = 1</em>, <em class="sig-param">prediction_setup: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup.create_ert_setup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a ready-to-go ERT setup in output_folder.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -220,6 +198,28 @@ of self.</p>
 <li><p><strong>parameters</strong> – List with parameters (default = None)</p></li>
 <li><p><strong>training_set_fraction</strong> – Fraction of observations to be used for model training (default = 1)</p></li>
 <li><p><strong>prediction_setup</strong> – Set to true if it is a prediction run (default = False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.ert._create_ert_setup.create_observation_file">
+<code class="sig-prename descclassname">flownet.ert._create_ert_setup.</code><code class="sig-name descname">create_observation_file</code><span class="sig-paren">(</span><em class="sig-param">schedule: flownet.realization._schedule.Schedule</em>, <em class="sig-param">obs_file: pathlib.Path</em>, <em class="sig-param">config: &lt;property object at 0x7fd186a9ec78&gt;</em>, <em class="sig-param">training_set_fraction: float = 1</em>, <em class="sig-param">yaml: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup.create_observation_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an ERT observation file from a given schedule instance.
+It has not yet been decided if schedule is to be given at creation or should be part
+of self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>schedule</strong> – FlowNet Schedule instance to create observations from.</p></li>
+<li><p><strong>obs_file</strong> – Path to store the observation file.</p></li>
+<li><p><strong>config</strong> – Information from the FlowNet config yaml</p></li>
+<li><p><strong>training_set_fraction</strong> – Fraction of observations in schedule to use in training set</p></li>
+<li><p><strong>yaml</strong> – Flag to indicate whether a yaml observation file is to be stored. False means ertobs.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

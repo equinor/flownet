@@ -168,7 +168,7 @@
 <span id="flownet-realization-schedule-module"></span><h1>flownet.realization._schedule module<a class="headerlink" href="#module-flownet.realization._schedule" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="flownet.realization._schedule.Schedule">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.realization._schedule.</code><code class="sig-name descname">Schedule</code><span class="sig-paren">(</span><em class="sig-param">network: flownet.network_model._network_model.NetworkModel = None</em>, <em class="sig-param">df_production_data: Optional[pandas.core.frame.DataFrame] = None</em>, <em class="sig-param">config: &lt;property object at 0x7fd826424c78&gt; = None</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.realization._schedule.</code><code class="sig-name descname">Schedule</code><span class="sig-paren">(</span><em class="sig-param">network: flownet.network_model._network_model.NetworkModel = None</em>, <em class="sig-param">df_production_data: Optional[pandas.core.frame.DataFrame] = None</em>, <em class="sig-param">config: &lt;property object at 0x7fd186a9ec78&gt; = None</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Python class to to store all schedule items for the Flownet run.</p>
 <dl class="field-list simple">
@@ -306,20 +306,20 @@ the schedule is created.</p>
 
 <dl class="py method">
 <dt id="flownet.realization._schedule.Schedule.get_keywords">
-<code class="sig-name descname">get_keywords</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">date</span><span class="p">:</span> <span class="n">datetime.date</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kw_class</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span><a class="reference internal" href="flownet.realization._simulation_keywords.html#flownet.realization._simulation_keywords.Keyword" title="flownet.realization._simulation_keywords.Keyword">flownet.realization._simulation_keywords.Keyword</a><span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">well_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ignore_nan</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="flownet.realization._simulation_keywords.html#flownet.realization._simulation_keywords.Keyword" title="flownet.realization._simulation_keywords.Keyword">flownet.realization._simulation_keywords.Keyword</a><span class="p">]</span><a class="headerlink" href="#flownet.realization._schedule.Schedule.get_keywords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a list of all keywords at a given date and/or of a
+<code class="sig-name descname">get_keywords</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dates</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>List<span class="p">[</span>datetime.date<span class="p">]</span><span class="p">, </span>datetime.date<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kw_class</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span><a class="reference internal" href="flownet.realization._simulation_keywords.html#flownet.realization._simulation_keywords.Keyword" title="flownet.realization._simulation_keywords.Keyword">flownet.realization._simulation_keywords.Keyword</a><span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">well_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ignore_nan</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="flownet.realization._simulation_keywords.html#flownet.realization._simulation_keywords.Keyword" title="flownet.realization._simulation_keywords.Keyword">flownet.realization._simulation_keywords.Keyword</a><span class="p">]</span><a class="headerlink" href="#flownet.realization._schedule.Schedule.get_keywords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all keywords at given dates and/or of a
 particular keyword class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>date</strong> – Date at which to lookup keywords</p></li>
+<li><p><strong>dates</strong> – Date or list of dates at which to lookup keywords</p></li>
 <li><p><strong>kw_class</strong> – keyword class or class name string</p></li>
 <li><p><strong>well_name</strong> – well name</p></li>
 <li><p><strong>ignore_nan</strong> – keyword attribute to ignore nan values</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>keywords at specified date and/or with a specific well name and/or of a specific keyword class</p>
+<dd class="field-even"><p>keywords at specified dates and/or with a specific well name and/or of a specific keyword class</p>
 </dd>
 </dl>
 </dd></dl>
