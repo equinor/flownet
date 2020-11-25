@@ -31,6 +31,7 @@ _TEMPLATE_ENVIRONMENT.globals["isnan"] = np.isnan
 
 def read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
     """This function reads the content of a ERT observation file and returns the information in a dictionary.
+    
     Args:
         ert_obs_file_name: path to the ERT observation file
     Returns:
@@ -66,6 +67,7 @@ def read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
 
 def read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
     """This function reads the content of a YAML observation file and returns the information in a dictionary.
+    
     Args:
         yaml_obs_file_name: path to the YAML observation file
     Returns:
@@ -78,14 +80,15 @@ def read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
     return yaml.load(a_yaml_file, Loader=yaml.FullLoader)
 
 
-def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
+def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
     """This function compares if the given dictionaries: ert_obs_dict and yaml_obs_dict contain the same information.
+    
     Args:
         ert_obs_dict: dictionary that contains the information in a ERT observation file
         yaml_obs_dict: dictionary that contains the information in a YAML observation file
     Returns:
-        True: If the ert_obs_dict and yaml_obs_dict contains the same information
-              Otherwise function stops by assert functions if both dictionaries have diferent information.
+        None: If the ert_obs_dict and yaml_obs_dict contains diferent information
+              the function stops by assert functions.
     """
     yaml_obs = {}
     for item in yaml_obs_dict:
@@ -100,16 +103,16 @@ def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
             assert yaml_obs[list_item["key"]][1] == ert_obs_dict[list_item["key"]][1]
             assert yaml_obs[list_item["key"]][2] == ert_obs_dict[list_item["key"]][2]
 
-    return True
 
 
 def test_check_obsfiles_ert_yaml() -> None:
     """
     This function checks if the observation files (complete, training, and test) in ERT and YAML version are equal.
-       Args:
-           None. The file names containig the observation files are harcoded as
-       Returns:
-           None
+    
+    Args:
+        None. The file names containig the observation files are harcoded as
+    Returns:
+        None
     """
     # pylint: disable=maybe-no-member
     config = collections.namedtuple("configuration", "flownet")
