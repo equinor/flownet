@@ -99,7 +99,7 @@ def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
             assert yaml_obs[list_item["key"]][0] == ert_obs_dict[list_item["key"]][0]
             assert yaml_obs[list_item["key"]][1] == ert_obs_dict[list_item["key"]][1]
             assert yaml_obs[list_item["key"]][2] == ert_obs_dict[list_item["key"]][2]
-            
+
     return True
 
 
