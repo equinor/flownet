@@ -210,7 +210,7 @@ def test_check_obsfiles_ert_yaml() -> None:
                     rate=value["WWIR"],
                     bhp=value["WBHP"],
                     thp=value["WTHP"],
-                    inj_control_mode=schedule._inj_control_mode,
+                    inj_control_mode=schedule.inj_control_mode,
                 )
             )
         elif value["TYPE"] == "GI" and start_date and value["date"] >= start_date:
@@ -223,7 +223,7 @@ def test_check_obsfiles_ert_yaml() -> None:
                     rate=value["WGIR"],
                     bhp=value["WBHP"],
                     thp=value["WTHP"],
-                    inj_control_mode=schedule._inj_control_mode,
+                    inj_control_mode=schedule.inj_control_mode,
                 )
             )
         elif value["TYPE"] == "OP" and start_date and value["date"] >= start_date:
@@ -232,7 +232,7 @@ def test_check_obsfiles_ert_yaml() -> None:
                     date=value["date"],
                     well_name=value["WELL_NAME"],
                     status=value["WSTAT"],
-                    prod_control_mode=schedule._prod_control_mode,
+                    prod_control_mode=schedule.prod_control_mode,
                     vfp_table="1*",
                     oil_rate=value["WOPR"],
                     water_rate=value["WWPR"],
