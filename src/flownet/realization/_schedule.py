@@ -30,20 +30,20 @@ class Schedule:
         config: ConfigSuite.snapshot = None,
     ):
         self._schedule_items: List = []
-        self.prod_control_mode: str
-        self.inj_control_mode: str
+        self._prod_control_mode: str
+        self._inj_control_mode: str
         self._case_name: str
         if network and isinstance(df_production_data, pd.DataFrame) and config:
             # All info is given, make a netork
             self._network: NetworkModel = network
             self._df_production_data: pd.DataFrame = df_production_data
-            self.prod_control_mode = config.flownet.prod_control_mode
-            self.inj_control_mode = config.flownet.inj_control_mode
+            self._prod_control_mode = config.flownet.prod_control_mode
+            self._inj_control_mode = config.flownet.inj_control_mode
             self._case_name = config.name
             self._create_schedule()
         elif not network and not df_production_data and not config:
-            self.prod_control_mode = "RESV"
-            self.inj_control_mode = "RATE"
+            self._prod_control_mode = "RESV"
+            self._inj_control_mode = "RATE"
             self._case_name = "none"
         else:
             raise ValueError(
@@ -197,7 +197,7 @@ class Schedule:
                         date=value["date"],
                         well_name=value["WELL_NAME"],
                         status=value["WSTAT"],
-                        prod_control_mode=self.prod_control_mode,
+                        prod_control_mode=self._prod_control_mode,
                         vfp_table=vfp_tables[value["WELL_NAME"]],
                         oil_rate=value["WOPR"],
                         water_rate=value["WWPR"],
@@ -232,7 +232,7 @@ class Schedule:
                         rate=value["WWIR"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
-                        inj_control_mode=self.inj_control_mode,
+                        inj_control_mode=self._inj_control_mode,
                     )
                 )
             elif value["TYPE"] == "GI" and start_date and value["date"] >= start_date:
@@ -245,7 +245,7 @@ class Schedule:
                         rate=value["WGIR"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
-                        inj_control_mode=self.inj_control_mode,
+                        inj_control_mode=self._inj_control_mode,
                     )
                 )
 

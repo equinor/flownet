@@ -25,9 +25,10 @@ _TEMPLATE_ENVIRONMENT = jinja2.Environment(
 )
 _TEMPLATE_ENVIRONMENT.globals["isnan"] = np.isnan
 
+
 def read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
     """This function reads the content of a ERT observation file and returns the information in a dictionary.
-    
+
     Args:
         ert_obs_file_name: path to the ERT observation file
     Returns:
@@ -63,7 +64,7 @@ def read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
 
 def read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
     """This function reads the content of a YAML observation file and returns the information in a dictionary.
-    
+
     Args:
         yaml_obs_file_name: path to the YAML observation file
     Returns:
@@ -78,7 +79,7 @@ def read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
 
 def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
     """This function compares if the given dictionaries: ert_obs_dict and yaml_obs_dict contain the same information.
-    
+
     Args:
         ert_obs_dict: dictionary that contains the information in a ERT observation file
         yaml_obs_dict: dictionary that contains the information in a YAML observation file
@@ -100,11 +101,10 @@ def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
             assert yaml_obs[list_item["key"]][2] == ert_obs_dict[list_item["key"]][2]
 
 
-
 def test_check_obsfiles_ert_yaml() -> None:
     """
     This function checks if the observation files (complete, training, and test) in ERT and YAML version are equal.
-    
+
     Returns:
         Nothing
     """
@@ -199,7 +199,7 @@ def test_check_obsfiles_ert_yaml() -> None:
                     rate=value["WWIR"],
                     bhp=value["WBHP"],
                     thp=value["WTHP"],
-                    inj_control_mode=schedule.inj_control_mode,
+                    inj_control_mode=schedule._inj_control_mode,
                 )
             )
         elif value["TYPE"] == "GI" and start_date and value["date"] >= start_date:
@@ -212,7 +212,7 @@ def test_check_obsfiles_ert_yaml() -> None:
                     rate=value["WGIR"],
                     bhp=value["WBHP"],
                     thp=value["WTHP"],
-                    inj_control_mode=schedule.inj_control_mode,
+                    inj_control_mode=schedule._inj_control_mode,
                 )
             )
         elif value["TYPE"] == "OP" and start_date and value["date"] >= start_date:
@@ -221,7 +221,7 @@ def test_check_obsfiles_ert_yaml() -> None:
                     date=value["date"],
                     well_name=value["WELL_NAME"],
                     status=value["WSTAT"],
-                    prod_control_mode=schedule.prod_control_mode,
+                    prod_control_mode=schedule._prod_control_mode,
                     vfp_table="1*",
                     oil_rate=value["WOPR"],
                     water_rate=value["WWPR"],
