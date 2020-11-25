@@ -120,6 +120,7 @@ def test_check_obsfiles_ert_yaml() -> None:
        Returns:
            None
     """
+    # pylint: disable=maybe-no-member
     config = collections.namedtuple("configuration", "flownet")
     config.flownet = collections.namedtuple("flownet", "data_source")
     config.flownet.data_source = collections.namedtuple("data_source", "simulation")
