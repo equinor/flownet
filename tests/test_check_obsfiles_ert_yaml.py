@@ -12,11 +12,8 @@ from flownet.realization import Schedule
 from flownet.ert import create_observation_file
 from flownet.realization._simulation_keywords import WCONHIST, WCONINJH
 
-
 _OBSERVATION_FILES = pathlib.Path("./tests/observation_files")
-
 _PRODUCTION_DATA_FILE_NAME = pathlib.Path(_OBSERVATION_FILES / "ProductionData.csv")
-
 _TRAINING_SET_FRACTION = 0.75
 
 _MIN_ERROR = 10
@@ -27,7 +24,6 @@ _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     undefined=jinja2.StrictUndefined,
 )
 _TEMPLATE_ENVIRONMENT.globals["isnan"] = np.isnan
-
 
 def read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
     """This function reads the content of a ERT observation file and returns the information in a dictionary.
@@ -109,11 +105,10 @@ def test_check_obsfiles_ert_yaml() -> None:
     """
     This function checks if the observation files (complete, training, and test) in ERT and YAML version are equal.
     
-    Args:
-        None. The file names containig the observation files are harcoded as
     Returns:
-        None
+        Nothing
     """
+
     # pylint: disable=maybe-no-member
     config = collections.namedtuple("configuration", "flownet")
     config.flownet = collections.namedtuple("flownet", "data_source")
@@ -166,7 +161,6 @@ def test_check_obsfiles_ert_yaml() -> None:
     config.flownet.data_source.simulation.vectors.WWIR.min_error = _MIN_ERROR
     config.flownet.data_source.simulation.vectors.WWIR.rel_error = _REL_ERROR
     # Load production
-    print("Reading production data")
 
     headers = [
         "date",
@@ -237,7 +231,6 @@ def test_check_obsfiles_ert_yaml() -> None:
                 )
             )
 
-    print("Writing observations files")
     create_observation_file(
         schedule,
         _OBSERVATION_FILES / "observations.ertobs",
@@ -252,8 +245,6 @@ def test_check_obsfiles_ert_yaml() -> None:
         _TRAINING_SET_FRACTION,
         yaml=True,
     )
-
-    print("Reading observations files")
 
     num_dates = len(schedule.get_dates())
     num_training_dates = round(num_dates * _TRAINING_SET_FRACTION)
