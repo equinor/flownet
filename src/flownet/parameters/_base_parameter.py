@@ -36,26 +36,41 @@ def parameter_probability_distribution_class(
     # pylint: disable=too-many-return-statements
     param = "_" + param if param is not None else ""
     if row[f"distribution{param}"] == "uniform":
-        return UniformDistribution(row[f"minimum{param}"], row[f"maximum{param}"])
+        return UniformDistribution(
+            minimum=row[f"minimum{param}"],
+            mean=row[f"mean{param}"],
+            maximum=row[f"maximum{param}"],
+        )
     if row[f"distribution{param}"] == "logunif":
-        return LogUniformDistribution(row[f"minimum{param}"], row[f"maximum{param}"])
+        return LogUniformDistribution(
+            minimum=row[f"minimum{param}"],
+            mean=row[f"mean{param}"],
+            maximum=row[f"maximum{param}"],
+        )
     if row[f"distribution{param}"] == "normal":
-        return NormalDistribution(row[f"mean{param}"], row[f"stddev{param}"])
+        return NormalDistribution(
+            mean=row[f"mean{param}"], stddev=row[f"stddev{param}"]
+        )
     if row[f"distribution{param}"] == "lognormal":
-        return LogNormalDistribution(row[f"mean{param}"], row[f"stddev{param}"])
+        return LogNormalDistribution(
+            mean=row[f"mean{param}"], stddev=row[f"stddev{param}"]
+        )
     if row[f"distribution{param}"] == "truncated_normal":
         return TruncatedNormalDistribution(
-            row[f"mean{param}"],
-            row[f"stddev{param}"],
-            row[f"minimum{param}"],
-            row[f"maximum{param}"],
+            mean=row[f"mean{param}"],
+            stddev=row[f"stddev{param}"],
+            minimum=row[f"minimum{param}"],
+            maximum=row[f"maximum{param}"],
         )
     if row[f"distribution{param}"] == "triangular":
         return TriangularDistribution(
-            row[f"minimum{param}"], row[f"base{param}"], row[f"maximum{param}"]
+            minimum=row[f"minimum{param}"],
+            mean=row[f"mean{param}"],
+            mode=row[f"base{param}"],
+            maximum=row[f"maximum{param}"],
         )
     if row[f"distribution{param}"] == "constant":
-        return Constant(row[f"constant{param}"])
+        return Constant(constant=[f"base{param}"])
     raise ValueError("Unknown probability distribution class.")
 
 
