@@ -9,12 +9,12 @@ import collections
 import yaml
 
 import jinja2
-    
+
 from flownet.realization import Schedule
 
 from flownet.ert import create_observation_file
 
-from flownet.realization._simulation_keywords import  WCONHIST, WCONINJH
+from flownet.realization._simulation_keywords import WCONHIST, WCONINJH
 
 import numpy as np
 
@@ -29,7 +29,6 @@ _TRAINING_SET_FRACTION = 0.75
 
 # Define a fake Config
 _CONFIG = collections.namedtuple("configuration", "flownet")
-
 
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
@@ -123,7 +122,9 @@ def test_check_obsfiles_ert_yaml() -> None:
     """
     _CONFIG.flownet = collections.namedtuple("flownet", "data_source")
     _CONFIG.flownet.data_source = collections.namedtuple("data_source", "simulation")
-    _CONFIG.flownet.data_source.simulation = collections.namedtuple("simulation", "vectors")
+    _CONFIG.flownet.data_source.simulation = collections.namedtuple(
+        "simulation", "vectors"
+    )
     _CONFIG.flownet.data_source.simulation.vectors = collections.namedtuple(
         "vectors", "WTHP"
     )
