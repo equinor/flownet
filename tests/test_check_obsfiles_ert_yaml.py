@@ -77,15 +77,14 @@ def read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
     return yaml.load(a_yaml_file, Loader=yaml.FullLoader)
 
 
-def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
+def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
     """This function compares if the given dictionaries: ert_obs_dict and yaml_obs_dict contain the same information.
 
     Args:
         ert_obs_dict: dictionary that contains the information in a ERT observation file
         yaml_obs_dict: dictionary that contains the information in a YAML observation file
     Returns:
-        True: If the ert_obs_dict and yaml_obs_dict contains the same information
-              Otherwise function stops by assert functions if both dictionaries have diferent information.
+        None: the function stops by assert functions if both dictionaries have diferent information.
     """
     yaml_obs = {}
     for item in yaml_obs_dict:
@@ -99,8 +98,6 @@ def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> bool:
             assert yaml_obs[list_item["key"]][0] == ert_obs_dict[list_item["key"]][0]
             assert yaml_obs[list_item["key"]][1] == ert_obs_dict[list_item["key"]][1]
             assert yaml_obs[list_item["key"]][2] == ert_obs_dict[list_item["key"]][2]
-
-    return True
 
 
 def test_check_obsfiles_ert_yaml() -> None:
@@ -267,4 +264,4 @@ def test_check_obsfiles_ert_yaml() -> None:
         # Reading YAML file
         parsed_yaml_file = read_yaml_obs(yaml_obs_file_name)
         # Comparing observation data
-        assert compare(ert_obs, parsed_yaml_file)
+        compare(ert_obs, parsed_yaml_file)
