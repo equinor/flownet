@@ -9,6 +9,12 @@ smry:
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.oil_rate }}
       error: {{ [error_config.WOPR.rel_error * kw.oil_rate, error_config.WOPR.min_error] | max }}
+      comment:
+        {%- if (kw.date > schedule.get_dates()[num_training_dates-1]) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WGPR.rel_error is not none) and (error_config.WGPR.min_error is not none) -%}
@@ -20,6 +26,12 @@ smry:
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.gas_rate }}
       error: {{ [error_config.WGPR.rel_error * kw.gas_rate, error_config.WGPR.min_error] | max }}
+      comment:
+        {%- if (kw.date > schedule.get_dates()[num_training_dates-1]) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}      
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WWPR.rel_error is not none) and (error_config.WWPR.min_error is not none) -%}
@@ -31,6 +43,12 @@ smry:
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.water_rate }}
       error: {{ [error_config.WWPR.rel_error * kw.water_rate, error_config.WWPR.min_error] | max }}
+      comment:
+        {%- if (kw.date > schedule.get_dates()[num_training_dates-1]) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}      
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WBHP.rel_error is not none) and (error_config.WBHP.min_error is not none) -%}
@@ -42,6 +60,12 @@ smry:
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.bhp }}
       error: {{ [error_config.WBHP.rel_error * kw.bhp, error_config.WBHP.min_error] | max }}
+      comment:
+        {%- if (kw.date > schedule.get_dates()[num_training_dates-1]) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}      
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WTHP.rel_error is not none) and (error_config.WTHP.min_error is not none) -%}
@@ -53,6 +77,12 @@ smry:
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.thp }}
       error: {{ [error_config.WTHP.rel_error * kw.thp, error_config.WTHP.min_error] | max }}
+      comment:
+        {%- if (kw.date > schedule.get_dates()[num_training_dates-1]) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}      
    {%- endfor %}
    {%- endif -%}
 {%- endfor -%}
@@ -67,6 +97,12 @@ smry:
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.bhp }}
       error: {{ [error_config.WBHP.rel_error * kw.bhp, error_config.WBHP.min_error] | max }}
+      comment:
+        {%- if (kw.date > schedule.get_dates()[num_training_dates-1]) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}      
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WTHP.rel_error is not none) and (error_config.WTHP.min_error is not none) -%}
@@ -78,6 +114,12 @@ smry:
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.bhp }}
       error: {{ [error_config.WTHP.rel_error * kw.thp, error_config.WTHP.min_error] | max }}
+      comment:
+        {%- if (kw.date > schedule.get_dates()[num_training_dates-1]) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}      
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WGIR.rel_error is not none) and (error_config.WGIR.min_error is not none) -%}
@@ -89,6 +131,12 @@ smry:
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.rate }}
       error: {{ [error_config.WGIR.rel_error * kw.rate, error_config.WGIR.min_error] | max }}
+      comment:
+        {%- if (kw.date > schedule.get_dates()[num_training_dates-1]) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}      
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WWIR.rel_error is not none) and (error_config.WWIR.min_error is not none) -%}
@@ -100,6 +148,12 @@ smry:
     - date: {{ kw.date.strftime('%Y-%m-%d') }}
       value: {{ kw.rate }}
       error: {{ [error_config.WWIR.rel_error * kw.rate, error_config.WWIR.min_error] | max }}
+      comment:
+        {%- if (kw.date > schedule.get_dates()[num_training_dates-1]) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}      
    {%- endfor %}
    {%- endif -%}
  {%- endfor -%}
