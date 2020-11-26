@@ -35,7 +35,10 @@ def run_flow():
         else:
             raise AssertionError("FLOW_PATH points to a path that doesn't exist")
     elif shutil.which("flow") is None:
-        raise AssertionError("OPM/flow is not installed")
+        raise AssertionError(
+            "OPM/flow is not installed.\
+                             Follow instructions in https://opm-project.org/ to install flow"
+        )
     else:
         flow_path = shutil.which("flow")
         if os.path.isfile(flow_path):
