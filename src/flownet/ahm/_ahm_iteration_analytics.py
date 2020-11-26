@@ -295,62 +295,31 @@ def make_dataframe_simulation_data(
     iteration = int(re.findall(r"[0-9]+", sorted(glob.glob(path))[-1])[-1])
     runpath_list = glob.glob(path[::-1].replace("*", str(iteration), 1)[::-1])
 
-    realizations_dict: Dict[str, Any] = {}
-    # Load summary files of latest iteration
     partial_load_simulations = functools.partial(
         _load_simulations, ecl_base=eclbase_file
     )
 
+    # Load summary files of latest iteration
+    realizations_dict: Dict[str, Any] = {}
     realizations_dict = dict(
         ThreadPool(processes=None).map(partial_load_simulations, runpath_list)
     )
 
-    # Prepare dataframe
-    # pylint: disable-msg=too-many-locals
+    # Get number of succesfully loaded realizations
+    n_realization = sum([x is not None for _, x in realizations_dict.items()])
+
+    # Load all simulation results for the required vector keys
     df_sim = pd.DataFrame()
-    nb_real = 0
-    for runpath in realizations_dict:
-        df_tmp = pd.DataFrame()
-        if isinstance(realizations_dict[runpath], EclSum) and (
-            np.datetime64(realizations_dict[runpath].dates[-1]) >= end_date
-        ):
-            dates = realizations_dict[runpath].dates
-            if nb_real == 0:
-                df_sim["DATE"] = pd.Series(dates)
-                df_sim["REAL_ID"] = pd.Series(nb_real * np.ones(len(dates)), dtype=int)
-            df_tmp["DATE"] = pd.Series(dates)
-            df_tmp["REAL_ID"] = pd.Series(nb_real * np.ones(len(dates)), dtype=int)
+    for _, eclsum in realizations_dict.items():
+        if eclsum:
+            df_realization = eclsum.pandas_frame(
+                column_keys=[key + "*" for key in keys]
+            )
+            df_realization["DATE"] = eclsum.dates
 
-            if nb_real == 0:
-                for counter, k in enumerate(keys):
-                    if counter == 0:
-                        key_list_data = [
-                            x
-                            for x in realizations_dict[runpath].keys()
-                            if x.startswith(k)
-                        ]
-                    else:
-                        key_list_data.extend(
-                            [
-                                x
-                                for x in realizations_dict[runpath].keys()
-                                if x.startswith(k)
-                            ]
-                        )
+            df_sim = df_sim.append(df_realization)
 
-            for key in key_list_data:
-                if nb_real == 0:
-                    df_sim[key] = pd.Series(
-                        realizations_dict[runpath].numpy_vector(key)
-                    )
-                df_tmp[key] = pd.Series(realizations_dict[runpath].numpy_vector(key))
-
-            if nb_real > 0:
-                df_sim = df_sim.append(df_tmp, ignore_index=True)
-
-            nb_real = nb_real + 1
-
-    return df_sim, iteration, nb_real
+    return df_sim, iteration, n_realization
 
 
 def save_plots_metrics(df_metrics: pd.DataFrame, metrics: List[str], str_key: str):
