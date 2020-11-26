@@ -35,8 +35,8 @@ def filter_dataframe(
     Returns:
         A Pandas dataframe containing only values within the specified range
         for the provided column
-    """
 
+    """
     return df_in[(df_in[key_filter] >= min_value) & (df_in[key_filter] < max_value)]
 
 
@@ -58,8 +58,8 @@ def prepare_opm_reference_data(
         A numpy 2D array [length_data * nb_selected_columns, n_real] containing data
         from selected columns (i.e., quantity of interest for accuracy metric) of
         reference simulation stacked in a column-vector and replicated into n_real columns
-    """
 
+    """
     keys = df_opm.keys()
     keys = sorted(keys[df_opm.keys().str.contains(str_key)])
     data = np.transpose(np.tile(df_opm[keys].values.flatten(), (n_real, 1)))
@@ -86,8 +86,8 @@ def prepare_flownet_data(
         from selected columns (i.e., quantity of interest for accuracy metric) for
         an ensemble of FlowNet simulations in a column-vector. Each column correspond
         to one realization of the ensemble
-    """
 
+    """
     keys = df_flownet.keys()
     keys = sorted(keys[df_flownet.keys().str.contains(str_key)])
     data = df_flownet[keys].values.flatten()
@@ -116,8 +116,8 @@ def normalize_data(
         norm_data_opm_reference: is a normalized 2D numpy array for the reference simulation data
         norm_data_ensembles_flownet: a list of normalized 2D numpy arrays for the ensembles of
         lowNet simulations
-    """
 
+    """
     for k, data_ens in enumerate(data_ensembles_flownet):
         if k == 0:
             tmp = data_ens
@@ -172,8 +172,8 @@ def accuracy_metric(
     Returns:
         A score value reflecting the accuracy of FlowNet simulations in terms of matching
         data from reference simulation
-    """
 
+    """
     if metric == "MSE":
         score = mean_squared_error(data_reference, data_test)
     elif metric == "RMSE":
@@ -199,17 +199,20 @@ def accuracy_metric(
 def _load_simulations(runpath: str, ecl_base: str) -> Tuple[str, Optional[EclSum]]:
     """
     Internal helper function to simulation results in parallel.
+
     Args:
         runpath: Path to where the realization is run.
         ecl_base: Path to where the realization is run.
+
     Returns:
         (runpath, EclSum), or (runpath, None) in case of failed simulation (inexistent .UNSMRY file)
+
     """
     try:
         eclsum = EclSum(str(pathlib.Path(runpath) / pathlib.Path(ecl_base)))
     except KeyboardInterrupt:
         raise
-    except:  # pylint: disable=broad-except
+    except:  # pylint: disable=bare-except
         eclsum = None
 
     return runpath, eclsum
@@ -227,8 +230,8 @@ def load_csv_file(csv_file: str, csv_columns: List[str]) -> pd.DataFrame:
     Returns:
         Pandas dataframe containing data from existing CSV file or
         empty dataframe with requested columns if CSV file does not exist
-    """
 
+    """
     if os.path.exists(csv_file + ".csv"):
         df_csv = pd.read_csv(csv_file + ".csv")
     else:
@@ -260,8 +263,8 @@ def compute_metric_ensemble(
     Returns:
         Dictionary containing values of calculated accuracy metrics for selected
         quantity of interest for current iteration of AHM
-    """
 
+    """
     dict_metric = {"quantity": str_key, "iteration": iteration}
     for acc_metric in metrics:
         for obs_sim in list_ensembles:
@@ -287,8 +290,8 @@ def make_dataframe_simulation_data(
         df_sim: Pandas dataframe contained data from ensemble of simulations
         iteration: current AHM iteration number
         nb_real: number of realizations
-    """
 
+    """
     iteration = int(re.findall(r"[0-9]+", sorted(glob.glob(path))[-1])[-1])
     runpath_list = glob.glob(path[::-1].replace("*", str(iteration), 1)[::-1])
 
@@ -362,8 +365,8 @@ def save_plots_metrics(df_metrics: pd.DataFrame, metrics: List[str], str_key: st
 
     Returns:
         Nothing
-    """
 
+    """
     tmp_df_plot = df_metrics[df_metrics["quantity"] == str_key]
     min_it = np.amin(tmp_df_plot["iteration"].values)
     max_it = np.amax(tmp_df_plot["iteration"].values)
@@ -390,8 +393,8 @@ def save_iteration_analytics():
 
     Returns:
         Nothing
-    """
 
+    """
     parser = argparse.ArgumentParser(prog=("Save iteration analytics to a file."))
     parser.add_argument(
         "reference_simulation", type=str, help="Path to the reference simulation case"
