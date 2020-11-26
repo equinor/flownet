@@ -33,9 +33,9 @@ def run_flow():
             # Runing flow from ENV variable
             subprocess.run([flow_path, args.data_file], check=True)
         else:
-            print("Error: FLOW_PATH point to a path that doesn't exist")
+            raise AssertionError("FLOW_PATH points to a path that doesn't exist")
     elif shutil.which("flow") is None:
-        print("Error: flow is not installed")
+        raise AssertionError("OPM/flow is not installed")
     else:
         flow_path = shutil.which("flow")
         if os.path.isfile(flow_path):
@@ -45,6 +45,6 @@ def run_flow():
                 check=True,
             )
         else:
-            print("Error: Instalation FLOW_PATH points to a path that doesn't exist")
+            raise AssertionError("OPM/flow points to a path that doesn't exist")
 
     Path("FLOW_SIMULATION.OK").write_text("")
