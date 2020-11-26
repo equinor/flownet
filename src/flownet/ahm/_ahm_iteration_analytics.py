@@ -12,7 +12,6 @@ from matplotlib.ticker import ScalarFormatter
 import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-
 from ecl.summary import EclSum
 
 from flownet.data import FlowData
@@ -115,7 +114,7 @@ def normalize_data(
     Returns:
         norm_data_opm_reference: is a normalized 2D numpy array for the reference simulation data
         norm_data_ensembles_flownet: a list of normalized 2D numpy arrays for the ensembles of
-        lowNet simulations
+        FlowNet simulations
 
     """
     for k, data_ens in enumerate(data_ensembles_flownet):
