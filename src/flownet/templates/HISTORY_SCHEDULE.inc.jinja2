@@ -4,41 +4,41 @@ DATES
  {{ date.strftime('%d %b %Y').upper() }} /
 /
 {%- endif %}
-{%- if schedule.get_keywords(date=date, kw_class="WELSPECS"): %}
+{%- if schedule.get_keywords(dates=date, kw_class="WELSPECS"): %}
 WELSPECS
 -- WELL GROUP LOCATION BHP   PHASE DRAIN INFLOW OPEN CROSS PVT   DEN FIPNUM
 -- NAME NAME  I J      DEPTH FLUID AREA  EQUANS SHUT FLOW  TABLE OPT TABLE
-{%- for kw in schedule.get_keywords(date=date, kw_class="WELSPECS"): %}
+{%- for kw in schedule.get_keywords(dates=date, kw_class="WELSPECS"): %}
  '{{ kw.well_name }}' {{ kw.group_name }} {{ kw.i + 1}} {{ kw.j + 1 }} {{ kw.ref_depth_bhp }} '{{ kw.phase }}' {{ kw.drainge_radius }} {{ kw.inflow_equation }} {{ kw.shutin_instruction }} {{ kw.crossflow }} {{ kw.pvt_table }} {{ kw.density_calc }} {{ kw.fip }} /
 {%- endfor %}
 /
 {%- endif %}
 
-{%- if schedule.get_keywords(date=date, kw_class="COMPDAT"): %}
+{%- if schedule.get_keywords(dates=date, kw_class="COMPDAT"): %}
 COMPDAT
 -- WELL --- LOCATION --- OPEN SAT CONN WELL KH   SKIN D    DIR
 -- NAME  II  JJ  K1  K2  SHUT TAB FACT DIA  FACT FACT FACT PEN
-{%- for kw in schedule.get_keywords(date=date, kw_class="COMPDAT"): %}
+{%- for kw in schedule.get_keywords(dates=date, kw_class="COMPDAT"): %}
  '{{ kw.well_name }}' {{ kw.i + 1 }} {{ kw.j + 1}} {{ kw.k1 + 1 }} {{ kw.k2 + 1 }} {{ kw.status }} {{ kw.satnum }} {{ kw.confact }} {{ kw.rw }} {{ kw.kh }} {{ kw.skin }} {{ kw.dfact }} {{ kw.direct }} /
 {%- endfor %}
 /
 {%- endif %}
 
-{%- if schedule.get_keywords(date=date, kw_class="WCONHIST"): %}
+{%- if schedule.get_keywords(dates=date, kw_class="WCONHIST"): %}
 WCONHIST
 -- WELL OPEN/ CNTL OIL  WAT  GAS  VFP   VFP  THP  BHP
 -- NAME SHUT  MODE RATE RATE RATE TABLE ALFQ PRES PRES
-{%- for kw in schedule.get_keywords(date=date, kw_class="WCONHIST"): %}
+{%- for kw in schedule.get_keywords(dates=date, kw_class="WCONHIST"): %}
   '{{ kw.well_name }}' '{{ kw.status }}' '{{ kw.prod_control_mode }}' {{ kw.oil_rate | isnan }} {{ kw.water_rate | isnan }} {{ kw.gas_rate | isnan }} {{ kw.vfp_table }} {{ kw.artificial_lift }} {{ kw.thp | isnan }} {{ kw.bhp | isnan }} /
 {%- endfor %}
 /
 {%- endif %}
 
-{%- if schedule.get_keywords(date=date, kw_class="WCONINJH"): %}
+{%- if schedule.get_keywords(dates=date, kw_class="WCONINJH"): %}
 WCONINJH
 -- WELL FLUID OPEN/ SURF BHP   THP  VFP   4 NOT TAR
 -- NAME TYPE  SHUT  RATE PRSES PRES TABLE USED  GET
-{%- for kw in schedule.get_keywords(date=date, kw_class="WCONINJH"): %}
+{%- for kw in schedule.get_keywords(dates=date, kw_class="WCONINJH"): %}
  '{{ kw.well_name }}' '{{ kw.inj_type }}' '{{ kw.status }}' {{ kw.rate | isnan }} {{ kw.bhp | isnan }} {{ kw.thp | isnan }} {{ kw.vfp_table }} 4* '{{ kw.inj_control_mode }}' /
 {%- endfor %}
 /
