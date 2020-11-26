@@ -263,7 +263,7 @@ class Schedule:
         if isinstance(item, int):
             output = self._schedule_items[item]
         elif isinstance(item, datetime.date):
-            output = self.get_keywords(date=item)
+            output = self.get_keywords(dates=item)
         elif isinstance(item, Keyword):
             output = self.get_keywords(kw_class=item)
         else:
@@ -292,7 +292,7 @@ class Schedule:
             Date-sorted schedule items
 
         """
-        return sorted(self._schedule_items, key=attrgetter("date"))
+        return sorted(self._schedule_items, key=attrgetter("dates"))
 
     def append(self, _keyword):
         """
@@ -330,56 +330,60 @@ class Schedule:
 
     def get_keywords(
         self,
-        date: datetime.date = None,
+        dates: Optional[Union[List[datetime.date], datetime.date]] = None,
         kw_class: Optional[Union[Keyword, str]] = None,
         well_name: str = None,
         ignore_nan: str = None,
     ) -> List[Keyword]:
         """
-        Returns a list of all keywords at a given date and/or of a
+        Returns a list of all keywords at given dates and/or of a
         particular keyword class.
 
         Args:
-            date: Date at which to lookup keywords
+            dates: Date or list of dates at which to lookup keywords
             kw_class: keyword class or class name string
             well_name: well name
             ignore_nan: keyword attribute to ignore nan values
 
         Returns:
-            keywords at specified date and/or with a specific well name and/or of a specific keyword class
+            keywords at specified dates and/or with a specific well name and/or of a specific keyword class
 
         """
-        if date and not kw_class and not well_name:
-            output = [kw for kw in self._schedule_items if kw.date == date]
-        elif kw_class and not date and not well_name:
+
+        if isinstance(dates, datetime.date):
+            dates = [dates]
+
+        if dates and not kw_class and not well_name:
+            output = [kw for kw in self._schedule_items if kw.date in dates]
+        elif kw_class and not dates and not well_name:
             output = [
                 kw for kw in self._schedule_items if kw.__class__.__name__ == kw_class
             ]
-        elif date and kw_class and not well_name:
+        elif dates and kw_class and not well_name:
             output = [
                 kw
                 for kw in self._schedule_items
-                if kw.date == date and kw.__class__.__name__ == kw_class
+                if kw.date in dates and kw.__class__.__name__ == kw_class
             ]
-        elif well_name and not date and not kw_class:
+        elif well_name and not dates and not kw_class:
             output = [kw for kw in self._schedule_items if kw.well_name == well_name]
-        elif date and not kw_class and well_name:
+        elif dates and not kw_class and well_name:
             output = [
                 kw
                 for kw in self._schedule_items
-                if kw.date == date and kw.well_name == well_name
+                if kw.date in dates and kw.well_name == well_name
             ]
-        elif kw_class and not date and well_name:
+        elif kw_class and not dates and well_name:
             output = [
                 kw
                 for kw in self._schedule_items
                 if kw.__class__.__name__ == kw_class and kw.well_name == well_name
             ]
-        elif date and kw_class and well_name:
+        elif dates and kw_class and well_name:
             output = [
                 kw
                 for kw in self._schedule_items
-                if kw.date == date
+                if kw.date in dates
                 and kw.__class__.__name__ == kw_class
                 and kw.well_name == well_name
             ]
@@ -533,7 +537,7 @@ class Schedule:
 
         for date in self.get_dates()[1 : num_training_dates - 1]:
             keywords_wconhist: List[Keyword] = self.get_keywords(
-                date=date, kw_class="WCONHIST"
+                dates=date, kw_class="WCONHIST"
             )
             if keywords_wconhist:
                 for keyword_wconhist in keywords_wconhist:
@@ -547,7 +551,7 @@ class Schedule:
                         i += 1
 
             keywords_wconinjh: List[Keyword] = self.get_keywords(
-                date=date, kw_class="WCONINJH"
+                dates=date, kw_class="WCONINJH"
             )
             if keywords_wconinjh:
                 for keyword__wconinjh in keywords_wconinjh:

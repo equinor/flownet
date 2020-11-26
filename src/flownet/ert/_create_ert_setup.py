@@ -23,7 +23,7 @@ _TEMPLATE_ENVIRONMENT.globals["isnan"] = np.isnan
 _MODULE_FOLDER = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
 
 
-def _create_observation_file(
+def create_observation_file(
     schedule: Schedule,
     obs_file: pathlib.Path,
     config: ConfigSuite.snapshot,
@@ -47,28 +47,37 @@ def _create_observation_file(
         Nothing
 
     """
-    num_training_dates = round(len(schedule.get_dates()) * training_set_fraction)
+    num_dates = len(schedule.get_dates())
+    num_training_dates = round(num_dates * training_set_fraction)
 
-    if yaml:
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
-        with open(obs_file, "w") as fh:
+    export_settings = [
+        ["_complete", 1, num_dates],
+        ["_training", 1, num_training_dates],
+        ["_test", num_training_dates + 1, num_dates],
+    ]
+
+    file_root = os.path.splitext(obs_file)[0]
+
+    for setting in export_settings:
+        if yaml:
+            obs_export_type = "yamlobs"
+        else:
+            obs_export_type = "ertobs"
+        export_filename = f"{file_root}{setting[0]}.{obs_export_type}"
+        template = _TEMPLATE_ENVIRONMENT.get_template(
+            f"observations.{obs_export_type}.jinja2"
+        )
+        with open(export_filename, "w") as fh:
             fh.write(
                 template.render(
                     {
                         "schedule": schedule,
                         "error_config": config.flownet.data_source.simulation.vectors,
-                    }
-                )
-            )
-    else:
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
-        with open(obs_file, "w") as fh:
-            fh.write(
-                template.render(
-                    {
-                        "schedule": schedule,
-                        "error_config": config.flownet.data_source.simulation.vectors,
-                        "num_training_dates": num_training_dates,
+                        "num_beginning_date": setting[1],
+                        "num_end_date": setting[2],
+                        "last_training_date": schedule.get_dates()[
+                            num_training_dates - 1
+                        ],
                     }
                 )
             )
@@ -238,18 +247,21 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         else:
             # Otherwise create an empty one.
             (output_folder / f"{section}.inc").touch()
-
     if not prediction_setup:
         if parameters is not None:
-            _create_observation_file(
+            create_observation_file(
                 schedule,
                 output_folder / "observations.ertobs",
                 config,
                 training_set_fraction,
             )
 
-            _create_observation_file(
-                schedule, output_folder / "observations.yamlobs", config, yaml=True
+            create_observation_file(
+                schedule,
+                output_folder / "observations.yamlobs",
+                config,
+                training_set_fraction,
+                yaml=True,
             )
 
         _create_ert_parameter_file(parameters, output_folder)
