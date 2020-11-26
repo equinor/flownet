@@ -7,8 +7,6 @@ import pathlib
 import re
 from typing import Any, Dict, Optional, List, Tuple
 
-import matplotlib.pyplot as plt
-from matplotlib.ticker import ScalarFormatter
 import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
@@ -321,34 +319,6 @@ def make_dataframe_simulation_data(
     return df_sim, iteration, n_realization
 
 
-def save_plots_metrics(df_metrics: pd.DataFrame, metrics: List[str], str_key: str):
-    """
-    Internal helper function to generate and save plots of evolution of
-    accuracy metrics over iterations
-
-    Args:
-        df_metrics: Pandas dataframe containing values of accuracy metrics over iterations
-        metrics: list containing names of computed accuracy metrics
-        str_key: name of quantity of interest for accuracy metric calculation
-
-    Returns:
-        Nothing
-
-    """
-    tmp_df_plot = df_metrics[df_metrics["quantity"] == str_key]
-    min_it = np.amin(tmp_df_plot["iteration"].values)
-    max_it = np.amax(tmp_df_plot["iteration"].values)
-    for acc_metric in metrics:
-        plt.figure(figsize=(6, 4))
-        plt.xlabel("Iterations")
-        plt.ylabel(acc_metric.upper() + " history")
-        plt.plot(tmp_df_plot["iteration"], tmp_df_plot[acc_metric])
-        plt.gca().yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
-        if min_it != max_it:
-            plt.xlim((min_it, max_it))
-        plt.savefig("metric_" + acc_metric + "_" + str_key + ".png")
-
-
 def save_iteration_analytics():
     """
     This function is called as a post-simulation workflow in ERT, saving all
@@ -472,9 +442,6 @@ def save_iteration_analytics():
             compute_metric_ensemble(obs_opm, ens_flownet, metrics, key, iteration),
             ignore_index=True,
         )
-
-        # Plotting accuracy metrics over iterations
-        # save_plots_metrics(df_metrics, metrics, key)
 
     # Saving accuracy metrics to CSV file
     df_metrics.to_csv(args.outfile + ".csv", index=False)
