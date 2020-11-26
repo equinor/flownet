@@ -37,7 +37,7 @@ def run_flow():
     elif shutil.which("flow") is None:
         raise AssertionError(
             "OPM/flow is not installed.\
-                             Follow instructions in https://opm-project.org/ to install flow"
+                             Follow instructions in https://opm-project.org/ to install flow."
         )
     else:
         flow_path = shutil.which("flow")
