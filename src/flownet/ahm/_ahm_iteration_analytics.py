@@ -15,7 +15,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 from ecl.summary import EclSum
 
-from ..data import FlowData
+from flownet.data import FlowData
 
 
 def filter_dataframe(
@@ -322,11 +322,17 @@ def make_dataframe_simulation_data(
                 for counter, k in enumerate(keys):
                     if counter == 0:
                         key_list_data = [
-                            x for x in realizations_dict[runpath] if x.startswith(k)
+                            x
+                            for x in realizations_dict[runpath].keys()
+                            if x.startswith(k)
                         ]
                     else:
                         key_list_data.extend(
-                            [x for x in realizations_dict[runpath] if x.startswith(k)]
+                            [
+                                x
+                                for x in realizations_dict[runpath].keys()
+                                if x.startswith(k)
+                            ]
                         )
 
             for key in key_list_data:
@@ -448,35 +454,29 @@ def save_iteration_analytics():
     # Initiate dataframe with metrics
     df_metrics = load_csv_file(args.outfile, ["quantity", "iteration"] + metrics)
 
-    for str_key in list(args.quantity.replace("[", "").replace("]", "").split(",")):
-        # Prepare data from reference simulation
-        tmp_data = filter_dataframe(
-            df_obs,
-            "DATE",
-            np.datetime64(args.start),
-            np.datetime64(args.end),
+    # Vector keys to analyze
+    vector_keys = list(args.quantity.replace("[", "").replace("]", "").split(","))
+
+    # Prepare data from reference simulation
+    df_obs_filtered = filter_dataframe(
+        df_obs,
+        "DATE",
+        np.datetime64(args.start),
+        np.datetime64(args.end),
+    )
+
+    for key in vector_keys:
+
+        truth_data = (
+            df_obs_filtered.pivot(
+                index="DATE", columns="WELL_NAME", values=key.replace(":", "")
+            )
+            .add_prefix(key)
+            .fillna(0)
+            .reset_index()
         )
 
-        truth_data = pd.DataFrame()
-        truth_data["DATE"], unique_idx = np.unique(
-            tmp_data["DATE"].values, return_index=True
-        )
-        truth_data["REAL_ID"] = pd.Series(np.zeros((len(unique_idx))), dtype=int)
-        for well in np.unique(tmp_data["WELL_NAME"]):
-            truth_data[str_key[:5] + well] = np.zeros((len(unique_idx), 1))
-            truth_data.iloc[
-                [
-                    idx
-                    for idx, val in enumerate(truth_data["DATE"].values)
-                    if val in tmp_data[tmp_data["WELL_NAME"] == well]["DATE"].values
-                ],
-                truth_data.columns.get_loc(str_key[:5] + well),
-            ] = tmp_data[tmp_data["WELL_NAME"] == well][str_key[:4]].values
-
-        truth_data = truth_data.fillna(0)
-        truth_data = truth_data[list(set(truth_data.columns) & set(df_sim.columns))]
-
-        obs_opm = prepare_opm_reference_data(truth_data, str_key, nb_real)
+        obs_opm = prepare_opm_reference_data(truth_data, key, nb_real)
 
         # Prepare data from ensemble of FlowNet
         ens_flownet = []
@@ -488,7 +488,7 @@ def save_iteration_analytics():
                     np.datetime64(args.start),
                     np.datetime64(args.end),
                 ),
-                str_key,
+                key,
                 nb_real,
             )
         )
@@ -498,14 +498,18 @@ def save_iteration_analytics():
 
         # Appending dataframe with accuracy metrics of current iteration
         df_metrics = df_metrics.append(
-            compute_metric_ensemble(obs_opm, ens_flownet, metrics, str_key, iteration),
+            compute_metric_ensemble(obs_opm, ens_flownet, metrics, key, iteration),
             ignore_index=True,
         )
 
         # Plotting accuracy metrics over iterations
-        save_plots_metrics(df_metrics, metrics, str_key)
+        # save_plots_metrics(df_metrics, metrics, key)
 
     # Saving accuracy metrics to CSV file
     df_metrics.to_csv(args.outfile + ".csv", index=False)
 
     print("[Done]")
+
+
+if __name__ == "__main__":
+    save_iteration_analytics()
