@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 from multiprocessing.pool import ThreadPool
 import functools
 import glob
@@ -271,7 +272,7 @@ def compute_metric_ensemble(
 
 
 def make_dataframe_simulation_data(
-    path: str, eclbase_file: str, keys: List[str], end_date: np.datetime64
+    path: str, eclbase_file: str, keys: List[str], end_date: datetime
 ) -> Tuple[pd.DataFrame, int, int]:
     """
     Internal helper function to generate dataframe containing
@@ -316,6 +317,9 @@ def make_dataframe_simulation_data(
 
             df_sim = df_sim.append(df_realization)
 
+    # Strip dates after end date
+    df_sim = df_sim[df_sim["DATE"] <= end_date]
+
     return df_sim, iteration, n_realization
 
 
@@ -345,10 +349,14 @@ def save_iteration_analytics():
         "eclbase", type=str, help="Path to the simulation from runpath."
     )
     parser.add_argument(
-        "start", type=str, help="Start date (YYYY-MM-DD) for accuracy analysis."
+        "start",
+        type=lambda s: datetime.strptime(s, "%Y-%m-%d"),
+        help="Start date (YYYY-MM-DD) for accuracy analysis.",
     )
     parser.add_argument(
-        "end", type=str, help="End date (YYYY-MM-DD) for accuracy analysis."
+        "end",
+        type=lambda s: datetime.strptime(s, "%Y-%m-%d"),
+        help="End date (YYYY-MM-DD) for accuracy analysis.",
     )
     parser.add_argument(
         "quantity",
@@ -364,7 +372,7 @@ def save_iteration_analytics():
     args = parser.parse_args()
     args.runpath = args.runpath.replace("%d", "*")
 
-    print("Saving iteration analytics...", end=" ")
+    print("Saving iteration analytics...", end=" ", flush=True)
 
     # Fix list inputs
     metrics = list(args.metrics.replace("[", "").replace("]", "").split(","))
@@ -374,7 +382,7 @@ def save_iteration_analytics():
         args.runpath,
         args.eclbase,
         list(args.quantity.replace("[", "").replace("]", "").split(",")),
-        np.datetime64(args.end),
+        args.end,
     )
 
     # Load reference simulation (OPM-Flow/Eclipse)
@@ -402,8 +410,8 @@ def save_iteration_analytics():
     df_obs_filtered = filter_dataframe(
         df_obs,
         "DATE",
-        np.datetime64(args.start),
-        np.datetime64(args.end),
+        args.start,
+        args.end,
     )
 
     for key in vector_keys:
@@ -426,8 +434,8 @@ def save_iteration_analytics():
                 filter_dataframe(
                     df_sim[truth_data.columns],
                     "DATE",
-                    np.datetime64(args.start),
-                    np.datetime64(args.end),
+                    args.start,
+                    args.end,
                 ),
                 key,
                 nb_real,
