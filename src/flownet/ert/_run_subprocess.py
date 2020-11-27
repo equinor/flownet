@@ -14,7 +14,9 @@ def run_ert_subprocess(command: str, cwd: pathlib.Path, runpath: str) -> None:
 
     Should revert here to use the much simpler subprocess.run when
     https://github.com/equinor/libres/issues/984 is closed. See
-    https://github.com/equinor/flownet/pull/119 on changes to revert.
+    https://github.com/equinor/flownet/pull/119, and
+    https://github.com/equinor/flownet/pull/271,
+    on possible changes to revert.
 
     Args:
         command: Command to run.
