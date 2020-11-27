@@ -303,22 +303,19 @@ def make_dataframe_simulation_data(
         ThreadPool(processes=None).map(partial_load_simulations, runpath_list)
     )
 
-    # Get number of succesfully loaded realizations
-    n_realization = sum([x is not None for _, x in realizations_dict.items()])
+    n_realization = 0
 
     # Load all simulation results for the required vector keys
     df_sim = pd.DataFrame()
     for _, eclsum in realizations_dict.items():
-        if eclsum:
+        if eclsum and eclsum.dates[-1] >= end_date:
             df_realization = eclsum.pandas_frame(
                 column_keys=[key + "*" for key in keys]
             )
             df_realization["DATE"] = eclsum.dates
 
             df_sim = df_sim.append(df_realization)
-
-    # Strip dates after end date
-    df_sim = df_sim[df_sim["DATE"] <= end_date]
+            n_realization += 1
 
     return df_sim, iteration, n_realization
 
