@@ -1,6 +1,7 @@
 import glob
 import pathlib
 import subprocess
+from subprocess import SubprocessError
 
 
 def run_ert_subprocess(command: str, cwd: pathlib.Path, runpath: str) -> None:
@@ -39,3 +40,8 @@ def run_ert_subprocess(command: str, cwd: pathlib.Path, runpath: str) -> None:
                 process.terminate()
                 error_files = glob.glob(str(cwd / runpath.replace("%d", "*") / "ERROR"))
                 raise RuntimeError(pathlib.Path(error_files[0]).read_text())
+
+    if process.returncode > 0:
+        raise SubprocessError(
+            "The ERT workflow failed. Check the ERT log for more details."
+        )
