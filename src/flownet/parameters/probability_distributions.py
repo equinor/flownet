@@ -55,7 +55,7 @@ class UniformDistribution(ProbabilityDistribution):
         Args:
             **kwargs: Arbitrary keyword arguments
 
-            Keyword arguments (of which two (and only two)) needs to be defined:
+            Keyword arguments (of which two (and only two)) needs to be defined/different from None:
                 minimum: The minimum values of the updated distribution
                 mean: The mean value of the updated distribution
                 maximum: The maximum value of the updated distribution
@@ -115,7 +115,7 @@ class LogUniformDistribution(ProbabilityDistribution):
         Args:
             **kwargs: Arbitrary keyword arguments
 
-            Keyword arguments (of which two (and only two)) needs to be defined:
+            Keyword arguments (of which two (and only two)) needs to be defined/different from None:
                 minimum: The minimum values of the updated distribution
                 mean: The mean value of the updated distribution
                 maximum: The maximum value of the updated distribution
@@ -226,7 +226,7 @@ class TriangularDistribution(ProbabilityDistribution):
         Args:
             **kwargs: Arbitrary keyword arguments
 
-            Keyword arguments (of which three (and only three)) needs to be defined:
+            Keyword arguments (of which three (and only three)) needs to be defined/different from None:
                 minimum: The minimum values of the updated distribution
                 mean: The mean value of the updated distribution
                 mode: The mode of the updated distribution
