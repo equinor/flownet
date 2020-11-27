@@ -29,15 +29,15 @@ def run_flow():
 
     flow_path = shutil.which("flow")
     if "FLOW_PATH" in os.environ:
-        flow_path = os.environ.get("FFFLOW_PATH")
+        flow_path = os.environ.get("FLOW_PATH")
         if not os.path.isfile(flow_path):
             raise AssertionError(
-                "FLOW_PATH does not point at a file that exists.\n \
+                r"FLOW_PATH does not point at a file that exists.\n \
                 Please, use the environment variable $FLOW_PATH to indicate a path for OPM\Flow"
             )
     elif flow_path is None:
         raise AssertionError(
-            "OPM/flow is not installed.\n \
+            r"OPM/flow is not installed.\n \
             Follow instructions in https://opm-project.org/ to install flow.\n \
             If OPM/flow it is already installed, make sure it is available in $PATH,\n \
             or alternatively use the environment variable $FLOW_PATH"
