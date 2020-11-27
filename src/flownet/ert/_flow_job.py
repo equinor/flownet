@@ -27,27 +27,22 @@ def run_flow():
     parser.add_argument("data_file", type=str)
     args = parser.parse_args()
 
+    flow_path = shutil.which("flow")
     if "FLOW_PATH" in os.environ:
-        flow_path = os.environ.get("FLOW_PATH")
-        if os.path.isfile(flow_path):
-            # Runing flow from ENV variable
-            subprocess.run([flow_path, args.data_file], check=True)
-        else:
-            raise AssertionError("FLOW_PATH points to a path that doesn't exist")
-    elif shutil.which("flow") is None:
-        raise AssertionError(
-            "OPM/flow is not installed.\
-                             Follow instructions in https://opm-project.org/ to install flow."
-        )
-    else:
-        flow_path = shutil.which("flow")
-        if os.path.isfile(flow_path):
-            # Runing flow from Installation variable
-            subprocess.run(
-                [os.environ.get("FLOW_PATH", shutil.which("flow")), args.data_file],
-                check=True,
+        flow_path = os.environ.get("FFFLOW_PATH")
+        if not os.path.isfile(flow_path):
+            raise AssertionError(
+                "FLOW_PATH does not point at a file that exists.\n \
+                Please, use the environment variable $FLOW_PATH to indicate a path for OPM\Flow"
             )
-        else:
-            raise AssertionError("OPM/flow points to a path that doesn't exist")
+    elif flow_path is None:
+        raise AssertionError(
+            "OPM/flow is not installed.\n \
+            Follow instructions in https://opm-project.org/ to install flow.\n \
+            If OPM/flow it is already installed, make sure it is available in $PATH,\n \
+            or alternatively use the environment variable $FLOW_PATH"
+        )
+
+    subprocess.run([flow_path, args.data_file], check=True)
 
     Path("FLOW_SIMULATION.OK").write_text("")
