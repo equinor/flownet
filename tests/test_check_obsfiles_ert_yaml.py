@@ -19,6 +19,8 @@ _TRAINING_SET_FRACTION = 0.75
 _MIN_ERROR = 10
 _REL_ERROR = 0.05
 
+_RESAMPLING = None
+
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
     undefined=jinja2.StrictUndefined,
@@ -161,6 +163,8 @@ def test_check_obsfiles_ert_yaml() -> None:
     )
     config.flownet.data_source.simulation.vectors.WWIR.min_error = _MIN_ERROR
     config.flownet.data_source.simulation.vectors.WWIR.rel_error = _REL_ERROR
+
+    config.flownet.data_source.simulation.resampling = _RESAMPLING
     # Load production
 
     headers = [
