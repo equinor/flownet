@@ -201,6 +201,12 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                             },
                                         },
                                     },
+                                    "resampling": {
+                                        MK.Type: types.String,
+                                        MK.AllowNone: True,
+                                        MK.Description: "Requested observation frequency, used e.g. weekly (W), "
+                                        "monthly (M), quarterly (Q), yearly (A)",
+                                    },
                                 },
                             },
                             "concave_hull": {MK.Type: types.Bool, MK.AllowNone: True},
