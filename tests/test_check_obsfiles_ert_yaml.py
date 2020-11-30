@@ -108,6 +108,8 @@ def test_check_obsfiles_ert_yaml() -> None:
         Nothing
     """
 
+    # pylint: disable-msg=too-many-locals
+    # pylint: disable-msg=too-many-statements
     # pylint: disable=maybe-no-member
     config = collections.namedtuple("configuration", "flownet")
     config.flownet = collections.namedtuple("flownet", "data_source")
@@ -245,7 +247,6 @@ def test_check_obsfiles_ert_yaml() -> None:
         yaml=True,
     )
 
-    # pylint: disable-msg=too-many-locals
     dt_schedule = pd.to_datetime(schedule.get_dates())
 
     # Resampling dates based on requested frequency with
