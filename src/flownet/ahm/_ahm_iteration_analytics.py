@@ -196,7 +196,7 @@ def accuracy_metric(
 
 def _load_simulations(runpath: str, ecl_base: str) -> Tuple[str, Optional[EclSum]]:
     """
-    Internal helper function to simulation results in parallel.
+    Internal helper function to load simulation results in parallel.
 
     Args:
         runpath: Path to where the realization is run.
