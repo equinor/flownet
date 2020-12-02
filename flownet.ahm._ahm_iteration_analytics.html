@@ -168,13 +168,17 @@
 <span id="flownet-ahm-ahm-iteration-analytics-module"></span><h1>flownet.ahm._ahm_iteration_analytics module<a class="headerlink" href="#module-flownet.ahm._ahm_iteration_analytics" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="flownet.ahm._ahm_iteration_analytics._load_simulations">
-<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">_load_simulations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">runpath</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">ecl_base</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>ecl.summary.ecl_sum.EclSum<span class="p">]</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics._load_simulations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal helper function to simulation results in parallel.
-:param runpath: Path to where the realization is run.
-:param ecl_base: Path to where the realization is run.</p>
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">_load_simulations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">runpath</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">ecl_base</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>str<span class="p">, </span>Optional<span class="p">[</span>ecl.summary.ecl_sum.EclSum<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics._load_simulations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal helper function to load simulation results in parallel.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>EclSum, or None in case of failed simulation (inexistent .UNSMRY file)</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>runpath</strong> – Path to where the realization is run.</p></li>
+<li><p><strong>ecl_base</strong> – Path to where the realization is run.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(runpath, EclSum), or (runpath, None) in case of failed simulation (inexistent .UNSMRY file)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -270,7 +274,7 @@ empty dataframe with requested columns if CSV file does not exist</p>
 
 <dl class="py function">
 <dt id="flownet.ahm._ahm_iteration_analytics.make_dataframe_simulation_data">
-<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">make_dataframe_simulation_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">eclbase_file</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">keys</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">end_date</span><span class="p">:</span> <span class="n">numpy.datetime64</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">, </span>int<span class="p">, </span>int<span class="p">]</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.make_dataframe_simulation_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">make_dataframe_simulation_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">eclbase_file</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">keys</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">end_date</span><span class="p">:</span> <span class="n">datetime.datetime</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">, </span>int<span class="p">, </span>int<span class="p">]</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.make_dataframe_simulation_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Internal helper function to generate dataframe containing
 data from ensemble of simulations from selected simulation keys</p>
 <dl class="field-list simple">
@@ -313,7 +317,7 @@ using the MinMaxScaler from sklearn.preprocessing module</p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>is a normalized 2D numpy array for the reference simulation data
 norm_data_ensembles_flownet: a list of normalized 2D numpy arrays for the ensembles of
-lowNet simulations</p>
+FlowNet simulations</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>norm_data_opm_reference</p>
@@ -378,25 +382,6 @@ a CSV file in the FlowNet output folder, along with the figures</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>None</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Nothing</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="flownet.ahm._ahm_iteration_analytics.save_plots_metrics">
-<code class="sig-prename descclassname">flownet.ahm._ahm_iteration_analytics.</code><code class="sig-name descname">save_plots_metrics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_metrics</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">metrics</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">str_key</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._ahm_iteration_analytics.save_plots_metrics" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal helper function to generate and save plots of evolution of
-accuracy metrics over iterations</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>df_metrics</strong> – Pandas dataframe containing values of accuracy metrics over iterations</p></li>
-<li><p><strong>metrics</strong> – list containing names of computed accuracy metrics</p></li>
-<li><p><strong>str_key</strong> – name of quantity of interest for accuracy metric calculation</p></li>
-</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Nothing</p>
