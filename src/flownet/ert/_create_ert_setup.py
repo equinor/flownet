@@ -24,6 +24,42 @@ _TEMPLATE_ENVIRONMENT.globals["isnan"] = np.isnan
 _MODULE_FOLDER = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
 
 
+def resample_schedule_dates(schedule: Schedule, resampling: str) -> List:
+    """
+    Resampling dates based on requested frequency without introducing interpolated dates,
+    i.e., keeps nearest existing date
+
+    Args:
+        schedule: FlowNet Schedule instance to create observations from.
+        resampling: Pandas resampling frequency (str)
+
+    Returns:
+        dates: list of resampled dates
+
+    """
+    df_dates_schedule = pd.to_datetime(schedule.get_dates())
+
+    if resampling:
+        df_dates_resampled = pd.date_range(
+            schedule.get_dates()[0],
+            schedule.get_dates()[-1],
+            freq=resampling,
+        )
+        df_schedule = pd.DataFrame(
+            data=range(len(df_dates_schedule)), index=df_dates_schedule
+        )
+        idx = np.zeros(len(df_dates_resampled), dtype=int)
+        for i, k in enumerate(df_dates_resampled):
+            idx[i] = df_schedule.index.get_loc(k, method="nearest")
+        dates = [
+            d.date() for d in df_schedule.iloc[np.unique(idx)].index.to_pydatetime()
+        ]
+    else:
+        dates = [d.date() for d in df_dates_schedule[1:]]
+
+    return dates
+
+
 def create_observation_file(
     schedule: Schedule,
     obs_file: pathlib.Path,
@@ -48,42 +84,16 @@ def create_observation_file(
         Nothing
 
     """
-    # pylint: disable-msg=too-many-locals
-    dt_schedule = pd.to_datetime(schedule.get_dates())
-
-    # Resampling dates based on requested frequency with
-    # no interpolation: keeps nearest existing date
-    if config.flownet.data_source.simulation.resampling:
-        dt_resampled = pd.date_range(
-            schedule.get_dates()[1],
-            schedule.get_dates()[-1],
-            freq=config.flownet.data_source.simulation.resampling,
-        )
-        df_schedule = pd.DataFrame(data=range(len(dt_schedule)), index=dt_schedule)
-        idx = np.zeros(len(dt_resampled), dtype=int)
-        for i, k in enumerate(dt_resampled):
-            idx[i] = df_schedule.index.get_loc(k, method="nearest")
-        dates = [
-            d.date() for d in df_schedule.iloc[np.unique(idx)].index.to_pydatetime()
-        ]
-    else:
-        dates = schedule.get_dates()
+    dates = resample_schedule_dates(schedule, config.flownet.data_source.resampling)
 
     num_dates = len(dates)
     num_training_dates = round(num_dates * training_set_fraction)
 
-    if config.flownet.data_source.simulation.resampling:
-        export_settings = [
-            ["_complete", 0, num_dates],
-            ["_training", 0, num_training_dates],
-            ["_test", num_training_dates + 1, num_dates],
-        ]
-    else:
-        export_settings = [
-            ["_complete", 1, num_dates],
-            ["_training", 1, num_training_dates],
-            ["_test", num_training_dates + 1, num_dates],
-        ]
+    export_settings = [
+        ["_complete", 0, num_dates],
+        ["_training", 0, num_training_dates],
+        ["_test", num_training_dates + 1, num_dates],
+    ]
 
     file_root = os.path.splitext(obs_file)[0]
 
