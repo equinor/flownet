@@ -1880,6 +1880,7 @@ def _check_distribution(config_dict, parameter):
         if not (
             {"min", "max"}.issubset(defined_parameters)
             or {"min", "mean"}.issubset(defined_parameters)
+            or {"max", "mean"}.issubset(defined_parameters)
         ):
             raise ValueError(
                 f"Distribution for {parameter} can not be defined. "
@@ -1934,6 +1935,7 @@ def _check_distribution(config_dict, parameter):
             {"min", "base", "max"}.issubset(defined_parameters)
             or {"min", "mean", "max"}.issubset(defined_parameters)
             or {"min", "base", "mean"}.issubset(defined_parameters)
+            or {"max", "base", "mean"}.issubset(defined_parameters)
         ):
             raise ValueError(
                 "The triangular distribution needs 'min', 'base', and 'max' to be defined. "
