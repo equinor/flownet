@@ -51,8 +51,9 @@ class UniformDistribution(ProbabilityDistribution):
         maximum (float): The maximum value of the distribution
         stddev (float): The standard deviation of the distribution
 
-    
+
     """
+
     def __init__(
         self,
         minimum: float = None,
@@ -77,16 +78,17 @@ class UniformDistribution(ProbabilityDistribution):
     ):
         """
         Function that updates the parameters that defines the probability distribution.
-        
+
         The following input combinations will make changes to the distribution:
-            * Giving a new minimum value as input will change the minimum value, and a new mean and stddev will be calculated
-            * Giving a new maximum value as input will change the maximum value, and a new mean and stddev will be calculated
+            * Giving a new minimum value as input will trigger calculation of a new mean and standard deviation
+            * Giving a new maximum value as input will trigger calculation of a new mean and standard deviation
             * Giving a new mean value as input requires a new minimum OR maximum value to be defined also
                 - A new mean value and a new minimum value will trigged an update of the maximum value and the stddev
                 - A new mean value and a new maximum value will trigged an update of the minimum value and the stddev
 
-        Providing values for stddev or mode has no effect here, since the uniform distribution has no mode, and the stddev is caluculated from the minimum and maximum values
-        
+        Providing values for stddev or mode has no effect here, since the uniform distribution has no mode, and the
+        stddev is calculated from the minimum and maximum values
+
         Providing a new mean, a new minimum and a new maximum value means will trigger an error
 
 
@@ -100,10 +102,10 @@ class UniformDistribution(ProbabilityDistribution):
         Returns:
             Nothing
         """
-        if not mean and not maximum and minimum:
+        if not mean and not maximum and minimum and self.maximum:
             self.minimum = minimum
             self.mean = (self.minimum + self.maximum) / 2
-        elif not mean and not minimum and maximum:
+        elif not mean and not minimum and maximum and self.minimum:
             self.maximum = maximum
             self.mean = (self.minimum + self.maximum) / 2
         elif not mean and minimum and maximum:
@@ -153,16 +155,17 @@ class LogUniformDistribution(ProbabilityDistribution):
     ):
         """
         Function that updates the parameters that defines the probability distribution
-        
-        The following input combinations will make changes to the distribution:
-            * Giving a new minimum value as input will change the minimum value, and a new mean and stddev will be calculated
-            * Giving a new maximum value as input will change the maximum value, and a new mean and stddev will be calculated
-            * Giving a new mean value as input requires a new minimum OR maximum value to be defined also
-                - A new mean value and a new minimum value will trigged an update of the maximum value and the stddev
-                - A new mean value and a new maximum value will trigged an update of the minimum value and the stddev
 
-        Providing values for stddev or mode has no effect here, since in the loguniform distribution the mode is equal to the minimum value, and the stddev is caluculated from the minimum and maximum values
-        
+        The following input combinations will make changes to the distribution:
+            * Giving a new minimum value as input will trigger a calculation of a new mean and stddev
+            * Giving a new maximum value as input will trigger a calculation of a new mean and stddev
+            * Giving a new mean value as input requires a new minimum OR maximum value to be defined also
+                - A new mean value and a new minimum value will trigger an update of the maximum value and the stddev
+                - A new mean value and a new maximum value will trigger an update of the minimum value and the stddev
+
+        Providing values for stddev or mode has no effect here, since in the loguniform distribution the mode is
+        equal to the minimum value, and the stddev is caluculated from the minimum and maximum values
+
         Providing a new mean, a new minimum and a new maximum value means will trigger an error
 
         Args:
@@ -175,12 +178,14 @@ class LogUniformDistribution(ProbabilityDistribution):
         Returns:
             Nothing
         """
-        if not mean and not maximum and minimum:
+        if not mean and not maximum and minimum and self.maximum:
+            # not possible on first call of function since the full distribution must be defined then
             self.minimum = minimum
             self.mean = (self.maximum - self.minimum) / np.log(
                 self.maximum / self.minimum
             )
-        elif not mean and not minimum and maximum:
+        elif not mean and not minimum and maximum and self.minimum:
+            # not possible on first call of function since the full distribution must be defined then
             self.maximum = maximum
             self.mean = (self.maximum - self.minimum) / np.log(
                 self.maximum / self.minimum
