@@ -201,6 +201,17 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                             },
                                         },
                                     },
+                                    "layering": {
+                                        MK.Type: types.List,
+                                        MK.Content: {
+                                            MK.Item: {
+                                                MK.Type: types.List,
+                                                MK.Content: {
+                                                    MK.Item: {MK.Type: types.Integer}
+                                                },
+                                            },
+                                        },
+                                    },
                                 },
                             },
                             "concave_hull": {MK.Type: types.Bool, MK.AllowNone: True},
