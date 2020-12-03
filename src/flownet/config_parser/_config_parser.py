@@ -1860,7 +1860,7 @@ def _check_distribution(config_dict, parameter):
             raise ValueError(
                 f"The {parameter} has values defined for 'min', 'mean' and 'max'. Only two of them should be defined"
             )
-        elif {"mean", "max"}.issubset(defined_parameters):
+        if {"mean", "max"}.issubset(defined_parameters):
             if getattr(config_dict, parameter).distribution == "uniform":
                 # check that calculated 'min' will be non negative
                 if (
@@ -1877,16 +1877,15 @@ def _check_distribution(config_dict, parameter):
                     f"Check not implemented, but be aware that the defined 'mean' and 'max' value for {parameter} "
                     f"may provide a negative minimum value that will lead to the run stopping."
                 )
-        else:
-            if not (
-                {"min", "max"}.issubset(defined_parameters)
-                or {"min", "mean"}.issubset(defined_parameters)
-            ):
-                raise ValueError(
-                    f"Distribution for {parameter} can not be defined. "
-                    f"For a '{getattr(config_dict, parameter).distribution}' distribution FlowNet needs "
-                    f"'min'/'max', 'min'/'mean' or 'mean'/'max' to be defined."
-                )
+        if not (
+            {"min", "max"}.issubset(defined_parameters)
+            or {"min", "mean"}.issubset(defined_parameters)
+        ):
+            raise ValueError(
+                f"Distribution for {parameter} can not be defined. "
+                f"For a '{getattr(config_dict, parameter).distribution}' distribution FlowNet needs "
+                f"'min'/'max', 'min'/'mean' or 'mean'/'max' to be defined."
+            )
 
     if getattr(config_dict, parameter).distribution == "truncated_normal":
         if not {"min", "max"}.issubset(_check_defined(config_dict, parameter)):
@@ -1920,7 +1919,7 @@ def _check_distribution(config_dict, parameter):
                 f"The {parameter} has values defined for 'min', 'base', 'mean' and 'max'. "
                 "Only three of them should be defined"
             )
-        elif {"base", "mean", "max"}.issubset(defined_parameters):
+        if {"base", "mean", "max"}.issubset(defined_parameters):
             if (
                 3 * getattr(config_dict, parameter).mean
                 - getattr(config_dict, parameter).max
@@ -1931,16 +1930,15 @@ def _check_distribution(config_dict, parameter):
                     f"The 'base', 'mean' and 'max' values for {parameter} will "
                     "give negative 'min' in the triangular distribution."
                 )
-        else:
-            if not (
-                {"min", "base", "max"}.issubset(defined_parameters)
-                or {"min", "mean", "max"}.issubset(defined_parameters)
-                or {"min", "base", "mean"}.issubset(defined_parameters)
-            ):
-                raise ValueError(
-                    "The triangular distribution needs 'min', 'base', and 'max' to be defined. "
-                    "Alternatively two of the former in addition to the 'mean'."
-                )
+        if not (
+            {"min", "base", "max"}.issubset(defined_parameters)
+            or {"min", "mean", "max"}.issubset(defined_parameters)
+            or {"min", "base", "mean"}.issubset(defined_parameters)
+        ):
+            raise ValueError(
+                "The triangular distribution needs 'min', 'base', and 'max' to be defined. "
+                "Alternatively two of the former in addition to the 'mean'."
+            )
 
 
 def _check_defined(config_dict, parameter):

@@ -131,7 +131,7 @@ def _get_distribution(
     parameters: Union[str, List[str]], parameters_config: dict, index: list
 ) -> pd.DataFrame:
     """
-    Create the distribution min-max for one or more parameters
+    Create the distribution min, mean, base, stddev, max for one or more parameters
 
     Args:
         parameters: which parameter(s) should be outputted in the dataframe
@@ -255,9 +255,18 @@ def update_distribution(
     parameters: List[Parameter], ahm_case: pathlib.Path
 ) -> List[Parameter]:
     """
-    Update the prior distribution min-max for one or more parameters based on
+    Update the prior distribution for one or more parameters based on
     the mean and standard deviation of the posterior distribution. It is assumed that the prior min
-    and max values cannot be exceeded.
+    and max values cannot be exceeded. The type of distribution will also be kept.
+
+    For the distributions with a min/max:
+        * If the mean value in the posterior is less than in the prior, the minimum value (and the mode) will be kept
+           and the maximum value and the mean will be updated.
+        * If the mean value in the posterior is larger than in the prior, the maximum value (and the mode) will be
+           kept and the minimum value and the mean will be updated.
+
+    For distributions defined by a mean and standard deviation the mean and standard deviation will be updated based
+    on the values from the posterior
 
     Args:
         parameters: which parameter(s) should be updated
@@ -314,19 +323,18 @@ def update_distribution(
 
     # update the distributions
     for parameter in parameters:
-        n = len(parameter.random_variables)
-
         for i, var in enumerate(parameter.random_variables):
             mean = parameter.mean_values[i]
             # if mean in posterior is close to min/max in prior raise warning
-            if (mean - var.minimum) / (var.mean - var.minimum) < 0.1 or (
-                var.maximum - mean
-            ) / (var.maximum - var.mean) < 0.1:
-                warnings.warn(
-                    f"The mean value for the posterior ensemble for {parameter.names[i]} is close to \n"
-                    f"the upper or lower bounds in the prior. This will give a very narrow prior range \n"
-                    f"in this run. Consider updating before running again. "
-                )
+            if var.minimum and var.maximum:
+                if (mean - var.minimum) / (var.mean - var.minimum) < 0.1 or (
+                    var.maximum - mean
+                ) / (var.maximum - var.mean) < 0.1:
+                    warnings.warn(
+                        f"The mean value for the posterior ensemble for {parameter.names[i]} is close to \n"
+                        f"the upper or lower bounds in the prior. This will give a very narrow prior range \n"
+                        f"in this run. Consider updating before running again. "
+                    )
             if var.stddev is not None:
                 stddev = parameter.stddev_values[i]
                 if stddev / var.stddev < 0.1:
@@ -337,12 +345,22 @@ def update_distribution(
                     )
 
                 if mean < var.mean:
+                    # Keep the lower limit/minimum and mode for distributions that have those
                     var.update_distribution(
-                        mean=mean, stddev=stddev, minimum=var.minimum, mode=var.mode
+                        mean=mean,
+                        stddev=stddev,
+                        minimum=var.minimum,
+                        mode=var.mode,
+                        maximum=None,
                     )
                 else:
+                    # Keep the upper limit/maximum and mode for distributions that have those
                     var.update_distribution(
-                        mean=mean, stddev=stddev, maximum=var.maximum, mode=var.mode
+                        mean=mean,
+                        stddev=stddev,
+                        maximum=var.maximum,
+                        mode=var.mode,
+                        minimum=None,
                     )
 
     return parameters
@@ -459,7 +477,7 @@ def run_flownet_history_matching(
             _from_regions_to_flow_tubes(network, field_data, ti2ci, "SATNUM"),
             columns=["SATNUM"],
         )
-    elif config.model_parameters.relative_permeability.scheme == "global":
+    else:
         df_satnum = pd.DataFrame(
             [1] * len(network.grid.model.unique()), columns=["SATNUM"]
         )

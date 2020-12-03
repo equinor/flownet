@@ -1,7 +1,8 @@
 import abc
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional
 
 import jinja2
+import pandas as pd
 
 from .probability_distributions import (
     ProbabilityDistribution,
@@ -22,7 +23,7 @@ _TEMPLATE_ENVIRONMENT = jinja2.Environment(
 
 
 def parameter_probability_distribution_class(
-    row, param=None
+    row: pd.Series, param: Optional[str] = None
 ) -> ProbabilityDistribution:
     """
 

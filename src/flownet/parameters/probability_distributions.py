@@ -3,7 +3,7 @@ parameter class definitions.
 """
 
 import abc
-from typing import Union
+from typing import Optional
 import numpy as np
 from scipy.optimize import minimize
 
@@ -11,11 +11,12 @@ from scipy.optimize import minimize
 class ProbabilityDistribution(abc.ABC):
     def __init__(self, name):
         self.name: str = name
-        self.minimum: float
-        self.maximum: float
         self.mean: float
-        self.mode: Union[float, None]
         self.stddev: float
+        # not all distributions have a mode, minimum or maximum
+        self.mode: Optional[float]
+        self.minimum: Optional[float]
+        self.maximum: Optional[float]
 
     @property
     @abc.abstractmethod
@@ -25,7 +26,11 @@ class ProbabilityDistribution(abc.ABC):
     @abc.abstractmethod
     def update_distribution(
         self,
-        **kwargs,
+        minimum: Optional[float],
+        maximum: Optional[float],
+        mean: Optional[float],
+        mode: Optional[float],
+        stddev: Optional[float],
     ):
         """Function to update parameters for the various distributions"""
 
@@ -47,45 +52,43 @@ class UniformDistribution(ProbabilityDistribution):
 
     def update_distribution(
         self,
-        **kwargs,
+        minimum: Optional[float] = None,
+        maximum: Optional[float] = None,
+        mean: Optional[float] = None,
+        mode: Optional[float] = None,
+        stddev: Optional[float] = None,
     ):
         """
         Function that updates the parameters that defines the probability distribution
 
         Args:
-            **kwargs: Arbitrary keyword arguments
-
-            Keyword arguments (of which two (and only two)) needs to be defined/different from None:
-                minimum: The minimum values of the updated distribution
-                mean: The mean value of the updated distribution
-                maximum: The maximum value of the updated distribution
+            minimum: The minimum values of the updated distribution
+            mean: The mean value of the updated distribution
+            mode: The mode of the updated distribution
+            maximum: The maximum value of the updated distribution
+            stddev: The standard deviation of the updated distribution
 
         Returns:
             Nothing
         """
-        assert (
-            sum(
-                value is not None
-                for value in list(
-                    map(kwargs.get, {"minimum", "maximum", "mean"}.intersection(kwargs))
-                )
-            )
-            == 2
-        ), "Min/mean, min/max or mean/max needs to be defined"
-
-        if "mean" not in kwargs or kwargs.get("mean") is None:
-            self.minimum = kwargs.get("minimum")
-            self.maximum = kwargs.get("maximum")
+        if not mean and minimum and maximum:
+            self.minimum = minimum
+            self.maximum = maximum
             self.mean = (self.minimum + self.maximum) / 2
-        if "minimum" not in kwargs or kwargs.get("minimum") is None:
-            self.mean = kwargs.get("mean")
-            self.maximum = kwargs.get("maximum")
+        elif not minimum and mean and maximum:
+            self.mean = mean
+            self.maximum = maximum
             self.minimum = self.mean - (self.maximum - self.mean)
-        if "maximum" not in kwargs or kwargs.get("maximum") is None:
-            self.mean = kwargs.get("mean")
-            self.minimum = kwargs.get("minimum")
+        elif not maximum and mean and minimum:
+            self.mean = mean
+            self.minimum = minimum
             self.maximum = self.mean + (self.mean - self.minimum)
-
+        else:
+            raise ValueError(
+                "Uniform distribution not properly defined."
+                "Minimum/mean, minimum/maximum or mean/maximum needs to be defined, "
+                "but not all of minimum, mean, maximum at the same time"
+            )
         self.mode = None
         self.stddev = np.sqrt(np.power(self.maximum - self.minimum, 2) / 12)
 
@@ -93,9 +96,9 @@ class UniformDistribution(ProbabilityDistribution):
 class LogUniformDistribution(ProbabilityDistribution):
     def __init__(
         self,
-        minimum: Union[float, None] = None,
-        maximum: Union[float, None] = None,
-        mean: Union[float, None] = None,
+        minimum: Optional[float] = None,
+        maximum: Optional[float] = None,
+        mean: Optional[float] = None,
     ):
         super().__init__("LOGUNIF")
         self.update_distribution(minimum=minimum, mean=mean, maximum=maximum)
@@ -107,49 +110,48 @@ class LogUniformDistribution(ProbabilityDistribution):
 
     def update_distribution(
         self,
-        **kwargs,
+        minimum: Optional[float] = None,
+        maximum: Optional[float] = None,
+        mean: Optional[float] = None,
+        mode: Optional[float] = None,
+        stddev: Optional[float] = None,
     ):
         """
         Function that updates the parameters that defines the probability distribution
 
         Args:
-            **kwargs: Arbitrary keyword arguments
-
-            Keyword arguments (of which two (and only two)) needs to be defined/different from None:
-                minimum: The minimum values of the updated distribution
-                mean: The mean value of the updated distribution
-                maximum: The maximum value of the updated distribution
+            minimum: The minimum values of the updated distribution
+            mean: The mean value of the updated distribution
+            mode: The mode of the updated distribution
+            maximum: The maximum value of the updated distribution
+            stddev: The standard deviation of the updated distribution
 
         Returns:
             Nothing
         """
-        assert (
-            sum(
-                value is not None
-                for value in list(
-                    map(kwargs.get, {"minimum", "maximum", "mean"}.intersection(kwargs))
-                )
-            )
-            == 2
-        ), "Min/mean, min/max or mean/max needs to be defined"
-
-        if "mean" not in kwargs or kwargs.get("mean") is None:
-            self.minimum = kwargs.get("minimum")
-            self.maximum = kwargs.get("maximum")
+        if not mean and minimum and maximum:
+            self.minimum = minimum
+            self.maximum = maximum
             self.mean = (self.maximum - self.minimum) / np.log(
                 self.maximum / self.minimum
             )
-        if "minimum" not in kwargs or kwargs.get("minimum") is None:
-            self.mean = kwargs.get("mean")
-            self.maximum = kwargs.get("maximum")
-            self._find_dist_minmax(
+        elif not minimum and mean and maximum:
+            self.mean = mean
+            self.maximum = maximum
+            self.minimum = self._find_dist_minmax(
                 mean_val=self.mean, min_val=None, max_val=self.maximum
             )
-        if "maximum" not in kwargs or kwargs.get("maximum") is None:
-            self.mean = kwargs.get("mean")
-            self.minimum = kwargs.get("minimum")
-            self._find_dist_minmax(
+        elif not maximum and mean and minimum:
+            self.mean = mean
+            self.minimum = minimum
+            self.maximum = self._find_dist_minmax(
                 min_val=self.minimum, mean_val=self.mean, max_val=None
+            )
+        else:
+            raise ValueError(
+                "log-Uniform distribution not properly defined."
+                "Minimum/mean, minimum/maximum or mean/maximum needs to be defined, "
+                "but not all of minimum, mean, maximum at the same time"
             )
 
         self.mode = self.minimum
@@ -167,7 +169,8 @@ class LogUniformDistribution(ProbabilityDistribution):
         mean_val: float,
         min_val: float = None,
         max_val: float = None,
-    ):
+    ) -> float:
+        # pylint: disable=no-self-use
         """
         Find the distribution min or max for a loguniform distribution, assuming only
         one of these and the mean are given
@@ -178,12 +181,12 @@ class LogUniformDistribution(ProbabilityDistribution):
             mean_val: mean value for the distribution
 
         Returns:
-            Nothing
+            missing value (minimum if maximum is provided as input, maximum if minimum is provided)
 
         """
         # pylint: disable=cell-var-from-loop
         if min_val is None:
-            self.minimum = minimize(
+            result = minimize(
                 lambda x: (mean_val - ((max_val - x) / np.log(max_val / x))) ** 2,
                 x0=mean_val,
                 tol=1e-9,
@@ -191,22 +194,23 @@ class LogUniformDistribution(ProbabilityDistribution):
                 bounds=[(1e-9, mean_val)],
             ).x[0]
         if max_val is None:
-            self.maximum = minimize(
+            result = minimize(
                 lambda x: (mean_val - ((x - min_val) / np.log(x / min_val))) ** 2,
                 x0=mean_val,
                 tol=1e-9,
                 method="L-BFGS-B",
                 bounds=[(mean_val, None)],
             ).x[0]
+        return result
 
 
 class TriangularDistribution(ProbabilityDistribution):
     def __init__(
         self,
-        minimum: Union[float, None] = None,
-        maximum: Union[float, None] = None,
-        mean: Union[float, None] = None,
-        mode: Union[float, None] = None,
+        minimum: Optional[float] = None,
+        maximum: Optional[float] = None,
+        mean: Optional[float] = None,
+        mode: Optional[float] = None,
     ):
         super().__init__("TRIANGULAR")
         self.update_distribution(minimum=minimum, maximum=maximum, mean=mean, mode=mode)
@@ -218,63 +222,50 @@ class TriangularDistribution(ProbabilityDistribution):
 
     def update_distribution(
         self,
-        **kwargs,
+        minimum: Optional[float] = None,
+        maximum: Optional[float] = None,
+        mean: Optional[float] = None,
+        mode: Optional[float] = None,
+        stddev: Optional[float] = None,
     ):
         """
         Function that updates the parameters that defines the probability distribution
 
         Args:
-            **kwargs: Arbitrary keyword arguments
-
-            Keyword arguments (of which three (and only three)) needs to be defined/different from None:
-                minimum: The minimum values of the updated distribution
-                mean: The mean value of the updated distribution
-                mode: The mode of the updated distribution
-                maximum: The maximum value of the updated distribution
+            minimum: The minimum values of the updated distribution
+            mean: The mean value of the updated distribution
+            mode: The mode of the updated distribution
+            maximum: The maximum value of the updated distribution
+            stddev: The standard deviation of the updated distribution
 
         Returns:
             Nothing
         """
-        assert (
-            sum(
-                value is not None
-                for value in list(
-                    map(
-                        kwargs.get,
-                        {"minimum", "maximum", "mean", "mode"}.intersection(kwargs),
-                    )
-                )
+        if not maximum and minimum and mean and mode:
+            self.minimum = minimum
+            self.mode = mode
+            self.mean = mean
+            self.maximum = 3 * mean - mode - minimum
+        elif not minimum and mean and mode and maximum:
+            self.maximum = maximum
+            self.mode = mode
+            self.mean = mean
+            self.minimum = 3 * mean - mode - maximum
+        elif not mode and mean and minimum and maximum:
+            self.mean = mean
+            self.minimum = minimum
+            self.maximum = maximum
+            self.mode = 3 * mean - maximum - minimum
+        elif not mean and minimum and mode and maximum:
+            self.mode = mode
+            self.maximum = maximum
+            self.minimum = minimum
+            self.mean = mode + minimum + maximum / 3
+        else:
+            raise ValueError(
+                "Triangular distribution not properly defined."
+                "Three (and only three) of minimum, mode, mean and maximum needs to be defined."
             )
-            == 3
-        ), "Triangular distributions needs three parameters to be defined"
-        assert (
-            {"minimum", "mean", "maximum"}.issubset(kwargs)
-            or {"minimum", "mode", "maximum"}.issubset(kwargs)
-            or {"mode", "maximum", "mean"}.issubset(kwargs)
-            or {"mode", "minimum", "mean"}.issubset(kwargs)
-        )
-
-        self.maximum = (
-            kwargs.get("maximum")
-            if "maximum" in kwargs
-            else 3 * kwargs.get("mean") - kwargs.get("mode") - kwargs.get("minimum")
-        )
-        self.minimum = (
-            kwargs.get("minimum")
-            if "minimum" in kwargs
-            else 3 * kwargs.get("mean") - kwargs.get("mode") - kwargs.get("maximum")
-        )
-        self.mean = (
-            kwargs.get("mean")
-            if "mean" in kwargs
-            else (kwargs.get("mode") + kwargs.get("minimum") + kwargs.get("maximum"))
-            / 3
-        )
-        self.mode = (
-            kwargs.get("mode")
-            if "mode" in kwargs
-            else 3 * kwargs.get("mean") - kwargs.get("mode") - kwargs.get("minimum")
-        )
 
         self.stddev = (
             np.power(self.minimum, 2)
@@ -289,6 +280,8 @@ class TriangularDistribution(ProbabilityDistribution):
 class NormalDistribution(ProbabilityDistribution):
     def __init__(self, mean, stddev):
         super().__init__("NORMAL")
+        self.minimum = None
+        self.maximum = None
         self.update_distribution(mean=mean, stddev=stddev)
 
     @property
@@ -298,29 +291,30 @@ class NormalDistribution(ProbabilityDistribution):
 
     def update_distribution(
         self,
-        **kwargs,
+        minimum: Optional[float] = None,
+        maximum: Optional[float] = None,
+        mean: Optional[float] = None,
+        mode: Optional[float] = None,
+        stddev: Optional[float] = None,
     ):
         """
         Function that updates the parameters that defines the probability distribution
 
         Args:
-            **kwargs: Arbitrary keyword arguments
-
-            Keyword arguments:
-                mean: The mean value of the updated distribution
-                stddev: The standard deviation of the updated distribution
+            minimum: The minimum values of the updated distribution
+            mean: The mean value of the updated distribution
+            mode: The mode of the updated distribution
+            maximum: The maximum value of the updated distribution
+            stddev: The standard deviation of the updated distribution
 
         Returns:
             Nothing
         """
-        if "mean" in kwargs:
-            self.mean = kwargs.get("mean")
+        if mean:
+            self.mean = mean
             self.mode = self.mean
-        if "stddev" in kwargs:
-            self.stddev = kwargs.get("stddev")
-
-        self.minimum = self.mean - 3 * self.stddev
-        self.maximum = self.mean + 3 * self.stddev
+        if stddev:
+            self.stddev = stddev
 
 
 class TruncatedNormalDistribution(ProbabilityDistribution):
@@ -337,32 +331,41 @@ class TruncatedNormalDistribution(ProbabilityDistribution):
 
     def update_distribution(
         self,
-        **kwargs,
+        minimum: Optional[float] = None,
+        maximum: Optional[float] = None,
+        mean: Optional[float] = None,
+        mode: Optional[float] = None,
+        stddev: Optional[float] = None,
     ):
         """
         Function that updates the parameters that defines the probability distribution
 
         Args:
-            **kwargs: Arbitrary keyword arguments
-
-            Keyword arguments:
-                mean: The mean value of the updated distribution
-                stddev: The standard deviation of the updated distribution
-                minimum: The minimum/lower truncation value of the updated distribution
-                maximum: The maximum/upper truncation value of the updated distribution
+            minimum: The minimum values of the updated distribution
+            mean: The mean value of the updated distribution
+            mode: The mode of the updated distribution
+            maximum: The maximum value of the updated distribution
+            stddev: The standard deviation of the updated distribution
 
         Returns:
             Nothing
         """
-        for item in {"mean", "stddev", "minimum", "maximum"}:
-            if item in kwargs:
-                setattr(self, item, kwargs.get(item))
-        self.mode = self.mean
+        if mean:
+            self.mean = mean
+            self.mode = mean
+        if stddev:
+            self.stddev = stddev
+        if minimum:
+            self.minimum = minimum
+        if maximum:
+            self.maximum = maximum
 
 
 class LogNormalDistribution(ProbabilityDistribution):
     def __init__(self, mean, stddev):
         super().__init__("LOGNORMAL")
+        self.minimum = None
+        self.maximum = None
         self.update_distribution(mean=mean, stddev=stddev)
 
     @property
@@ -370,46 +373,67 @@ class LogNormalDistribution(ProbabilityDistribution):
         """string representing an ERT "LOGNORMAL MEAN STDDEV" distribution keyword for use in GEN_KW"""
         return f"{self.name} {self.mean} {self.stddev}"
 
-    def update_distribution(self, **kwargs):
+    def update_distribution(
+        self,
+        minimum: Optional[float] = None,
+        maximum: Optional[float] = None,
+        mean: Optional[float] = None,
+        mode: Optional[float] = None,
+        stddev: Optional[float] = None,
+    ):
         """
         Function that updates the parameters that defines the probability distribution
 
         Args:
-            **kwargs: Arbitrary keyword arguments
-
-            Keyword arguments:
-                mean: The mean value of the updated distribution
-                stddev: The standard deviation of the updated distribution
+            minimum: The minimum values of the updated distribution
+            mean: The mean value of the updated distribution
+            mode: The mode of the updated distribution
+            maximum: The maximum value of the updated distribution
+            stddev: The standard deviation of the updated distribution
 
         Returns:
             Nothing
         """
-        for item in {"mean", "stddev"}:
-            if item in kwargs:
-                setattr(self, item, kwargs.get(item))
+        if mean:
+            self.mean = mean
+        if stddev:
+            self.stddev = stddev
 
 
 class Constant(ProbabilityDistribution):
     def __init__(self, constant):
         super().__init__("CONST")
-        self.update_distribution(constant=constant)
+        self.stddev = 0
+        self.update_distribution(mode=constant)
 
     @property
     def ert_gen_kw(self) -> str:
         """string representing an ERT "CONST CONSTANT" distribution keyword for use in GEN_KW"""
         return f"{self.name} {self.mean}"
 
-    def update_distribution(self, **kwargs):
+    def update_distribution(
+        self,
+        minimum: Optional[float] = None,
+        maximum: Optional[float] = None,
+        mean: Optional[float] = None,
+        mode: Optional[float] = None,
+        stddev: Optional[float] = None,
+    ):
         """
+        Function that updates the parameters that defines the probability distribution
 
         Args:
-            **kwargs:
+            minimum: The minimum values of the updated distribution
+            mean: The mean value of the updated distribution
+            mode: The mode of the updated distribution
+            maximum: The maximum value of the updated distribution
+            stddev: The standard deviation of the updated distribution
 
         Returns:
-
+            Nothing
         """
-        if "constant" in kwargs:
-            self.mean = kwargs.get("constant")
-            self.minimum = kwargs.get("constant")
-            self.maximum = kwargs.get("constant")
-            self.mode = kwargs.get("constant")
+        if mode:
+            self.mode = mode
+            self.mean = mode
+            self.maximum = mode
+            self.minimum = mode
