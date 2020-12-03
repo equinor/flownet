@@ -1730,21 +1730,21 @@ def parse_config(
     return config
 
 
-def _check_interpolate(config_dict, parameter):
+def _check_interpolate(path_in_config_dict: str, parameter: str):
     """
     Helper function to check the parameter in question is defined correctly for using
     interpolation between SCAL recommendation curves in pyscal
 
     Args:
-        config_dict: a location in the config schema dictionary
-        parameter: a parameter/dictionary found at the given location
+        path_in_config_dict (str): a location in the config schema dictionary
+        parameter (str): a parameter/dictionary found at the given location
 
     Returns:
        Nothing, raises ValueErrors if something is wrong
     """
-    defined_parameters = _check_defined(config_dict, parameter)
-    _check_for_negative_values(config_dict, parameter)
-    _check_order_of_values(config_dict, parameter)
+    defined_parameters = _check_defined(path_in_config_dict, parameter)
+    _check_for_negative_values(path_in_config_dict, parameter)
+    _check_order_of_values(path_in_config_dict, parameter)
     if len({"min", "base", "max"} - defined_parameters) > 0:
         raise ValueError(
             f"Ambigous configuration input for parameter {parameter}. "
@@ -1753,28 +1753,28 @@ def _check_interpolate(config_dict, parameter):
         )
 
 
-def _check_for_negative_values(config_dict, parameter):
+def _check_for_negative_values(path_in_config_dict: str, parameter: str):
     """
     Helper function to check if there are any negative values defined
     for a given parameter.
 
     Args:
-        config_dict: a location in the config schema dictionary
-        parameter: a parameter/dictionary found at the given location
+        path_in_config_dict (str): a location in the config schema dictionary
+        parameter (str): a parameter/dictionary found at the given location
 
     Returns:
         Nothing, raises ValueError if something is wrong
     """
-    defined_parameters = _check_defined(config_dict, parameter)
+    defined_parameters = _check_defined(path_in_config_dict, parameter)
     # check for negative values
     for attr in defined_parameters:
-        if getattr(getattr(config_dict, parameter), attr) < 0:
+        if getattr(getattr(path_in_config_dict, parameter), attr) < 0:
             raise ValueError(
                 f"Ambiguous configuration input for {parameter}. The '{attr}' is negative."
             )
 
 
-def _check_order_of_values(config_dict, parameter):
+def _check_order_of_values(path_in_config_dict: str, parameter: str):
     """
     Helper function to check the order of the defined values
     for a given parameter. If defined, the following should be true:
@@ -1785,54 +1785,69 @@ def _check_order_of_values(config_dict, parameter):
         * Base < Max
 
     Args:
-        config_dict: a location in the config schema dictionary
-        parameter: a parameter/dictionary found at the given location
+        path_in_config_dict (str): a location in the config schema dictionary
+        parameter (str): a parameter/dictionary found at the given location
 
     Returns:
         Nothing, raises ValueError if something is wrong
     """
-    defined_parameters = _check_defined(config_dict, parameter)
+    defined_parameters = _check_defined(path_in_config_dict, parameter)
     if {"min", "max"}.issubset(defined_parameters):
-        if getattr(config_dict, parameter).min > getattr(config_dict, parameter).max:
+        if (
+            getattr(path_in_config_dict, parameter).min
+            > getattr(path_in_config_dict, parameter).max
+        ):
             raise ValueError(
                 f"Ambiguous configuration input for {parameter}. 'Min' is larger than 'max'."
             )
     if {"min", "mean"}.issubset(defined_parameters):
-        if getattr(config_dict, parameter).min > getattr(config_dict, parameter).mean:
+        if (
+            getattr(path_in_config_dict, parameter).min
+            > getattr(path_in_config_dict, parameter).mean
+        ):
             raise ValueError(
                 f"Ambiguous configuration input for {parameter}. 'Min' is larger than 'mean'."
             )
     if {"max", "mean"}.issubset(defined_parameters):
-        if getattr(config_dict, parameter).mean > getattr(config_dict, parameter).max:
+        if (
+            getattr(path_in_config_dict, parameter).mean
+            > getattr(path_in_config_dict, parameter).max
+        ):
             raise ValueError(
                 f"Ambiguous configuration input for {parameter}. 'Mean' is larger than 'max'."
             )
     if {"min", "base"}.issubset(defined_parameters):
-        if getattr(config_dict, parameter).min > getattr(config_dict, parameter).base:
+        if (
+            getattr(path_in_config_dict, parameter).min
+            > getattr(path_in_config_dict, parameter).base
+        ):
             raise ValueError(
                 f"Ambiguous configuration input for {parameter}. 'Min' is larger than 'base'."
             )
     if {"max", "base"}.issubset(defined_parameters):
-        if getattr(config_dict, parameter).base > getattr(config_dict, parameter).max:
+        if (
+            getattr(path_in_config_dict, parameter).base
+            > getattr(path_in_config_dict, parameter).max
+        ):
             raise ValueError(
                 f"Ambiguous configuration input for {parameter}. 'Base' is larger than 'max'."
             )
 
 
-def _check_distribution(config_dict, parameter):
+def _check_distribution(path_in_config_dict: str, parameter: str):
     """
     Helper function that performs a number of checks to make sure that the values defined in the config file
     for the parameter in question makes sense
 
     Args:
-        config_dict: a location in the config schema dictionary
-        parameter: a parameter/dictionary found at the given location
+        path_in_config_dict (str): a location in the config schema dictionary
+        parameter (str): a parameter/dictionary found at the given location
 
     Returns:
        Nothing, raises ValueErrors if something is wrong
     """
     # pylint: disable=too-many-branches
-    if not {getattr(config_dict, parameter).distribution}.issubset(
+    if not {getattr(path_in_config_dict, parameter).distribution}.issubset(
         {
             "uniform",
             "logunif",
@@ -1844,28 +1859,28 @@ def _check_distribution(config_dict, parameter):
         }
     ):
         raise ValueError(
-            f"The defined distribution ({getattr(config_dict, parameter).distribution}) for {parameter} "
+            f"The defined distribution ({getattr(path_in_config_dict, parameter).distribution}) for {parameter} "
             f"is not a valid distribution choice. Use 'uniform', 'logunif', 'normal', 'lognormal', 'truncated_normal' "
             f"'triangular' or 'const'."
         )
-    defined_parameters = _check_defined(config_dict, parameter)
-    _check_for_negative_values(config_dict, parameter)
-    _check_order_of_values(config_dict, parameter)
+    defined_parameters = _check_defined(path_in_config_dict, parameter)
+    _check_for_negative_values(path_in_config_dict, parameter)
+    _check_order_of_values(path_in_config_dict, parameter)
     # uniform can be defined by either min/max, min/mean or mean/max
     if (
-        getattr(config_dict, parameter).distribution == "uniform"
-        or getattr(config_dict, parameter).distribution == "logunif"
+        getattr(path_in_config_dict, parameter).distribution == "uniform"
+        or getattr(path_in_config_dict, parameter).distribution == "logunif"
     ):
         if {"min", "max", "mean"}.issubset(defined_parameters):
             raise ValueError(
                 f"The {parameter} has values defined for 'min', 'mean' and 'max'. Only two of them should be defined"
             )
         if {"mean", "max"}.issubset(defined_parameters):
-            if getattr(config_dict, parameter).distribution == "uniform":
+            if getattr(path_in_config_dict, parameter).distribution == "uniform":
                 # check that calculated 'min' will be non negative
                 if (
-                    2 * getattr(config_dict, parameter).mean
-                    - getattr(config_dict, parameter).max
+                    2 * getattr(path_in_config_dict, parameter).mean
+                    - getattr(path_in_config_dict, parameter).max
                     < 0
                 ):
                     raise ValueError(
@@ -1884,37 +1899,39 @@ def _check_distribution(config_dict, parameter):
         ):
             raise ValueError(
                 f"Distribution for {parameter} can not be defined. "
-                f"For a '{getattr(config_dict, parameter).distribution}' distribution FlowNet needs "
+                f"For a '{getattr(path_in_config_dict, parameter).distribution}' distribution FlowNet needs "
                 f"'min'/'max', 'min'/'mean' or 'mean'/'max' to be defined."
             )
 
-    if getattr(config_dict, parameter).distribution == "truncated_normal":
-        if not {"min", "max"}.issubset(_check_defined(config_dict, parameter)):
+    if getattr(path_in_config_dict, parameter).distribution == "truncated_normal":
+        if not {"min", "max"}.issubset(_check_defined(path_in_config_dict, parameter)):
             raise ValueError(
-                f"The '{getattr(config_dict, parameter).distribution}' distribution for {parameter} "
+                f"The '{getattr(path_in_config_dict, parameter).distribution}' distribution for {parameter} "
                 f"requires 'min' and 'max' to be defined."
             )
 
     # check that mean and stddev is defined for the distributions that need it
     if (
-        getattr(config_dict, parameter).distribution == "normal"
-        or getattr(config_dict, parameter).distribution == "lognormal"
-        or getattr(config_dict, parameter).distribution == "truncated_normal"
+        getattr(path_in_config_dict, parameter).distribution == "normal"
+        or getattr(path_in_config_dict, parameter).distribution == "lognormal"
+        or getattr(path_in_config_dict, parameter).distribution == "truncated_normal"
     ):
-        if not {"mean", "stddev"}.issubset(_check_defined(config_dict, parameter)):
+        if not {"mean", "stddev"}.issubset(
+            _check_defined(path_in_config_dict, parameter)
+        ):
             raise ValueError(
-                f"The '{getattr(config_dict, parameter).distribution}' distribution for {parameter} "
+                f"The '{getattr(path_in_config_dict, parameter).distribution}' distribution for {parameter} "
                 f"requires 'mean' and 'stddev' to be defined."
             )
     # check that base is defined for the distributions that need it
-    if getattr(config_dict, parameter).distribution == "const":
-        if not {"base"}.issubset(_check_defined(config_dict, parameter)):
+    if getattr(path_in_config_dict, parameter).distribution == "const":
+        if not {"base"}.issubset(_check_defined(path_in_config_dict, parameter)):
             raise ValueError(
-                f"The '{getattr(config_dict, parameter).distribution}' distribution for {parameter} "
+                f"The '{getattr(path_in_config_dict, parameter).distribution}' distribution for {parameter} "
                 f"requires 'base' to be defined."
             )
 
-    if getattr(config_dict, parameter).distribution == "triangular":
+    if getattr(path_in_config_dict, parameter).distribution == "triangular":
         if {"min", "max", "base", "mean"}.issubset(defined_parameters):
             raise ValueError(
                 f"The {parameter} has values defined for 'min', 'base', 'mean' and 'max'. "
@@ -1922,9 +1939,9 @@ def _check_distribution(config_dict, parameter):
             )
         if {"base", "mean", "max"}.issubset(defined_parameters):
             if (
-                3 * getattr(config_dict, parameter).mean
-                - getattr(config_dict, parameter).max
-                - getattr(config_dict, parameter).base
+                3 * getattr(path_in_config_dict, parameter).mean
+                - getattr(path_in_config_dict, parameter).max
+                - getattr(path_in_config_dict, parameter).base
                 < 0
             ):
                 raise ValueError(
@@ -1943,17 +1960,17 @@ def _check_distribution(config_dict, parameter):
             )
 
 
-def _check_defined(config_dict, parameter):
+def _check_defined(path_in_config_dict: str, parameter: str):
     """
 
     Args:
-        config_dict:
-        parameter:
+        path_in_config_dict (str): a location in the config schema dictionary
+        parameter (str): a parameter/dictionary found at the given location
 
     Returns:
-
+        Nothing, raises ValueErrors if something is wrong
     """
-    param_dict = getattr(config_dict, parameter)._asdict()
+    param_dict = getattr(path_in_config_dict, parameter)._asdict()
     param_dict.pop("distribution")
     param_dict.pop("low_optimistic", None)
     return {key for key, value in param_dict.items() if value is not None}
