@@ -1730,7 +1730,7 @@ def parse_config(
     return config
 
 
-def _check_interpolate(path_in_config_dict: str, parameter: str):
+def _check_interpolate(path_in_config_dict: dict, parameter: str):
     """
     Helper function to check the parameter in question is defined correctly for using
     interpolation between SCAL recommendation curves in pyscal
@@ -1753,7 +1753,7 @@ def _check_interpolate(path_in_config_dict: str, parameter: str):
         )
 
 
-def _check_for_negative_values(path_in_config_dict: str, parameter: str):
+def _check_for_negative_values(path_in_config_dict: dict, parameter: str):
     """
     Helper function to check if there are any negative values defined
     for a given parameter.
@@ -1774,7 +1774,7 @@ def _check_for_negative_values(path_in_config_dict: str, parameter: str):
             )
 
 
-def _check_order_of_values(path_in_config_dict: str, parameter: str):
+def _check_order_of_values(path_in_config_dict: dict, parameter: str):
     """
     Helper function to check the order of the defined values
     for a given parameter. If defined, the following should be true:
@@ -1834,7 +1834,7 @@ def _check_order_of_values(path_in_config_dict: str, parameter: str):
             )
 
 
-def _check_distribution(path_in_config_dict: str, parameter: str):
+def _check_distribution(path_in_config_dict: dict, parameter: str):
     """
     Helper function that performs a number of checks to make sure that the values defined in the config file
     for the parameter in question makes sense
@@ -1960,7 +1960,7 @@ def _check_distribution(path_in_config_dict: str, parameter: str):
             )
 
 
-def _check_defined(path_in_config_dict: str, parameter: str):
+def _check_defined(path_in_config_dict: dict, parameter: str):
     """
 
     Args:

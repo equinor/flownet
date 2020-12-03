@@ -36,6 +36,23 @@ class ProbabilityDistribution(abc.ABC):
 
 
 class UniformDistribution(ProbabilityDistribution):
+    """
+    The UniformDistribution class
+
+    The class is initialized by providing ONLY two of the following inputs:
+        * The minimum value of the uniform distribution
+        * The mean value of the uniform distribution
+        * The maximum value of the uniform distribution
+
+    Args:
+        minimum (float): The minimum value of the distribution
+        mean (float): The mean value of the distribution
+        mode (float): The mode of the distribution
+        maximum (float): The maximum value of the distribution
+        stddev (float): The standard deviation of the distribution
+
+    
+    """
     def __init__(
         self,
         minimum: float = None,
@@ -59,7 +76,19 @@ class UniformDistribution(ProbabilityDistribution):
         stddev: Optional[float] = None,
     ):
         """
-        Function that updates the parameters that defines the probability distribution
+        Function that updates the parameters that defines the probability distribution.
+        
+        The following input combinations will make changes to the distribution:
+            * Giving a new minimum value as input will change the minimum value, and a new mean and stddev will be calculated
+            * Giving a new maximum value as input will change the maximum value, and a new mean and stddev will be calculated
+            * Giving a new mean value as input requires a new minimum OR maximum value to be defined also
+                - A new mean value and a new minimum value will trigged an update of the maximum value and the stddev
+                - A new mean value and a new maximum value will trigged an update of the minimum value and the stddev
+
+        Providing values for stddev or mode has no effect here, since the uniform distribution has no mode, and the stddev is caluculated from the minimum and maximum values
+        
+        Providing a new mean, a new minimum and a new maximum value means will trigger an error
+
 
         Args:
             minimum: The minimum values of the updated distribution
@@ -71,7 +100,13 @@ class UniformDistribution(ProbabilityDistribution):
         Returns:
             Nothing
         """
-        if not mean and minimum and maximum:
+        if not mean and not maximum and minimum:
+            self.minimum = minimum
+            self.mean = (self.minimum + self.maximum) / 2
+        elif not mean and not minimum and maximum:
+            self.maximum = maximum
+            self.mean = (self.minimum + self.maximum) / 2
+        elif not mean and minimum and maximum:
             self.minimum = minimum
             self.maximum = maximum
             self.mean = (self.minimum + self.maximum) / 2
@@ -118,6 +153,17 @@ class LogUniformDistribution(ProbabilityDistribution):
     ):
         """
         Function that updates the parameters that defines the probability distribution
+        
+        The following input combinations will make changes to the distribution:
+            * Giving a new minimum value as input will change the minimum value, and a new mean and stddev will be calculated
+            * Giving a new maximum value as input will change the maximum value, and a new mean and stddev will be calculated
+            * Giving a new mean value as input requires a new minimum OR maximum value to be defined also
+                - A new mean value and a new minimum value will trigged an update of the maximum value and the stddev
+                - A new mean value and a new maximum value will trigged an update of the minimum value and the stddev
+
+        Providing values for stddev or mode has no effect here, since in the loguniform distribution the mode is equal to the minimum value, and the stddev is caluculated from the minimum and maximum values
+        
+        Providing a new mean, a new minimum and a new maximum value means will trigger an error
 
         Args:
             minimum: The minimum values of the updated distribution
@@ -129,7 +175,17 @@ class LogUniformDistribution(ProbabilityDistribution):
         Returns:
             Nothing
         """
-        if not mean and minimum and maximum:
+        if not mean and not maximum and minimum:
+            self.minimum = minimum
+            self.mean = (self.maximum - self.minimum) / np.log(
+                self.maximum / self.minimum
+            )
+        elif not mean and not minimum and maximum:
+            self.maximum = maximum
+            self.mean = (self.maximum - self.minimum) / np.log(
+                self.maximum / self.minimum
+            )
+        elif not mean and minimum and maximum:
             self.minimum = minimum
             self.maximum = maximum
             self.mean = (self.maximum - self.minimum) / np.log(
