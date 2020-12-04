@@ -567,34 +567,15 @@ def run_flownet_history_matching(
                     info[j].append(val)
 
         else:
-            info = [
-                relperm_parameters.keys(),
-                [
-                    getattr(relp_config_satnum[idx], key).min
-                    for key in relperm_parameters
-                ],
-                [
-                    getattr(relp_config_satnum[idx], key).max
-                    for key in relperm_parameters
-                ],
-                [
-                    getattr(relp_config_satnum[idx], key).mean
-                    for key in relperm_parameters
-                ],
-                [
-                    getattr(relp_config_satnum[idx], key).base
-                    for key in relperm_parameters
-                ],
-                [
-                    getattr(relp_config_satnum[idx], key).stddev
-                    for key in relperm_parameters
-                ],
-                [
-                    getattr(relp_config_satnum[idx], key).distribution
-                    for key in relperm_parameters
-                ],
-                [i] * len(relperm_parameters),
-            ]
+            info = [relperm_parameters.keys()]
+            for keyword in ["min", "max", "mean", "base", "stddev", "distribution"]:
+                info.append(
+                    [
+                        getattr(getattr(relp_config_satnum[idx], key), keyword)
+                        for key in relperm_parameters
+                    ]
+                )
+            info.append([i] * len(relperm_parameters))
 
         if isinstance(relperm_interp_values, pd.DataFrame):
             relperm_interp_values = relperm_interp_values.append(
@@ -716,16 +697,12 @@ def run_flownet_history_matching(
         }
 
         for i in df_aquid["AQUID"].unique():
-            info = [
-                aquifer_parameters.keys(),
-                [param.min for param in aquifer_parameters.values()],
-                [param.max for param in aquifer_parameters.values()],
-                [param.mean for param in aquifer_parameters.values()],
-                [param.base for param in aquifer_parameters.values()],
-                [param.stddev for param in aquifer_parameters.values()],
-                [param.distribution for param in aquifer_parameters.values()],
-                [i] * len(aquifer_parameters),
-            ]
+            info = [aquifer_parameters.keys()]
+            for keyword in ["min", "max", "mean", "base", "stddev", "distribution"]:
+                info.append(
+                    [getattr(param, keyword) for param in aquifer_parameters.values()],
+                )
+            info.append([i] * len(aquifer_parameters))
 
             aquifer_dist_values = aquifer_dist_values.append(
                 pd.DataFrame(
