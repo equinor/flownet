@@ -4,11 +4,12 @@ import pathlib
 import argparse
 import pickle
 import shutil
-from typing import List, IO
+from typing import Optional, List, IO
 
 from configsuite import ConfigSuite
 import jinja2
 import numpy as np
+import pandas as pd
 
 from ._create_synthetic_refcase import create_synthetic_refcase
 from ..parameters import Parameter
@@ -21,6 +22,42 @@ _TEMPLATE_ENVIRONMENT = jinja2.Environment(
 )
 _TEMPLATE_ENVIRONMENT.globals["isnan"] = np.isnan
 _MODULE_FOLDER = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
+
+
+def resample_schedule_dates(schedule: Schedule, resampling: Optional[str]) -> List:
+    """
+    Resampling dates based on requested frequency without introducing interpolated dates,
+    i.e., keeps nearest existing date
+
+    Args:
+        schedule: FlowNet Schedule instance to create observations from.
+        resampling: Pandas resampling frequency (str)
+
+    Returns:
+        dates: list of resampled dates
+
+    """
+    df_dates_schedule = pd.to_datetime(schedule.get_dates())
+
+    if resampling:
+        df_dates_resampled = pd.date_range(
+            schedule.get_dates()[0],
+            schedule.get_dates()[-1],
+            freq=resampling,
+        )
+        df_schedule = pd.DataFrame(
+            data=range(len(df_dates_schedule)), index=df_dates_schedule
+        )
+        idx = np.zeros(len(df_dates_resampled), dtype=int)
+        for i, k in enumerate(df_dates_resampled):
+            idx[i] = df_schedule.index.get_loc(k, method="nearest")
+        dates = [
+            d.date() for d in df_schedule.iloc[np.unique(idx)].index.to_pydatetime()
+        ]
+    else:
+        dates = [d.date() for d in df_dates_schedule[1:]]
+
+    return dates
 
 
 def create_observation_file(
@@ -47,12 +84,14 @@ def create_observation_file(
         Nothing
 
     """
-    num_dates = len(schedule.get_dates())
+    dates = resample_schedule_dates(schedule, config.flownet.data_source.resampling)
+
+    num_dates = len(dates)
     num_training_dates = round(num_dates * training_set_fraction)
 
     export_settings = [
-        ["_complete", 1, num_dates],
-        ["_training", 1, num_training_dates],
+        ["_complete", 0, num_dates],
+        ["_training", 0, num_training_dates],
         ["_test", num_training_dates + 1, num_dates],
     ]
 
@@ -71,13 +110,12 @@ def create_observation_file(
             fh.write(
                 template.render(
                     {
+                        "dates": dates,
                         "schedule": schedule,
                         "error_config": config.flownet.data_source.simulation.vectors,
                         "num_beginning_date": setting[1],
                         "num_end_date": setting[2],
-                        "last_training_date": schedule.get_dates()[
-                            num_training_dates - 1
-                        ],
+                        "last_training_date": dates[num_training_dates - 1],
                     }
                 )
             )
