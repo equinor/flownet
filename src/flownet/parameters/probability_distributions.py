@@ -11,12 +11,12 @@ from scipy.optimize import minimize
 class ProbabilityDistribution(abc.ABC):
     def __init__(self, name):
         self.name: str = name
-        self.mean: float
-        self.stddev: float
-        # not all distributions have a mode, minimum or maximum
-        self.mode: Optional[float]
-        self.minimum: Optional[float]
-        self.maximum: Optional[float]
+        self.mean: float = None
+        self.stddev: float = None
+        self.mode: float = None
+        self.minimum: float = None
+        self.maximum: float = None
+        self.defined: bool = False
 
     @property
     @abc.abstractmethod
@@ -39,7 +39,7 @@ class UniformDistribution(ProbabilityDistribution):
     """
     The UniformDistribution class
 
-    The class is initialized by providing ONLY two of the following inputs:
+    The class is initialized by providing ONLY two of the following inputs different from None:
         * The minimum value of the uniform distribution
         * The mean value of the uniform distribution
         * The maximum value of the uniform distribution
@@ -89,7 +89,7 @@ class UniformDistribution(ProbabilityDistribution):
         Providing values for stddev or mode has no effect here, since the uniform distribution has no mode, and the
         stddev is calculated from the minimum and maximum values
 
-        Providing a new mean, a new minimum and a new maximum value means will trigger an error
+        Providing a new mean, a new minimum and a new maximum value (all three of them) will trigger an error
 
 
         Args:
@@ -102,32 +102,48 @@ class UniformDistribution(ProbabilityDistribution):
         Returns:
             Nothing
         """
-        if not mean and not maximum and minimum and self.maximum:
+        if mean is None and maximum is None and minimum is not None and self.defined:
+            # not possible on first call of function (initialization) since the full distribution must be defined then
             self.minimum = minimum
             self.mean = (self.minimum + self.maximum) / 2
-        elif not mean and not minimum and maximum and self.minimum:
+        elif mean is None and minimum is None and maximum is not None and self.defined:
+            # not possible on first call of function (initialization) since the full distribution must be defined then
             self.maximum = maximum
             self.mean = (self.minimum + self.maximum) / 2
-        elif not mean and minimum and maximum:
+        elif mean is None and minimum is not None and maximum is not None:
             self.minimum = minimum
             self.maximum = maximum
             self.mean = (self.minimum + self.maximum) / 2
-        elif not minimum and mean and maximum:
+        elif minimum is None and mean is not None and maximum is not None:
             self.mean = mean
             self.maximum = maximum
             self.minimum = self.mean - (self.maximum - self.mean)
-        elif not maximum and mean and minimum:
+        elif maximum is None and mean is not None and minimum is not None:
             self.mean = mean
             self.minimum = minimum
             self.maximum = self.mean + (self.mean - self.minimum)
+        elif mean is not None:
+            raise ValueError(
+                "It is not possible to update the mean of the uniform distribution without "
+                "providing either a new minimum value or a new maximum value at the same time."
+            )
+        elif mode is not None:
+            raise ValueError(
+                "The mode in a uniform distribution is either all possible values or non-existing. "
+                "You can choose yourself, but don't try to update it!"
+            )
+        elif stddev is not None:
+            raise ValueError(
+                "It is currently not possible to update the uniform distribution using the standard deviation"
+            )
         else:
             raise ValueError(
                 "Uniform distribution not properly defined."
                 "Minimum/mean, minimum/maximum or mean/maximum needs to be defined, "
                 "but not all of minimum, mean, maximum at the same time"
             )
-        self.mode = None
         self.stddev = np.sqrt(np.power(self.maximum - self.minimum, 2) / 12)
+        self.defined = True
 
 
 class LogUniformDistribution(ProbabilityDistribution):
@@ -166,7 +182,7 @@ class LogUniformDistribution(ProbabilityDistribution):
         Providing values for stddev or mode has no effect here, since in the loguniform distribution the mode is
         equal to the minimum value, and the stddev is caluculated from the minimum and maximum values
 
-        Providing a new mean, a new minimum and a new maximum value means will trigger an error
+        Providing a new mean, a new minimum and a new maximum value (all three of them) will trigger an error
 
         Args:
             minimum: The minimum values of the updated distribution
@@ -178,35 +194,49 @@ class LogUniformDistribution(ProbabilityDistribution):
         Returns:
             Nothing
         """
-        if not mean and not maximum and minimum and self.maximum:
+        if mean is None and maximum is None and minimum is not None and self.defined:
             # not possible on first call of function since the full distribution must be defined then
             self.minimum = minimum
             self.mean = (self.maximum - self.minimum) / np.log(
                 self.maximum / self.minimum
             )
-        elif not mean and not minimum and maximum and self.minimum:
+        elif mean is None and minimum is None and maximum is not None and self.defined:
             # not possible on first call of function since the full distribution must be defined then
             self.maximum = maximum
             self.mean = (self.maximum - self.minimum) / np.log(
                 self.maximum / self.minimum
             )
-        elif not mean and minimum and maximum:
+        elif mean is None and minimum is not None and maximum is not None:
             self.minimum = minimum
             self.maximum = maximum
             self.mean = (self.maximum - self.minimum) / np.log(
                 self.maximum / self.minimum
             )
-        elif not minimum and mean and maximum:
+        elif minimum is None and mean is not None and maximum is not None:
             self.mean = mean
             self.maximum = maximum
             self.minimum = self._find_dist_minmax(
                 mean_val=self.mean, min_val=None, max_val=self.maximum
             )
-        elif not maximum and mean and minimum:
+        elif maximum is None and mean is not None and minimum is not None:
             self.mean = mean
             self.minimum = minimum
             self.maximum = self._find_dist_minmax(
                 min_val=self.minimum, mean_val=self.mean, max_val=None
+            )
+        elif mean is not None:
+            raise ValueError(
+                "It is not possible to update the mean of the loguniform distribution without "
+                "providing either a new minimum value or a new maximum value at the same time."
+            )
+        elif mode is not None or stddev is not None:
+            raise ValueError(
+                "It is currently not possible to update the uniform distribution "
+                "using the standard deviation or the mode"
+            )
+        elif stddev is not None:
+            raise ValueError(
+                "It is currently not possible to update the triangular distribution using the standard deviation"
             )
         else:
             raise ValueError(
@@ -224,6 +254,7 @@ class LogUniformDistribution(ProbabilityDistribution):
             )
             / (2 * np.power(np.log(self.maximum / self.minimum), 2))
         )
+        self.defined = True
 
     def _find_dist_minmax(
         self,
@@ -302,26 +333,78 @@ class TriangularDistribution(ProbabilityDistribution):
         Returns:
             Nothing
         """
-        if not maximum and minimum and mean and mode:
+        if (
+            maximum is not None
+            and minimum is None
+            and mean is None
+            and mode is None
+            and self.defined
+        ):
+            self.maximum = maximum
+            self.mean = (self.mode + self.minimum + self.maximum) / 3
+        elif (
+            minimum is not None
+            and maximum is None
+            and mean is None
+            and mode is None
+            and self.defined
+        ):
+            self.minimum = minimum
+            self.mean = (self.mode + self.minimum + self.maximum) / 3
+        elif (
+            mode is not None
+            and maximum is None
+            and mean is None
+            and minimum is None
+            and self.defined
+        ):
+            self.mode = mode
+            self.mean = (self.mode + self.minimum + self.maximum) / 3
+        elif (
+            maximum is None
+            and minimum is not None
+            and mean is not None
+            and mode is not None
+        ):
             self.minimum = minimum
             self.mode = mode
             self.mean = mean
             self.maximum = 3 * mean - mode - minimum
-        elif not minimum and mean and mode and maximum:
+        if (
+            minimum is None
+            and maximum is not None
+            and mean is not None
+            and mode is not None
+        ):
             self.maximum = maximum
             self.mode = mode
             self.mean = mean
             self.minimum = 3 * mean - mode - maximum
-        elif not mode and mean and minimum and maximum:
+        if (
+            mode is None
+            and maximum is not None
+            and mean is not None
+            and minimum is not None
+        ):
             self.mean = mean
             self.minimum = minimum
             self.maximum = maximum
             self.mode = 3 * mean - maximum - minimum
-        elif not mean and minimum and mode and maximum:
+        if (
+            mean is None
+            and maximum is not None
+            and minimum is not None
+            and mode is not None
+        ):
             self.mode = mode
             self.maximum = maximum
             self.minimum = minimum
-            self.mean = mode + minimum + maximum / 3
+            self.mean = (mode + minimum + maximum) / 3
+        elif mean is not None:
+            raise ValueError(
+                "It is not possible to update the mean of the triangular distribution without "
+                "providing two of the following: minimum, mode or maximum."
+            )
         else:
             raise ValueError(
                 "Triangular distribution not properly defined."
@@ -336,13 +419,12 @@ class TriangularDistribution(ProbabilityDistribution):
             - (self.minimum * self.maximum)
             - (self.mode * self.maximum)
         ) / 18
+        self.defined = True
 
 
 class NormalDistribution(ProbabilityDistribution):
     def __init__(self, mean, stddev):
         super().__init__("NORMAL")
-        self.minimum = None
-        self.maximum = None
         self.update_distribution(mean=mean, stddev=stddev)
 
     @property
@@ -371,10 +453,10 @@ class NormalDistribution(ProbabilityDistribution):
         Returns:
             Nothing
         """
-        if mean:
+        if mean is not None:
             self.mean = mean
             self.mode = self.mean
-        if stddev:
+        if stddev is not None:
             self.stddev = stddev
 
 
@@ -411,14 +493,14 @@ class TruncatedNormalDistribution(ProbabilityDistribution):
         Returns:
             Nothing
         """
-        if mean:
+        if mean is not None:
             self.mean = mean
             self.mode = mean
-        if stddev:
+        if stddev is not None:
             self.stddev = stddev
-        if minimum:
+        if minimum is not None:
             self.minimum = minimum
-        if maximum:
+        if maximum is not None:
             self.maximum = maximum
 
 
@@ -455,9 +537,9 @@ class LogNormalDistribution(ProbabilityDistribution):
         Returns:
             Nothing
         """
-        if mean:
+        if mean is not None:
             self.mean = mean
-        if stddev:
+        if stddev is not None:
             self.stddev = stddev
 
 
@@ -493,8 +575,12 @@ class Constant(ProbabilityDistribution):
         Returns:
             Nothing
         """
-        if mode:
-            self.mode = mode
-            self.mean = mode
-            self.maximum = mode
-            self.minimum = mode
+        if sum(var is not None for var in (mode, minimum, maximum, mean)) > 1:
+            raise ValueError("A constant can only be defined by one value!")
+        for var in (mode, minimum, maximum, mean):
+            if var is not None:
+                self.mode = var
+                self.mean = var
+                self.maximum = var
+                self.minimum = var
+        self.stddev = 0
