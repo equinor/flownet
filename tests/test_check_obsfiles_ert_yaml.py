@@ -28,7 +28,7 @@ _TEMPLATE_ENVIRONMENT = jinja2.Environment(
 _TEMPLATE_ENVIRONMENT.globals["isnan"] = np.isnan
 
 
-def read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
+def _read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
     """This function reads the content of a ERT observation file and returns the information in a dictionary.
 
     Args:
@@ -64,7 +64,7 @@ def read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
     return ert_obs
 
 
-def read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
+def _read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
     """This function reads the content of a YAML observation file and returns the information in a dictionary.
 
     Args:
@@ -102,7 +102,7 @@ def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
             assert yaml_obs[list_item["key"]][2] == ert_obs_dict[list_item["key"]][2]
 
 
-def create_schedule_from_data(
+def _create_schedule_from_data(
     df_production_data: pd.DataFrame, start_date: datetime.date
 ) -> Schedule:
     """This helper function creates a schedule object based on production data from a dataframe
@@ -194,7 +194,7 @@ def test_resample_schedule_dates() -> None:
 
     start_date = date(2005, 10, 1)
 
-    schedule = create_schedule_from_data(df_production_data, start_date)
+    schedule = _create_schedule_from_data(df_production_data, start_date)
 
     days_original = [
         (d - start_date).days
@@ -306,7 +306,51 @@ def test_check_obsfiles_ert_yaml() -> None:
 
     start_date = date(2005, 10, 1)
 
-    schedule = create_schedule_from_data(df_production_data, start_date)
+    schedule = _create_schedule_from_data(df_production_data, start_date)
+
+    # Testing with resampling
+    create_observation_file(
+        schedule,
+        _OBSERVATION_FILES / "observations.ertobs",
+        config,
+        _TRAINING_SET_FRACTION,
+    )
+
+    create_observation_file(
+        schedule,
+        _OBSERVATION_FILES / "observations.yamlobs",
+        config,
+        _TRAINING_SET_FRACTION,
+        yaml=True,
+    )
+
+    dates_resampled = resample_schedule_dates(
+        schedule, config.flownet.data_source.resampling
+    )
+
+    num_dates = len(dates_resampled)
+    num_training_dates = round(num_dates * _TRAINING_SET_FRACTION)
+
+    export_settings = [
+        ["_complete", 0, num_dates],
+        ["_training", 0, num_training_dates],
+        ["_test", num_training_dates + 1, num_dates],
+    ]
+
+    file_root = pathlib.Path(_OBSERVATION_FILES / "observations")
+    for setting in export_settings:
+        ert_obs_file_name = f"{file_root}{setting[0]}.ertobs"
+        yaml_obs_file_name = f"{file_root}{setting[0]}.yamlobs"
+        # Comparing the complete observation data
+        # Reading ERT file
+        ert_obs = _read_ert_obs(ert_obs_file_name)
+        # Reading YAML file
+        parsed_yaml_file = _read_yaml_obs(yaml_obs_file_name)
+        # Comparing observation data
+        compare(ert_obs, parsed_yaml_file)
+
+    # Testing without resampling
+    config.flownet.data_source.resampling = None
 
     create_observation_file(
         schedule,
@@ -323,9 +367,11 @@ def test_check_obsfiles_ert_yaml() -> None:
         yaml=True,
     )
 
-    dates = resample_schedule_dates(schedule, config.flownet.data_source.resampling)
+    dates_original = resample_schedule_dates(
+        schedule, config.flownet.data_source.resampling
+    )
 
-    num_dates = len(dates)
+    num_dates = len(dates_original)
     num_training_dates = round(num_dates * _TRAINING_SET_FRACTION)
 
     export_settings = [
@@ -340,8 +386,10 @@ def test_check_obsfiles_ert_yaml() -> None:
         yaml_obs_file_name = f"{file_root}{setting[0]}.yamlobs"
         # Comparing the complete observation data
         # Reading ERT file
-        ert_obs = read_ert_obs(ert_obs_file_name)
+        ert_obs = _read_ert_obs(ert_obs_file_name)
         # Reading YAML file
-        parsed_yaml_file = read_yaml_obs(yaml_obs_file_name)
+        parsed_yaml_file = _read_yaml_obs(yaml_obs_file_name)
+        print(ert_obs)
+        print(parsed_yaml_file)
         # Comparing observation data
         compare(ert_obs, parsed_yaml_file)

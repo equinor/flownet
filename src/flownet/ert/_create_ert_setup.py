@@ -4,7 +4,7 @@ import pathlib
 import argparse
 import pickle
 import shutil
-from typing import List, IO
+from typing import Optional, List, IO
 
 from configsuite import ConfigSuite
 import jinja2
@@ -24,7 +24,7 @@ _TEMPLATE_ENVIRONMENT.globals["isnan"] = np.isnan
 _MODULE_FOLDER = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
 
 
-def resample_schedule_dates(schedule: Schedule, resampling: str) -> List:
+def resample_schedule_dates(schedule: Schedule, resampling: Optional[str]) -> List:
     """
     Resampling dates based on requested frequency without introducing interpolated dates,
     i.e., keeps nearest existing date
