@@ -176,9 +176,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         analysis_quantity = str(None)
 
     configuration = {
-        "pickled_network": output_folder.resolve() / "network.pickled",
-        "pickled_schedule": output_folder.resolve() / "schedule.pickled",
-        "pickled_parameters": output_folder.resolve() / "parameters.pickled",
+        "pickled_network": "../../../../network.pickled",
+        "pickled_schedule":  "../../../../schedule.pickled",
+        "pickled_parameters":  "../../../../parameters.pickled",
         "config": config,
         "random_seed": None,
         "debug": args.debug if hasattr(args, "debug") else False,
