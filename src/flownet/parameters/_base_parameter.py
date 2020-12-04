@@ -125,12 +125,12 @@ class Parameter(abc.ABC):
         self._mean_values = values
 
     @property
-    def names(self) -> List[float]:
+    def names(self) -> List[str]:
         """List of all names for each distribution for the Parameter"""
         return self._names
 
     @names.setter
-    def names(self, values: List[float]):
+    def names(self, values: List[str]):
         """Setter for the Parameter names samples."""
         self._names = values
 
