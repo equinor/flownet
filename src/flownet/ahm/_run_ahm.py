@@ -387,7 +387,15 @@ def run_flownet_history_matching(
     area = 100
     cell_length = config.flownet.cell_length
     fast_pyscal = config.flownet.fast_pyscal
-
+    column_names_probdist = [
+        "parameter",
+        "minimum",
+        "maximum",
+        "mean",
+        "base",
+        "stddev",
+        "distribution",
+    ]
     # Load production and well coordinate data
     field_data = FlowData(
         config.flownet.data_source.simulation.input_case,
@@ -483,18 +491,7 @@ def run_flownet_history_matching(
         )
 
     # Create a pandas dataframe with all parameter definition for each individual tube
-    relperm_dist_values = pd.DataFrame(
-        columns=[
-            "parameter",
-            "minimum",
-            "maximum",
-            "mean",
-            "base",
-            "stddev",
-            "distribution",
-            "satnum",
-        ]
-    )
+    relperm_dist_values = pd.DataFrame(columns=column_names_probdist + ["satnum"])
 
     relperm_parameters = config.model_parameters.relative_permeability.regions[
         0
@@ -611,16 +608,7 @@ def run_flownet_history_matching(
         relperm_dist_values = relperm_dist_values.append(
             pd.DataFrame(
                 list(map(list, zip(*info))),
-                columns=[
-                    "parameter",
-                    "minimum",
-                    "maximum",
-                    "mean",
-                    "base",
-                    "stddev",
-                    "distribution",
-                    "satnum",
-                ],
+                columns=column_names_probdist + ["satnum"],
             ),
             ignore_index=True,
         )
@@ -645,18 +633,7 @@ def run_flownet_history_matching(
         )
 
     # Create a pandas dataframe with all parameter definition for each individual tube
-    equil_dist_values = pd.DataFrame(
-        columns=[
-            "parameter",
-            "minimum",
-            "maximum",
-            "mean",
-            "base",
-            "stddev",
-            "distribution",
-            "eqlnum",
-        ]
-    )
+    equil_dist_values = pd.DataFrame(columns=column_names_probdist + ["eqlnum"])
 
     defined_eqlnum_regions = []
     datum_depths = []
@@ -674,96 +651,28 @@ def run_flownet_history_matching(
         else:
             idx = defined_eqlnum_regions.index(None)
         datum_depths.append(equil_config_eqlnum[idx].datum_depth)
-        info = [
-            ["datum_pressure", "owc_depth", "gwc_depth", "goc_depth"],
-            [
-                equil_config_eqlnum[idx].datum_pressure.min,
-                None
-                if equil_config_eqlnum[idx].owc_depth is None
-                else equil_config_eqlnum[idx].owc_depth.min,
-                None
-                if equil_config_eqlnum[idx].gwc_depth is None
-                else equil_config_eqlnum[idx].gwc_depth.min,
-                None
-                if equil_config_eqlnum[idx].goc_depth is None
-                else equil_config_eqlnum[idx].goc_depth.min,
-            ],
-            [
-                equil_config_eqlnum[idx].datum_pressure.max,
-                None
-                if equil_config_eqlnum[idx].owc_depth is None
-                else equil_config_eqlnum[idx].owc_depth.max,
-                None
-                if equil_config_eqlnum[idx].gwc_depth is None
-                else equil_config_eqlnum[idx].gwc_depth.max,
-                None
-                if equil_config_eqlnum[idx].goc_depth is None
-                else equil_config_eqlnum[idx].goc_depth.max,
-            ],
-            [
-                equil_config_eqlnum[idx].datum_pressure.mean,
-                None
-                if equil_config_eqlnum[idx].owc_depth is None
-                else equil_config_eqlnum[idx].owc_depth.mean,
-                None
-                if equil_config_eqlnum[idx].gwc_depth is None
-                else equil_config_eqlnum[idx].gwc_depth.mean,
-                None
-                if equil_config_eqlnum[idx].goc_depth is None
-                else equil_config_eqlnum[idx].goc_depth.mean,
-            ],
-            [
-                equil_config_eqlnum[idx].datum_pressure.base,
-                None
-                if equil_config_eqlnum[idx].owc_depth is None
-                else equil_config_eqlnum[idx].owc_depth.base,
-                None
-                if equil_config_eqlnum[idx].gwc_depth is None
-                else equil_config_eqlnum[idx].gwc_depth.base,
-                None
-                if equil_config_eqlnum[idx].goc_depth is None
-                else equil_config_eqlnum[idx].goc_depth.base,
-            ],
-            [
-                equil_config_eqlnum[idx].datum_pressure.stddev,
-                None
-                if equil_config_eqlnum[idx].owc_depth is None
-                else equil_config_eqlnum[idx].owc_depth.stddev,
-                None
-                if equil_config_eqlnum[idx].gwc_depth is None
-                else equil_config_eqlnum[idx].gwc_depth.stddev,
-                None
-                if equil_config_eqlnum[idx].goc_depth is None
-                else equil_config_eqlnum[idx].goc_depth.stddev,
-            ],
-            [
-                equil_config_eqlnum[idx].datum_pressure.distribution,
-                None
-                if equil_config_eqlnum[idx].owc_depth is None
-                else equil_config_eqlnum[idx].owc_depth.distribution,
-                None
-                if equil_config_eqlnum[idx].gwc_depth is None
-                else equil_config_eqlnum[idx].gwc_depth.distribution,
-                None
-                if equil_config_eqlnum[idx].goc_depth is None
-                else equil_config_eqlnum[idx].goc_depth.distribution,
-            ],
-            [i] * 4,
-        ]
+        info = [["datum_pressure", "owc_depth", "gwc_depth", "goc_depth"]]
+        for keyword in ["min", "max", "mean", "base", "stddev", "distribution"]:
+            info.append(
+                [
+                    getattr(equil_config_eqlnum[idx].datum_pressure, keyword),
+                    None
+                    if equil_config_eqlnum[idx].owc_depth is None
+                    else getattr(equil_config_eqlnum[idx].owc_depth, keyword),
+                    None
+                    if equil_config_eqlnum[idx].gwc_depth is None
+                    else getattr(equil_config_eqlnum[idx].gwc_depth, keyword),
+                    None
+                    if equil_config_eqlnum[idx].goc_depth is None
+                    else getattr(equil_config_eqlnum[idx].goc_depth, keyword),
+                ]
+            )
+        info.append([i] * 4)
 
         equil_dist_values = equil_dist_values.append(
             pd.DataFrame(
                 list(map(list, zip(*info))),
-                columns=[
-                    "parameter",
-                    "minimum",
-                    "maximum",
-                    "mean",
-                    "base",
-                    "stddev",
-                    "distribution",
-                    "eqlnum",
-                ],
+                columns=column_names_probdist + ["eqlnum"],
             ),
             ignore_index=True,
         )
@@ -798,18 +707,7 @@ def run_flownet_history_matching(
             df_aquid = pd.DataFrame([1] * len(network.aquifers_xyz), columns=["AQUID"])
 
         # Create a pandas dataframe with all parameter definition for each individual tube
-        aquifer_dist_values = pd.DataFrame(
-            columns=[
-                "parameter",
-                "minimum",
-                "maximum",
-                "mean",
-                "base",
-                "stddev",
-                "distribution",
-                "aquid",
-            ]
-        )
+        aquifer_dist_values = pd.DataFrame(columns=column_names_probdist + ["aquid"])
 
         aquifer_parameters = {
             key: value
@@ -832,16 +730,7 @@ def run_flownet_history_matching(
             aquifer_dist_values = aquifer_dist_values.append(
                 pd.DataFrame(
                     list(map(list, zip(*info))),
-                    columns=[
-                        "parameter",
-                        "minimum",
-                        "maximum",
-                        "mean",
-                        "base",
-                        "stddev",
-                        "distribution",
-                        "aquid",
-                    ],
+                    columns=column_names_probdist + ["aquid"],
                 ),
                 ignore_index=True,
             )

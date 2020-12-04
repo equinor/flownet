@@ -28,11 +28,20 @@ def parameter_probability_distribution_class(
     """
 
     Args:
-        row:
-        param:
+        row (pd.Series): Information used to initialize a ProbabilityDistribution class. Different probability
+            distributions require different amount of parameters to be defined.
+            The columns should be:
+                * 'minimum': The minimum value of the distribution
+                * 'mean': The mean value of the distribution
+                * 'mode': The mode of the distribution
+                * 'maximum': The maximum value of the distribution
+                * 'stddev': The standard deviation of the distribution
+                * 'distribution': The type of probability distribution that shold be initialized
+        param (str): The name of the parameter if the column names in 'row' contains the name
+            (e.g. if the column name is 'minimum_bulk_volume', param should be 'bulk_volume')
 
     Returns:
-
+        ProbabilityDistribution class
     """
     # pylint: disable=too-many-return-statements
     param = "_" + param if param is not None else ""
