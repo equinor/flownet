@@ -17,6 +17,7 @@ REQUIREMENTS = [
     "numpy>=1.17",
     "opm>=2020.10",
     "pandas~=1.0",
+    "psutil>=5.7",
     "pyarrow>=0.14",
     "pykrige>=1.5",
     "pyscal~=0.6.1",
