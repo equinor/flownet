@@ -131,6 +131,51 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                     },
                                                 },
                                             },
+                                            "WOPT": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WGPT": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WWPT": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.Required: False,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
                                             "WOPR": {
                                                 MK.Type: types.NamedDict,
                                                 MK.Content: {

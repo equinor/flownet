@@ -187,6 +187,9 @@ class Schedule:
                         oil_rate=value["WOPR"],
                         water_rate=value["WWPR"],
                         gas_rate=value["WGPR"],
+                        oil_total=value["WOPT"],
+                        water_total=value["WWPT"],
+                        gas_total=value["WGPT"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
                     )

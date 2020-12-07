@@ -107,6 +107,9 @@ class WCONHIST(Keyword):
         oil_rate: float = np.nan,
         water_rate: float = np.nan,
         gas_rate: float = np.nan,
+        oil_total: float = np.nan,
+        water_total: float = np.nan,
+        gas_total: float = np.nan,
         vfp_table: str = "1*",
         artificial_lift: str = "1*",
         thp: float = np.nan,
@@ -120,6 +123,9 @@ class WCONHIST(Keyword):
         self.oil_rate: float = oil_rate
         self.water_rate: float = water_rate
         self.gas_rate: float = gas_rate
+        self.oil_total: float = oil_total
+        self.water_total: float = water_total
+        self.gas_total: float = gas_total
         self.vfp_table: str = vfp_table
         self.artificial_lift: str = artificial_lift
         self.thp: float = thp
