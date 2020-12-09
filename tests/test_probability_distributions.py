@@ -32,7 +32,7 @@ PD_LOOKUP = {
     "maximum": "maximum",
     "mean": "mean",
     "base": "mode",
-    "stddev": "stdev",
+    "stddev": "stddev",
 }
 
 DISTRIBUTION_DF = pd.DataFrame(DATA)
