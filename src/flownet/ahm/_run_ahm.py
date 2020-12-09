@@ -411,6 +411,7 @@ def run_flownet_history_matching(
     # Load production and well coordinate data
     field_data = FlowData(
         config.flownet.data_source.simulation.input_case,
+        layering=config.flownet.data_source.simulation.layering,
         perforation_handling_strategy=config.flownet.perforation_handling_strategy,
     )
     df_production_data: pd.DataFrame = field_data.production

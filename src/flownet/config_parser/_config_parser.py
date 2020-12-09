@@ -207,7 +207,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                             MK.Item: {
                                                 MK.Type: types.List,
                                                 MK.Content: {
-                                                    MK.Item: {MK.Type: types.Integer}
+                                                    MK.Item: {MK.Type: types.Integer, MK.AllowNone: True}
                                                 },
                                             },
                                         },
