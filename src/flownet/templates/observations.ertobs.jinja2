@@ -1,4 +1,4 @@
-{%- for date in schedule.get_dates()[num_beginning_date:num_end_date] -%}
+{%- for date in dates[num_beginning_date:num_end_date] -%}
 
 {%- if schedule.get_keywords(dates=date, kw_class="WCONHIST"): %}
 {%- for kw in schedule.get_keywords(dates=date, kw_class="WCONHIST"): -%}
