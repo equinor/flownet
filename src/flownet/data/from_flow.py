@@ -156,7 +156,21 @@ class FlowData(FromSource):
             * Improve robustness pf setting of Phase and Type.
 
         """
-        keys = ["WOPR", "WGPR", "WWPR", "WOPT", "WGPT", "WWPT", "WBHP", "WTHP", "WGIR", "WWIR", "WGIT", "WWIT", "WSTAT"]
+        keys = [
+            "WOPR",
+            "WGPR",
+            "WWPR",
+            "WOPT",
+            "WGPT",
+            "WWPT",
+            "WBHP",
+            "WTHP",
+            "WGIR",
+            "WWIR",
+            "WGIT",
+            "WWIT",
+            "WSTAT",
+        ]
 
         df_production_data = pd.DataFrame()
 
