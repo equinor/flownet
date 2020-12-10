@@ -33,4 +33,4 @@ FORWARD_MODEL COPY_FILE(<FROM>=<CONFIG_PATH>/PROPS.inc, <TO>=./eclipse/model/inc
 FORWARD_MODEL COPY_FILE(<FROM>=<CONFIG_PATH>/SOLUTION.inc, <TO>=./eclipse/model/include/SOLUTION.inc)
 FORWARD_MODEL COPY_FILE(<FROM>=<CONFIG_PATH>/SCHEDULE.inc, <TO>=./eclipse/model/include/SCHEDULE.inc)
 
-SIMULATION_JOB {{ config.ert.simulator.name.upper() }} <ECLBASE> {%- if config.ert.simulator.version is not none: -%}"--version={{ config.ert.simulator.version }}"{%- endif %}
+FORWARD_MODEL FLOW_SIMULATION(<DATA_FILE>=<ECLBASE>)
