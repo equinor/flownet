@@ -207,7 +207,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                             MK.Item: {
                                                 MK.Type: types.List,
                                                 MK.Content: {
-                                                    MK.Item: {MK.Type: types.Integer, MK.AllowNone: True}
+                                                    MK.Item: {
+                                                        MK.Type: types.Integer,
+                                                        MK.AllowNone: True,
+                                                    }
                                                 },
                                             },
                                         },
@@ -1097,6 +1100,25 @@ def parse_config(
         )
 
     config = suite.snapshot
+
+    layers = config.flownet.data_source.simulation.layering
+    if len(layers) > 0:
+        if not all(
+            d == 1
+            for d in [layers[i][0] - layers[i - 1][-1] for i in range(1, len(layers))]
+        ):
+            raise ValueError(
+                f"The layering definition "
+                f"'{layers}' is not valid.\n"
+                f"Layer groups should be adjacent, e.g. ((start, end),(end+1, ..)) ."
+            )
+
+        if not all(l == 2 for l in [len(layer) for layer in layers]):
+            raise ValueError(
+                f"The layering definition "
+                f"'{layers}' is not valid.\n"
+                f"Valid way to define the layering is as nested list with layer intervals. e.g. ((1, 5),(6, 9),(10, 15))."
+            )
 
     req_relp_parameters: List[str] = []
     if (
