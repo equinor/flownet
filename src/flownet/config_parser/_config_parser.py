@@ -1117,7 +1117,8 @@ def parse_config(
             raise ValueError(
                 f"The layering definition "
                 f"'{layers}' is not valid.\n"
-                f"Valid way to define the layering is as nested list with layer intervals. e.g. ((1, 5),(6, 9),(10, 15))."
+                f"Valid way to define the layering is as nested list with "
+                f"layer intervals. e.g. ((1, 5),(6, 9),(10, 15))."
             )
 
     req_relp_parameters: List[str] = []

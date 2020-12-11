@@ -62,9 +62,9 @@ class FlowData(FromSource):
                 ijk=(row["I"] - 1, row["J"] - 1, row["K1"] - 1)
             )
             if len(self._layering) > 0:
-                for id, (i, j) in enumerate(self._layering):
+                for count, (i, j) in enumerate(self._layering):
                     if row["K1"] in range(i, j + 1):
-                        layer_id = id
+                        layer_id = count
             else:
                 layer_id = 0
 
