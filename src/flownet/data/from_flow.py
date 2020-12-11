@@ -304,11 +304,10 @@ class FlowData(FromSource):
         xyz = np.empty((8 * len(cells), 3))
 
         for n_cell, cell in enumerate(cells):
-            if k_min <= cell.k <= k_max:
-                corners = cell.corner
-                for n_corner, corner in enumerate(corners):
-                    xyz[n_cell * 8 + n_corner, :] = corner
-                    n_cell += 1
+            corners = cell.corner
+            for n_corner, corner in enumerate(corners):
+                xyz[n_cell * 8 + n_corner, :] = corner
+                n_cell += 1
 
         xmin = xyz[:, 0].reshape(-1, 8).min(axis=1)
         xmax = xyz[:, 0].reshape(-1, 8).max(axis=1)
