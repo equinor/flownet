@@ -193,4 +193,38 @@ smry:
         {%- endif -%}      
    {%- endfor %}
    {%- endif -%}
+   {%- if (error_config.WGIT.rel_error is not none) and (error_config.WGIT.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", dates=dates[num_beginning_date:num_end_date]) -%}
+   {% if loop.first and not loop.last: %}
+ - key: WGIT:{{ well_name }}
+   observations:
+   {%- endif %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.total }}
+      error: {{ [error_config.WGIT.rel_error * kw.total, error_config.WGIT.min_error] | max }}
+      comment:
+        {%- if (kw.date > last_training_date) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}
+   {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WWIT.rel_error is not none) and (error_config.WWIT.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", dates=dates[num_beginning_date:num_end_date]) -%}
+   {% if loop.first and not loop.last: %}
+ - key: WWIT:{{ well_name }}
+   observations:
+   {%- endif %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.total }}
+      error: {{ [error_config.WWIT.rel_error * kw.total, error_config.WWIT.min_error] | max }}
+      comment:
+        {%- if (kw.date > last_training_date) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}
+   {%- endfor %}
+   {%- endif -%}
  {%- endfor -%}

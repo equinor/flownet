@@ -152,6 +152,7 @@ class WCONINJH(Keyword):
         inj_type: str,
         status: str = "1*",
         rate: float = np.nan,
+        total: float = np.nan,
         bhp: float = np.nan,
         thp: float = np.nan,
         vfp_table: str = "1*",
@@ -163,6 +164,7 @@ class WCONINJH(Keyword):
         self.inj_type: str = inj_type
         self.status: str = status
         self.rate: float = rate
+        self.total: float = total
         self.bhp: float = bhp
         self.thp: float = thp
         self.vfp_table: str = vfp_table

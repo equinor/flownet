@@ -244,6 +244,32 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                     },
                                                 },
                                             },
+                                            "WWIT": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WGIT": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
                                         },
                                     },
                                 },
