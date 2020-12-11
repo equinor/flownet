@@ -20,7 +20,7 @@ class FlowData(FromSource):
 
     Args:
          input_case: Full path to eclipse case to load data from
-         layering:
+         layering: List with definition of isolated layers, if present.
          perforation_handling_strategy: How to deal with perforations per well.
                                                  ('bottom_point', 'top_point', 'multiple')
 
@@ -48,12 +48,12 @@ class FlowData(FromSource):
     # pylint: disable=too-many-branches
     def _well_connections(self) -> pd.DataFrame:
         """
-        Function to extract well connection coordinates from an Flow simulation including their
+        Function to extract well connection coordinates from a Flow simulation including their
         opening and closure time. The output of this function will be filtered based on the
         configured perforation strategy.
 
         Returns:
-            columns: WELL_NAME, X, Y, Z, DATE, OPEN
+            columns: WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID
 
         """
         new_items = []
@@ -61,6 +61,13 @@ class FlowData(FromSource):
             X, Y, Z = self._grid.get_xyz(
                 ijk=(row["I"] - 1, row["J"] - 1, row["K1"] - 1)
             )
+            if len(self._layering) > 0:
+                for id, (i, j) in enumerate(self._layering):
+                    if row["K1"] in range(i, j + 1):
+                        layer_id = id
+            else:
+                layer_id = 0
+
             new_row = {
                 "WELL_NAME": row["WELL"],
                 "IJK": (
@@ -73,11 +80,13 @@ class FlowData(FromSource):
                 "Z": Z,
                 "DATE": row["DATE"],
                 "OPEN": bool(row["OP/SH"] == "OPEN"),
+                "LAYER_ID": layer_id,
             }
             new_items.append(new_row)
 
         df = pd.DataFrame(
-            new_items, columns=["WELL_NAME", "IJK", "X", "Y", "Z", "DATE", "OPEN"]
+            new_items,
+            columns=["WELL_NAME", "IJK", "X", "Y", "Z", "DATE", "OPEN", "LAYER_ID"],
         )
         df["DATE"] = pd.to_datetime(df["DATE"], format="%Y-%m-%d").dt.date
 
