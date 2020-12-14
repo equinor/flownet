@@ -28,6 +28,7 @@ REQUIREMENTS = [
     "webviz-config>=0.0.42",
     "webviz-config-equinor>=0.0.9",
     "webviz-subsurface>=0.0.24",
+    "xrld<2",
 ]
 
 TEST_REQUIRES = [
