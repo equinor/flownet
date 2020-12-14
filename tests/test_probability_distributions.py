@@ -140,7 +140,7 @@ def test_probability_distributions() -> None:
         parameter_probability_distribution_class(row)
         for _, row in DISTRIBUTION_DF.iterrows()
     ]
-    for i in range(9):
+    for i in range(len(DATA.get("parameter"))):
         assert probdist[i].name.lower() == DATA["distribution"][i]
         for var in {"minimum", "maximum", "mean", "base", "stddev"}:
             if DATA[var][i] is not None:
