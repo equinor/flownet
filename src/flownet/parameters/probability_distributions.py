@@ -370,7 +370,7 @@ class TriangularDistribution(ProbabilityDistribution):
             self.mode = mode
             self.mean = mean
             self.maximum = 3 * mean - mode - minimum
-        if (
+        elif (
             minimum is None
             and maximum is not None
             and mean is not None
@@ -380,7 +380,7 @@ class TriangularDistribution(ProbabilityDistribution):
             self.mode = mode
             self.mean = mean
             self.minimum = 3 * mean - mode - maximum
-        if (
+        elif (
             mode is None
             and maximum is not None
             and mean is not None
@@ -390,7 +390,7 @@ class TriangularDistribution(ProbabilityDistribution):
             self.minimum = minimum
             self.maximum = maximum
             self.mode = 3 * mean - maximum - minimum
-        if (
+        elif (
             mean is None
             and maximum is not None
             and minimum is not None
