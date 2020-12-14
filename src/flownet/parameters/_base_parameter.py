@@ -79,8 +79,8 @@ def parameter_probability_distribution_class(
             mode=row[f"base{param}"],
             maximum=row[f"maximum{param}"],
         )
-    if row[f"distribution{param}"] == "constant":
-        return Constant(constant=[f"base{param}"])
+    if row[f"distribution{param}"] == "const":
+        return Constant(const=[f"base{param}"])
     raise ValueError("Unknown probability distribution class.")
 
 

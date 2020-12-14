@@ -118,7 +118,7 @@ DATA = {
         "triangular",
         "triangular",
         "triangular",
-        "constant",
+        "const",
     ],
 }
 

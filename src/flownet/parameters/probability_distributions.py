@@ -544,10 +544,10 @@ class LogNormalDistribution(ProbabilityDistribution):
 
 
 class Constant(ProbabilityDistribution):
-    def __init__(self, constant):
+    def __init__(self, const):
         super().__init__("CONST")
         self.stddev = 0
-        self.update_distribution(mode=constant)
+        self.update_distribution(mode=const)
 
     @property
     def ert_gen_kw(self) -> str:
