@@ -8,7 +8,7 @@ from ecl.grid import EclRegion
 from flownet.data.from_flow import FlowData
 
 DATA_FILE = Path(
-    glob.glob(str(Path(Path.home() / "flownet-testdata/*/input_model/*/*.DATA")))[0]
+    glob.glob(str("../flownet-testdata/*/input_model/*/*.DATA")))[0]
 )
 
 # pylint: disable=protected-access
