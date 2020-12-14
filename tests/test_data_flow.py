@@ -45,5 +45,3 @@ def test_grid_cell_bounding_boxes() -> None:
     active_cells.select_active(intersect=True)
     assert result.shape[0] == active_cells.active_size()
     assert result.shape[1] == 6
-
-    assert True
