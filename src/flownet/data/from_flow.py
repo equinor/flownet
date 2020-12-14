@@ -1,4 +1,5 @@
 import warnings
+import operator
 from pathlib import Path
 from typing import Union, List, Optional, Tuple
 
@@ -292,9 +293,8 @@ class FlowData(FromSource):
             A (active grid cells x 6) numpy array with columns [ xmin, xmax, ymin, ymax, zmin, zmax ]
             filtered on layer_id if not None.
         """
-        if layer_id:
-            # TODO: Make sure the k-range is correct (zero offset?!)
-            (k_min, k_max) = self._layers[layer_id]
+        if layer_id is not None:
+            (k_min, k_max) = tuple(map(operator.sub, self._layers[layer_id], (1, 1)))
         else:
             (k_min, k_max) = (0, self._grid.nz)
 
@@ -304,10 +304,8 @@ class FlowData(FromSource):
         xyz = np.empty((8 * len(cells), 3))
 
         for n_cell, cell in enumerate(cells):
-            corners = cell.corner
-            for n_corner, corner in enumerate(corners):
+            for n_corner, corner in enumerate(cell.corners):
                 xyz[n_cell * 8 + n_corner, :] = corner
-                n_cell += 1
 
         xmin = xyz[:, 0].reshape(-1, 8).min(axis=1)
         xmax = xyz[:, 0].reshape(-1, 8).max(axis=1)
@@ -359,7 +357,7 @@ class FlowData(FromSource):
         """the simulation grid with properties"""
         return self._grid
 
-    @property.getter
-    def layers(self) -> List[Tuple(int, int)]:
+    @property
+    def layers(self) -> List[Tuple[int, int]]:
         """Get the list of top and bottom k-indeces of a the orignal model that represents a FlowNet layer"""
         return self._layers
