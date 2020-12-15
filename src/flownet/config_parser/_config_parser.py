@@ -23,7 +23,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
     with which values are optional and/or has default values.
 
     Args:
-        config_folder:
+        config_folder: Optional path to folder with config file
 
     Returns:
         Dictionary to be used as configsuite type schema
