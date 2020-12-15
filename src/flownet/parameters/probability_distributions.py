@@ -309,7 +309,7 @@ class TriangularDistribution(ProbabilityDistribution):
 
     @property
     def ert_gen_kw(self) -> str:
-        """string representing an ERT "TRIANGULAR MIN MAX" distribution keyword for use in GEN_KW"""
+        """string representing an ERT "TRIANGULAR MIN MODE MAX" distribution keyword for use in GEN_KW"""
         return f"{self.name} {self.minimum} {self.mode} {self.maximum}"
 
     def update_distribution(
@@ -323,6 +323,18 @@ class TriangularDistribution(ProbabilityDistribution):
         """
         Function that updates the parameters that defines the probability distribution
 
+        The following input combinations will make changes to the distribution:
+            * Giving a new minimum value as input will trigger a calculation of a new mean and stddev
+            * Giving a new maximum value as input will trigger a calculation of a new mean and stddev
+            * Giving a new mode as input will trigger a calculation of a new mean and stddev
+            * Giving a new mean value as input requires a new minimum/maximum OR mode/maximum OR minimum/mode values to be defined also
+                - A new mean value, a new minimum value ans a new mode will trigger an update of the maximum value and the stddev
+                - A new mean value, a new mode and a new maximum value will trigger an update of the minimum value and the stddev
+                - A new mean value, a new minimum value and a new maximum value will trigger an update of the mode and the stddev
+
+        Providing values for stddev has no effect here.
+
+        Providing a new mean, a new minimum, a new maximum value and a new mode (all four of them) will trigger an error
         Args:
             minimum: The minimum values of the updated distribution
             mean: The mean value of the updated distribution
@@ -441,7 +453,10 @@ class NormalDistribution(ProbabilityDistribution):
         stddev: Optional[float] = None,
     ):
         """
-        Function that updates the parameters that defines the probability distribution
+        Function that updates the parameters that defines the probability distribution.
+
+        In the normal distribution one or both of the mean and the standard deviation can be changed. 
+        Providing any other value as input here (mode, minimum, maximum) will have no effect.
 
         Args:
             minimum: The minimum values of the updated distribution
@@ -482,6 +497,14 @@ class TruncatedNormalDistribution(ProbabilityDistribution):
     ):
         """
         Function that updates the parameters that defines the probability distribution
+
+        In the truncated normal distribution one or more of the following can be changed: 
+            *The mean
+            *The standard deviation
+            *The minimum value
+            *The maximum value
+        
+        Providing a value for the mode has no effect here
 
         Args:
             minimum: The minimum values of the updated distribution
@@ -527,6 +550,9 @@ class LogNormalDistribution(ProbabilityDistribution):
         """
         Function that updates the parameters that defines the probability distribution
 
+        In the lognormal distribution one or both of the mean and the standard deviation can be changed. 
+        Providing any other value as input here (mode, minimum, maximum) will have no effect.
+
         Args:
             minimum: The minimum values of the updated distribution
             mean: The mean value of the updated distribution
@@ -564,6 +590,9 @@ class Constant(ProbabilityDistribution):
     ):
         """
         Function that updates the parameters that defines the probability distribution
+
+        Providing a value for either the mean, the mode, the minimum or the maximum will change the constant value,
+        but ONLY one value can be provided.
 
         Args:
             minimum: The minimum values of the updated distribution
