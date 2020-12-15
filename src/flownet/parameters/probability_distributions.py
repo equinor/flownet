@@ -327,14 +327,16 @@ class TriangularDistribution(ProbabilityDistribution):
             * Giving a new minimum value as input will trigger a calculation of a new mean and stddev
             * Giving a new maximum value as input will trigger a calculation of a new mean and stddev
             * Giving a new mode as input will trigger a calculation of a new mean and stddev
-            * Giving a new mean value as input requires a new minimum/maximum OR mode/maximum OR minimum/mode values to be defined also
-                - A new mean value, a new minimum value ans a new mode will trigger an update of the maximum value and the stddev
-                - A new mean value, a new mode and a new maximum value will trigger an update of the minimum value and the stddev
-                - A new mean value, a new minimum value and a new maximum value will trigger an update of the mode and the stddev
+            * Giving a new mean value as input requires a new minimum/maximum OR mode/maximum OR minimum/mode values
+            to be defined also:
+                - A new mean, minimum and mode will trigger an update of the maximum value and the stddev
+                - A new mean, mode and maximum value will trigger an update of the minimum value and the stddev
+                - A new mean, minimum and maximum value will trigger an update of the mode and the stddev
 
         Providing values for stddev has no effect here.
 
-        Providing a new mean, a new minimum, a new maximum value and a new mode (all four of them) will trigger an error
+        Providing a new mean, minimum, maximum and mode (all four of them) will trigger an error
+
         Args:
             minimum: The minimum values of the updated distribution
             mean: The mean value of the updated distribution
