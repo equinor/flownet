@@ -455,7 +455,7 @@ class NormalDistribution(ProbabilityDistribution):
         """
         Function that updates the parameters that defines the probability distribution.
 
-        In the normal distribution one or both of the mean and the standard deviation can be changed. 
+        In the normal distribution one or both of the mean and the standard deviation can be changed.
         Providing any other value as input here (mode, minimum, maximum) will have no effect.
 
         Args:
@@ -498,12 +498,12 @@ class TruncatedNormalDistribution(ProbabilityDistribution):
         """
         Function that updates the parameters that defines the probability distribution
 
-        In the truncated normal distribution one or more of the following can be changed: 
+        In the truncated normal distribution one or more of the following can be changed:
             *The mean
             *The standard deviation
             *The minimum value
             *The maximum value
-        
+
         Providing a value for the mode has no effect here
 
         Args:
@@ -550,7 +550,7 @@ class LogNormalDistribution(ProbabilityDistribution):
         """
         Function that updates the parameters that defines the probability distribution
 
-        In the lognormal distribution one or both of the mean and the standard deviation can be changed. 
+        In the lognormal distribution one or both of the mean and the standard deviation can be changed.
         Providing any other value as input here (mode, minimum, maximum) will have no effect.
 
         Args:
