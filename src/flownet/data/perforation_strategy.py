@@ -81,11 +81,11 @@ def multiple(df: pd.DataFrame) -> pd.DataFrame:
         df: Dataframe with all well connections, through time, including state.
 
     Returns:
-        DataFrame will all connections
+        DataFrame with all connections
 
     """
-    df = df[["WELL_NAME", "X", "Y", "Z", "DATE", "OPEN"]].sort_values(
-        ["WELL_NAME", "X", "Y", "Z", "DATE"]
+    df = df[["WELL_NAME", "X", "Y", "Z", "DATE", "OPEN", "LAYER_ID"]].sort_values(
+        ["WELL_NAME", "X", "Y", "Z", "DATE", "LAYER_ID"]
     )
 
     return df[
@@ -122,7 +122,7 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
         df: Dataframe with all well connections, through time, including state.
 
     Returns:
-        Dataframe with 1 or more connections per will depending on the historic straddles / plugs.
+        Dataframe with 1 or more connections per well depending on the historic straddles / plugs.
 
     """
     df = multiple(df)

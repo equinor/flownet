@@ -42,10 +42,9 @@ class FlowData(FromSource):
         self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
         self._init = EclInitFile(self._grid, str(self._input_case.with_suffix(".INIT")))
         self._wells = compdat.df(EclFiles(str(self._input_case)))
-        self._layers = [(1, 2), (3, 4)]
+        self._layers = layering
 
         self._perforation_handling_strategy: str = perforation_handling_strategy
-        self._layering: tuple = layering
 
     # pylint: disable=too-many-branches
     def _well_connections(self) -> pd.DataFrame:
@@ -58,17 +57,23 @@ class FlowData(FromSource):
             columns: WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID
 
         """
+        if len(self._layers) > 0 and self._grid.nz is not self._layers[-1][-1]:
+            raise ValueError(
+                f"Number of layers from config ({self._layers[-1][-1]}) is not equel to "
+                f"number of layers from flow simulation ({self._grid.nz})."
+            )
+
         new_items = []
         for _, row in self._wells.iterrows():
             X, Y, Z = self._grid.get_xyz(
                 ijk=(row["I"] - 1, row["J"] - 1, row["K1"] - 1)
             )
-            if len(self._layering) > 0:
-                for count, (i, j) in enumerate(self._layering):
+            if len(self._layers) > 0:
+                for count, (i, j) in enumerate(self._layers):
                     if row["K1"] in range(i, j + 1):
                         layer_id = count
             else:
-                layer_id = 0
+                layer_id = None
 
             new_row = {
                 "WELL_NAME": row["WELL"],
@@ -370,6 +375,6 @@ class FlowData(FromSource):
         return self._grid
 
     @property
-    def layers(self) -> List[Tuple[int, int]]:
+    def layers(self) -> Tuple[Tuple[int, int]]:
         """Get the list of top and bottom k-indeces of a the orignal model that represents a FlowNet layer"""
         return self._layers
