@@ -18,7 +18,7 @@ def locate_test_case() -> Path:
         FileNotFoundError: The test data was not found.
 
     Returns:
-        str: Path to the .DATA file.
+        Path to the .DATA file.
     """
     cicd_str = "./flownet-testdata/*/input_model/*/*.DATA"
     home_path = Path.home() / Path(
