@@ -7,7 +7,7 @@ from ecl.grid import EclRegion
 
 from flownet.data.from_flow import FlowData
 
-DATA_FILE = Path(glob.glob("../flownet-testdata/*/input_model/*/*.DATA")[0])
+DATA_FILE = Path(glob.glob("./flownet-testdata/*/input_model/*/*.DATA")[0])
 
 # pylint: disable=protected-access
 def test_grid_cell_bounding_boxes() -> None:
