@@ -8,7 +8,7 @@ from ecl.grid import EclRegion
 from flownet.data.from_flow import FlowData
 
 
-def locate_test_case() -> Path:
+def _locate_test_case() -> Path:
     """
     This function will try to find the test data. On the CI/CD this will be
     any case. Locally, the Norne case will be used. If not found, a
@@ -50,7 +50,7 @@ def locate_test_case() -> Path:
 # pylint: disable=protected-access
 def test_grid_cell_bounding_boxes() -> None:
     flowdata = FlowData(
-        locate_test_case(),
+        _locate_test_case(),
         "multiple_based_on_workovers",
     )
 
