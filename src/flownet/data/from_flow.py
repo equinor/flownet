@@ -1,6 +1,7 @@
 import warnings
+import operator
 from pathlib import Path
-from typing import Union, List
+from typing import Union, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -41,6 +42,7 @@ class FlowData(FromSource):
         self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
         self._init = EclInitFile(self._grid, str(self._input_case.with_suffix(".INIT")))
         self._wells = compdat.df(EclFiles(str(self._input_case)))
+        self._layers = [(1, 2), (3, 4)]
 
         self._perforation_handling_strategy: str = perforation_handling_strategy
         self._layering: tuple = layering
@@ -292,19 +294,30 @@ class FlowData(FromSource):
 
         return df_faults.drop(["I", "J", "K"], axis=1)
 
-    def _grid_cell_bounding_boxes(self) -> np.ndarray:
+    def _grid_cell_bounding_boxes(self, layer_id: Optional[int] = None) -> np.ndarray:
         """
         Function to get the bounding box (x, y and z min + max) for all grid cells
 
+        Args:
+            layer_id: The FlowNet layer id to be used to create the bounding box.
+
         Returns:
             A (active grid cells x 6) numpy array with columns [ xmin, xmax, ymin, ymax, zmin, zmax ]
+            filtered on layer_id if not None.
         """
-        xyz = np.empty((8 * self._grid.get_num_active(), 3))
-        for active_index in range(self._grid.get_num_active()):
-            for corner in range(0, 8):
-                xyz[active_index * 8 + corner, :] = self._grid.get_cell_corner(
-                    corner, active_index=active_index
-                )
+        if layer_id is not None:
+            (k_min, k_max) = tuple(map(operator.sub, self._layers[layer_id], (1, 1)))
+        else:
+            (k_min, k_max) = (0, self._grid.nz)
+
+        cells = [
+            cell for cell in self._grid.cells(active=True) if (k_min <= cell.k <= k_max)
+        ]
+        xyz = np.empty((8 * len(cells), 3))
+
+        for n_cell, cell in enumerate(cells):
+            for n_corner, corner in enumerate(cell.corners):
+                xyz[n_cell * 8 + n_corner, :] = corner
 
         xmin = xyz[:, 0].reshape(-1, 8).min(axis=1)
         xmax = xyz[:, 0].reshape(-1, 8).max(axis=1)
@@ -355,3 +368,8 @@ class FlowData(FromSource):
     def grid(self) -> EclGrid:
         """the simulation grid with properties"""
         return self._grid
+
+    @property
+    def layers(self) -> List[Tuple[int, int]]:
+        """Get the list of top and bottom k-indeces of a the orignal model that represents a FlowNet layer"""
+        return self._layers
