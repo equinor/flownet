@@ -49,12 +49,13 @@ def _locate_test_case() -> Path:
 def test_grid_cell_bounding_boxes() -> None:
     layers = ()
     flowdata = FlowData(
-        _locate_test_case(), layers
+        _locate_test_case(),
+        layers,
         "multiple_based_on_workovers",
     )
 
     # Test no argument and entire field being equal
-    flowdata._layers = ((1, flowdata.grid.nz))
+    flowdata._layers = (1, flowdata.grid.nz)
     assert_almost_equal(
         flowdata._grid_cell_bounding_boxes(), flowdata._grid_cell_bounding_boxes(0)
     )
