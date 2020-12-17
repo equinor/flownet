@@ -84,8 +84,8 @@ def multiple(df: pd.DataFrame) -> pd.DataFrame:
         DataFrame with all connections
 
     """
-    df = df[["WELL_NAME", "X", "Y", "Z", "DATE", "OPEN", "LAYER_ID"]].sort_values(
-        ["WELL_NAME", "X", "Y", "Z", "DATE", "LAYER_ID"]
+    df = df[["WELL_NAME", "X", "Y", "Z", "DATE", "OPEN"]].sort_values(
+        ["WELL_NAME", "X", "Y", "Z", "DATE"]
     )
 
     return df[

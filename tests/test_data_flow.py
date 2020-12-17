@@ -28,13 +28,13 @@ def _locate_test_case() -> Path:
 
     if len(glob.glob(cicd_str)) > 0:
         # CI/CD
-        DATA_FILE = Path(glob.glob(cicd_str)[0])
+        data_file = Path(glob.glob(cicd_str)[0])
     elif home_path.exists():
         # Test-data repository located in home directory
-        DATA_FILE = home_path
+        data_file = home_path
     elif flow_path.exists():
         # Test-data repositry located in the same location as the flownet repository
-        DATA_FILE = flow_path
+        data_file = flow_path
     else:
         raise FileNotFoundError(
             "To be able to run the tests one needs to clone the flownet-testdata from \
@@ -42,7 +42,7 @@ def _locate_test_case() -> Path:
             in your home folder OR in the folder containing the flownet repository."
         )
 
-    return DATA_FILE
+    return data_file
 
 
 # pylint: disable=protected-access
@@ -55,7 +55,7 @@ def test_grid_cell_bounding_boxes() -> None:
     )
 
     # Test no argument and entire field being equal
-    flowdata._layers = (1, flowdata.grid.nz)
+    flowdata._layers = ((1, flowdata.grid.nz),)
     assert_almost_equal(
         flowdata._grid_cell_bounding_boxes(), flowdata._grid_cell_bounding_boxes(0)
     )

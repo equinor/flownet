@@ -30,7 +30,7 @@ class FlowData(FromSource):
     def __init__(
         self,
         input_case: Union[Path, str],
-        layering: tuple = (),
+        layering: Tuple = (),
         perforation_handling_strategy: str = "bottom_point",
     ):
         super().__init__()
@@ -375,6 +375,6 @@ class FlowData(FromSource):
         return self._grid
 
     @property
-    def layers(self) -> Tuple[Tuple[int, int]]:
+    def layers(self) -> Union[Tuple[Tuple[int, int]], Tuple]:
         """Get the list of top and bottom k-indeces of a the orignal model that represents a FlowNet layer"""
         return self._layers
