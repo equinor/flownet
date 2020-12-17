@@ -8,12 +8,8 @@ from pyscal import WaterOilGas, WaterOil, GasOil, PyscalFactory, PyscalList
 from ..utils import write_grdecl_file
 from ..utils.constants import H_CONSTANT
 
-from .probability_distributions import (
-    UniformDistribution,
-    LogUniformDistribution,
-    ProbabilityDistribution,
-)
-from ._base_parameter import Parameter
+from .probability_distributions import ProbabilityDistribution
+from ._base_parameter import Parameter, parameter_probability_distribution_class
 
 
 def gen_wog(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOilGas:
@@ -143,9 +139,7 @@ class RelativePermeability(Parameter):
     ):
         self._ti2ci: pd.DataFrame = ti2ci
         self._random_variables: List[ProbabilityDistribution] = [
-            LogUniformDistribution(row["minimum"], row["maximum"])
-            if row["loguniform"]
-            else UniformDistribution(row["minimum"], row["maximum"])
+            parameter_probability_distribution_class(row)
             for _, row in distribution_values.iterrows()
         ]
 

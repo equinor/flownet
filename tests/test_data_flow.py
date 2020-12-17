@@ -13,8 +13,10 @@ def _locate_test_case() -> Path:
     This function will try to find the test data. On the CI/CD this will be
     any case. Locally, the Norne case will be used. If not found, a
     FileNotFoundError will be raised.
+
     Raises:
         FileNotFoundError: The test data was not found.
+
     Returns:
         Path to the .DATA file.
     """
