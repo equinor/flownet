@@ -168,7 +168,7 @@
 <span id="flownet-ahm-run-ahm-module"></span><h1>flownet.ahm._run_ahm module<a class="headerlink" href="#module-flownet.ahm._run_ahm" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="flownet.ahm._run_ahm._constrain_using_well_logs">
-<code class="sig-prename descclassname">flownet.ahm._run_ahm.</code><code class="sig-name descname">_constrain_using_well_logs</code><span class="sig-paren">(</span><em class="sig-param">porv_poro_trans_dist_values: pandas.core.frame.DataFrame</em>, <em class="sig-param">data: numpy.ndarray</em>, <em class="sig-param">network: flownet.network_model._network_model.NetworkModel</em>, <em class="sig-param">measurement_type: str</em>, <em class="sig-param">config: &lt;property object at 0x7ff1f6178048&gt;</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.ahm._run_ahm._constrain_using_well_logs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.ahm._run_ahm.</code><code class="sig-name descname">_constrain_using_well_logs</code><span class="sig-paren">(</span><em class="sig-param">porv_poro_trans_dist_values: pandas.core.frame.DataFrame</em>, <em class="sig-param">data: numpy.ndarray</em>, <em class="sig-param">network: flownet.network_model._network_model.NetworkModel</em>, <em class="sig-param">measurement_type: str</em>, <em class="sig-param">config: &lt;property object at 0x7f3bf4b71908&gt;</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.ahm._run_ahm._constrain_using_well_logs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to constrain permeability and porosity distributions of flow tubes by using 3D kriging of
 porosity and permeability values from well logs.</p>
 <dl class="field-list simple">
@@ -188,27 +188,8 @@ porosity and permeability values from well logs.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.ahm._run_ahm._find_dist_minmax">
-<code class="sig-prename descclassname">flownet.ahm._run_ahm.</code><code class="sig-name descname">_find_dist_minmax</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_val</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_val</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">mean_val</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#flownet.ahm._run_ahm._find_dist_minmax" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find the distribution min or max for a loguniform distribution, assuming only
-one of these and the mean are given</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>min_val</strong> – minimum value for the distribution</p></li>
-<li><p><strong>max_val</strong> – maximum value for the distribution</p></li>
-<li><p><strong>mean_val</strong> – mean value for the distribution</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The missing minimum or maximum value</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="flownet.ahm._run_ahm._find_training_set_fraction">
-<code class="sig-prename descclassname">flownet.ahm._run_ahm.</code><code class="sig-name descname">_find_training_set_fraction</code><span class="sig-paren">(</span><em class="sig-param">schedule: flownet.realization._schedule.Schedule</em>, <em class="sig-param">config: &lt;property object at 0x7ff1f6178048&gt;</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#flownet.ahm._run_ahm._find_training_set_fraction" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.ahm._run_ahm.</code><code class="sig-name descname">_find_training_set_fraction</code><span class="sig-paren">(</span><em class="sig-param">schedule: flownet.realization._schedule.Schedule</em>, <em class="sig-param">config: &lt;property object at 0x7f3bf4b71908&gt;</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#flownet.ahm._run_ahm._find_training_set_fraction" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -249,7 +230,7 @@ tubes is calculated as the distance between the mid points of the two flow tubes
 <dl class="py function">
 <dt id="flownet.ahm._run_ahm._get_distribution">
 <code class="sig-prename descclassname">flownet.ahm._run_ahm.</code><code class="sig-name descname">_get_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>List<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">parameters_config</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">index</span><span class="p">:</span> <span class="n">list</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.ahm._run_ahm._get_distribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create the distribution min-max for one or more parameters</p>
+<dd><p>Create the distribution min, mean, base, stddev, max for one or more parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -266,7 +247,7 @@ tubes is calculated as the distance between the mid points of the two flow tubes
 
 <dl class="py function">
 <dt id="flownet.ahm._run_ahm.run_flownet_history_matching">
-<code class="sig-prename descclassname">flownet.ahm._run_ahm.</code><code class="sig-name descname">run_flownet_history_matching</code><span class="sig-paren">(</span><em class="sig-param">config: &lt;property object at 0x7ff1f6178048&gt;</em>, <em class="sig-param">args: argparse.Namespace</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._run_ahm.run_flownet_history_matching" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.ahm._run_ahm.</code><code class="sig-name descname">run_flownet_history_matching</code><span class="sig-paren">(</span><em class="sig-param">config: &lt;property object at 0x7f3bf4b71908&gt;</em>, <em class="sig-param">args: argparse.Namespace</em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._run_ahm.run_flownet_history_matching" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates and runs an ERT setup, given user configuration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -284,9 +265,26 @@ tubes is calculated as the distance between the mid points of the two flow tubes
 <dl class="py function">
 <dt id="flownet.ahm._run_ahm.update_distribution">
 <code class="sig-prename descclassname">flownet.ahm._run_ahm.</code><code class="sig-name descname">update_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter">flownet.parameters._base_parameter.Parameter</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">ahm_case</span><span class="p">:</span> <span class="n">pathlib.Path</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter">flownet.parameters._base_parameter.Parameter</a><span class="p">]</span><a class="headerlink" href="#flownet.ahm._run_ahm.update_distribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the prior distribution min-max for one or more parameters based on
-the mean of the posterior distribution. It is assumed that the prior min
-and max values cannot be exceeded.</p>
+<dd><p>Update the prior distribution for one or more parameters based on
+the mean and standard deviation of the posterior distribution. It is assumed that the prior min
+and max values cannot be exceeded. The type of distribution will also be kept.</p>
+<dl class="simple">
+<dt>For the distributions with a min/max:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>If the mean value in the posterior is less than in the prior, the minimum value (and the mode) will be kept</dt><dd><p>and the maximum value and the mean will be updated.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>If the mean value in the posterior is larger than in the prior, the maximum value (and the mode) will be</dt><dd><p>kept and the minimum value and the mean will be updated.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p>For distributions defined by a mean and standard deviation the mean and standard deviation will be updated based
+on the values from the posterior</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
