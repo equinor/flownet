@@ -4,12 +4,8 @@ import jinja2
 import pandas as pd
 
 from ..network_model import NetworkModel
-from .probability_distributions import (
-    UniformDistribution,
-    LogUniformDistribution,
-    ProbabilityDistribution,
-)
-from ._base_parameter import Parameter
+from .probability_distributions import ProbabilityDistribution
+from ._base_parameter import Parameter, parameter_probability_distribution_class
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
@@ -38,9 +34,7 @@ class Aquifer(Parameter):
         self, distribution_values: pd.DataFrame, network: NetworkModel, scheme: str
     ):
         self._random_variables: List[ProbabilityDistribution] = [
-            LogUniformDistribution(row["minimum"], row["maximum"])
-            if row["loguniform"]
-            else UniformDistribution(row["minimum"], row["maximum"])
+            parameter_probability_distribution_class(row)
             for _, row in distribution_values.iterrows()
         ]
 

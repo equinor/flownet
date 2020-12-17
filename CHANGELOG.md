@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.4.0] - 2020-11-18
 
 ### Added
+- [#251](https://github.com/equinor/flownet/pull/251) The number of available prior distributions have been expanded. It is now also possible to define the following probability distributions in the config yaml: _normal_, _lognormal_, _truncated normal_, _triangular_, _constant_, in addidion to the prevously defined ones _uniform_ and _loguniform_. This can be done for the following parameters: _bulk volume multiplier_, _porosity_, _permeability_, _aquifer size_, _fault multipliers_, _contacts (owc, goc, gwc)_ and _relative permeability parameters_.
 - [#234](https://github.com/equinor/flownet/pull/234) Added [mlflow](https://www.mlflow.org/) in combination with [hyperopt](https://github.com/hyperopt/hyperopt) which allows running flownet in batch to explore and optimise hyperparameters.
 - [#221](https://github.com/equinor/flownet/pull/221) For traceability and reproducibility, the FlowNet configuration file is now automatically copied to the output folder. The content of 'pip freeze' is stored in the file 'pipfreeze.output' in the output folder.
 - [#220](https://github.com/equinor/flownet/pull/220) User can now provide the historical _control mode_ in the production wells and _control mode_/_target_ in the injection wells. One value for each, applied to all wells.

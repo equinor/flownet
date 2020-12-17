@@ -150,3 +150,4 @@ examples/**/.nfs*
 
 # Test data
 tests/data/norne/
+.vscode/settings.json

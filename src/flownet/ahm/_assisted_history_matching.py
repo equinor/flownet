@@ -17,7 +17,6 @@ from ..ert import create_ert_setup, run_ert_subprocess
 from ..realization import Schedule
 from ..network_model import NetworkModel
 from ..parameters import Parameter
-from ..parameters.probability_distributions import LogUniformDistribution
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
@@ -137,30 +136,28 @@ class AssistedHistoryMatching:
             f"Number of realizations: {self._config.ert.realizations.num_realizations:>20}"
         )
 
-        distributions = {
-            (distribution.__class__, distribution.minimum, distribution.maximum)
-            for parameter in self._parameters
-            for distribution in parameter.random_variables
-        }
-
         print("Unique parameter distributions:")
-        print("\nDistribution             Minimum             Mean              Max")
-        print("------------------------------------------------------------------")
+        print(
+            "\nDistribution            Minimum             Mean          Stddev            Max"
+        )
+        print(
+            "-------------------------------------------------------------------------------------"
+        )
+        for parameter in self._parameters:
+            for random_var in parameter.random_variables:
 
-        for distribution in distributions:
-            if distribution[0] == LogUniformDistribution:
                 print(
-                    "Loguniform".ljust(15),
-                    f"{distribution[1]:16.8f}",
-                    f"{(distribution[2] - distribution[1]) / np.log(distribution[2] / distribution[1]):16.8f}",
-                    f"{distribution[2]:16.8f}",
-                )
-            else:
-                print(
-                    "Uniform".ljust(15),
-                    f"{distribution[1]:16.8f}",
-                    f"{(distribution[2] + distribution[1]) / 2.0:16.8f}",
-                    f"{distribution[2]:16.8f}",
+                    f"{random_var.name}".ljust(17),
+                    f"{random_var.minimum:16.8f}"
+                    if random_var.minimum is not None
+                    else "      None      ",
+                    f"{random_var.mean:16.8f}",
+                    f"{random_var.stddev:16.8f}"
+                    if random_var.stddev is not None
+                    else "      None      ",
+                    f"{random_var.maximum:16.8f}"
+                    if random_var.maximum is not None
+                    else "      None      ",
                 )
         print("")
 
