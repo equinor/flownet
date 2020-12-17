@@ -3,11 +3,11 @@ from typing import Union, List, Optional, Dict
 import json
 import pathlib
 from operator import add
+import warnings
 
 import numpy as np
 import pandas as pd
 from scipy.stats import mode
-from scipy.optimize import minimize
 from configsuite import ConfigSuite
 
 from ..realization import Schedule
@@ -127,48 +127,11 @@ def _find_training_set_fraction(
     return training_set_fraction
 
 
-def _find_dist_minmax(
-    min_val: Optional[float], max_val: Optional[float], mean_val: float
-) -> float:
-    """
-    Find the distribution min or max for a loguniform distribution, assuming only
-    one of these and the mean are given
-
-    Args:
-        min_val: minimum value for the distribution
-        max_val: maximum value for the distribution
-        mean_val: mean value for the distribution
-
-    Returns:
-        The missing minimum or maximum value
-
-    """
-    # pylint: disable=cell-var-from-loop
-    if min_val is None:
-        result = minimize(
-            lambda x: (mean_val - ((max_val - x) / np.log(max_val / x))) ** 2,
-            x0=mean_val,
-            tol=1e-9,
-            method="L-BFGS-B",
-            bounds=[(1e-9, mean_val)],
-        ).x[0]
-    if max_val is None:
-        result = minimize(
-            lambda x: (mean_val - ((x - min_val) / np.log(x / min_val))) ** 2,
-            x0=mean_val,
-            tol=1e-9,
-            method="L-BFGS-B",
-            bounds=[(mean_val, None)],
-        ).x[0]
-
-    return result
-
-
 def _get_distribution(
     parameters: Union[str, List[str]], parameters_config: dict, index: list
 ) -> pd.DataFrame:
     """
-    Create the distribution min-max for one or more parameters
+    Create the distribution min, mean, base, stddev, max for one or more parameters
 
     Args:
         parameters: which parameter(s) should be outputted in the dataframe
@@ -186,33 +149,12 @@ def _get_distribution(
 
     for parameter in parameters:
         parameter_config = getattr(parameters_config, parameter)
-
-        if parameter_config.mean is not None:
-            mean = parameter_config.mean
-
-            if parameter_config.loguniform is True:
-                # pylint: disable=cell-var-from-loop
-                if parameter_config.max is not None:
-                    dist_max = parameter_config.max
-                    dist_min = _find_dist_minmax(None, dist_max, mean)
-                else:
-                    dist_min = parameter_config.min
-                    dist_max = _find_dist_minmax(dist_min, None, mean)
-            else:
-                if parameter_config.max is not None:
-                    dist_max = parameter_config.max
-                    dist_min = mean - (dist_max - mean)
-                else:
-                    dist_min = parameter_config.min
-                    dist_max = mean + (mean - dist_min)
-        else:
-            dist_min = parameter_config.min
-            dist_max = parameter_config.max
-
-        df[f"minimum_{parameter}"] = dist_min
-        df[f"maximum_{parameter}"] = dist_max
-        df[f"loguniform_{parameter}"] = parameter_config.loguniform
-
+        df[f"minimum_{parameter}"] = parameter_config.min
+        df[f"maximum_{parameter}"] = parameter_config.max
+        df[f"mean_{parameter}"] = parameter_config.mean
+        df[f"base_{parameter}"] = parameter_config.base
+        df[f"stddev_{parameter}"] = parameter_config.stddev
+        df[f"distribution_{parameter}"] = parameter_config.distribution
     return df
 
 
@@ -313,9 +255,18 @@ def update_distribution(
     parameters: List[Parameter], ahm_case: pathlib.Path
 ) -> List[Parameter]:
     """
-    Update the prior distribution min-max for one or more parameters based on
-    the mean of the posterior distribution. It is assumed that the prior min
-    and max values cannot be exceeded.
+    Update the prior distribution for one or more parameters based on
+    the mean and standard deviation of the posterior distribution. It is assumed that the prior min
+    and max values cannot be exceeded. The type of distribution will also be kept.
+
+    For the distributions with a min/max:
+        * If the mean value in the posterior is less than in the prior, the minimum value (and the mode) will be kept
+           and the maximum value and the mean will be updated.
+        * If the mean value in the posterior is larger than in the prior, the maximum value (and the mode) will be
+           kept and the minimum value and the mean will be updated.
+
+    For distributions defined by a mean and standard deviation the mean and standard deviation will be updated based
+    on the values from the posterior
 
     Args:
         parameters: which parameter(s) should be updated
@@ -343,12 +294,19 @@ def update_distribution(
         for parameter in parameters:
             n = len(parameter.random_variables)
             random_samples = sorted_random_samples[:n]
+            names = sorted_names[:n]
             del sorted_random_samples[:n]
+            del sorted_names[:n]
             if count_index == 1:
+                parameter.names = names
                 parameter.mean_values = random_samples
+                parameter.stddev_values = np.power(random_samples, 2)
             else:
                 parameter.mean_values = list(
                     map(add, parameter.mean_values, random_samples)
+                )
+                parameter.stddev_values = list(
+                    map(add, parameter.stddev_values, np.power(random_samples, 2))
                 )
 
     # compute ensemble-mean values
@@ -356,32 +314,54 @@ def update_distribution(
         parameter.mean_values = [
             value / float(df.shape[0]) for value in parameter.mean_values
         ]
+        parameter.stddev_values = np.sqrt(
+            [
+                value / float(df.shape[0]) - np.power(parameter.mean_values, 2)[i]
+                for i, value in enumerate(parameter.stddev_values)
+            ]
+        )
 
     # update the distributions
     for parameter in parameters:
-        n = len(parameter.random_variables)
-
         for i, var in enumerate(parameter.random_variables):
             mean = parameter.mean_values[i]
+            # if mean in posterior is close to min/max in prior raise warning
+            if var.minimum and var.maximum:
+                if (mean - var.minimum) / (var.mean - var.minimum) < 0.1 or (
+                    var.maximum - mean
+                ) / (var.maximum - var.mean) < 0.1:
+                    warnings.warn(
+                        f"The mean value for the posterior ensemble for {parameter.names[i]} is close to \n"
+                        f"the upper or lower bounds in the prior. This will give a very narrow prior range \n"
+                        f"in this run. Consider updating before running again. "
+                    )
+            if var.stddev is not None:
+                stddev = parameter.stddev_values[i]
+                if stddev / var.stddev < 0.1:
+                    warnings.warn(
+                        f"The standard deviation for the posterior ensemble for {parameter.names[i]} is much lower \n"
+                        f"than the standard deviation in the prior. This will give a very narrow prior range \n"
+                        f"in this run. Consider updating before running again. "
+                    )
 
-            loguniform = var.ert_gen_kw.split()[0] == "LOGUNIF"
-            dist_min0 = var.minimum
-            dist_max0 = var.maximum
-
-            if loguniform is True:
-                dist_max = dist_max0
-                dist_min = _find_dist_minmax(None, dist_max, mean)
-                if dist_min < dist_min0:
-                    dist_min = dist_min0
-                    dist_max = _find_dist_minmax(dist_min, None, mean)
-            else:
-                dist_max = dist_max0
-                dist_min = mean - (dist_max - mean)
-                if dist_min < dist_min0:
-                    dist_min = dist_min0
-                    dist_max = mean + (mean - dist_min)
-            var.minimum = dist_min
-            var.maximum = dist_max
+                if mean < var.mean:
+                    # Keep the lower limit/minimum and mode for distributions that have those
+                    var.update_distribution(
+                        mean=mean,
+                        stddev=stddev,
+                        minimum=var.minimum,
+                        mode=var.mode,
+                        maximum=None,
+                    )
+                else:
+                    # Keep the upper limit/maximum and mode for distributions that have those
+                    var.update_distribution(
+                        mean=mean,
+                        stddev=stddev,
+                        maximum=var.maximum,
+                        mode=var.mode,
+                        minimum=None,
+                    )
 
     return parameters
 
@@ -407,7 +387,15 @@ def run_flownet_history_matching(
     area = 100
     cell_length = config.flownet.cell_length
     fast_pyscal = config.flownet.fast_pyscal
-
+    column_names_probdist = [
+        "parameter",
+        "minimum",
+        "maximum",
+        "mean",
+        "base",
+        "stddev",
+        "distribution",
+    ]
     # Load production and well coordinate data
     field_data = FlowData(
         config.flownet.data_source.simulation.input_case,
@@ -466,7 +454,7 @@ def run_flownet_history_matching(
         network.grid.model.unique(),
     )
 
-    if df_well_logs is not None:
+    if df_well_logs is not None and config.flownet.constraining.kriging.enabled:
         # Use well logs to constrain priors.
 
         perm_data = df_well_logs[["X", "Y", "Z", "PERM"]].values
@@ -497,15 +485,13 @@ def run_flownet_history_matching(
             _from_regions_to_flow_tubes(network, field_data, ti2ci, "SATNUM"),
             columns=["SATNUM"],
         )
-    elif config.model_parameters.relative_permeability.scheme == "global":
+    else:
         df_satnum = pd.DataFrame(
             [1] * len(network.grid.model.unique()), columns=["SATNUM"]
         )
 
     # Create a pandas dataframe with all parameter definition for each individual tube
-    relperm_dist_values = pd.DataFrame(
-        columns=["parameter", "minimum", "maximum", "loguniform", "satnum"]
-    )
+    relperm_dist_values = pd.DataFrame(columns=column_names_probdist + ["satnum"])
 
     relperm_parameters = config.model_parameters.relative_permeability.regions[
         0
@@ -515,6 +501,7 @@ def run_flownet_history_matching(
     relperm_dict = {}
     for key, values in relperm_parameters.items():
         values = values._asdict()
+        values.pop("distribution", None)
         values.pop("low_optimistic", None)
         if not all(value is None for _, value in values.items()):
             relperm_dict[key] = values
@@ -580,19 +567,15 @@ def run_flownet_history_matching(
                     info[j].append(val)
 
         else:
-            info = [
-                relperm_parameters.keys(),
-                [
-                    getattr(relp_config_satnum[idx], key).min
-                    for key in relperm_parameters
-                ],
-                [
-                    getattr(relp_config_satnum[idx], key).max
-                    for key in relperm_parameters
-                ],
-                [False] * len(relperm_parameters),
-                [i] * len(relperm_parameters),
-            ]
+            info = [relperm_parameters.keys()]
+            for keyword in ["min", "max", "mean", "base", "stddev", "distribution"]:
+                info.append(
+                    [
+                        getattr(getattr(relp_config_satnum[idx], key), keyword)
+                        for key in relperm_parameters
+                    ]
+                )
+            info.append([i] * len(relperm_parameters))
 
         if isinstance(relperm_interp_values, pd.DataFrame):
             relperm_interp_values = relperm_interp_values.append(
@@ -606,7 +589,7 @@ def run_flownet_history_matching(
         relperm_dist_values = relperm_dist_values.append(
             pd.DataFrame(
                 list(map(list, zip(*info))),
-                columns=["parameter", "minimum", "maximum", "loguniform", "satnum"],
+                columns=column_names_probdist + ["satnum"],
             ),
             ignore_index=True,
         )
@@ -631,9 +614,7 @@ def run_flownet_history_matching(
         )
 
     # Create a pandas dataframe with all parameter definition for each individual tube
-    equil_dist_values = pd.DataFrame(
-        columns=["parameter", "minimum", "maximum", "loguniform", "eqlnum"]
-    )
+    equil_dist_values = pd.DataFrame(columns=column_names_probdist + ["eqlnum"])
 
     defined_eqlnum_regions = []
     datum_depths = []
@@ -651,45 +632,33 @@ def run_flownet_history_matching(
         else:
             idx = defined_eqlnum_regions.index(None)
         datum_depths.append(equil_config_eqlnum[idx].datum_depth)
-        info = [
-            ["datum_pressure", "owc_depth", "gwc_depth", "goc_depth"],
-            [
-                equil_config_eqlnum[idx].datum_pressure.min,
-                None
-                if equil_config_eqlnum[idx].owc_depth is None
-                else equil_config_eqlnum[idx].owc_depth.min,
-                None
-                if equil_config_eqlnum[idx].gwc_depth is None
-                else equil_config_eqlnum[idx].gwc_depth.min,
-                None
-                if equil_config_eqlnum[idx].goc_depth is None
-                else equil_config_eqlnum[idx].goc_depth.min,
-            ],
-            [
-                equil_config_eqlnum[idx].datum_pressure.max,
-                None
-                if equil_config_eqlnum[idx].owc_depth is None
-                else equil_config_eqlnum[idx].owc_depth.max,
-                None
-                if equil_config_eqlnum[idx].gwc_depth is None
-                else equil_config_eqlnum[idx].gwc_depth.max,
-                None
-                if equil_config_eqlnum[idx].goc_depth is None
-                else equil_config_eqlnum[idx].goc_depth.max,
-            ],
-            [False] * 4,
-            [i] * 4,
-        ]
+        info = [["datum_pressure", "owc_depth", "gwc_depth", "goc_depth"]]
+        for keyword in ["min", "max", "mean", "base", "stddev", "distribution"]:
+            info.append(
+                [
+                    getattr(equil_config_eqlnum[idx].datum_pressure, keyword),
+                    None
+                    if equil_config_eqlnum[idx].owc_depth is None
+                    else getattr(equil_config_eqlnum[idx].owc_depth, keyword),
+                    None
+                    if equil_config_eqlnum[idx].gwc_depth is None
+                    else getattr(equil_config_eqlnum[idx].gwc_depth, keyword),
+                    None
+                    if equil_config_eqlnum[idx].goc_depth is None
+                    else getattr(equil_config_eqlnum[idx].goc_depth, keyword),
+                ]
+            )
+        info.append([i] * 4)
 
         equil_dist_values = equil_dist_values.append(
             pd.DataFrame(
                 list(map(list, zip(*info))),
-                columns=["parameter", "minimum", "maximum", "loguniform", "eqlnum"],
+                columns=column_names_probdist + ["eqlnum"],
             ),
             ignore_index=True,
         )
 
-    equil_dist_values.dropna(inplace=True)
+    equil_dist_values = equil_dist_values[equil_dist_values.isnull().sum(axis=1) < 5]
 
     #########################################
     # Fault transmissibility                #
@@ -706,9 +675,7 @@ def run_flownet_history_matching(
     # Aquifer                               #
     #########################################
 
-    if all(config.model_parameters.aquifer) and all(
-        config.model_parameters.aquifer.size_in_bulkvolumes
-    ):
+    if any(config.model_parameters.aquifer[0:3]):
 
         aquifer_config = config.model_parameters.aquifer
 
@@ -719,17 +686,9 @@ def run_flownet_history_matching(
             )
         elif aquifer_config.scheme == "global":
             df_aquid = pd.DataFrame([1] * len(network.aquifers_xyz), columns=["AQUID"])
-        else:
-            raise ValueError(
-                f"The aquifer scheme "
-                f"'{aquifer_config['scheme']}' is not valid.\n"
-                f"Valid options are 'global' or 'individual'."
-            )
 
         # Create a pandas dataframe with all parameter definition for each individual tube
-        aquifer_dist_values = pd.DataFrame(
-            columns=["parameter", "minimum", "maximum", "loguniform", "aquid"]
-        )
+        aquifer_dist_values = pd.DataFrame(columns=column_names_probdist + ["aquid"])
 
         aquifer_parameters = {
             key: value
@@ -738,18 +697,17 @@ def run_flownet_history_matching(
         }
 
         for i in df_aquid["AQUID"].unique():
-            info = [
-                aquifer_parameters.keys(),
-                [param.min for param in aquifer_parameters.values()],
-                [param.max for param in aquifer_parameters.values()],
-                [param.loguniform for param in aquifer_parameters.values()],
-                [i] * len(aquifer_parameters),
-            ]
+            info = [aquifer_parameters.keys()]
+            for keyword in ["min", "max", "mean", "base", "stddev", "distribution"]:
+                info.append(
+                    [getattr(param, keyword) for param in aquifer_parameters.values()],
+                )
+            info.append([i] * len(aquifer_parameters))
 
             aquifer_dist_values = aquifer_dist_values.append(
                 pd.DataFrame(
                     list(map(list, zip(*info))),
-                    columns=["parameter", "minimum", "maximum", "loguniform", "aquid"],
+                    columns=column_names_probdist + ["aquid"],
                 ),
                 ignore_index=True,
             )
@@ -789,7 +747,7 @@ def run_flownet_history_matching(
             ),
         )
 
-    if all(config.model_parameters.aquifer) and all(
+    if all(config.model_parameters.aquifer) and any(
         config.model_parameters.aquifer.size_in_bulkvolumes
     ):
         parameters.append(
