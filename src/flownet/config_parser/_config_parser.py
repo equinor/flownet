@@ -1975,7 +1975,7 @@ def _check_defined(path_in_config_dict: dict, parameter: str):
         parameter (str): a parameter/dictionary found at the given location
 
     Returns:
-        Nothing, raises ValueErrors if something is wrong
+        The keys that are different from None in the parameter/dictionary given as input
     """
     param_dict = getattr(path_in_config_dict, parameter)._asdict()
     param_dict.pop("distribution")

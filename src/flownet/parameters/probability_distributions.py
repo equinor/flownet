@@ -4,6 +4,7 @@ parameter class definitions.
 
 import abc
 from typing import Optional
+
 import numpy as np
 from scipy.optimize import minimize
 
@@ -47,10 +48,7 @@ class UniformDistribution(ProbabilityDistribution):
     Args:
         minimum (float): The minimum value of the distribution
         mean (float): The mean value of the distribution
-        mode (float): The mode of the distribution
         maximum (float): The maximum value of the distribution
-        stddev (float): The standard deviation of the distribution
-
 
     """
 
