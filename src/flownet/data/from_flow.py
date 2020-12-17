@@ -73,7 +73,7 @@ class FlowData(FromSource):
                     if row["K1"] in range(i, j + 1):
                         layer_id = count
             else:
-                layer_id = None
+                layer_id = 0
 
             new_row = {
                 "WELL_NAME": row["WELL"],
