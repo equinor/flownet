@@ -7,8 +7,8 @@ import pandas as pd
 
 from ..network_model import NetworkModel
 from ..utils import write_grdecl_file
-from .probability_distributions import UniformDistribution, LogUniformDistribution
-from ._base_parameter import Parameter
+from .probability_distributions import ProbabilityDistribution
+from ._base_parameter import Parameter, parameter_probability_distribution_class
 
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
@@ -54,10 +54,8 @@ class Equilibration(Parameter):
 
         self._ti2ci: pd.DataFrame = ti2ci
 
-        self._random_variables = [
-            LogUniformDistribution(row["minimum"], row["maximum"])
-            if row["loguniform"]
-            else UniformDistribution(row["minimum"], row["maximum"])
+        self._random_variables: List[ProbabilityDistribution] = [
+            parameter_probability_distribution_class(row)
             for _, row in distribution_values.iterrows()
         ]
 
