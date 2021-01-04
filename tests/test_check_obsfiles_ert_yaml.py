@@ -126,6 +126,7 @@ def _create_schedule_from_data(
                     inj_type="WATER",
                     status=value["WSTAT"],
                     rate=value["WWIR"],
+                    total=value["WWIT"],
                     bhp=value["WBHP"],
                     thp=value["WTHP"],
                     inj_control_mode="RATE",
@@ -139,6 +140,7 @@ def _create_schedule_from_data(
                     inj_type="GAS",
                     status=value["WSTAT"],
                     rate=value["WGIR"],
+                    total=value["WGIT"],
                     bhp=value["WBHP"],
                     thp=value["WTHP"],
                     inj_control_mode="RATE",
@@ -155,6 +157,9 @@ def _create_schedule_from_data(
                     oil_rate=value["WOPR"],
                     water_rate=value["WWPR"],
                     gas_rate=value["WGPR"],
+                    oil_total=value["WOPT"],
+                    water_total=value["WWPT"],
+                    gas_total=value["WGPT"],
                     bhp=value["WBHP"],
                     thp=value["WTHP"],
                 )
@@ -176,10 +181,15 @@ def test_resample_schedule_dates() -> None:
         "WOPR",
         "WGPR",
         "WWPR",
+        "WOPT",
+        "WGPT",
+        "WWPT",
         "WBHP",
         "WTHP",
         "WGIR",
         "WWIR",
+        "WGIT",
+        "WWIT",
         "WSTAT",
         "WELL_NAME",
         "PHASE",
@@ -256,6 +266,24 @@ def test_check_obsfiles_ert_yaml() -> None:
     config.flownet.data_source.simulation.vectors.WWPR.min_error = _MIN_ERROR
     config.flownet.data_source.simulation.vectors.WWPR.rel_error = _REL_ERROR
 
+    config.flownet.data_source.simulation.vectors.WOPT = collections.namedtuple(
+        "WOPT", "min_error"
+    )
+    config.flownet.data_source.simulation.vectors.WOPT.min_error = _MIN_ERROR
+    config.flownet.data_source.simulation.vectors.WOPT.rel_error = _REL_ERROR
+
+    config.flownet.data_source.simulation.vectors.WGPT = collections.namedtuple(
+        "WGPT", "min_error"
+    )
+    config.flownet.data_source.simulation.vectors.WGPT.min_error = _MIN_ERROR
+    config.flownet.data_source.simulation.vectors.WGPT.rel_error = _REL_ERROR
+
+    config.flownet.data_source.simulation.vectors.WWPT = collections.namedtuple(
+        "WWPT", "min_error"
+    )
+    config.flownet.data_source.simulation.vectors.WWPT.min_error = _MIN_ERROR
+    config.flownet.data_source.simulation.vectors.WWPT.rel_error = _REL_ERROR
+
     config.flownet.data_source.simulation.vectors.WBHP = collections.namedtuple(
         "WBHP", "min_error"
     )
@@ -280,6 +308,18 @@ def test_check_obsfiles_ert_yaml() -> None:
     config.flownet.data_source.simulation.vectors.WWIR.min_error = _MIN_ERROR
     config.flownet.data_source.simulation.vectors.WWIR.rel_error = _REL_ERROR
 
+    config.flownet.data_source.simulation.vectors.WGIT = collections.namedtuple(
+        "WGIT", "min_error"
+    )
+    config.flownet.data_source.simulation.vectors.WGIT.min_error = _MIN_ERROR
+    config.flownet.data_source.simulation.vectors.WGIT.rel_error = _REL_ERROR
+
+    config.flownet.data_source.simulation.vectors.WWIT = collections.namedtuple(
+        "WWIT", "min_error"
+    )
+    config.flownet.data_source.simulation.vectors.WWIT.min_error = _MIN_ERROR
+    config.flownet.data_source.simulation.vectors.WWIT.rel_error = _REL_ERROR
+
     config.flownet.data_source.resampling = _RESAMPLING
 
     # Load production
@@ -288,10 +328,15 @@ def test_check_obsfiles_ert_yaml() -> None:
         "WOPR",
         "WGPR",
         "WWPR",
+        "WOPT",
+        "WGPT",
+        "WWPT",
         "WBHP",
         "WTHP",
         "WGIR",
         "WWIR",
+        "WGIT",
+        "WWIT",
         "WSTAT",
         "WELL_NAME",
         "PHASE",
