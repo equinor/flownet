@@ -30,7 +30,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/configsuite_ext.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -302,7 +301,7 @@ Providing any other value as input here (mode, minimum, maximum) will have no ef
 
 <dl class="py method">
 <dt id="flownet.parameters.probability_distributions.LogUniformDistribution._find_dist_minmax">
-<code class="sig-name descname">_find_dist_minmax</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean_val</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">min_val</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_val</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#flownet.parameters.probability_distributions.LogUniformDistribution._find_dist_minmax" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_find_dist_minmax</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean_val</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">min_val</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_val</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#flownet.parameters.probability_distributions.LogUniformDistribution._find_dist_minmax" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the distribution min or max for a loguniform distribution, assuming only
 one of these and the mean are given</p>
 <dl class="field-list simple">
@@ -481,11 +480,46 @@ Providing any other value as input here (mode, minimum, maximum) will have no ef
 <code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TriangularDistribution.defined">
+<code class="sig-name descname">defined</code><em class="property">: bool</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution.defined" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="flownet.parameters.probability_distributions.TriangularDistribution.ert_gen_kw">
 <em class="property">property </em><code class="sig-name descname">ert_gen_kw</code><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution.ert_gen_kw" title="Permalink to this definition">¶</a></dt>
 <dd><p>string representing an ERT “TRIANGULAR MIN MODE MAX” distribution keyword for use in GEN_KW</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TriangularDistribution.maximum">
+<code class="sig-name descname">maximum</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution.maximum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TriangularDistribution.mean">
+<code class="sig-name descname">mean</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution.mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TriangularDistribution.minimum">
+<code class="sig-name descname">minimum</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution.minimum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TriangularDistribution.mode">
+<code class="sig-name descname">mode</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution.mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TriangularDistribution.name">
+<code class="sig-name descname">name</code><em class="property">: str</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TriangularDistribution.stddev">
+<code class="sig-name descname">stddev</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TriangularDistribution.stddev" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="flownet.parameters.probability_distributions.TriangularDistribution.update_distribution">
@@ -552,11 +586,46 @@ Providing any other value as input here (mode, minimum, maximum) will have no ef
 <code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TruncatedNormalDistribution._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TruncatedNormalDistribution.defined">
+<code class="sig-name descname">defined</code><em class="property">: bool</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TruncatedNormalDistribution.defined" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="flownet.parameters.probability_distributions.TruncatedNormalDistribution.ert_gen_kw">
 <em class="property">property </em><code class="sig-name descname">ert_gen_kw</code><a class="headerlink" href="#flownet.parameters.probability_distributions.TruncatedNormalDistribution.ert_gen_kw" title="Permalink to this definition">¶</a></dt>
 <dd><p>string representing an ERT “TRUNCATED_NORMAL MEAN STDDEV” distribution keyword for use in GEN_KW</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TruncatedNormalDistribution.maximum">
+<code class="sig-name descname">maximum</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TruncatedNormalDistribution.maximum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TruncatedNormalDistribution.mean">
+<code class="sig-name descname">mean</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TruncatedNormalDistribution.mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TruncatedNormalDistribution.minimum">
+<code class="sig-name descname">minimum</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TruncatedNormalDistribution.minimum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TruncatedNormalDistribution.mode">
+<code class="sig-name descname">mode</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TruncatedNormalDistribution.mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TruncatedNormalDistribution.name">
+<code class="sig-name descname">name</code><em class="property">: str</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TruncatedNormalDistribution.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.TruncatedNormalDistribution.stddev">
+<code class="sig-name descname">stddev</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.TruncatedNormalDistribution.stddev" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="flownet.parameters.probability_distributions.TruncatedNormalDistribution.update_distribution">
@@ -590,7 +659,7 @@ Providing any other value as input here (mode, minimum, maximum) will have no ef
 
 <dl class="py class">
 <dt id="flownet.parameters.probability_distributions.UniformDistribution">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters.probability_distributions.</code><code class="sig-name descname">UniformDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">minimum</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">maximum</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.parameters.probability_distributions.</code><code class="sig-name descname">UniformDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">minimum</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">maximum</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#flownet.parameters.probability_distributions.ProbabilityDistribution" title="flownet.parameters.probability_distributions.ProbabilityDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.parameters.probability_distributions.ProbabilityDistribution</span></code></a></p>
 <p>The UniformDistribution class</p>
 <dl class="simple">
@@ -630,11 +699,46 @@ Providing any other value as input here (mode, minimum, maximum) will have no ef
 <code class="sig-name descname">_abc_registry</code><em class="property"> = &lt;_weakrefset.WeakSet object&gt;</em><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.UniformDistribution.defined">
+<code class="sig-name descname">defined</code><em class="property">: bool</em><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution.defined" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="flownet.parameters.probability_distributions.UniformDistribution.ert_gen_kw">
 <em class="property">property </em><code class="sig-name descname">ert_gen_kw</code><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution.ert_gen_kw" title="Permalink to this definition">¶</a></dt>
 <dd><p>string representing an ERT “UNIFORM MIN MAX” distribution keyword for use in GEN_KW</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.UniformDistribution.maximum">
+<code class="sig-name descname">maximum</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution.maximum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.UniformDistribution.mean">
+<code class="sig-name descname">mean</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution.mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.UniformDistribution.minimum">
+<code class="sig-name descname">minimum</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution.minimum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.UniformDistribution.mode">
+<code class="sig-name descname">mode</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution.mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.UniformDistribution.name">
+<code class="sig-name descname">name</code><em class="property">: str</em><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="flownet.parameters.probability_distributions.UniformDistribution.stddev">
+<code class="sig-name descname">stddev</code><em class="property">: float</em><a class="headerlink" href="#flownet.parameters.probability_distributions.UniformDistribution.stddev" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="flownet.parameters.probability_distributions.UniformDistribution.update_distribution">
