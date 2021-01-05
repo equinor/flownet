@@ -59,7 +59,7 @@ class FlowData(FromSource):
         """
         if len(self._layers) > 0 and self._grid.nz is not self._layers[-1][-1]:
             raise ValueError(
-                f"Number of layers from config ({self._layers[-1][-1]}) is not equel to "
+                f"Number of layers from config ({self._layers[-1][-1]}) is not equal to "
                 f"number of layers from flow simulation ({self._grid.nz})."
             )
 
@@ -72,6 +72,7 @@ class FlowData(FromSource):
                 for count, (i, j) in enumerate(self._layers):
                     if row["K1"] in range(i, j + 1):
                         layer_id = count
+                        break
             else:
                 layer_id = 0
 
