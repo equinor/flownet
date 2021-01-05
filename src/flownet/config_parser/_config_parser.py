@@ -274,7 +274,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                             },
                                         },
                                     },
-                                    "layering": {
+                                    "layers": {
                                         MK.Type: types.List,
                                         MK.Content: {
                                             MK.Item: {
@@ -1583,7 +1583,7 @@ def parse_config(
 
     config = suite.snapshot
 
-    layers = config.flownet.data_source.simulation.layering
+    layers = config.flownet.data_source.simulation.layers
     if len(layers) > 0:
         if not all(
             d == 1

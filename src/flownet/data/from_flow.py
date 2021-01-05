@@ -21,7 +21,7 @@ class FlowData(FromSource):
 
     Args:
          input_case: Full path to eclipse case to load data from
-         layering: List with definition of isolated layers, if present.
+         layers: List with definition of isolated layers, if present.
          perforation_handling_strategy: How to deal with perforations per well.
                                                  ('bottom_point', 'top_point', 'multiple')
 
@@ -30,7 +30,7 @@ class FlowData(FromSource):
     def __init__(
         self,
         input_case: Union[Path, str],
-        layering: Tuple = (),
+        layers: Tuple = (),
         perforation_handling_strategy: str = "bottom_point",
     ):
         super().__init__()
@@ -42,7 +42,7 @@ class FlowData(FromSource):
         self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
         self._init = EclInitFile(self._grid, str(self._input_case.with_suffix(".INIT")))
         self._wells = compdat.df(EclFiles(str(self._input_case)))
-        self._layers = layering
+        self._layers = layers
 
         self._perforation_handling_strategy: str = perforation_handling_strategy
 
