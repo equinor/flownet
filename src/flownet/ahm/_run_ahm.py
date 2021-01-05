@@ -561,9 +561,18 @@ def run_flownet_history_matching(
                         interp_info[0][j],
                     )
 
-            info: List = [["interpolate"], [-1], [1], [False], [i]]
+            info: List = [
+                ["interpolate"],
+                [-1],
+                [1],
+                [None],
+                [None],
+                [None],
+                ["uniform"],
+                [i],
+            ]
             if {"oil", "gas", "water"}.issubset(config.flownet.phases):
-                add_info = ["interpolate gas", -1, 1, False, i]
+                add_info = ["interpolate gas", -1, 1, None, None, None, "uniform", i]
                 for j, val in enumerate(add_info):
                     info[j].append(val)
 
