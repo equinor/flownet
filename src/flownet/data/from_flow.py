@@ -142,6 +142,9 @@ class FlowData(FromSource):
                 - WOPR          Well Oil Production Rate
                 - WGPR          Well Gas Production Rate
                 - WWPR          Well Water Production Rate
+                - WOPT          Well Cumulative Oil Production
+                - WGPT          Well Cumulative Gas Production Rate
+                - WWPT          Well Cumulative Water Production Rate
                 - WBHP          Well Bottom Hole Pressure
                 - WTHP          Well Tubing Head Pressure
                 - WGIR          Well Gas Injection Rate
@@ -155,7 +158,21 @@ class FlowData(FromSource):
             * Improve robustness pf setting of Phase and Type.
 
         """
-        keys = ["WOPR", "WGPR", "WWPR", "WBHP", "WTHP", "WGIR", "WWIR", "WSTAT"]
+        keys = [
+            "WOPR",
+            "WGPR",
+            "WWPR",
+            "WOPT",
+            "WGPT",
+            "WWPT",
+            "WBHP",
+            "WTHP",
+            "WGIR",
+            "WWIR",
+            "WGIT",
+            "WWIT",
+            "WSTAT",
+        ]
 
         df_production_data = pd.DataFrame()
 

@@ -6,7 +6,16 @@
 {%- set index_name = date.strftime('%d_%m_%Y') -%}
 {%- set date_formatted = date.strftime('%d/%m/%Y') %}
 
-{%- if not isnan(kw.oil_rate) and error_config.WOPR.rel_error is not none and error_config.WOPR.min_error is not none: -%}
+{%- if not isnan(kw.oil_total) and error_config.WOPT.rel_error is not none and error_config.WOPT.min_error is not none: -%}
+SUMMARY_OBSERVATION WOPT_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.oil_total }}; ERROR = {{ [error_config.WOPT.rel_error * kw.oil_total, error_config.WOPT.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WOPT:{{ kw.well_name }}; };
+{%- endif %}
+{%- if not isnan(kw.gas_total) and error_config.WGPT.rel_error is not none and error_config.WGPT.min_error is not none: %}
+SUMMARY_OBSERVATION WGPT_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.gas_total }}; ERROR = {{ [error_config.WGPT.rel_error * kw.gas_total, error_config.WGPT.min_error] | max }}; DATE  = {{ date_formatted  }}; KEY = WGPT:{{ kw.well_name }}; };
+{%- endif %}
+{%- if not isnan(kw.water_total) and error_config.WWPT.rel_error is not none and error_config.WWPT.min_error is not none: %}
+SUMMARY_OBSERVATION WWPT_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.water_total }}; ERROR = {{ [error_config.WWPT.rel_error * kw.water_total, error_config.WWPT.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WWPT:{{ kw.well_name }}; };
+{%- endif %}
+{%- if not isnan(kw.oil_rate) and error_config.WOPR.rel_error is not none and error_config.WOPR.min_error is not none: %}
 SUMMARY_OBSERVATION WOPR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.oil_rate }}; ERROR = {{ [error_config.WOPR.rel_error * kw.oil_rate, error_config.WOPR.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WOPR:{{ kw.well_name }}; };
 {%- endif %}
 {%- if not isnan(kw.gas_rate) and error_config.WGPR.rel_error is not none and error_config.WGPR.min_error is not none: %}
@@ -42,6 +51,12 @@ SUMMARY_OBSERVATION WGIR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.rat
 {%- endif %}
 {%- if not isnan(kw.rate) and kw.inj_type == "WATER" and error_config.WWIR.rel_error is not none and error_config.WWIR.min_error is not none: %}
 SUMMARY_OBSERVATION WWIR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.rate }}; ERROR = {{ [error_config.WWIR.rel_error * kw.rate, error_config.WWIR.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WWIR:{{ kw.well_name }}; };
+{%- endif %}
+{%- if not isnan(kw.total) and kw.inj_type == "GAS" and error_config.WGIT.rel_error is not none and error_config.WGIT.min_error is not none: %}
+SUMMARY_OBSERVATION WGIT_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.total }}; ERROR = {{ [error_config.WGIT.rel_error * kw.total, error_config.WGIT.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WGIT:{{ kw.well_name }}; };
+{%- endif %}
+{%- if not isnan(kw.total) and kw.inj_type == "WATER" and error_config.WWIT.rel_error is not none and error_config.WWIT.min_error is not none: %}
+SUMMARY_OBSERVATION WWIR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.total }}; ERROR = {{ [error_config.WWIT.rel_error * kw.total, error_config.WWIT.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WWIT:{{ kw.well_name }}; };
 {%- endif %}
 
 {% endfor %}
