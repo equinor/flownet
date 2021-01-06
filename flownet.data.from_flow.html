@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>flownet.data.from_flow module &mdash; FlowNet  documentation</title>
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -134,6 +137,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -149,7 +154,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/flownet.data.from_flow.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -167,13 +172,14 @@
 <span id="flownet-data-from-flow-module"></span><h1>flownet.data.from_flow module<a class="headerlink" href="#module-flownet.data.from_flow" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="flownet.data.from_flow.FlowData">
-<em class="property">class </em><code class="sig-prename descclassname">flownet.data.from_flow.</code><code class="sig-name descname">FlowData</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_case</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>pathlib.Path<span class="p">, </span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">perforation_handling_strategy</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'bottom_point'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_flow.FlowData" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">flownet.data.from_flow.</code><code class="sig-name descname">FlowData</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_case</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>pathlib.Path<span class="p">, </span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">layers</span><span class="p">:</span> <span class="n">Tuple</span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">perforation_handling_strategy</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'bottom_point'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_flow.FlowData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flownet.data.from_source.html#flownet.data.from_source.FromSource" title="flownet.data.from_source.FromSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.data.from_source.FromSource</span></code></a></p>
 <p>Flow data source class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_case</strong> – Full path to eclipse case to load data from</p></li>
+<li><p><strong>layers</strong> – List with definition of isolated layers, if present.</p></li>
 <li><p><strong>perforation_handling_strategy</strong> – How to deal with perforations per well.
 (‘bottom_point’, ‘top_point’, ‘multiple’)</p></li>
 </ul>
@@ -217,11 +223,15 @@
 
 <dl class="py method">
 <dt id="flownet.data.from_flow.FlowData._grid_cell_bounding_boxes">
-<code class="sig-name descname">_grid_cell_bounding_boxes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#flownet.data.from_flow.FlowData._grid_cell_bounding_boxes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_grid_cell_bounding_boxes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">layer_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#flownet.data.from_flow.FlowData._grid_cell_bounding_boxes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to get the bounding box (x, y and z min + max) for all grid cells</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A (active grid cells x 6) numpy array with columns [ xmin, xmax, ymin, ymax, zmin, zmax ]</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>layer_id</strong> – The FlowNet layer id to be used to create the bounding box.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A (active grid cells x 6) numpy array with columns [ xmin, xmax, ymin, ymax, zmin, zmax ]
+filtered on layer_id if not None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -262,12 +272,12 @@ following vectors to the summary file: WOPR, WGPR, WWPR, WBHP, WTHP, WGIR, WWIR<
 <dl class="py method">
 <dt id="flownet.data.from_flow.FlowData._well_connections">
 <code class="sig-name descname">_well_connections</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.from_flow.FlowData._well_connections" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to extract well connection coordinates from an Flow simulation including their
+<dd><p>Function to extract well connection coordinates from a Flow simulation including their
 opening and closure time. The output of this function will be filtered based on the
 configured perforation strategy.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>WELL_NAME, X, Y, Z, DATE, OPEN</p>
+<dd class="field-odd"><p>WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>columns</p>
@@ -320,6 +330,12 @@ configured perforation strategy.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="flownet.data.from_flow.FlowData.layers">
+<em class="property">property </em><code class="sig-name descname">layers</code><a class="headerlink" href="#flownet.data.from_flow.FlowData.layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of top and bottom k-indeces of a the orignal model that represents a FlowNet layer</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="flownet.data.from_flow.FlowData.production">
 <em class="property">property </em><code class="sig-name descname">production</code><a class="headerlink" href="#flownet.data.from_flow.FlowData.production" title="Permalink to this definition">¶</a></dt>
 <dd><p>dataframe with all production data</p>
@@ -346,37 +362,29 @@ configured perforation strategy.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="flownet.data.from_pdm.html" class="btn btn-neutral float-right" title="flownet.data.from_pdm module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="flownet.data.html" class="btn btn-neutral float-left" title="flownet.data package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="flownet.data.from_pdm.html" class="btn btn-neutral float-right" title="flownet.data.from_pdm module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="flownet.data.html" class="btn btn-neutral float-left" title="flownet.data package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Equinor
+        &#169; Copyright 2020, Equinor.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
