@@ -23,12 +23,15 @@ class Equilibration(Parameter):
 
     Args
         distribution_values:
-            A dataframe with five columns ("parameter", "minimum", "maximum",
-            "loguniform", "eqlnum") which state:
+            A dataframe with eight columns ("parameter", "minimum", "maximum", "mean", "base", "stddev",
+            "distribution", "satnum") which state:
                 * The name of the parameter,
-                * The minimum value of the parameter,
-                * The maximum value of the parameter,
-                * Whether the distribution is uniform of loguniform,
+                * The minimum value of the parameter (set to None if not applicable),
+                * The maximum value of the parameter (set to None if not applicable),
+                * The mean value of the parameter,
+                * The mode of the parameter distribution (set to None if not applicable),
+                * The standard deviation of the parameter,
+                * The type of probability distribution,
                 * To which EQLNUM this applies.
         network: FlowNet network instance.
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
