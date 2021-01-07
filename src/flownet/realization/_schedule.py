@@ -162,17 +162,26 @@ class Schedule:
                 (self._df_production_data["WELL_NAME"] == well_name)
             ]["PHASE"].values[0]
 
-            self.append(
-                WELSPECS(
-                    date=date,
-                    well_name=well_name,
-                    group_name="WELLS",  # Wells directly connected to FIELD gives
-                    # segmentation fault in Flow
-                    i=self.get_compdat(well_name)[0].i,
-                    j=self.get_compdat(well_name)[0].j,
-                    phase=phase,
+            try:
+                self.append(
+                    WELSPECS(
+                        date=date,
+                        well_name=well_name,
+                        group_name="WELLS",  # Wells directly connected to FIELD gives
+                        # segmentation fault in Flow
+                        i=self.get_compdat(well_name)[0].i,
+                        j=self.get_compdat(well_name)[0].j,
+                        phase=phase,
+                    )
                 )
-            )
+            except IndexError:
+                print(
+                    f"""The schedule could not be created for well '{well_name}'.\n
+                This most likely is a result of this well not having any connections.\n
+                Try adding more additional nodes, relax angle constraint for the Delaunay triangles,\n
+                maximum distance and/or convex hull."""
+                )
+                raise
 
     def _calculate_wconhist(self):
         """
