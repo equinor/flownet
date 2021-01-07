@@ -24,7 +24,7 @@ class Equilibration(Parameter):
     Args
         distribution_values:
             A dataframe with eight columns ("parameter", "minimum", "maximum", "mean", "base", "stddev",
-            "distribution", "satnum") which state:
+            "distribution", "eqlnum") which state:
                 * The name of the parameter,
                 * The minimum value of the parameter (set to None if not applicable),
                 * The maximum value of the parameter (set to None if not applicable),
