@@ -46,7 +46,7 @@ class FaultTransmissibility(Parameter):
         """Creates FAULTS include content - which are given to the RUNSPEC and GRID section.
 
         Returns:
-            Include content for aquifers
+            Include content for faults
 
         """
         output_runspec = ""
