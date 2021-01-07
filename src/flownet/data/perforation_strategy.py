@@ -18,7 +18,9 @@ def bottom_point(df: pd.DataFrame) -> pd.DataFrame:
     """
     df_multiple = multiple(df)
     df_multiple_ever_true = (
-        df_multiple.groupby(["X", "Y", "Z", "WELL_NAME"]).sum().reset_index()
+        df_multiple.groupby(["X", "Y", "Z", "WELL_NAME", "LAYER_ID"])
+        .sum()
+        .reset_index()
     )
     df_first_dates = (
         df[["WELL_NAME", "DATE"]]
@@ -50,7 +52,9 @@ def top_point(df: pd.DataFrame) -> pd.DataFrame:
     """
     df_multiple = multiple(df)
     df_multiple_ever_true = (
-        df_multiple.groupby(["X", "Y", "Z", "WELL_NAME"]).sum().reset_index()
+        df_multiple.groupby(["X", "Y", "Z", "WELL_NAME", "LAYER_ID"])
+        .sum()
+        .reset_index()
     )
     df_first_dates = (
         df[["WELL_NAME", "DATE"]]
@@ -105,7 +109,7 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
     This strategy creates multiple connections per well when the well during the historic production period has been
     straddled or plugged (i.e., individual connections have been shut).
 
-    The following steps are performed:
+    The following steps are performed per layer:
 
         1. Split connections into groups of connections per well, based on their open/closing history. That is,
            connections that have seen opening or closure at the same moment in time are considered a group. This is
@@ -128,82 +132,93 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
     df = multiple(df)
 
     df_w_groups = pd.DataFrame(
-        [], columns=["WELL_NAME", "X", "Y", "Z", "DATE", "OPEN", "GROUPID"]
+        [], columns=["WELL_NAME", "X", "Y", "Z", "DATE", "OPEN", "GROUPID", "LAYER_ID"]
     )
     df_groups = pd.DataFrame([], columns=["X", "Y", "Z", "GROUPID"])
     groupid = 0
 
     # Step 1
-    for well_name in df["WELL_NAME"].unique():
-        df_well = df.loc[df["WELL_NAME"] == well_name][
-            ["X", "Y", "Z", "WELL_NAME", "OPEN", "DATE"]
-        ]
-        df_well_piv = df_well.pivot_table("OPEN", ["X", "Y", "Z", "WELL_NAME"], "DATE")
-        df_well_piv.fillna(method="ffill", axis=1, inplace=True)
-        df_well_piv.fillna(False, inplace=True)
-        df_well_piv = df_well_piv.apply(lambda x: hash(tuple(x)), axis=1)
-
-        for group in df_well_piv.unique():
-            df_group = (
-                df_well_piv.loc[df_well_piv == group]
-                .index.to_frame()
-                .reset_index(drop=True)[["X", "Y", "Z"]]
+    for layer in df["LAYER_ID"].unique():
+        for well_name in df["WELL_NAME"].unique():
+            df_well = df.loc[
+                (df["WELL_NAME"] == well_name) & (df["LAYER_ID"] == layer)
+            ][["X", "Y", "Z", "WELL_NAME", "LAYER_ID", "OPEN", "DATE"]]
+            df_well_piv = df_well.pivot_table(
+                "OPEN", ["X", "Y", "Z", "WELL_NAME", "LAYER_ID"], "DATE"
             )
-            df_group["GROUPID"] = groupid
-            groupid += 1
-            df_groups = df_groups.append(df_group)
+            df_well_piv.fillna(method="ffill", axis=1, inplace=True)
+            df_well_piv.fillna(False, inplace=True)
+            df_well_piv = df_well_piv.apply(lambda x: hash(tuple(x)), axis=1)
 
-        df_w_groups = df_w_groups.append(
-            df_well.merge(df_groups, how="left", on=["X", "Y", "Z"])
-        )
+            for group in df_well_piv.unique():
+                df_group = (
+                    df_well_piv.loc[df_well_piv == group]
+                    .index.to_frame()
+                    .reset_index(drop=True)[["X", "Y", "Z"]]
+                )
+                df_group["GROUPID"] = groupid
+                groupid += 1
+                df_groups = df_groups.append(df_group)
 
-    # Step 2
-    for groupid in df_w_groups["GROUPID"].unique():
-        df_group = df_w_groups.loc[df_w_groups["GROUPID"] == groupid]
-
-        xmin, ymin, zmin = df_group[["X", "Y", "Z"]].min()
-        xmax, ymax, zmax = df_group[["X", "Y", "Z"]].max()
-
-        df_foreign = df_w_groups.loc[
-            (
-                ((df_w_groups["X"] > xmin) & (df_w_groups["X"] < xmax))
-                | ((df_w_groups["Y"] > ymin) & (df_w_groups["Y"] < ymax))
-                | ((df_w_groups["Z"] > zmin) & (df_w_groups["Z"] < zmax))
-            )
-            & (df_w_groups["GROUPID"] != groupid)
-        ]
-
-        # Step 3
-        if df_foreign.shape[0]:
-            xmin_foreign, ymin_foreign, zmin_foreign = df_foreign[["X", "Y", "Z"]].min()
-            xmax_foreign, ymax_foreign, zmax_foreign = df_foreign[["X", "Y", "Z"]].max()
-
-            df_w_groups.loc[
-                (df_w_groups["GROUPID"] == groupid)
-                & (
-                    (df_w_groups["X"] < xmin_foreign)
-                    | (df_w_groups["Y"] < ymin_foreign)
-                    | (df_w_groups["Z"] < zmin_foreign)
-                ),
-                ["GROUPID"],
-            ] = (
-                df_w_groups["GROUPID"].max() + 1
+            df_w_groups = df_w_groups.append(
+                df_well.merge(df_groups, how="left", on=["X", "Y", "Z"])
             )
 
-            df_w_groups.loc[
-                (df_w_groups["GROUPID"] == groupid)
-                & (
-                    (df_w_groups["X"] > xmax_foreign)
-                    | (df_w_groups["Y"] > ymax_foreign)
-                    | (df_w_groups["Z"] > zmax_foreign)
-                ),
-                ["GROUPID"],
-            ] = (
-                df_w_groups["GROUPID"].max() + 1
-            )
+        # Step 2
+        for groupid in df_w_groups["GROUPID"].unique():
+            df_group = df_w_groups.loc[df_w_groups["GROUPID"] == groupid]
+
+            xmin, ymin, zmin = df_group[["X", "Y", "Z"]].min()
+            xmax, ymax, zmax = df_group[["X", "Y", "Z"]].max()
+
+            df_foreign = df_w_groups.loc[
+                (
+                    ((df_w_groups["X"] > xmin) & (df_w_groups["X"] < xmax))
+                    | ((df_w_groups["Y"] > ymin) & (df_w_groups["Y"] < ymax))
+                    | ((df_w_groups["Z"] > zmin) & (df_w_groups["Z"] < zmax))
+                )
+                & (df_w_groups["GROUPID"] != groupid)
+            ]
+
+            # Step 3
+            if df_foreign.shape[0]:
+                xmin_foreign, ymin_foreign, zmin_foreign = df_foreign[
+                    ["X", "Y", "Z"]
+                ].min()
+                xmax_foreign, ymax_foreign, zmax_foreign = df_foreign[
+                    ["X", "Y", "Z"]
+                ].max()
+
+                df_w_groups.loc[
+                    (df_w_groups["GROUPID"] == groupid)
+                    & (
+                        (df_w_groups["X"] < xmin_foreign)
+                        | (df_w_groups["Y"] < ymin_foreign)
+                        | (df_w_groups["Z"] < zmin_foreign)
+                    ),
+                    ["GROUPID"],
+                ] = (
+                    df_w_groups["GROUPID"].max() + 1
+                )
+
+                df_w_groups.loc[
+                    (df_w_groups["GROUPID"] == groupid)
+                    & (
+                        (df_w_groups["X"] > xmax_foreign)
+                        | (df_w_groups["Y"] > ymax_foreign)
+                        | (df_w_groups["Z"] > zmax_foreign)
+                    ),
+                    ["GROUPID"],
+                ] = (
+                    df_w_groups["GROUPID"].max() + 1
+                )
 
     df_w_groups["OPEN"] = df_w_groups["OPEN"].astype(int)
-    result = df_w_groups.groupby(["WELL_NAME", "DATE", "GROUPID"]).mean().reset_index()
+    result = (
+        df_w_groups.groupby(["WELL_NAME", "DATE", "GROUPID", "LAYER_ID"])
+        .mean()
+        .reset_index()
+    )
     result["OPEN"] = result["OPEN"].astype(bool)
     result.drop("GROUPID", axis=1, inplace=True)
 
