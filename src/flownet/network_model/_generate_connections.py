@@ -4,6 +4,7 @@ from typing import List, Tuple, Any, Optional
 from operator import itemgetter
 
 import numpy as np
+from numpy.core.function_base import linspace
 import pandas as pd
 from scipy.spatial import Delaunay, distance  # pylint: disable=no-name-in-module
 
@@ -47,7 +48,7 @@ def _create_record(
                     / (2 * side_a * side_b)
                 )
             )
-            > 150
+            > 100
         )
 
     for vertex_a in range(0, 2):
@@ -309,6 +310,7 @@ def _create_entity_connection_matrix(
     aquifer_ends: List[Coordinate],
     max_distance_fraction: float,
     max_distance: float,
+    concave_hull_bounding_boxes: Optional[np.ndarray] = None,
 ) -> pd.DataFrame:
     """
     Converts the the coordinates given for starts and ends to the desired DataFrame format for simulation input.
@@ -321,6 +323,7 @@ def _create_entity_connection_matrix(
         aquifer_ends: List of coordinates of all aquifer ends
         max_distance_fraction: Fraction of longest connection distance to be removed
         max_distance: Maximum distance between nodes, removed otherwise
+        concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
 
     Returns:
         Connection coordinate DataFrame on Flow desired format.
@@ -339,9 +342,60 @@ def _create_entity_connection_matrix(
     ]
     df_out = pd.DataFrame(columns=columns)
 
+    from mpl_toolkits import mplot3d
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    fig = plt.figure(figsize=(10, 7))
+    ax = plt.axes(projection="3d")
+
     for start, end in zip(starts, ends):
         str_start_entity = __get_entity_str(df_coordinates, start)
         str_end_entity = __get_entity_str(df_coordinates, end)
+
+        if concave_hull_bounding_boxes is not None:
+            n_connections = 10
+            in_hull = np.asarray([False] * n_connections)
+            tube_coordinates = linspace(
+                start=start,
+                stop=end,
+                num=n_connections,
+                endpoint=False,
+                dtype=float,
+                axis=1,
+            ).T
+
+            xmin_grid_cells = concave_hull_bounding_boxes[:, 0]
+            xmax_grid_cells = concave_hull_bounding_boxes[:, 1]
+            ymin_grid_cells = concave_hull_bounding_boxes[:, 2]
+            ymax_grid_cells = concave_hull_bounding_boxes[:, 3]
+            zmin_grid_cells = concave_hull_bounding_boxes[:, 4]
+            zmax_grid_cells = concave_hull_bounding_boxes[:, 5]
+
+            in_hull = np.asarray([False] * n_connections)
+
+            for c_index, coordinate in enumerate(tube_coordinates):
+                if not in_hull[c_index]:
+                    in_hull[c_index] = (
+                        (
+                            (coordinate[0] >= xmin_grid_cells)
+                            & (coordinate[0] <= xmax_grid_cells)
+                        )
+                        & (
+                            (coordinate[1] >= ymin_grid_cells)
+                            & (coordinate[1] <= ymax_grid_cells)
+                        )
+                        & (
+                            (coordinate[2] >= zmin_grid_cells)
+                            & (coordinate[2] <= zmax_grid_cells)
+                        )
+                    ).any()
+
+            if not in_hull.all():
+                ax.scatter3D(*tube_coordinates.T, color="red")
+                continue
+
+            ax.scatter3D(*tube_coordinates.T, color="green")
 
         df_out = df_out.append(
             {
@@ -356,6 +410,8 @@ def _create_entity_connection_matrix(
             },
             ignore_index=True,
         )
+
+    plt.savefig("aaaaa.png")
 
     for start, end in zip(aquifer_starts, aquifer_ends):
         str_start_entity = __get_entity_str(df_coordinates, start)
@@ -539,4 +595,5 @@ def create_connections(
         aquifer_ends,
         configuration.flownet.max_distance_fraction,
         configuration.flownet.max_distance,
+        concave_hull_bounding_boxes=concave_hull_bounding_boxes,
     ).reset_index()
