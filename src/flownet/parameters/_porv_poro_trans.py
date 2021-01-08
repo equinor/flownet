@@ -87,8 +87,8 @@ class PorvPoroTrans(Parameter):
 
     Args:
         distribution_values:
-            A dataframe with index equal to tube model index, and with nine columns
-            specifiying min, max and uniform/loguniform for three different parameters
+            A dataframe with index equal to tube model index, and with eighteen columns
+            specifiying min, max, mean, mode, stddev and distribution for three different parameters
             (bulkvolume_mult, porosity and permeability).
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
         network: The FlowNet NetworkModel instance.
@@ -123,11 +123,11 @@ class PorvPoroTrans(Parameter):
 
     def render_output(self) -> Dict:
         """
-        Creates PORO and PORV include content - which are given to
+        Creates PORO, PORV, PERMX, PERMY, PERMZ and NNC include content - which are given to
         the GRID and EDIT section respectively.
 
         Returns:
-             PORO and PORV include content.
+             PORO, PORV, PERMX, PERMY, PERMZ and NNC include content.
 
         """
 
