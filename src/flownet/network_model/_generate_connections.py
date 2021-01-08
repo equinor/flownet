@@ -27,29 +27,33 @@ def _create_record(
          A record of connections (from_well, to_well) of undesirables.
 
     """
+    angle_threshold = 30
     record: List[Tuple[Any, ...]] = []
 
-    def is_angle_too_large(side_a: float, side_b: float, side_c: float) -> bool:
-        """Function checks if there is an angle larger than 150 degrees for a triangle with given side lengths
+    def is_angle_too_small_or_large(
+        angle_threshold: float, side_a: float, side_b: float, side_c: float
+    ) -> bool:
+        """Function checks if there is an angle smaller or larger than a specified angle in
+        degrees for a triangle with given side lengths
 
         Args:
+            angle_threshold: threshold angle in degrees
             side_a: Length of side a
             side_b: Length of side b
             side_c: Length of side c
 
         Returns:
-            True if an angle larger than 150 degrees exists
+            True if an angle smaller or larger than the specified angle
 
         """
-        return (
-            np.rad2deg(
+        calculate_angle = np.rad2deg(
                 math.acos(
                     (math.pow(side_a, 2) + math.pow(side_b, 2) - math.pow(side_c, 2))
                     / (2 * side_a * side_b)
                 )
             )
-            > 100
-        )
+        
+        return ((calculate_angle < angle_threshold) | (calculate_angle > (180 - angle_threshold)))
 
     for vertex_a in range(0, 2):
         for vertex_b in range(vertex_a + 1, 3):
@@ -57,13 +61,13 @@ def _create_record(
                 edge_a = dist_matrix[vertex_a, vertex_b]
                 edge_b = dist_matrix[vertex_a, vertex_c]
                 edge_c = dist_matrix[vertex_b, vertex_c]
-                if is_angle_too_large(edge_a, edge_b, edge_c):
+                if is_angle_too_small_or_large(angle_threshold, edge_a, edge_b, edge_c):
                     record.append(tuple(well_pairs[vertex_b, vertex_c]))
 
-                if is_angle_too_large(edge_c, edge_b, edge_a):
+                if is_angle_too_small_or_large(angle_threshold, edge_c, edge_b, edge_a):
                     record.append(tuple(well_pairs[vertex_a, vertex_b]))
 
-                if is_angle_too_large(edge_a, edge_c, edge_b):
+                if is_angle_too_small_or_large(angle_threshold, edge_a, edge_c, edge_b):
                     record.append(tuple(well_pairs[vertex_a, vertex_c]))
     return record
 
