@@ -193,9 +193,9 @@ def test_create_entity_connection_matrix() -> None:
 
 
 def test_is_angle_too_small_or_large() -> None:
-    assert _is_angle_too_small_or_large(0, 1, 1, 2 ** 0.5) == False
-    assert _is_angle_too_small_or_large(90, 100, 1, (1 ** 2 + 100 ** 2) ** 0.5) == False
-    assert _is_angle_too_small_or_large(91, 100, 1, (1 ** 2 + 100 ** 2) ** 0.5) == True
+    assert not _is_angle_too_small_or_large(0, 1, 1, 2 ** 0.5)
+    assert not _is_angle_too_small_or_large(90, 100, 1, (1 ** 2 + 100 ** 2) ** 0.5)
+    assert _is_angle_too_small_or_large(91, 100, 1, (1 ** 2 + 100 ** 2) ** 0.5)
 
 
 def test_create_record() -> None:
