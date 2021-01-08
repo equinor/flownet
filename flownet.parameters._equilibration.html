@@ -177,14 +177,17 @@
 <p>Parameter type which takes care of stochastically drawn Equilibration parameters.</p>
 <dl>
 <dt>Args</dt><dd><dl>
-<dt>distribution_values:</dt><dd><p>A dataframe with five columns (“parameter”, “minimum”, “maximum”,
-“loguniform”, “eqlnum”) which state:</p>
+<dt>distribution_values:</dt><dd><p>A dataframe with eight columns (“parameter”, “minimum”, “maximum”, “mean”, “base”, “stddev”,
+“distribution”, “eqlnum”) which state:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>The name of the parameter,</p></li>
-<li><p>The minimum value of the parameter,</p></li>
-<li><p>The maximum value of the parameter,</p></li>
-<li><p>Whether the distribution is uniform of loguniform,</p></li>
+<li><p>The minimum value of the parameter (set to None if not applicable),</p></li>
+<li><p>The maximum value of the parameter (set to None if not applicable),</p></li>
+<li><p>The mean value of the parameter,</p></li>
+<li><p>The mode of the parameter distribution (set to None if not applicable),</p></li>
+<li><p>The standard deviation of the parameter,</p></li>
+<li><p>The type of probability distribution,</p></li>
 <li><p>To which EQLNUM this applies.</p></li>
 </ul>
 </div></blockquote>

@@ -178,14 +178,17 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>distribution_values</strong> – <p>A dataframe with five columns (“parameter”, “minimum”, “maximum”,
-“loguniform”) which state:</p>
+<li><p><strong>distribution_values</strong> – <p>A dataframe with seven columns (“parameter”, “minimum”, “maximum”, “mean”, “base”, “stddev”,
+“distribution”) which state:</p>
 <blockquote>
 <div><ul>
 <li><p>The name of the parameter,</p></li>
-<li><p>The minimum value of the parameter,</p></li>
-<li><p>The maximum value of the parameter,</p></li>
-<li><p>Whether the distribution is uniform of loguniform</p></li>
+<li><p>The minimum value of the parameter (set to None if not applicable),</p></li>
+<li><p>The maximum value of the parameter (set to None if not applicable),</p></li>
+<li><p>The mean value of the parameter,</p></li>
+<li><p>The mode of the parameter distribution (set to None if not applicable),</p></li>
+<li><p>The standard deviation of the parameter,</p></li>
+<li><p>The type of probability distribution,</p></li>
 </ul>
 </div></blockquote>
 </p></li>
@@ -219,7 +222,7 @@
 <dd><p>Creates FAULTS include content - which are given to the RUNSPEC and GRID section.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Include content for aquifers</p>
+<dd class="field-odd"><p>Include content for faults</p>
 </dd>
 </dl>
 </dd></dl>
