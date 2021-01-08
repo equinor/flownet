@@ -139,7 +139,7 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
 
     # Step 1
     for layer in df["LAYER_ID"].unique():
-        for well_name in df["WELL_NAME"].unique():
+        for well_name in df[df["LAYER_ID"] == layer]["WELL_NAME"].unique():
             df_well = df.loc[
                 (df["WELL_NAME"] == well_name) & (df["LAYER_ID"] == layer)
             ][["X", "Y", "Z", "WELL_NAME", "LAYER_ID", "OPEN", "DATE"]]

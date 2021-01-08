@@ -556,8 +556,8 @@ def test_multiple() -> None:
 def test_multiple_based_on_workovers() -> None:
     result = multiple_based_on_workovers(DF)
 
-    assert multiple(DF).shape[1] is multiple_based_on_workovers(DF).shape[1]
-    assert multiple(DF).shape[0] > multiple_based_on_workovers(DF).shape[0]
+    assert multiple(DF).shape[1] is result.shape[1]
+    assert multiple(DF).shape[0] > result.shape[0]
     assert not all(result["OPEN"].values)
     assert not all(result.X.isin(DF.X).astype(float))
     assert not all(result.Y.isin(DF.Y).astype(float))
