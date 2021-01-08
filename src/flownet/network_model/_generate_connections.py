@@ -12,48 +12,50 @@ from ._mitchell import mitchell_best_candidate_modified_3d
 from ..utils.types import Coordinate
 
 
-def _create_record(
-    well_pairs: np.ndarray, dist_matrix: np.ndarray
-) -> List[Tuple[Any, ...]]:
-    """
-    Creates a record of every well_pair triangle for which one of the angles is too large
-    (currently set to be above 150 degrees)
+def _is_angle_too_small_or_large(
+    angle_threshold: float, side_a: float, side_b: float, side_c: float
+) -> bool:
+    """Function checks if there is an angle smaller or larger than a specified angle in
+    degrees for a triangle with given side lengths
 
     Args:
-        well_pairs: All well pairs created through Delaunay triangulation
-        dist_matrix: Euclidean distance between well coordinates
+        angle_threshold: threshold angle in degrees
+        side_a: Length of side a
+        side_b: Length of side b
+        side_c: Length of side c
 
     Returns:
-         A record of connections (from_well, to_well) of undesirables.
+        True if an angle smaller or larger than the specified angle
 
     """
-    angle_threshold = 30
+    calculate_angle = np.rad2deg(
+        math.acos(
+            (math.pow(side_a, 2) + math.pow(side_b, 2) - math.pow(side_c, 2))
+            / (2 * side_a * side_b)
+        )
+    )
+
+    return (calculate_angle < angle_threshold) | (
+        calculate_angle > (180 - angle_threshold)
+    )
+
+
+def _create_record(
+    connection_pairs: np.ndarray, dist_matrix: np.ndarray, angle_threshold: float
+) -> List[Tuple[Any, ...]]:
+    """
+    Creates a record of every connection_pairs triangle for which one of the angles is too small/large
+
+    Args:
+        connection_pairs: All connection_pairs created through Delaunay triangulation
+        dist_matrix: Euclidean distance between coordinate pairs
+        angle_threshold: angle in Delaunay triangles for which to ignore connections
+
+    Returns:
+         A record of undesirable connection_pairs.
+
+    """
     record: List[Tuple[Any, ...]] = []
-
-    def is_angle_too_small_or_large(
-        angle_threshold: float, side_a: float, side_b: float, side_c: float
-    ) -> bool:
-        """Function checks if there is an angle smaller or larger than a specified angle in
-        degrees for a triangle with given side lengths
-
-        Args:
-            angle_threshold: threshold angle in degrees
-            side_a: Length of side a
-            side_b: Length of side b
-            side_c: Length of side c
-
-        Returns:
-            True if an angle smaller or larger than the specified angle
-
-        """
-        calculate_angle = np.rad2deg(
-                math.acos(
-                    (math.pow(side_a, 2) + math.pow(side_b, 2) - math.pow(side_c, 2))
-                    / (2 * side_a * side_b)
-                )
-            )
-        
-        return ((calculate_angle < angle_threshold) | (calculate_angle > (180 - angle_threshold)))
 
     for vertex_a in range(0, 2):
         for vertex_b in range(vertex_a + 1, 3):
@@ -61,14 +63,20 @@ def _create_record(
                 edge_a = dist_matrix[vertex_a, vertex_b]
                 edge_b = dist_matrix[vertex_a, vertex_c]
                 edge_c = dist_matrix[vertex_b, vertex_c]
-                if is_angle_too_small_or_large(angle_threshold, edge_a, edge_b, edge_c):
-                    record.append(tuple(well_pairs[vertex_b, vertex_c]))
+                if _is_angle_too_small_or_large(
+                    angle_threshold, edge_a, edge_b, edge_c
+                ):
+                    record.append(tuple(connection_pairs[vertex_b, vertex_c]))
 
-                if is_angle_too_small_or_large(angle_threshold, edge_c, edge_b, edge_a):
-                    record.append(tuple(well_pairs[vertex_a, vertex_b]))
+                if _is_angle_too_small_or_large(
+                    angle_threshold, edge_c, edge_b, edge_a
+                ):
+                    record.append(tuple(connection_pairs[vertex_a, vertex_b]))
 
-                if is_angle_too_small_or_large(angle_threshold, edge_a, edge_c, edge_b):
-                    record.append(tuple(well_pairs[vertex_a, vertex_c]))
+                if _is_angle_too_small_or_large(
+                    angle_threshold, edge_a, edge_c, edge_b
+                ):
+                    record.append(tuple(connection_pairs[vertex_a, vertex_c]))
     return record
 
 
@@ -192,9 +200,13 @@ def _generate_connections(
                 conn_matrix[flow_node_a, flow_node_b] = conn_matrix[
                     flow_node_b, flow_node_a
                 ] = 1
-        conn_matrix = _remove_recorded_connections(
-            _create_record(well_pairs, dist_matrix), conn_matrix
-        )
+        if configuration.flownet.angle_threshold:
+            conn_matrix = _remove_recorded_connections(
+                _create_record(
+                    well_pairs, dist_matrix, configuration.flownet.angle_threshold
+                ),
+                conn_matrix,
+            )
     print("done.")
 
     # Are there nodes in the connection matrix that has no connections? Definitely a problem
@@ -305,7 +317,7 @@ def __get_entity_str(df_coordinates: pd.DataFrame, coordinate: Coordinate) -> st
     return entity
 
 
-# pylint: disable=too-many-arguments
+# pylint: disable=too-many-arguments,too-many-locals
 def _create_entity_connection_matrix(
     df_coordinates: pd.DataFrame,
     starts: List[Coordinate],
@@ -345,13 +357,6 @@ def _create_entity_connection_matrix(
         "end_entity",
     ]
     df_out = pd.DataFrame(columns=columns)
-
-    from mpl_toolkits import mplot3d
-    import numpy as np
-    import matplotlib.pyplot as plt
-
-    fig = plt.figure(figsize=(10, 7))
-    ax = plt.axes(projection="3d")
 
     for start, end in zip(starts, ends):
         str_start_entity = __get_entity_str(df_coordinates, start)
@@ -396,10 +401,7 @@ def _create_entity_connection_matrix(
                     ).any()
 
             if not in_hull.all():
-                ax.scatter3D(*tube_coordinates.T, color="red")
                 continue
-
-            ax.scatter3D(*tube_coordinates.T, color="green")
 
         df_out = df_out.append(
             {
@@ -414,8 +416,6 @@ def _create_entity_connection_matrix(
             },
             ignore_index=True,
         )
-
-    plt.savefig("aaaaa.png")
 
     for start, end in zip(aquifer_starts, aquifer_ends):
         str_start_entity = __get_entity_str(df_coordinates, start)
