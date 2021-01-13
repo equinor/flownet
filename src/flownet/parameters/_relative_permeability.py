@@ -110,12 +110,15 @@ class RelativePermeability(Parameter):
 
     Args:
         distribution_values:
-            A dataframe with five columns ("parameter", "minimum", "maximum",
-            "loguniform", "satnum") which state:
+            A dataframe with eight columns ("parameter", "minimum", "maximum", "mean", "base", "stddev",
+            "distribution", "satnum") which state:
                 * The name of the parameter,
-                * The minimum value of the parameter,
-                * The maximum value of the parameter,
-                * Whether the distribution is uniform of loguniform,
+                * The minimum value of the parameter (set to None if not applicable),
+                * The maximum value of the parameter (set to None if not applicable),
+                * The mean value of the parameter,
+                * The mode of the parameter distribution (set to None if not applicable),
+                * The standard deviation of the parameter,
+                * The type of probability distribution,
                 * To which SATNUM this applies.
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
         satnum: A dataframe defining the SATNUM for each flow tube.
@@ -153,7 +156,7 @@ class RelativePermeability(Parameter):
         self._scal_for_interp: Optional[PyscalList] = None
         if isinstance(interpolation_values, pd.DataFrame):
             self._interpolation_values = interpolation_values
-            # self._rec will be indexed by SATNUM region, starting at 1
+            # self._scal_for_interp will be indexed by SATNUM region, starting at 1
             self._scal_for_interp = PyscalFactory.create_scal_recommendation_list(
                 interpolation_values
             )
