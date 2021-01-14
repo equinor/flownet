@@ -5,7 +5,7 @@ from scipy.spatial import Delaunay  # pylint: disable=no-name-in-module
 import numpy as np
 
 from ..utils.types import Coordinate
-
+from ._hull import check_in_hull
 
 # pylint: disable=too-many-branches,too-many-statements
 def mitchell_best_candidate_modified_3d(
@@ -110,14 +110,6 @@ def mitchell_best_candidate_modified_3d(
         y_candidate = np.zeros(num_candidates)
         z_candidate = np.zeros(num_candidates)
 
-        if concave_hull_bounding_boxes is not None:
-            xmin_grid_cells = concave_hull_bounding_boxes[:, 0]
-            xmax_grid_cells = concave_hull_bounding_boxes[:, 1]
-            ymin_grid_cells = concave_hull_bounding_boxes[:, 2]
-            ymax_grid_cells = concave_hull_bounding_boxes[:, 3]
-            zmin_grid_cells = concave_hull_bounding_boxes[:, 4]
-            zmax_grid_cells = concave_hull_bounding_boxes[:, 5]
-
         # Repeat while not all random points are inside the convex hull
         while not all(in_hull):
             # Generate a set of random candidates that will be the new
@@ -135,23 +127,7 @@ def mitchell_best_candidate_modified_3d(
             candidates = np.vstack([x_candidate, y_candidate, z_candidate]).T
 
             if concave_hull_bounding_boxes is not None:
-                for c_index, candidate in enumerate(candidates):
-                    if not in_hull[c_index]:
-                        in_hull[c_index] = (
-                            (
-                                (candidate[0] >= xmin_grid_cells)
-                                & (candidate[0] <= xmax_grid_cells)
-                            )
-                            & (
-                                (candidate[1] >= ymin_grid_cells)
-                                & (candidate[1] <= ymax_grid_cells)
-                            )
-                            & (
-                                (candidate[2] >= zmin_grid_cells)
-                                & (candidate[2] <= zmax_grid_cells)
-                            )
-                        ).any()
-
+                in_hull = check_in_hull(concave_hull_bounding_boxes, candidates)
             else:
                 # Test whether all points are inside the convex hull of the perforations
                 if np.all(z == z[0]):

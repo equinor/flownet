@@ -9,6 +9,7 @@ import pandas as pd
 from scipy.spatial import Delaunay, distance  # pylint: disable=no-name-in-module
 
 from ._mitchell import mitchell_best_candidate_modified_3d
+from ._hull import check_in_hull
 from ..utils.types import Coordinate
 
 
@@ -358,7 +359,6 @@ def _create_entity_connection_matrix(
 
         if concave_hull_bounding_boxes is not None:
             n_connections = 10
-            in_hull = np.asarray([False] * n_connections)
             tube_coordinates = linspace(
                 start=start,
                 stop=end,
@@ -368,33 +368,7 @@ def _create_entity_connection_matrix(
                 axis=1,
             ).T
 
-            xmin_grid_cells = concave_hull_bounding_boxes[:, 0]
-            xmax_grid_cells = concave_hull_bounding_boxes[:, 1]
-            ymin_grid_cells = concave_hull_bounding_boxes[:, 2]
-            ymax_grid_cells = concave_hull_bounding_boxes[:, 3]
-            zmin_grid_cells = concave_hull_bounding_boxes[:, 4]
-            zmax_grid_cells = concave_hull_bounding_boxes[:, 5]
-
-            in_hull = np.asarray([False] * n_connections)
-
-            for c_index, coordinate in enumerate(tube_coordinates):
-                if not in_hull[c_index]:
-                    in_hull[c_index] = (
-                        (
-                            (coordinate[0] >= xmin_grid_cells)
-                            & (coordinate[0] <= xmax_grid_cells)
-                        )
-                        & (
-                            (coordinate[1] >= ymin_grid_cells)
-                            & (coordinate[1] <= ymax_grid_cells)
-                        )
-                        & (
-                            (coordinate[2] >= zmin_grid_cells)
-                            & (coordinate[2] <= zmax_grid_cells)
-                        )
-                    ).any()
-
-            if not in_hull.all():
+            if not all(check_in_hull(concave_hull_bounding_boxes, tube_coordinates)):
                 continue
 
         df_out = df_out.append(
