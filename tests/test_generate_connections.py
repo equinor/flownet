@@ -7,7 +7,7 @@ import pandas as pd
 from flownet.network_model._generate_connections import (
     _generate_connections,
     _create_entity_connection_matrix,
-    _is_angle_too_small_or_large,
+    _is_angle_too_large,
     _create_record,
 )
 
@@ -192,14 +192,7 @@ def test_create_entity_connection_matrix() -> None:
     assert len(df) == 0
 
 
-def test_is_angle_too_small_or_large() -> None:
-    assert not _is_angle_too_small_or_large(0, 1, 1, 2 ** 0.5)
-    assert not _is_angle_too_small_or_large(90, 100, 1, (1 ** 2 + 100 ** 2) ** 0.5)
-    assert _is_angle_too_small_or_large(91, 100, 1, (1 ** 2 + 100 ** 2) ** 0.5)
-
-
-def test_create_record() -> None:
-    connection_pairs = np.array([[0, 0, 0], [1, 0, 0], []])
-    dist_matrix = 0
-    angle_threshold = 0
-    _create_record(connection_pairs, dist_matrix, angle_threshold)
+def test_is_angle_too_large() -> None:
+    assert not _is_angle_too_large(0, 1, 1, 2 ** 0.5)
+    assert not _is_angle_too_large(90, 100, 1, (1 ** 2 + 100 ** 2) ** 0.5)
+    assert _is_angle_too_large(91, 100, 1, (1 ** 2 + 100 ** 2) ** 0.5)
