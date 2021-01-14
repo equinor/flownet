@@ -157,54 +157,50 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
                 df_well.merge(df_groups, how="left", on=["X", "Y", "Z"])
             )
 
-        # Step 2
-        for groupid in df_w_groups["GROUPID"].unique():
-            df_group = df_w_groups.loc[df_w_groups["GROUPID"] == groupid]
+    # Step 2
+    for groupid in df_w_groups["GROUPID"].unique():
+        df_group = df_w_groups.loc[df_w_groups["GROUPID"] == groupid]
 
-            xmin, ymin, zmin = df_group[["X", "Y", "Z"]].min()
-            xmax, ymax, zmax = df_group[["X", "Y", "Z"]].max()
+        xmin, ymin, zmin = df_group[["X", "Y", "Z"]].min()
+        xmax, ymax, zmax = df_group[["X", "Y", "Z"]].max()
 
-            df_foreign = df_w_groups.loc[
-                (
-                    ((df_w_groups["X"] > xmin) & (df_w_groups["X"] < xmax))
-                    | ((df_w_groups["Y"] > ymin) & (df_w_groups["Y"] < ymax))
-                    | ((df_w_groups["Z"] > zmin) & (df_w_groups["Z"] < zmax))
-                )
-                & (df_w_groups["GROUPID"] != groupid)
-            ]
+        df_foreign = df_w_groups.loc[
+            (
+                ((df_w_groups["X"] > xmin) & (df_w_groups["X"] < xmax))
+                & ((df_w_groups["Y"] > ymin) & (df_w_groups["Y"] < ymax))
+                & ((df_w_groups["Z"] > zmin) & (df_w_groups["Z"] < zmax))
+            )
+            & (df_w_groups["GROUPID"] != groupid)
+        ]
 
-            # Step 3
-            if df_foreign.shape[0]:
-                xmin_foreign, ymin_foreign, zmin_foreign = df_foreign[
-                    ["X", "Y", "Z"]
-                ].min()
-                xmax_foreign, ymax_foreign, zmax_foreign = df_foreign[
-                    ["X", "Y", "Z"]
-                ].max()
+        # Step 3
+        if df_foreign.shape[0]:
+            xmin_foreign, ymin_foreign, zmin_foreign = df_foreign[["X", "Y", "Z"]].min()
+            xmax_foreign, ymax_foreign, zmax_foreign = df_foreign[["X", "Y", "Z"]].max()
 
-                df_w_groups.loc[
-                    (df_w_groups["GROUPID"] == groupid)
-                    & (
-                        (df_w_groups["X"] < xmin_foreign)
-                        | (df_w_groups["Y"] < ymin_foreign)
-                        | (df_w_groups["Z"] < zmin_foreign)
-                    ),
-                    ["GROUPID"],
-                ] = (
-                    df_w_groups["GROUPID"].max() + 1
-                )
+            df_w_groups.loc[
+                (df_w_groups["GROUPID"] == groupid)
+                & (
+                    (df_w_groups["X"] < xmin_foreign)
+                    | (df_w_groups["Y"] < ymin_foreign)
+                    | (df_w_groups["Z"] < zmin_foreign)
+                ),
+                ["GROUPID"],
+            ] = (
+                df_w_groups["GROUPID"].max() + 1
+            )
 
-                df_w_groups.loc[
-                    (df_w_groups["GROUPID"] == groupid)
-                    & (
-                        (df_w_groups["X"] > xmax_foreign)
-                        | (df_w_groups["Y"] > ymax_foreign)
-                        | (df_w_groups["Z"] > zmax_foreign)
-                    ),
-                    ["GROUPID"],
-                ] = (
-                    df_w_groups["GROUPID"].max() + 1
-                )
+            df_w_groups.loc[
+                (df_w_groups["GROUPID"] == groupid)
+                & (
+                    (df_w_groups["X"] > xmax_foreign)
+                    | (df_w_groups["Y"] > ymax_foreign)
+                    | (df_w_groups["Z"] > zmax_foreign)
+                ),
+                ["GROUPID"],
+            ] = (
+                df_w_groups["GROUPID"].max() + 1
+            )
 
     df_w_groups["OPEN"] = df_w_groups["OPEN"].astype(int)
     result = (
