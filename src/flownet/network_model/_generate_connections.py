@@ -12,10 +12,10 @@ from ._mitchell import mitchell_best_candidate_modified_3d
 from ..utils.types import Coordinate
 
 
-def _is_angle_too_small_or_large(
+def _is_angle_too_large(
     angle_threshold: float, side_a: float, side_b: float, side_c: float
 ) -> bool:
-    """Function checks if there is an angle smaller or larger than a specified angle in
+    """Function checks if there is an angle larger than a specified angle in
     degrees for a triangle with given side lengths
 
     Args:
@@ -25,7 +25,7 @@ def _is_angle_too_small_or_large(
         side_c: Length of side c
 
     Returns:
-        True if an angle smaller or larger than the specified angle
+        True if an angle larger than the specified angle
 
     """
     calculate_angle = np.rad2deg(
@@ -63,19 +63,13 @@ def _create_record(
                 edge_a = dist_matrix[vertex_a, vertex_b]
                 edge_b = dist_matrix[vertex_a, vertex_c]
                 edge_c = dist_matrix[vertex_b, vertex_c]
-                if _is_angle_too_small_or_large(
-                    angle_threshold, edge_a, edge_b, edge_c
-                ):
+                if _is_angle_too_large(angle_threshold, edge_a, edge_b, edge_c):
                     record.append(tuple(connection_pairs[vertex_b, vertex_c]))
 
-                if _is_angle_too_small_or_large(
-                    angle_threshold, edge_c, edge_b, edge_a
-                ):
+                if _is_angle_too_large(angle_threshold, edge_c, edge_b, edge_a):
                     record.append(tuple(connection_pairs[vertex_a, vertex_b]))
 
-                if _is_angle_too_small_or_large(
-                    angle_threshold, edge_a, edge_c, edge_b
-                ):
+                if _is_angle_too_large(angle_threshold, edge_a, edge_c, edge_b):
                     record.append(tuple(connection_pairs[vertex_a, vertex_c]))
     return record
 
