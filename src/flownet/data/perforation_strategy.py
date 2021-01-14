@@ -91,16 +91,9 @@ def multiple(df: pd.DataFrame) -> pd.DataFrame:
     df = df[["WELL_NAME", "X", "Y", "Z", "DATE", "OPEN", "LAYER_ID"]].sort_values(
         ["WELL_NAME", "X", "Y", "Z", "DATE", "LAYER_ID"]
     )
+    df["SHIFT"] = df.groupby(["WELL_NAME", "X", "Y", "Z", "LAYER_ID"])["OPEN"].shift(1)
 
-    return df[
-        (df["OPEN"] != df["OPEN"].shift(1))
-        | (
-            (df["X"] != df["X"].shift(1))
-            & (df["Y"] != df["Y"].shift(1))
-            & (df["Z"] != df["Z"].shift(1))
-        )
-        | (df["WELL_NAME"] != df["WELL_NAME"].shift(1))
-    ]
+    return df[(df["OPEN"] != df["SHIFT"])].drop("SHIFT", axis=1)
 
 
 # pylint: disable=too-many-locals
