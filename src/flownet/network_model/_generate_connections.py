@@ -36,9 +36,7 @@ def _is_angle_too_large(
         )
     )
 
-    return (calculate_angle < angle_threshold) | (
-        calculate_angle > (180 - angle_threshold)
-    )
+    return calculate_angle > angle_threshold
 
 
 def _create_record(
