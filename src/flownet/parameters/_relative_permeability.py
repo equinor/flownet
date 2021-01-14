@@ -111,7 +111,7 @@ class RelativePermeability(Parameter):
 
     Args:
         distribution_values:
-            A dataframe with eight columns ("parameter", "minimum", "maximum", "mean", "mode", "stddev",
+            A dataframe with eight columns ("parameter", "minimum", "maximum", "mean", "base", "stddev",
             "distribution", "satnum") which state:
                 * The name of the parameter,
                 * The minimum value of the parameter (set to None if not applicable),
