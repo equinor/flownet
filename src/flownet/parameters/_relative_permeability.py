@@ -5,6 +5,7 @@ import functools
 import pandas as pd
 from pyscal import WaterOilGas, WaterOil, GasOil, PyscalFactory, PyscalList
 
+from configsuite import ConfigSuite
 from ..utils import write_grdecl_file
 from ..utils.constants import H_CONSTANT
 
@@ -110,16 +111,19 @@ class RelativePermeability(Parameter):
 
     Args:
         distribution_values:
-            A dataframe with five columns ("parameter", "minimum", "maximum",
-            "loguniform", "satnum") which state:
+            A dataframe with eight columns ("parameter", "minimum", "maximum", "mean", "mode", "stddev",
+            "distribution", "satnum") which state:
                 * The name of the parameter,
-                * The minimum value of the parameter,
-                * The maximum value of the parameter,
-                * Whether the distribution is uniform of loguniform,
+                * The minimum value of the parameter (None if not applicable),
+                * The maximum value of the parameter (None if not applicable),
+                * The mean value of the parameter,
+                * The mode of the parameter (None if not applicable),
+                * The standard deviation of the parameter,
+                * The type of distribution used for the parameter,
                 * To which SATNUM this applies.
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
         satnum: A dataframe defining the SATNUM for each flow tube.
-        fast_pyscal: Run pyscal in fast-mode skipping checks. Useful for large models/ensemble.
+        config: Information from the FlowNet config yaml
         interpolation_values:
             A dataframe with information about the relative permeability models used for interpolation.
             One row corresponds to one model, the column names should be the names of the parameters
@@ -133,8 +137,7 @@ class RelativePermeability(Parameter):
         distribution_values: pd.DataFrame,
         ti2ci: pd.DataFrame,
         satnum: pd.DataFrame,
-        phases: List,
-        fast_pyscal: bool = False,
+        config: ConfigSuite.snapshot,
         interpolation_values: Optional[pd.DataFrame] = None,
     ):
         self._ti2ci: pd.DataFrame = ti2ci
@@ -148,7 +151,7 @@ class RelativePermeability(Parameter):
             distribution_values["parameter"].unique()
         )
         self._satnum: pd.DataFrame = satnum
-        self._phases = phases
+        self._phases = config.flownet.phases
         self._interpolation_values: Optional[pd.DataFrame] = None
         self._scal_for_interp: Optional[PyscalList] = None
         if isinstance(interpolation_values, pd.DataFrame):
@@ -159,7 +162,10 @@ class RelativePermeability(Parameter):
             )
 
         self._swof, self._sgof = self._check_parameters()
-        self._fast_pyscal: bool = fast_pyscal
+        self._fast_pyscal: bool = config.flownet.fast_pyscal
+        self._independent_interpolation = (
+            config.model_parameters.relative_permeability.independent_interpolation
+        )
 
     def _check_parameters(self) -> Tuple[bool, bool]:
         """
@@ -275,7 +281,9 @@ class RelativePermeability(Parameter):
                 if self._scal_for_interp is not None:
                     relperm = self._scal_for_interp[i].interpolate(
                         parameter.get("interpolate"),
-                        parameter.get("interpolate gas"),
+                        parameter.get("interpolate gas")
+                        if self._independent_interpolation
+                        else None,
                     )
                     if self._swof:
                         str_swofs += relperm.SWOF(header=False)
