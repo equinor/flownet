@@ -1,6 +1,7 @@
 import warnings
+import operator
 from pathlib import Path
-from typing import Union, List
+from typing import Union, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -20,6 +21,7 @@ class FlowData(FromSource):
 
     Args:
          input_case: Full path to eclipse case to load data from
+         layers: List with definition of isolated layers, if present.
          perforation_handling_strategy: How to deal with perforations per well.
                                                  ('bottom_point', 'top_point', 'multiple')
 
@@ -28,6 +30,7 @@ class FlowData(FromSource):
     def __init__(
         self,
         input_case: Union[Path, str],
+        layers: Tuple = (),
         perforation_handling_strategy: str = "bottom_point",
     ):
         super().__init__()
@@ -39,25 +42,40 @@ class FlowData(FromSource):
         self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
         self._init = EclInitFile(self._grid, str(self._input_case.with_suffix(".INIT")))
         self._wells = compdat.df(EclFiles(str(self._input_case)))
+        self._layers = layers
 
         self._perforation_handling_strategy: str = perforation_handling_strategy
 
     # pylint: disable=too-many-branches
     def _well_connections(self) -> pd.DataFrame:
         """
-        Function to extract well connection coordinates from an Flow simulation including their
+        Function to extract well connection coordinates from a Flow simulation including their
         opening and closure time. The output of this function will be filtered based on the
         configured perforation strategy.
 
         Returns:
-            columns: WELL_NAME, X, Y, Z, DATE, OPEN
+            columns: WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID
 
         """
+        if len(self._layers) > 0 and self._grid.nz is not self._layers[-1][-1]:
+            raise ValueError(
+                f"Number of layers from config ({self._layers[-1][-1]}) is not equal to "
+                f"number of layers from flow simulation ({self._grid.nz})."
+            )
+
         new_items = []
         for _, row in self._wells.iterrows():
             X, Y, Z = self._grid.get_xyz(
                 ijk=(row["I"] - 1, row["J"] - 1, row["K1"] - 1)
             )
+            if len(self._layers) > 0:
+                for count, (i, j) in enumerate(self._layers):
+                    if row["K1"] in range(i, j + 1):
+                        layer_id = count
+                        break
+            else:
+                layer_id = 0
+
             new_row = {
                 "WELL_NAME": row["WELL"],
                 "IJK": (
@@ -70,11 +88,13 @@ class FlowData(FromSource):
                 "Z": Z,
                 "DATE": row["DATE"],
                 "OPEN": bool(row["OP/SH"] == "OPEN"),
+                "LAYER_ID": layer_id,
             }
             new_items.append(new_row)
 
         df = pd.DataFrame(
-            new_items, columns=["WELL_NAME", "IJK", "X", "Y", "Z", "DATE", "OPEN"]
+            new_items,
+            columns=["WELL_NAME", "IJK", "X", "Y", "Z", "DATE", "OPEN", "LAYER_ID"],
         )
         df["DATE"] = pd.to_datetime(df["DATE"], format="%Y-%m-%d").dt.date
 
@@ -140,6 +160,9 @@ class FlowData(FromSource):
                 - WOPR          Well Oil Production Rate
                 - WGPR          Well Gas Production Rate
                 - WWPR          Well Water Production Rate
+                - WOPT          Well Cumulative Oil Production
+                - WGPT          Well Cumulative Gas Production Rate
+                - WWPT          Well Cumulative Water Production Rate
                 - WBHP          Well Bottom Hole Pressure
                 - WTHP          Well Tubing Head Pressure
                 - WGIR          Well Gas Injection Rate
@@ -153,7 +176,21 @@ class FlowData(FromSource):
             * Improve robustness pf setting of Phase and Type.
 
         """
-        keys = ["WOPR", "WGPR", "WWPR", "WBHP", "WTHP", "WGIR", "WWIR", "WSTAT"]
+        keys = [
+            "WOPR",
+            "WGPR",
+            "WWPR",
+            "WOPT",
+            "WGPT",
+            "WWPT",
+            "WBHP",
+            "WTHP",
+            "WGIR",
+            "WWIR",
+            "WGIT",
+            "WWIT",
+            "WSTAT",
+        ]
 
         df_production_data = pd.DataFrame()
 
@@ -280,19 +317,30 @@ class FlowData(FromSource):
 
         return df_faults.drop(["I", "J", "K"], axis=1)
 
-    def _grid_cell_bounding_boxes(self) -> np.ndarray:
+    def _grid_cell_bounding_boxes(self, layer_id: Optional[int] = None) -> np.ndarray:
         """
         Function to get the bounding box (x, y and z min + max) for all grid cells
 
+        Args:
+            layer_id: The FlowNet layer id to be used to create the bounding box.
+
         Returns:
             A (active grid cells x 6) numpy array with columns [ xmin, xmax, ymin, ymax, zmin, zmax ]
+            filtered on layer_id if not None.
         """
-        xyz = np.empty((8 * self._grid.get_num_active(), 3))
-        for active_index in range(self._grid.get_num_active()):
-            for corner in range(0, 8):
-                xyz[active_index * 8 + corner, :] = self._grid.get_cell_corner(
-                    corner, active_index=active_index
-                )
+        if layer_id is not None:
+            (k_min, k_max) = tuple(map(operator.sub, self._layers[layer_id], (1, 1)))
+        else:
+            (k_min, k_max) = (0, self._grid.nz)
+
+        cells = [
+            cell for cell in self._grid.cells(active=True) if (k_min <= cell.k <= k_max)
+        ]
+        xyz = np.empty((8 * len(cells), 3))
+
+        for n_cell, cell in enumerate(cells):
+            for n_corner, corner in enumerate(cell.corners):
+                xyz[n_cell * 8 + n_corner, :] = corner
 
         xmin = xyz[:, 0].reshape(-1, 8).min(axis=1)
         xmax = xyz[:, 0].reshape(-1, 8).max(axis=1)
@@ -343,3 +391,8 @@ class FlowData(FromSource):
     def grid(self) -> EclGrid:
         """the simulation grid with properties"""
         return self._grid
+
+    @property
+    def layers(self) -> Union[Tuple[Tuple[int, int]], Tuple]:
+        """Get the list of top and bottom k-indeces of a the orignal model that represents a FlowNet layer"""
+        return self._layers

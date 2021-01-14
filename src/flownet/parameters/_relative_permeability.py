@@ -156,7 +156,7 @@ class RelativePermeability(Parameter):
         self._scal_for_interp: Optional[PyscalList] = None
         if isinstance(interpolation_values, pd.DataFrame):
             self._interpolation_values = interpolation_values
-            # self._rec will be indexed by SATNUM region, starting at 1
+            # self._scal_for_interp will be indexed by SATNUM region, starting at 1
             self._scal_for_interp = PyscalFactory.create_scal_recommendation_list(
                 interpolation_values
             )
