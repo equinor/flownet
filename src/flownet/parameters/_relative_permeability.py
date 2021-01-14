@@ -114,12 +114,12 @@ class RelativePermeability(Parameter):
             A dataframe with eight columns ("parameter", "minimum", "maximum", "mean", "mode", "stddev",
             "distribution", "satnum") which state:
                 * The name of the parameter,
-                * The minimum value of the parameter (None if not applicable),
-                * The maximum value of the parameter (None if not applicable),
+                * The minimum value of the parameter (set to None if not applicable),
+                * The maximum value of the parameter (set to None if not applicable),
                 * The mean value of the parameter,
-                * The mode of the parameter (None if not applicable),
+                * The mode of the parameter distribution (set to None if not applicable),
                 * The standard deviation of the parameter,
-                * The type of distribution used for the parameter,
+                * The type of probability distribution,
                 * To which SATNUM this applies.
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
         satnum: A dataframe defining the SATNUM for each flow tube.
