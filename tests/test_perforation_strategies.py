@@ -212,6 +212,21 @@ def test_multiple() -> None:
     assert all(result.WELL_NAME.isin(DF.WELL_NAME))
     assert all(DF.WELL_NAME.isin(result.WELL_NAME))
 
+    assert len(result[result["WELL_NAME"] == "K"]) == 4
+    assert (
+        len(
+            result[
+                (
+                    result["OPEN"]
+                    == result.groupby(["WELL_NAME", "X", "Y", "Z", "LAYER_ID"])[
+                        "OPEN"
+                    ].shift(1)
+                )
+            ]
+        )
+        == 0
+    )
+
     assert (
         pd.Timestamp(
             result.loc[result["WELL_NAME"] == "A"]["DATE"].values[0]
@@ -282,6 +297,18 @@ def test_multiple_based_on_workovers() -> None:
 
     assert len(result.loc[result["WELL_NAME"] == "J"]) == 4
     assert len(result.loc[result["WELL_NAME"] == "J"]["X"].unique()) == 3
+    assert all(
+        z < DF.loc[(DF["WELL_NAME"] == "K") & (DF["LAYER_ID"] == 0)]["Z"].max()
+        for z in result.loc[(result["WELL_NAME"] == "K") & (result["LAYER_ID"] == 0)][
+            "Z"
+        ].values
+    )
+    assert all(
+        z > DF.loc[(DF["WELL_NAME"] == "K") & (DF["LAYER_ID"] == 1)]["Z"].min()
+        for z in result.loc[(result["WELL_NAME"] == "K") & (result["LAYER_ID"] == 1)][
+            "Z"
+        ].values
+    )
 
     assert (
         pd.Timestamp(
