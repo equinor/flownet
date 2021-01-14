@@ -8,7 +8,6 @@ from flownet.network_model._generate_connections import (
     _generate_connections,
     _create_entity_connection_matrix,
     _is_angle_too_large,
-    _create_record,
 )
 
 DATA = {
