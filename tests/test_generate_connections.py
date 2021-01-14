@@ -123,18 +123,18 @@ def test_generate_connections() -> None:
     assert len(ends) != len(ENDS_NONE)
 
     # Test removal of some connections
-    config.flownet.angle_threshold = 30
+    config.flownet.angle_threshold = 150
 
     starts, ends = _generate_connections(
         df_coordinates=DF_COORDINATES, configuration=config
     )
 
     assert len(starts) == len(ends)
-    assert all([starts[i] == approx(STARTS_30[i]) for i in range(len(starts))])
-    assert all([ends[i] == approx(ENDS_30[i]) for i in range(len(ends))])
+    assert len(starts) != len(STARTS_NONE)
+    assert len(ends) != len(ENDS_NONE)
 
     # Test removal of all connections
-    config.flownet.angle_threshold = 180
+    config.flownet.angle_threshold = 1
     starts, ends = _generate_connections(
         df_coordinates=DF_COORDINATES, configuration=config
     )
