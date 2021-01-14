@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
+- [#298](https://github.com/equinor/flownet/pull/298) Connections between (well)nodes that go through non-reservoir are now removed. Angle threshold export to user.
 - [#284](https://github.com/equinor/flownet/pull/284) Added the option to specify cumulative phase rates as observations (WOPT, WWPT, WGPT, WGIT, WWIT)
 
 ### Fixes
