@@ -51,6 +51,57 @@ smry:
         {%- endif -%}      
    {%- endfor %}
    {%- endif -%}
+   {%- if (error_config.WOPT.rel_error is not none) and (error_config.WOPT.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="oil_total", dates=dates[num_beginning_date:num_end_date]) -%}
+   {% if loop.first and not loop.last: %}
+ - key: WOPT:{{ well_name }}
+   observations:
+   {%- endif %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.oil_total }}
+      error: {{ [error_config.WOPT.rel_error * kw.oil_total, error_config.WOPT.min_error] | max }}
+      comment:
+        {%- if (kw.date > last_training_date) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}
+   {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WWPT.rel_error is not none) and (error_config.WWPT.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="water_total", dates=dates[num_beginning_date:num_end_date]) -%}
+   {% if loop.first and not loop.last: %}
+ - key: WWPT:{{ well_name }}
+   observations:
+   {%- endif %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.water_total }}
+      error: {{ [error_config.WWPT.rel_error * kw.water_total, error_config.WWPT.min_error] | max }}
+      comment:
+        {%- if (kw.date > last_training_date) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}
+   {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WGPT.rel_error is not none) and (error_config.WGPT.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="gas_total", dates=dates[num_beginning_date:num_end_date]) -%}
+   {% if loop.first and not loop.last: %}
+ - key: WGPT:{{ well_name }}
+   observations:
+   {%- endif %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.gas_total }}
+      error: {{ [error_config.WGPT.rel_error * kw.gas_total, error_config.WGPT.min_error] | max }}
+      comment:
+        {%- if (kw.date > last_training_date) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}
+   {%- endfor %}
+   {%- endif -%}
    {%- if (error_config.WBHP.rel_error is not none) and (error_config.WBHP.min_error is not none) -%}
    {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="bhp", dates=dates[num_beginning_date:num_end_date]) -%}
    {% if loop.first and not loop.last: %}
@@ -154,6 +205,40 @@ smry:
         {%- else -%}
         {{ " Training" }}
         {%- endif -%}      
+   {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WGIT.rel_error is not none) and (error_config.WGIT.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", dates=dates[num_beginning_date:num_end_date]) -%}
+   {% if loop.first and not loop.last: %}
+ - key: WGIT:{{ well_name }}
+   observations:
+   {%- endif %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.total }}
+      error: {{ [error_config.WGIT.rel_error * kw.total, error_config.WGIT.min_error] | max }}
+      comment:
+        {%- if (kw.date > last_training_date) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}
+   {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WWIT.rel_error is not none) and (error_config.WWIT.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", dates=dates[num_beginning_date:num_end_date]) -%}
+   {% if loop.first and not loop.last: %}
+ - key: WWIT:{{ well_name }}
+   observations:
+   {%- endif %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.total }}
+      error: {{ [error_config.WWIT.rel_error * kw.total, error_config.WWIT.min_error] | max }}
+      comment:
+        {%- if (kw.date > last_training_date) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}
    {%- endfor %}
    {%- endif -%}
  {%- endfor -%}
