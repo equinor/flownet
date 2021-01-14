@@ -320,6 +320,7 @@ def _create_entity_connection_matrix(
     max_distance_fraction: float,
     max_distance: float,
     concave_hull_bounding_boxes: Optional[np.ndarray] = None,
+    n_non_reservoir_evaluation: Optional[int] = 10,
 ) -> pd.DataFrame:
     """
     Converts the the coordinates given for starts and ends to the desired DataFrame format for simulation input.
@@ -333,6 +334,7 @@ def _create_entity_connection_matrix(
         max_distance_fraction: Fraction of longest connection distance to be removed
         max_distance: Maximum distance between nodes, removed otherwise
         concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
+        n_non_reservoir_evaluation: Number of equally spaced points along a connection to check fornon-reservoir.
 
     Returns:
         Connection coordinate DataFrame on Flow desired format.
@@ -356,11 +358,10 @@ def _create_entity_connection_matrix(
         str_end_entity = __get_entity_str(df_coordinates, end)
 
         if concave_hull_bounding_boxes is not None:
-            n_connections = 10
             tube_coordinates = linspace(
                 start=start,
                 stop=end,
-                num=n_connections,
+                num=n_non_reservoir_evaluation,
                 endpoint=False,
                 dtype=float,
                 axis=1,
@@ -566,4 +567,5 @@ def create_connections(
         configuration.flownet.max_distance_fraction,
         configuration.flownet.max_distance,
         concave_hull_bounding_boxes=concave_hull_bounding_boxes,
+        n_non_reservoir_evaluation=configuration.flownet.n_non_reservoir_evaluation,
     ).reset_index()
