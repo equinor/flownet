@@ -550,8 +550,8 @@ def create_connections(
             configuration=configuration,
             concave_hull_bounding_boxes=concave_hull_bounding_boxes[i],
         )
-        starts.append(starts_append)
-        ends.append(ends_append)
+        starts.extend(starts_append)
+        ends.extend(ends_append)
 
     aquifer_starts: List[Coordinate] = []
     aquifer_ends: List[Coordinate] = []
