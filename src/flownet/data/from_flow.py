@@ -362,7 +362,6 @@ class FlowData(FromSource):
         """array with unique 'name' regions"""
         return np.unique(self._init[name][0])
 
-
     @property
     def faults(self) -> pd.DataFrame:
         """dataframe with all fault data"""

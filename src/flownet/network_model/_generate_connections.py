@@ -554,7 +554,7 @@ def create_connections(
         starts_append, ends_append = _generate_connections(
             df_coordinates=df_coordinates[df_coordinates["LAYER_ID"] == layer_id],
             configuration=configuration,
-            concave_hull_bounding_boxes=concave_hull_bounding_boxes[i],
+            concave_hull_bounding_boxes=concave_hull_bounding_boxes[i],  # type: ignore
         )
         starts.extend(starts_append)
         ends.extend(ends_append)
