@@ -522,7 +522,7 @@ def _generate_aquifer_connections(
 def create_connections(
     df_coordinates: pd.DataFrame,
     configuration: Any,
-    concave_hull_bounding_boxes: Optional[np.ndarray] = None,
+    concave_hull_bounding_boxes: Optional[List[np.ndarray]] = None,
 ) -> pd.DataFrame:
     """
     Creates additional flow nodes to increase complexity of field simulation structure so that history-matching can
@@ -534,17 +534,25 @@ def create_connections(
     Args:
         df_coordinates: Original structure of entity and X, Y, Z coords
         configuration: FlowNet configuration yaml as dictionary
-        concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
+        concave_hull_bounding_boxes: List of boundingbox per layer, i.e., numpy array with x, y, z min/max
+            boundingboxes for each grid block
 
     Returns:
         Desired restructuring of start-end coordinates into separate columns, as per Flow needs.
 
     """
-    starts, ends = _generate_connections(
-        df_coordinates=df_coordinates,
-        configuration=configuration,
-        concave_hull_bounding_boxes=concave_hull_bounding_boxes,
-    )
+    starts: List[Coordinate] = []
+    ends: List[Coordinate] = []
+
+    for i, layer_id in enumerate(df_coordinates["LAYER_ID"].unique()):
+        starts_append, ends_append = _generate_connections(
+            df_coordinates=df_coordinates[df_coordinates["LAYER_ID"] == layer_id],
+            configuration=configuration,
+            concave_hull_bounding_boxes=concave_hull_bounding_boxes[i],
+        )
+        starts.append(starts_append)
+        ends.append(ends_append)
+
     aquifer_starts: List[Coordinate] = []
     aquifer_ends: List[Coordinate] = []
 

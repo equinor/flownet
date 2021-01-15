@@ -317,7 +317,7 @@ class FlowData(FromSource):
 
         return df_faults.drop(["I", "J", "K"], axis=1)
 
-    def _grid_cell_bounding_boxes(self, layer_id: Optional[int] = None) -> np.ndarray:
+    def grid_cell_bounding_boxes(self, layer_id: Optional[int] = None) -> np.ndarray:
         """
         Function to get the bounding box (x, y and z min + max) for all grid cells
 
@@ -362,10 +362,6 @@ class FlowData(FromSource):
         """array with unique 'name' regions"""
         return np.unique(self._init[name][0])
 
-    @property
-    def grid_cell_bounding_boxes(self) -> np.ndarray:
-        """Boundingboxes for all gridcells"""
-        return self._grid_cell_bounding_boxes()
 
     @property
     def faults(self) -> pd.DataFrame:
