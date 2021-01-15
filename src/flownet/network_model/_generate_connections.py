@@ -319,7 +319,7 @@ def _create_entity_connection_matrix(
     aquifer_ends: List[Coordinate],
     max_distance_fraction: float,
     max_distance: float,
-    concave_hull_bounding_boxes: Optional[np.ndarray] = None,
+    concave_hull_bounding_boxes: Optional[List[np.ndarray]] = None,
     n_non_reservoir_evaluation: Optional[int] = 10,
 ) -> pd.DataFrame:
     """
@@ -333,7 +333,8 @@ def _create_entity_connection_matrix(
         aquifer_ends: List of coordinates of all aquifer ends
         max_distance_fraction: Fraction of longest connection distance to be removed
         max_distance: Maximum distance between nodes, removed otherwise
-        concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
+        concave_hull_bounding_boxes: List of boundingbox per layer, i.e., numpy array with x, y, z min/max
+            boundingboxes for each grid block
         n_non_reservoir_evaluation: Number of equally spaced points along a connection to check fornon-reservoir.
 
     Returns:
@@ -367,7 +368,12 @@ def _create_entity_connection_matrix(
                 axis=1,
             ).T
 
-            if not all(check_in_hull(concave_hull_bounding_boxes, tube_coordinates)):
+            if not any(
+                [
+                    all(check_in_hull(concave_hull_bounding_box, tube_coordinates))
+                    for concave_hull_bounding_box in concave_hull_bounding_boxes
+                ]
+            ):
                 continue
 
         df_out = df_out.append(
