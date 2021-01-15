@@ -424,6 +424,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Type: types.String,
                         MK.Default: "RATE",
                     },
+                    "angle_threshold": {
+                        MK.Type: types.Number,
+                        MK.Default: 150,
+                        MK.Description: "Angle threshold used, after Delaunay triagulation,"
+                        "to remove sides/tubes opposite angles larger than the supplied treshold.",
+                    },
+                    "n_non_reservoir_evaluation": {
+                        MK.Type: types.Number,
+                        MK.Default: 10,
+                        MK.Description: "Number of points along a tube to check whether they are in"
+                        "non reservoir for removal purposes.",
+                    },
                     "hyperopt": {
                         MK.Type: types.NamedDict,
                         MK.Content: {

@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
+- [#298](https://github.com/equinor/flownet/pull/298) Connections between (well)nodes that go through non-reservoir are now removed. Angle threshold export to user.
 - [#296](https://github.com/equinor/flownet/pull/296) Adapted perforation strategy to allow for layering + bug fixes in the 'multiple' and 'multiple_based_on_workovers' perforation strategies.
 - [#284](https://github.com/equinor/flownet/pull/284) Added the option to specify cumulative phase rates as observations (WOPT, WWPT, WGPT, WGIT, WWIT)
 
