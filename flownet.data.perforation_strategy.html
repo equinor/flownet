@@ -210,7 +210,7 @@ connections per well will lead to useful results.</p>
 <code class="sig-prename descclassname">flownet.data.perforation_strategy.</code><code class="sig-name descname">multiple_based_on_workovers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.perforation_strategy.multiple_based_on_workovers" title="Permalink to this definition">¶</a></dt>
 <dd><p>This strategy creates multiple connections per well when the well during the historic production period has been
 straddled or plugged (i.e., individual connections have been shut).</p>
-<p>The following steps are performed:</p>
+<p>The following steps are performed per layer:</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li><p>Split connections into groups of connections per well, based on their open/closing history. That is,
