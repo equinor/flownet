@@ -9,6 +9,7 @@ Submodules
 
    flownet.network_model._create_egrid
    flownet.network_model._generate_connections
+   flownet.network_model._hull
    flownet.network_model._mitchell
    flownet.network_model._network_model
    flownet.network_model._one_dimensional_model

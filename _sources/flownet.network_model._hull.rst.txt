@@ -1,0 +1,8 @@
+flownet.network\_model.\_hull module
+====================================
+
+.. automodule:: flownet.network_model._hull
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
