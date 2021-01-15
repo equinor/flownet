@@ -335,9 +335,9 @@ def update_distribution(
                         f"the upper or lower bounds in the prior. This will give a very narrow prior range \n"
                         f"in this run. Consider updating before running again. "
                     )
-            if var.stddev is not None:
+            if var.stddev > 0:
                 stddev = parameter.stddev_values[i]
-                if 0 < stddev / var.stddev < 0.1:
+                if stddev / var.stddev < 0.1:
                     warnings.warn(
                         f"The standard deviation for the posterior ensemble for {parameter.names[i]} is much lower \n"
                         f"than the standard deviation in the prior. This will give a very narrow prior range \n"
