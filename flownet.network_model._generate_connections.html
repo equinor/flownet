@@ -41,7 +41,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="flownet.network_model._mitchell module" href="flownet.network_model._mitchell.html" />
+    <link rel="next" title="flownet.network_model._hull module" href="flownet.network_model._hull.html" />
     <link rel="prev" title="flownet.network_model._create_egrid module" href="flownet.network_model._create_egrid.html" /> 
 </head>
 
@@ -205,7 +205,7 @@ of the diagonal).</p>
 
 <dl class="py function">
 <dt id="flownet.network_model._generate_connections._create_entity_connection_matrix">
-<code class="sig-prename descclassname">flownet.network_model._generate_connections.</code><code class="sig-name descname">_create_entity_connection_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_coordinates</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">starts</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span>Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">, </span>float<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>float<span class="p">]</span><span class="p">, </span>Tuple<span class="p">[</span>Any<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">ends</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span>Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">, </span>float<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>float<span class="p">]</span><span class="p">, </span>Tuple<span class="p">[</span>Any<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">aquifer_starts</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span>Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">, </span>float<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>float<span class="p">]</span><span class="p">, </span>Tuple<span class="p">[</span>Any<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">aquifer_ends</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span>Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">, </span>float<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>float<span class="p">]</span><span class="p">, </span>Tuple<span class="p">[</span>Any<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_distance_fraction</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">max_distance</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.network_model._generate_connections._create_entity_connection_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">flownet.network_model._generate_connections.</code><code class="sig-name descname">_create_entity_connection_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_coordinates</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">starts</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span>Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">, </span>float<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>float<span class="p">]</span><span class="p">, </span>Tuple<span class="p">[</span>Any<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">ends</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span>Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">, </span>float<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>float<span class="p">]</span><span class="p">, </span>Tuple<span class="p">[</span>Any<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">aquifer_starts</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span>Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">, </span>float<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>float<span class="p">]</span><span class="p">, </span>Tuple<span class="p">[</span>Any<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">aquifer_ends</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span>Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">, </span>float<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>float<span class="p">]</span><span class="p">, </span>Tuple<span class="p">[</span>Any<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_distance_fraction</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">max_distance</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">concave_hull_bounding_boxes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>numpy.ndarray<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n_non_reservoir_evaluation</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">10</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.network_model._generate_connections._create_entity_connection_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the the coordinates given for starts and ends to the desired DataFrame format for simulation input.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -217,6 +217,8 @@ of the diagonal).</p>
 <li><p><strong>aquifer_ends</strong> – List of coordinates of all aquifer ends</p></li>
 <li><p><strong>max_distance_fraction</strong> – Fraction of longest connection distance to be removed</p></li>
 <li><p><strong>max_distance</strong> – Maximum distance between nodes, removed otherwise</p></li>
+<li><p><strong>concave_hull_bounding_boxes</strong> – Numpy array with x, y, z min/max boundingboxes for each grid block</p></li>
+<li><p><strong>n_non_reservoir_evaluation</strong> – Number of equally spaced points along a connection to check fornon-reservoir.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -227,18 +229,18 @@ of the diagonal).</p>
 
 <dl class="py function">
 <dt id="flownet.network_model._generate_connections._create_record">
-<code class="sig-prename descclassname">flownet.network_model._generate_connections.</code><code class="sig-name descname">_create_record</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">well_pairs</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">dist_matrix</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>Tuple<span class="p">[</span>Any<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><a class="headerlink" href="#flownet.network_model._generate_connections._create_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a record of every well_pair triangle for which one of the angles is too large
-(currently set to be above 150 degrees)</p>
+<code class="sig-prename descclassname">flownet.network_model._generate_connections.</code><code class="sig-name descname">_create_record</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">connection_pairs</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">dist_matrix</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">angle_threshold</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>Tuple<span class="p">[</span>Any<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><a class="headerlink" href="#flownet.network_model._generate_connections._create_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a record of every connection_pairs triangle for which one of the angles is too small/large</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>well_pairs</strong> – All well pairs created through Delaunay triangulation</p></li>
-<li><p><strong>dist_matrix</strong> – Euclidean distance between well coordinates</p></li>
+<li><p><strong>connection_pairs</strong> – All connection_pairs created through Delaunay triangulation</p></li>
+<li><p><strong>dist_matrix</strong> – Euclidean distance between coordinate pairs</p></li>
+<li><p><strong>angle_threshold</strong> – angle in Delaunay triangles for which to ignore connections</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A record of connections (from_well, to_well) of undesirables.</p>
+<dd class="field-even"><p>A record of undesirable connection_pairs.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -279,6 +281,26 @@ connections between wells and extra flow nodes.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The tuple consisting of the start_coords and end_coords for connections.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.network_model._generate_connections._is_angle_too_large">
+<code class="sig-prename descclassname">flownet.network_model._generate_connections.</code><code class="sig-name descname">_is_angle_too_large</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">angle_threshold</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">side_a</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">side_b</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">side_c</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#flownet.network_model._generate_connections._is_angle_too_large" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function checks if there is an angle larger than a specified angle in
+degrees for a triangle with given side lengths</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>angle_threshold</strong> – threshold angle in degrees</p></li>
+<li><p><strong>side_a</strong> – Length of side a</p></li>
+<li><p><strong>side_b</strong> – Length of side b</p></li>
+<li><p><strong>side_c</strong> – Length of side c</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if an angle larger than the specified angle</p>
 </dd>
 </dl>
 </dd></dl>
@@ -348,7 +370,7 @@ DataFrame.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="flownet.network_model._mitchell.html" class="btn btn-neutral float-right" title="flownet.network_model._mitchell module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="flownet.network_model._hull.html" class="btn btn-neutral float-right" title="flownet.network_model._hull module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="flownet.network_model._create_egrid.html" class="btn btn-neutral float-left" title="flownet.network_model._create_egrid module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
