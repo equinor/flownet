@@ -326,7 +326,7 @@ def update_distribution(
         for i, var in enumerate(parameter.random_variables):
             mean = parameter.mean_values[i]
             # if mean in posterior is close to min/max in prior raise warning
-            if var.minimum and var.maximum:
+            if var.maximum > var.minimum:
                 if (mean - var.minimum) / (var.mean - var.minimum) < 0.1 or (
                     var.maximum - mean
                 ) / (var.maximum - var.mean) < 0.1:
@@ -335,7 +335,7 @@ def update_distribution(
                         f"the upper or lower bounds in the prior. This will give a very narrow prior range \n"
                         f"in this run. Consider updating before running again. "
                     )
-            if var.stddev is not None:
+            if var.stddev > 0:
                 stddev = parameter.stddev_values[i]
                 if stddev / var.stddev < 0.1:
                     warnings.warn(
