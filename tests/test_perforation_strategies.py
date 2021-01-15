@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import pandas as pd
 
@@ -9,260 +9,10 @@ from flownet.data.perforation_strategy import (
     multiple_based_on_workovers,
 )
 
-D2 = datetime.today()
+DF = pd.read_csv("./tests/data/well_perforations_2layers.csv")
+D2 = pd.Timestamp("2021-01-13 09:53:52.832254").to_pydatetime()
 D1 = D2 - timedelta(days=1)
 D0 = D1 - timedelta(days=1)
-DATA = {
-    "WELL_NAME": [
-        "A",
-        "A",
-        "A",
-        "A",
-        "B",
-        "B",
-        "B",
-        "B",
-        "C",
-        "C",
-        "D",
-        "D",
-        "D",
-        "E",
-        "E",
-        "F",
-        "G",
-        "G",
-        "G",
-        "G",
-        "H",
-        "H",
-        "H",
-        "H",
-        "I",
-        "I",
-        "I",
-        "J",
-        "J",
-        "J",
-        "J",
-        "J",
-        "J",
-    ],
-    "IJK": [
-        (1, 1, 1),
-        (2, 2, 2),
-        (1, 1, 1),
-        (2, 2, 2),
-        (3, 3, 3),
-        (4, 4, 4),
-        (3, 3, 3),
-        (4, 4, 4),
-        (5, 5, 5),
-        (6, 6, 6),
-        (7, 7, 7),
-        (7, 7, 7),
-        (7, 7, 7),
-        (8, 8, 8),
-        (8, 8, 8),
-        (9, 9, 9),
-        (10, 10, 10),
-        (11, 11, 11),
-        (10, 10, 10),
-        (11, 11, 11),
-        (12, 12, 12),
-        (13, 13, 13),
-        (12, 12, 12),
-        (13, 13, 13),
-        (14, 14, 14),
-        (14, 14, 14),
-        (14, 14, 14),
-        (15, 15, 15),
-        (16, 16, 16),
-        (17, 17, 17),
-        (15, 15, 15),
-        (16, 16, 16),
-        (17, 17, 17),
-    ],
-    "X": [
-        1,
-        2,
-        1,
-        2,
-        3,
-        4,
-        3,
-        4,
-        5,
-        6,
-        7,
-        7,
-        7,
-        8,
-        8,
-        9,
-        10,
-        11,
-        10,
-        11,
-        12,
-        13,
-        12,
-        13,
-        14,
-        14,
-        14,
-        15,
-        16,
-        17,
-        15,
-        16,
-        17,
-    ],
-    "Y": [
-        1,
-        2,
-        1,
-        2,
-        3,
-        4,
-        3,
-        4,
-        5,
-        6,
-        7,
-        7,
-        7,
-        8,
-        8,
-        9,
-        10,
-        11,
-        10,
-        11,
-        12,
-        13,
-        12,
-        13,
-        14,
-        14,
-        14,
-        15,
-        16,
-        17,
-        15,
-        16,
-        17,
-    ],
-    "Z": [
-        1,
-        2,
-        1,
-        2,
-        3,
-        4,
-        3,
-        4,
-        5,
-        6,
-        7,
-        7,
-        7,
-        8,
-        8,
-        9,
-        10,
-        11,
-        10,
-        11,
-        12,
-        13,
-        12,
-        13,
-        14,
-        14,
-        14,
-        15,
-        16,
-        17,
-        15,
-        16,
-        17,
-    ],
-    "DATE": [
-        D1,
-        D1,
-        D2,
-        D2,
-        D1,
-        D1,
-        D2,
-        D2,
-        D2,
-        D2,
-        D0,
-        D1,
-        D2,
-        D0,
-        D2,
-        D2,
-        D0,
-        D0,
-        D1,
-        D1,
-        D0,
-        D0,
-        D1,
-        D1,
-        D0,
-        D1,
-        D2,
-        D0,
-        D0,
-        D0,
-        D2,
-        D2,
-        D2,
-    ],
-    "OPEN": [
-        True,
-        False,
-        False,
-        True,
-        True,
-        True,
-        False,
-        False,
-        False,
-        True,
-        False,
-        False,
-        True,
-        True,
-        False,
-        False,
-        True,
-        True,
-        True,
-        False,
-        True,
-        False,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        False,
-        True,
-    ],
-}
-DF = pd.DataFrame(DATA)
-DF["X"] = DF["X"].astype(float)
-DF["Y"] = DF["Y"].astype(float)
-DF["Z"] = DF["Z"].astype(float)
 
 
 def test_bottom_point() -> None:
@@ -462,6 +212,21 @@ def test_multiple() -> None:
     assert all(result.WELL_NAME.isin(DF.WELL_NAME))
     assert all(DF.WELL_NAME.isin(result.WELL_NAME))
 
+    assert len(result[result["WELL_NAME"] == "K"]) == 4
+    assert (
+        len(
+            result[
+                (
+                    result["OPEN"]
+                    == result.groupby(["WELL_NAME", "X", "Y", "Z", "LAYER_ID"])[
+                        "OPEN"
+                    ].shift(1)
+                )
+            ]
+        )
+        == 0
+    )
+
     assert (
         pd.Timestamp(
             result.loc[result["WELL_NAME"] == "A"]["DATE"].values[0]
@@ -521,8 +286,8 @@ def test_multiple() -> None:
 def test_multiple_based_on_workovers() -> None:
     result = multiple_based_on_workovers(DF)
 
-    assert multiple(DF).shape[1] is multiple_based_on_workovers(DF).shape[1]
-    assert multiple(DF).shape[0] > multiple_based_on_workovers(DF).shape[0]
+    assert multiple(DF).shape[1] is result.shape[1]
+    assert multiple(DF).shape[0] > result.shape[0]
     assert not all(result["OPEN"].values)
     assert not all(result.X.isin(DF.X).astype(float))
     assert not all(result.Y.isin(DF.Y).astype(float))
@@ -532,6 +297,18 @@ def test_multiple_based_on_workovers() -> None:
 
     assert len(result.loc[result["WELL_NAME"] == "J"]) == 4
     assert len(result.loc[result["WELL_NAME"] == "J"]["X"].unique()) == 3
+    assert all(
+        z < DF.loc[(DF["WELL_NAME"] == "K") & (DF["LAYER_ID"] == 0)]["Z"].max()
+        for z in result.loc[(result["WELL_NAME"] == "K") & (result["LAYER_ID"] == 0)][
+            "Z"
+        ].values
+    )
+    assert all(
+        z > DF.loc[(DF["WELL_NAME"] == "K") & (DF["LAYER_ID"] == 1)]["Z"].min()
+        for z in result.loc[(result["WELL_NAME"] == "K") & (result["LAYER_ID"] == 1)][
+            "Z"
+        ].values
+    )
 
     assert (
         pd.Timestamp(
