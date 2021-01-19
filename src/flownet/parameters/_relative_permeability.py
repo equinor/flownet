@@ -276,16 +276,13 @@ class RelativePermeability(Parameter):
         partial_gen_wo = functools.partial(gen_wo, fast_pyscal=True)
         partial_gen_og = functools.partial(gen_og, fast_pyscal=True)
 
-        print(len(parameters))
-        print(len(self._scal_for_interp))
-
-        if isinstance(self._interpolation_values, pd.DataFrame):
+        if self._scal_for_interp is not None:
             wog_list = self._scal_for_interp.interpolate(
                 [param.get("interpolate") for param in parameters],
                 [param.get("interpolate gas") for param in parameters]
                 if self._independent_interpolation
                 else None,
-                h=0.05,
+                h=H_CONSTANT,
             )
             str_props_section = wog_list.SWOF()
             str_props_section += wog_list.SGOF()
