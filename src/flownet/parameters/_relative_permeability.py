@@ -48,35 +48,6 @@ def gen_wog(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOilGas:
     return wog_relperm
 
 
-def gen_wog_interpolate(
-    parameters: pd.DataFrame,
-    scal_for_interp: PyscalList,
-    independent_interp: bool,
-    fast_pyscal: bool = False,
-) -> WaterOilGas:
-    """
-    Creates a PyScal WaterOilGas object based on the input parameters supplied.
-
-    Args:
-        parameters: A dataframe consisting of all specified parameters.
-        scal_for_interp: PyscalList
-        independent_interp: Run oil/water and gas/oil interpolation independently
-        fast_pyscal: Run pyscal in fast-mode skipping checks. Useful for large models/ensemble.
-
-    Returns:
-        A PyScal WaterOilGas object
-
-    """
-
-    print("Inne")
-    wog_relperm_interpolate = scal_for_interp.interpolate(
-        parameters["interpolate"],
-        parameters["interpolate gas"] if independent_interp else None,
-    )
-
-    return wog_relperm_interpolate
-
-
 def gen_wo(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOil:
     """
     Creates a PyScal WaterOil object based on the input parameters supplied.
@@ -301,11 +272,6 @@ class RelativePermeability(Parameter):
             )
             parameters.append(param_value_dict)
 
-        partial_gen_wog_interpolate = functools.partial(
-            gen_wog_interpolate,
-            independent_interpolation=self._independent_interpolation,
-            fast_pyscal=True,
-        )
         partial_gen_wog = functools.partial(gen_wog, fast_pyscal=True)
         partial_gen_wo = functools.partial(gen_wo, fast_pyscal=True)
         partial_gen_og = functools.partial(gen_og, fast_pyscal=True)
