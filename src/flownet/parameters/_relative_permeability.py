@@ -48,6 +48,35 @@ def gen_wog(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOilGas:
     return wog_relperm
 
 
+def gen_wog_interpolate(
+    parameters: pd.DataFrame,
+    scal_for_interp: PyscalList,
+    independent_interp: bool,
+    fast_pyscal: bool = False,
+) -> WaterOilGas:
+    """
+    Creates a PyScal WaterOilGas object based on the input parameters supplied.
+
+    Args:
+        parameters: A dataframe consisting of all specified parameters.
+        scal_for_interp: PyscalList
+        independent_interp: Run oil/water and gas/oil interpolation independently
+        fast_pyscal: Run pyscal in fast-mode skipping checks. Useful for large models/ensemble.
+
+    Returns:
+        A PyScal WaterOilGas object
+
+    """
+
+    print("Inne")
+    wog_relperm_interpolate = scal_for_interp.interpolate(
+        parameters["interpolate"],
+        parameters["interpolate gas"] if independent_interp else None,
+    )
+
+    return wog_relperm_interpolate
+
+
 def gen_wo(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOil:
     """
     Creates a PyScal WaterOil object based on the input parameters supplied.
@@ -272,28 +301,28 @@ class RelativePermeability(Parameter):
             )
             parameters.append(param_value_dict)
 
+        partial_gen_wog_interpolate = functools.partial(
+            gen_wog_interpolate,
+            independent_interpolation=self._independent_interpolation,
+            fast_pyscal=True,
+        )
         partial_gen_wog = functools.partial(gen_wog, fast_pyscal=True)
         partial_gen_wo = functools.partial(gen_wo, fast_pyscal=True)
         partial_gen_og = functools.partial(gen_og, fast_pyscal=True)
 
+        print(len(parameters))
+        print(len(self._scal_for_interp))
+
         if isinstance(self._interpolation_values, pd.DataFrame):
-            for i, parameter in enumerate(parameters, 1):
-                if self._scal_for_interp is not None:
-                    relperm = self._scal_for_interp[i].interpolate(
-                        parameter.get("interpolate"),
-                        parameter.get("interpolate gas")
-                        if self._independent_interpolation
-                        else None,
-                    )
-                    if self._swof:
-                        str_swofs += relperm.SWOF(header=False)
-                    if self._sgof:
-                        str_sgofs += relperm.SGOF(header=False)
-                    if not self._swof and not self._sgof:
-                        raise ValueError(
-                            "It seems like both SWOF and SGOF should not be generated."
-                            "Either one of the two should be generated. Can't continue..."
-                        )
+            wog_list = self._scal_for_interp.interpolate(
+                [param.get("interpolate") for param in parameters],
+                [param.get("interpolate gas") for param in parameters]
+                if self._independent_interpolation
+                else None,
+                h=0.05,
+            )
+            str_props_section = wog_list.SWOF()
+            str_props_section += wog_list.SGOF()
         else:
             if self._swof and self._sgof:
                 with concurrent.futures.ProcessPoolExecutor() as executor:
@@ -320,8 +349,8 @@ class RelativePermeability(Parameter):
                     "Either one of the two should be generated. Can't continue..."
                 )
 
-        str_props_section = f"SWOF\n{str_swofs}\n" if self._swof else ""
-        str_props_section += f"SGOF\n{str_sgofs}\n" if self._sgof else ""
+            str_props_section = f"SWOF\n{str_swofs}\n" if self._swof else ""
+            str_props_section += f"SGOF\n{str_sgofs}\n" if self._sgof else ""
 
         str_runspec_section = "\n".join(self._phases).upper() + "\n"
 
