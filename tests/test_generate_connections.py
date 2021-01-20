@@ -105,7 +105,9 @@ def test_generate_connections() -> None:
     config.flownet.angle_threshold = None
 
     starts, ends = _generate_connections(
-        df_coordinates=DF_COORDINATES, configuration=config
+        df_coordinates=DF_COORDINATES,
+        configuration=config,
+        additional_flownodes=config.flownet.additional_flow_nodes,
     )
 
     assert len(starts) == len(ends)
@@ -115,6 +117,7 @@ def test_generate_connections() -> None:
     starts, ends = _generate_connections(
         df_coordinates=DF_COORDINATES,
         configuration=config,
+        additional_flownodes=config.flownet.additional_flow_nodes,
         concave_hull_bounding_boxes=np.array([0, 2, 0, 2, 0, 2]).reshape(-1, 6),
     )
 
@@ -126,7 +129,9 @@ def test_generate_connections() -> None:
     config.flownet.angle_threshold = 150
 
     starts, ends = _generate_connections(
-        df_coordinates=DF_COORDINATES, configuration=config
+        df_coordinates=DF_COORDINATES,
+        configuration=config,
+        additional_flownodes=config.flownet.additional_flow_nodes,
     )
 
     assert len(starts) == len(ends)
@@ -136,7 +141,9 @@ def test_generate_connections() -> None:
     # Test removal of all connections
     config.flownet.angle_threshold = 1
     starts, ends = _generate_connections(
-        df_coordinates=DF_COORDINATES, configuration=config
+        df_coordinates=DF_COORDINATES,
+        configuration=config,
+        additional_flownodes=config.flownet.additional_flow_nodes,
     )
 
     assert len(starts) == len(ends) == 0

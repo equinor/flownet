@@ -94,9 +94,46 @@ def _remove_recorded_connections(
     return conn_matrix
 
 
+def _split_additional_flow_nodes(
+    configuration: Any, concave_hull_bounding_boxes: np.ndarray
+) -> List:
+    """
+    This function takes splits the additional_flow_nodes defined in the config over the layers. The division is based on the size (volume) of the boundingbox of the layer.
+
+    Args:
+        configuration: FlowNet configuration yaml as dictionary
+        concave_hull_bounding_boxes: List of boundingbox per layer, i.e., numpy array with x, y, z min/max
+            boundingboxes for each grid block
+
+    Returns:
+        List of additional notes per layer (len of list same as number of layers)
+
+    """
+    total_additional_nodes = configuration.flownet.additional_flow_nodes
+    volumes = []
+    for xyz in concave_hull_bounding_boxes:
+        volume = sum(
+            [
+                (
+                    (xyz[i, 1] - xyz[i, 0])
+                    * (xyz[i, 3] - xyz[i, 2])
+                    * (xyz[i, 5] - xyz[i, 4])
+                )
+                for i in range(0, xyz.shape[0])
+            ]
+        )
+        volumes.append(volume)
+
+    fractions = [v / sum(volumes) for v in volumes]
+    sep_add_flownodes = [round(frac * total_additional_nodes) for frac in fractions]
+
+    return sep_add_flownodes
+
+
 def _generate_connections(
     df_coordinates: pd.DataFrame,
     configuration: Any,
+    additional_flownodes: int,
     concave_hull_bounding_boxes: Optional[np.ndarray] = None,
 ) -> Tuple[List[Coordinate], List[Coordinate]]:
     """
@@ -106,7 +143,8 @@ def _generate_connections(
 
     Args:
         df_coordinates: coordinates on original DataFrame format
-        configuration: FlowNet configuration yaml
+        configuration: Flownet configuration yaml,
+        additional_flownodes: Number of additional flow nodes to generate
         concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
 
     Returns:
@@ -128,7 +166,7 @@ def _generate_connections(
         tuple(elem)
         for elem in mitchell_best_candidate_modified_3d(
             well_perforations,
-            num_added_flow_nodes=configuration.flownet.additional_flow_nodes,
+            num_added_flow_nodes=additional_flownodes,
             num_candidates=configuration.flownet.additional_node_candidates,
             hull_factor=configuration.flownet.hull_factor,
             concave_hull_bounding_boxes=concave_hull_bounding_boxes,
@@ -547,6 +585,14 @@ def create_connections(
         Desired restructuring of start-end coordinates into separate columns, as per Flow needs.
 
     """
+    if df_coordinates["LAYER_ID"].nunique() > 1:
+        additional_flownodes = _split_additional_flow_nodes(
+            configuration=configuration,
+            concave_hull_bounding_boxes=concave_hull_bounding_boxes,
+        )
+    else:
+        additional_flownodes = [configuration.flownet.additional_flow_nodes]
+
     starts: List[Coordinate] = []
     ends: List[Coordinate] = []
 
@@ -554,6 +600,7 @@ def create_connections(
         starts_append, ends_append = _generate_connections(
             df_coordinates=df_coordinates[df_coordinates["LAYER_ID"] == layer_id],
             configuration=configuration,
+            additional_flownodes=additional_flownodes[i],
             concave_hull_bounding_boxes=concave_hull_bounding_boxes[i],  # type: ignore
         )
         starts.extend(starts_append)
