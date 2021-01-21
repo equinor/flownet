@@ -111,6 +111,11 @@ def _split_additional_flow_nodes(
     """
     volumes = []
     for xyz in concave_hull_list:
+        if len(xyz.shape) == 1:
+            num_bounding_boxes = 1
+            xyz = xyz[None, :]
+        else:
+            num_bounding_boxes = xyz.shape[0]
         volume = sum(
             [
                 (
@@ -118,7 +123,7 @@ def _split_additional_flow_nodes(
                     * (xyz[i, 3] - xyz[i, 2])
                     * (xyz[i, 5] - xyz[i, 4])
                 )
-                for i in range(0, xyz.shape[0])
+                for i in range(0, num_bounding_boxes)
             ]
         )
         volumes.append(volume)
