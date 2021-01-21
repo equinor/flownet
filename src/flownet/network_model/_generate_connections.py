@@ -98,7 +98,8 @@ def _split_additional_flow_nodes(
     total_additional_nodes: int, concave_hull_list: List[np.ndarray]
 ) -> List:
     """
-    This function takes splits the additional_flow_nodes defined in the config over the layers. The division is based on the size (volume) of the boundingbox of the layer.
+    This function takes splits the additional_flow_nodes defined in the config over the layers.
+    The division is based on the size (volume) of the boundingbox of the layer.
 
     Args:
         configuration: FlowNet configuration yaml as dictionary
