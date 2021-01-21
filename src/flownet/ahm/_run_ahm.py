@@ -386,7 +386,6 @@ def run_flownet_history_matching(
     # Define variables
     area = 100
     cell_length = config.flownet.cell_length
-    fast_pyscal = config.flownet.fast_pyscal
     column_names_probdist = [
         "parameter",
         "minimum",
@@ -743,9 +742,8 @@ def run_flownet_history_matching(
             relperm_dist_values,
             ti2ci,
             df_satnum,
-            config.flownet.phases,
+            config,
             interpolation_values=relperm_interp_values,
-            fast_pyscal=fast_pyscal,
         ),
         Equilibration(
             equil_dist_values,
