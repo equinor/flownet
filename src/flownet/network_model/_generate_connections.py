@@ -601,12 +601,15 @@ def create_connections(
     starts: List[Coordinate] = []
     ends: List[Coordinate] = []
 
+    if concave_hull_list is None:
+        concave_hull_list = [None] * df_coordinates["LAYER_ID"].nunique()
+
     for i, layer_id in enumerate(df_coordinates["LAYER_ID"].unique()):
         starts_append, ends_append = _generate_connections(
             df_coordinates=df_coordinates[df_coordinates["LAYER_ID"] == layer_id],
             configuration=configuration,
             additional_flow_nodes=additional_flow_nodes_list[i],
-            concave_hull_bounding_boxes=concave_hull_list[i],  # type: ignore
+            concave_hull_bounding_boxes=concave_hull_list[i],
         )
         starts.extend(starts_append)
         ends.extend(ends_append)
