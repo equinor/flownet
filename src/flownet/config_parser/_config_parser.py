@@ -1616,9 +1616,9 @@ def parse_config(
             )
     if layers and not config.flownet.data_source.concave_hull:
         raise ValueError(
-            f"Concave_hull should be True when layers are defined. "
-            f"The concave hulls of the layers are used to split"
-            f"the number of additional nodes between the layers."
+            "Concave_hull should be True when layers are defined. "
+            "The concave hulls of the layers are used to split"
+            "the number of additional nodes between the layers."
         )
 
     req_relp_parameters: List[str] = []
