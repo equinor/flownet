@@ -104,6 +104,7 @@ def test_generate_connections() -> None:
     config.flownet.random_seed = 1
     config.flownet.angle_threshold = None
 
+    # pylint: disable=no-member
     starts, ends = _generate_connections(
         df_coordinates=DF_COORDINATES,
         configuration=config,
