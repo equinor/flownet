@@ -762,6 +762,13 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 "per SATNUM region. Only available for three phase problems.",
                                 MK.Default: False,
                             },
+                            "independent_interpolation": {
+                                MK.Type: types.Bool,
+                                MK.Description: "The interpolation between low/base/high relative permeability curves "
+                                "is performed independently for oil/gas and oil/water "
+                                "per SATNUM region. Only available for three phase problems.",
+                                MK.Default: False,
+                            },
                             "regions": {
                                 MK.Type: types.List,
                                 MK.Content: {
