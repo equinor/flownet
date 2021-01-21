@@ -417,23 +417,23 @@ def run_flownet_history_matching(
         field_data.faults if config.model_parameters.fault_mult else None
     )
 
-    concave_hull_bounding_boxes: Optional[List[np.ndarray]] = None
+    concave_hull_list: Optional[List[np.ndarray]] = None
     if config.flownet.data_source.concave_hull:
-        concave_hull_bounding_boxes = []
+        concave_hull_list = []
         if df_well_connections["LAYER_ID"].nunique() > 1:
             for layer_id in df_well_connections["LAYER_ID"].unique():
-                concave_hull_bounding_boxes.append(
+                concave_hull_list.append(
                     field_data.grid_cell_bounding_boxes(layer_id=layer_id)
                 )
         else:
-            concave_hull_bounding_boxes.append(field_data.grid_cell_bounding_boxes())
+            concave_hull_list.append(field_data.grid_cell_bounding_boxes())
 
     df_entity_connections: pd.DataFrame = create_connections(
         df_well_connections[["WELL_NAME", "X", "Y", "Z", "LAYER_ID"]].drop_duplicates(
             keep="first"
         ),
         config,
-        concave_hull_bounding_boxes=concave_hull_bounding_boxes,
+        concave_hull_list=concave_hull_list,
     )
 
     network = NetworkModel(
