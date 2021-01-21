@@ -1614,6 +1614,12 @@ def parse_config(
                 f"Valid way to define the layering is as nested list with "
                 f"layer intervals. e.g. ((1, 5),(6, 9),(10, 15))."
             )
+    if layers and not config.flownet.data_source.concave_hull:
+        raise ValueError(
+            f"Concave_hull should be True when layers are defined. "
+            f"The concave hulls of the layers are used to split"
+            f"the number of additional nodes between the layers."
+        )
 
     req_relp_parameters: List[str] = []
     if (
