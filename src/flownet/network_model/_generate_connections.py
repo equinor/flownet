@@ -395,7 +395,7 @@ def _create_entity_connection_matrix(
         str_start_entity = __get_entity_str(df_coordinates, start)
         str_end_entity = __get_entity_str(df_coordinates, end)
 
-        if concave_hull_bounding_boxes is not None:
+        if concave_hull_list is not None:
             tube_coordinates = linspace(
                 start=start,
                 stop=end,
