@@ -137,7 +137,7 @@ def _split_additional_flow_nodes(
 def _generate_connections(
     df_coordinates: pd.DataFrame,
     configuration: Any,
-    additional_flownodes: int,
+    additional_flow_nodes: int,
     concave_hull_bounding_boxes: Optional[np.ndarray] = None,
 ) -> Tuple[List[Coordinate], List[Coordinate]]:
     """
@@ -170,7 +170,7 @@ def _generate_connections(
         tuple(elem)
         for elem in mitchell_best_candidate_modified_3d(
             well_perforations,
-            num_added_flow_nodes=additional_flownodes,
+            num_added_flow_nodes=additional_flow_nodes,
             num_candidates=configuration.flownet.additional_node_candidates,
             hull_factor=configuration.flownet.hull_factor,
             concave_hull_bounding_boxes=concave_hull_bounding_boxes,
@@ -590,12 +590,12 @@ def create_connections(
 
     """
     if df_coordinates["LAYER_ID"].nunique() > 1:
-        additional_flownodes = _split_additional_flow_nodes(
+        additional_flow_nodes_list = _split_additional_flow_nodes(
             total_additional_nodes=configuration.flownet.additional_flow_nodes,
             concave_hull_list=concave_hull_list,
         )
     else:
-        additional_flownodes = [configuration.flownet.additional_flow_nodes]
+        additional_flow_nodes_list = [configuration.flownet.additional_flow_nodes]
 
     starts: List[Coordinate] = []
     ends: List[Coordinate] = []
@@ -604,7 +604,7 @@ def create_connections(
         starts_append, ends_append = _generate_connections(
             df_coordinates=df_coordinates[df_coordinates["LAYER_ID"] == layer_id],
             configuration=configuration,
-            additional_flownodes=additional_flownodes[i],
+            additional_flow_nodes=additional_flow_nodes_list[i],
             concave_hull_bounding_boxes=concave_hull_list[i],  # type: ignore
         )
         starts.extend(starts_append)
