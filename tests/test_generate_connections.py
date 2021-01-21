@@ -109,8 +109,8 @@ def test_generate_connections() -> None:
     starts, ends = _generate_connections(
         df_coordinates=DF_COORDINATES,
         configuration=config,
-        additional_flownodes=config.flownet.additional_flow_nodes,
-    )
+        additional_flow_nodes=config.flownet.additional_flow_nodes,
+    )  # pylint: disable=no-member
 
     assert len(starts) == len(ends)
     assert all([starts[i] == approx(STARTS_NONE[i]) for i in range(len(starts))])
@@ -119,7 +119,7 @@ def test_generate_connections() -> None:
     starts, ends = _generate_connections(
         df_coordinates=DF_COORDINATES,
         configuration=config,
-        additional_flownodes=config.flownet.additional_flow_nodes,
+        additional_flow_nodes=config.flownet.additional_flow_nodes,
         concave_hull_bounding_boxes=np.array([0, 2, 0, 2, 0, 2]).reshape(-1, 6),
     )
 
@@ -133,7 +133,7 @@ def test_generate_connections() -> None:
     starts, ends = _generate_connections(
         df_coordinates=DF_COORDINATES,
         configuration=config,
-        additional_flownodes=config.flownet.additional_flow_nodes,
+        additional_flow_nodes=config.flownet.additional_flow_nodes,
     )
 
     assert len(starts) == len(ends)
@@ -145,7 +145,7 @@ def test_generate_connections() -> None:
     starts, ends = _generate_connections(
         df_coordinates=DF_COORDINATES,
         configuration=config,
-        additional_flownodes=config.flownet.additional_flow_nodes,
+        additional_flow_nodes=config.flownet.additional_flow_nodes,
     )
 
     assert len(starts) == len(ends) == 0
