@@ -149,7 +149,7 @@ def _generate_connections(
     Args:
         df_coordinates: coordinates on original DataFrame format
         configuration: Flownet configuration yaml,
-        additional_flownodes: Number of additional flow nodes to generate
+        additional_flow_nodes: Number of additional flow nodes to generate
         concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
 
     Returns:

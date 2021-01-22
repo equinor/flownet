@@ -110,7 +110,7 @@ def test_generate_connections() -> None:
         df_coordinates=DF_COORDINATES,
         configuration=config,
         additional_flow_nodes=config.flownet.additional_flow_nodes,
-    )  # pylint: disable=no-member
+    )
 
     assert len(starts) == len(ends)
     assert all([starts[i] == approx(STARTS_NONE[i]) for i in range(len(starts))])

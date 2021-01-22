@@ -317,7 +317,7 @@ class FlowData(FromSource):
 
         return df_faults.drop(["I", "J", "K"], axis=1)
 
-    def grid_cell_bounding_boxes(self, layer_id: Optional[int] = None) -> np.ndarray:
+    def grid_cell_bounding_boxes(self, layer_id: int) -> np.ndarray:
         """
         Function to get the bounding box (x, y and z min + max) for all grid cells
 
@@ -328,7 +328,7 @@ class FlowData(FromSource):
             A (active grid cells x 6) numpy array with columns [ xmin, xmax, ymin, ymax, zmin, zmax ]
             filtered on layer_id if not None.
         """
-        if layer_id is not None:
+        if self._layers:
             (k_min, k_max) = tuple(map(operator.sub, self._layers[layer_id], (1, 1)))
         else:
             (k_min, k_max) = (0, self._grid.nz)
