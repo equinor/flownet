@@ -96,18 +96,18 @@ def _remove_recorded_connections(
 
 def _split_additional_flow_nodes(
     total_additional_nodes: int, concave_hull_list: List[np.ndarray]
-) -> List:
+) -> List[int]:
     """
-    This function takes splits the additional_flow_nodes defined in the config over the layers.
-    The division is based on the size (volume) of the boundingbox of the layer.
+    This function splits the additional_flow_nodes defined in the config over the layers.
+    The division is based on the sum of the volume of the boundingboxes in the layer.
 
     Args:
-        configuration: FlowNet configuration yaml as dictionary
-        concave_hull_list: List of boundingbox per layer, i.e., numpy array with x, y, z min/max
+        total_additional_nodes: The total number of additional nodes to add to the model
+        concave_hull_list: List of boundingboxes per layer, i.e., numpy array with x, y, z min/max
             boundingboxes for each grid block
 
     Returns:
-        List of additional notes per layer (len of list same as number of layers)
+        List of additional nodes per layer (len of list, same as number of layers)
 
     """
     volumes = []
@@ -376,7 +376,7 @@ def _create_entity_connection_matrix(
         aquifer_ends: List of coordinates of all aquifer ends
         max_distance_fraction: Fraction of longest connection distance to be removed
         max_distance: Maximum distance between nodes, removed otherwise
-        concave_hull_list: List of boundingbox per layer, i.e., numpy array with x, y, z min/max
+        concave_hull_list: List of boundingboxes per layer, i.e., numpy array with x, y, z min/max
             boundingboxes for each grid block
         n_non_reservoir_evaluation: Number of equally spaced points along a connection to check fornon-reservoir.
 
