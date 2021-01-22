@@ -1,7 +1,7 @@
 import warnings
 import operator
 from pathlib import Path
-from typing import Union, List, Optional, Tuple
+from typing import Union, List, Tuple
 
 import numpy as np
 import pandas as pd
