@@ -94,9 +94,51 @@ def _remove_recorded_connections(
     return conn_matrix
 
 
+def _split_additional_flow_nodes(
+    total_additional_nodes: int, concave_hull_list: List[np.ndarray]
+) -> List[int]:
+    """
+    This function splits the additional_flow_nodes defined in the config over the layers.
+    The division is based on the sum of the volume of the boundingboxes in the layer.
+
+    Args:
+        total_additional_nodes: The total number of additional nodes to add to the model
+        concave_hull_list: List of boundingboxes per layer, i.e., numpy array with x, y, z min/max
+            boundingboxes for each grid block
+
+    Returns:
+        List of additional nodes per layer (len of list, same as number of layers)
+
+    """
+    volumes = []
+    for xyz in concave_hull_list:
+        if len(xyz.shape) == 1:
+            num_bounding_boxes = 1
+            xyz = xyz[None, :]
+        else:
+            num_bounding_boxes = xyz.shape[0]
+        volume = sum(
+            [
+                (
+                    (xyz[i, 1] - xyz[i, 0])
+                    * (xyz[i, 3] - xyz[i, 2])
+                    * (xyz[i, 5] - xyz[i, 4])
+                )
+                for i in range(0, num_bounding_boxes)
+            ]
+        )
+        volumes.append(volume)
+
+    fractions = [v / sum(volumes) for v in volumes]
+    sep_add_flownodes = [round(frac * total_additional_nodes) for frac in fractions]
+
+    return sep_add_flownodes
+
+
 def _generate_connections(
     df_coordinates: pd.DataFrame,
     configuration: Any,
+    additional_flow_nodes: int,
     concave_hull_bounding_boxes: Optional[np.ndarray] = None,
 ) -> Tuple[List[Coordinate], List[Coordinate]]:
     """
@@ -106,7 +148,8 @@ def _generate_connections(
 
     Args:
         df_coordinates: coordinates on original DataFrame format
-        configuration: FlowNet configuration yaml
+        configuration: Flownet configuration yaml,
+        additional_flow_nodes: Number of additional flow nodes to generate
         concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
 
     Returns:
@@ -128,7 +171,7 @@ def _generate_connections(
         tuple(elem)
         for elem in mitchell_best_candidate_modified_3d(
             well_perforations,
-            num_added_flow_nodes=configuration.flownet.additional_flow_nodes,
+            num_added_flow_nodes=additional_flow_nodes,
             num_candidates=configuration.flownet.additional_node_candidates,
             hull_factor=configuration.flownet.hull_factor,
             concave_hull_bounding_boxes=concave_hull_bounding_boxes,
@@ -319,7 +362,7 @@ def _create_entity_connection_matrix(
     aquifer_ends: List[Coordinate],
     max_distance_fraction: float,
     max_distance: float,
-    concave_hull_bounding_boxes: Optional[np.ndarray] = None,
+    concave_hull_list: Optional[List[np.ndarray]] = None,
     n_non_reservoir_evaluation: Optional[int] = 10,
 ) -> pd.DataFrame:
     """
@@ -333,7 +376,8 @@ def _create_entity_connection_matrix(
         aquifer_ends: List of coordinates of all aquifer ends
         max_distance_fraction: Fraction of longest connection distance to be removed
         max_distance: Maximum distance between nodes, removed otherwise
-        concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
+        concave_hull_list: List of boundingboxes per layer, i.e., numpy array with x, y, z min/max
+            boundingboxes for each grid block
         n_non_reservoir_evaluation: Number of equally spaced points along a connection to check fornon-reservoir.
 
     Returns:
@@ -357,7 +401,7 @@ def _create_entity_connection_matrix(
         str_start_entity = __get_entity_str(df_coordinates, start)
         str_end_entity = __get_entity_str(df_coordinates, end)
 
-        if concave_hull_bounding_boxes is not None:
+        if concave_hull_list is not None:
             tube_coordinates = linspace(
                 start=start,
                 stop=end,
@@ -367,7 +411,12 @@ def _create_entity_connection_matrix(
                 axis=1,
             ).T
 
-            if not all(check_in_hull(concave_hull_bounding_boxes, tube_coordinates)):
+            if not any(
+                [
+                    all(check_in_hull(concave_hull, tube_coordinates))
+                    for concave_hull in concave_hull_list
+                ]
+            ):
                 continue
 
         df_out = df_out.append(
@@ -522,7 +571,7 @@ def _generate_aquifer_connections(
 def create_connections(
     df_coordinates: pd.DataFrame,
     configuration: Any,
-    concave_hull_bounding_boxes: Optional[np.ndarray] = None,
+    concave_hull_list: Optional[List[np.ndarray]] = None,
 ) -> pd.DataFrame:
     """
     Creates additional flow nodes to increase complexity of field simulation structure so that history-matching can
@@ -534,17 +583,45 @@ def create_connections(
     Args:
         df_coordinates: Original structure of entity and X, Y, Z coords
         configuration: FlowNet configuration yaml as dictionary
-        concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
+        concave_hull_list: List of boundingboxes per layer, i.e., numpy array with x, y, z min/max
+            boundingboxes for each grid block
 
     Returns:
         Desired restructuring of start-end coordinates into separate columns, as per Flow needs.
 
     """
-    starts, ends = _generate_connections(
-        df_coordinates=df_coordinates,
-        configuration=configuration,
-        concave_hull_bounding_boxes=concave_hull_bounding_boxes,
-    )
+    if df_coordinates["LAYER_ID"].nunique() > 1 and concave_hull_list is not None:
+        additional_flow_nodes_list = _split_additional_flow_nodes(
+            total_additional_nodes=configuration.flownet.additional_flow_nodes,
+            concave_hull_list=concave_hull_list,
+        )
+    else:
+        additional_flow_nodes_list = [configuration.flownet.additional_flow_nodes]
+
+    starts: List[Coordinate] = []
+    ends: List[Coordinate] = []
+
+    if concave_hull_list is not None:
+        for i, layer_id in enumerate(df_coordinates["LAYER_ID"].unique()):
+            starts_append, ends_append = _generate_connections(
+                df_coordinates=df_coordinates[df_coordinates["LAYER_ID"] == layer_id],
+                configuration=configuration,
+                additional_flow_nodes=additional_flow_nodes_list[i],
+                concave_hull_bounding_boxes=concave_hull_list[i],
+            )
+            starts.extend(starts_append)
+            ends.extend(ends_append)
+    else:
+        for i, layer_id in enumerate(df_coordinates["LAYER_ID"].unique()):
+            starts_append, ends_append = _generate_connections(
+                df_coordinates=df_coordinates[df_coordinates["LAYER_ID"] == layer_id],
+                configuration=configuration,
+                additional_flow_nodes=additional_flow_nodes_list[i],
+                concave_hull_bounding_boxes=concave_hull_list,
+            )
+            starts.extend(starts_append)
+            ends.extend(ends_append)
+
     aquifer_starts: List[Coordinate] = []
     aquifer_ends: List[Coordinate] = []
 
@@ -566,6 +643,6 @@ def create_connections(
         aquifer_ends,
         configuration.flownet.max_distance_fraction,
         configuration.flownet.max_distance,
-        concave_hull_bounding_boxes=concave_hull_bounding_boxes,
+        concave_hull_list=concave_hull_list,
         n_non_reservoir_evaluation=configuration.flownet.n_non_reservoir_evaluation,
     ).reset_index()

@@ -8,6 +8,7 @@ from flownet.network_model._generate_connections import (
     _generate_connections,
     _create_entity_connection_matrix,
     _is_angle_too_large,
+    _split_additional_flow_nodes,
 )
 
 DATA = {
@@ -104,8 +105,11 @@ def test_generate_connections() -> None:
     config.flownet.random_seed = 1
     config.flownet.angle_threshold = None
 
+    # pylint: disable=no-member
     starts, ends = _generate_connections(
-        df_coordinates=DF_COORDINATES, configuration=config
+        df_coordinates=DF_COORDINATES,
+        configuration=config,
+        additional_flow_nodes=config.flownet.additional_flow_nodes,
     )
 
     assert len(starts) == len(ends)
@@ -115,6 +119,7 @@ def test_generate_connections() -> None:
     starts, ends = _generate_connections(
         df_coordinates=DF_COORDINATES,
         configuration=config,
+        additional_flow_nodes=config.flownet.additional_flow_nodes,
         concave_hull_bounding_boxes=np.array([0, 2, 0, 2, 0, 2]).reshape(-1, 6),
     )
 
@@ -126,7 +131,9 @@ def test_generate_connections() -> None:
     config.flownet.angle_threshold = 150
 
     starts, ends = _generate_connections(
-        df_coordinates=DF_COORDINATES, configuration=config
+        df_coordinates=DF_COORDINATES,
+        configuration=config,
+        additional_flow_nodes=config.flownet.additional_flow_nodes,
     )
 
     assert len(starts) == len(ends)
@@ -136,10 +143,30 @@ def test_generate_connections() -> None:
     # Test removal of all connections
     config.flownet.angle_threshold = 1
     starts, ends = _generate_connections(
-        df_coordinates=DF_COORDINATES, configuration=config
+        df_coordinates=DF_COORDINATES,
+        configuration=config,
+        additional_flow_nodes=config.flownet.additional_flow_nodes,
     )
 
     assert len(starts) == len(ends) == 0
+
+
+def test_split_additional_flow_nodes() -> None:
+
+    total_additional_nodes = 100
+    concave_hull_list = [
+        np.array([[0, 2, 0, 2, 0, 2], [2, 4, 0, 2, 0, 2]]),
+        np.array([0, 2, 0, 2, 2, 4]),
+    ]
+
+    sep_add_flownodes = _split_additional_flow_nodes(
+        total_additional_nodes=total_additional_nodes,
+        concave_hull_list=concave_hull_list,
+    )
+
+    assert sum(sep_add_flownodes) == total_additional_nodes
+    assert sep_add_flownodes[0] == 67
+    assert sep_add_flownodes[1] == 33
 
 
 def test_create_entity_connection_matrix() -> None:

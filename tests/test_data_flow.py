@@ -56,15 +56,17 @@ def test_grid_cell_bounding_boxes() -> None:
         "multiple_based_on_workovers",
     )
 
-    # Test no argument and entire field being equal
+    # Test one layer for the whole field and no layers equal
     flowdata._layers = ((1, flowdata.grid.nz),)
-    assert_almost_equal(
-        flowdata._grid_cell_bounding_boxes(), flowdata._grid_cell_bounding_boxes(0)
-    )
+    field_one_layer = flowdata.grid_cell_bounding_boxes(0)
+
+    flowdata._layers = ()
+    field_no_layer = flowdata.grid_cell_bounding_boxes(0)
+    assert_almost_equal(field_one_layer, field_no_layer)
 
     # Test zero'th layer id
     flowdata._layers = ((1, 2), (3, 4))
-    result = flowdata._grid_cell_bounding_boxes(0)
+    result = flowdata.grid_cell_bounding_boxes(0)
     active_cells = EclRegion(flowdata.grid, True)
     active_cells.select_kslice(
         *tuple(map(operator.sub, flowdata._layers[0], (1, 1))), intersect=True
@@ -75,7 +77,7 @@ def test_grid_cell_bounding_boxes() -> None:
 
     # Test last layer id
     flowdata._layers = ((1, 2), (3, 4))
-    result = flowdata._grid_cell_bounding_boxes(1)
+    result = flowdata.grid_cell_bounding_boxes(1)
     active_cells = EclRegion(flowdata.grid, True)
     active_cells.select_kslice(
         *tuple(map(operator.sub, flowdata._layers[-1], (1, 1))), intersect=True
