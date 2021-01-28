@@ -295,6 +295,7 @@ def test_multiple_based_on_workovers() -> None:
     assert all(result.WELL_NAME.isin(DF.WELL_NAME))
     assert all(DF.WELL_NAME.isin(result.WELL_NAME))
 
+    assert len(result.loc[result["WELL_NAME"] == "K"]) == 2
     assert len(result.loc[result["WELL_NAME"] == "J"]) == 4
     assert len(result.loc[result["WELL_NAME"] == "J"]["X"].unique()) == 3
     assert all(
