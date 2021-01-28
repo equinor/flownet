@@ -1,23 +1,24 @@
 import argparse
+from datetime import datetime
+from multiprocessing.pool import ThreadPool
+import functools
 import glob
-import itertools
-import math
 import os
 import pathlib
 import re
+from typing import Any, Dict, Optional, List, Tuple
 
-import matplotlib.pyplot as plt
-from matplotlib.ticker import ScalarFormatter
 import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-
 from ecl.summary import EclSum
 
-from ..data import FlowData
+from flownet.data import FlowData
 
 
-def filter_dataframe(df_in, key_filter, min_value, max_value):
+def filter_dataframe(
+    df_in: pd.DataFrame, key_filter: str, min_value: Any, max_value: Any
+) -> pd.DataFrame:
     """
     This function filters the rows of a Pandas dataframe
     based on a range of values of a specified column
@@ -32,12 +33,14 @@ def filter_dataframe(df_in, key_filter, min_value, max_value):
     Returns:
         A Pandas dataframe containing only values within the specified range
         for the provided column
-    """
 
+    """
     return df_in[(df_in[key_filter] >= min_value) & (df_in[key_filter] < max_value)]
 
 
-def prepare_opm_reference_data(df_opm, str_key, n_real):
+def prepare_opm_reference_data(
+    df_opm: pd.DataFrame, str_key: str, n_real: int
+) -> np.array:
     """
     This function extracts data from selected columns of the Pandas dataframe
     containing data from reference simulation, rearranges it into a stacked
@@ -53,8 +56,8 @@ def prepare_opm_reference_data(df_opm, str_key, n_real):
         A numpy 2D array [length_data * nb_selected_columns, n_real] containing data
         from selected columns (i.e., quantity of interest for accuracy metric) of
         reference simulation stacked in a column-vector and replicated into n_real columns
-    """
 
+    """
     keys = df_opm.keys()
     keys = sorted(keys[df_opm.keys().str.contains(str_key)])
     data = np.transpose(np.tile(df_opm[keys].values.flatten(), (n_real, 1)))
@@ -62,7 +65,9 @@ def prepare_opm_reference_data(df_opm, str_key, n_real):
     return data
 
 
-def prepare_flownet_data(df_flownet, str_key, n_real):
+def prepare_flownet_data(
+    df_flownet: pd.DataFrame, str_key: str, n_real: int
+) -> np.array:
     """
     This function extracts data from selected columns of the Pandas dataframe
     containing data from an ensemble of FlowNet simulations, rearranges it into
@@ -79,8 +84,8 @@ def prepare_flownet_data(df_flownet, str_key, n_real):
         from selected columns (i.e., quantity of interest for accuracy metric) for
         an ensemble of FlowNet simulations in a column-vector. Each column correspond
         to one realization of the ensemble
-    """
 
+    """
     keys = df_flownet.keys()
     keys = sorted(keys[df_flownet.keys().str.contains(str_key)])
     data = df_flownet[keys].values.flatten()
@@ -89,7 +94,9 @@ def prepare_flownet_data(df_flownet, str_key, n_real):
     return data
 
 
-def normalize_data(data_opm_reference, data_ensembles_flownet):
+def normalize_data(
+    data_opm_reference: np.array, data_ensembles_flownet: List[np.array]
+) -> Tuple[np.array, List[np.array]]:
     """
     This function normalizes data from a 2D numpy array containing data from the
     reference simulation and multiple ensembles of FlowNet simulations,
@@ -106,9 +113,9 @@ def normalize_data(data_opm_reference, data_ensembles_flownet):
     Returns:
         norm_data_opm_reference: is a normalized 2D numpy array for the reference simulation data
         norm_data_ensembles_flownet: a list of normalized 2D numpy arrays for the ensembles of
-        lowNet simulations
-    """
+        FlowNet simulations
 
+    """
     for k, data_ens in enumerate(data_ensembles_flownet):
         if k == 0:
             tmp = data_ens
@@ -116,10 +123,18 @@ def normalize_data(data_opm_reference, data_ensembles_flownet):
             tmp = np.append(tmp, data_ens, axis=1)
 
     matrix_data = np.append(data_opm_reference, tmp, axis=1)
-    scale = 1 / (
-        np.tile(data_opm_reference.max(), matrix_data.shape[0])
-        - np.tile(data_opm_reference.min(), matrix_data.shape[0])
-    )
+
+    if np.isclose(data_opm_reference.max(), data_opm_reference.min()):
+        if np.isclose(data_opm_reference.max(), 0.0):
+            scale = np.tile(1.0, matrix_data.shape[0])
+        else:
+            scale = 1 / (np.tile(data_opm_reference.max(), matrix_data.shape[0]))
+    else:
+        scale = 1 / (
+            np.tile(data_opm_reference.max(), matrix_data.shape[0])
+            - np.tile(data_opm_reference.min(), matrix_data.shape[0])
+        )
+
     norm_matrix_data = (
         matrix_data * scale[:, None]
         - (np.tile(data_opm_reference.min(), matrix_data.shape[0]) * scale)[:, None]
@@ -136,7 +151,9 @@ def normalize_data(data_opm_reference, data_ensembles_flownet):
     return norm_data_opm_reference, norm_data_ensembles_flownet
 
 
-def accuracy_metric(data_reference, data_test, metric):
+def accuracy_metric(
+    data_reference: pd.DataFrame, data_test: np.array, metric: str
+) -> float:
     """
     This function computes a score value based on the specified accuracy metric
     by calculating discrepancy between columns of two 2D numpy arrays:
@@ -153,53 +170,66 @@ def accuracy_metric(data_reference, data_test, metric):
     Returns:
         A score value reflecting the accuracy of FlowNet simulations in terms of matching
         data from reference simulation
-    """
 
-    if metric in ("MSE", "RMSE", "NRMSE"):
+    """
+    if metric == "MSE":
         score = mean_squared_error(data_reference, data_test)
-        if metric in ("RMSE", "NRMSE"):
-            score = math.sqrt(score)
-            if metric == "NRMSE":
-                score = score / (np.amax(data_reference) - np.amin(data_reference))
-    elif metric in ("MAE", "NMAE"):
+    elif metric == "RMSE":
+        score = mean_squared_error(data_reference, data_test, squared=False)
+    elif metric == "NRMSE":
+        score = mean_squared_error(data_reference, data_test, squared=False) / (
+            np.amax(data_reference) - np.amin(data_reference)
+        )
+    elif metric == "MAE":
         score = mean_absolute_error(data_reference, data_test)
-        if metric == "NMAE":
-            score = score / (np.amax(data_reference) - np.amin(data_reference))
+    elif metric == "NMAE":
+        score = mean_absolute_error(data_reference, data_test) / (
+            np.amax(data_reference) - np.amin(data_reference)
+        )
     elif metric == "R2":
         score = r2_score(data_reference, data_test, multioutput="variance_weighted")
     else:
-        raise ValueError(f"Unknown metric {metric}")
+        raise ValueError(f"The metric {metric} is not supported.")
 
     return score
 
 
-def _load_simulations(runpath: str, ecl_base: str) -> EclSum:
+def _load_simulations(runpath: str, ecl_base: str) -> Tuple[str, Optional[EclSum]]:
     """
-    Internal helper function to simulation results in parallel.
+    Internal helper function to load simulation results in parallel.
+
     Args:
         runpath: Path to where the realization is run.
         ecl_base: Path to where the realization is run.
+
     Returns:
-        EclSum
+        (runpath, EclSum), or (runpath, None) in case of failed simulation (inexistent .UNSMRY file)
+
     """
+    try:
+        eclsum = EclSum(str(pathlib.Path(runpath) / pathlib.Path(ecl_base)))
+    except KeyboardInterrupt:
+        raise
+    except:  # pylint: disable=bare-except
+        eclsum = None
 
-    return EclSum(str(pathlib.Path(runpath) / pathlib.Path(ecl_base)))
+    return runpath, eclsum
 
 
-def load_csv_file(csv_file, csv_columns):
+def load_csv_file(csv_file: str, csv_columns: List[str]) -> pd.DataFrame:
     """
     Internal helper function to generate dataframe containing
     selected observations and respective dates
 
     Args:
         csv_file: name of CSV file
-        csv_columns: name of columns of CSV file
+        csv_columns: list of names of columns of CSV file
 
     Returns:
         Pandas dataframe containing data from existing CSV file or
         empty dataframe with requested columns if CSV file does not exist
-    """
 
+    """
     if os.path.exists(csv_file + ".csv"):
         df_csv = pd.read_csv(csv_file + ".csv")
     else:
@@ -208,7 +238,13 @@ def load_csv_file(csv_file, csv_columns):
     return df_csv
 
 
-def compute_metric_ensemble(obs, list_ensembles, metrics, str_key, iteration):
+def compute_metric_ensemble(
+    obs: np.array,
+    list_ensembles: List[np.array],
+    metrics: List[str],
+    str_key: str,
+    iteration: int,
+) -> Dict:
     """
     Internal helper function to generate dataframe containing
     selected observations and respective dates
@@ -225,8 +261,8 @@ def compute_metric_ensemble(obs, list_ensembles, metrics, str_key, iteration):
     Returns:
         Dictionary containing values of calculated accuracy metrics for selected
         quantity of interest for current iteration of AHM
-    """
 
+    """
     dict_metric = {"quantity": str_key, "iteration": iteration}
     for acc_metric in metrics:
         for obs_sim in list_ensembles:
@@ -235,7 +271,9 @@ def compute_metric_ensemble(obs, list_ensembles, metrics, str_key, iteration):
     return dict_metric
 
 
-def make_dataframe_simulation_data(path, eclbase_file, keys):
+def make_dataframe_simulation_data(
+    path: str, eclbase_file: str, keys: List[str], end_date: datetime
+) -> Tuple[pd.DataFrame, int, int]:
     """
     Internal helper function to generate dataframe containing
     data from ensemble of simulations from selected simulation keys
@@ -244,82 +282,42 @@ def make_dataframe_simulation_data(path, eclbase_file, keys):
         path: path to folder containing ensemble of simulations
         eclbase_file: name of simulation case file
         keys: list of prefix of quantities of interest to be loaded
+        end_date: end date of time period for accuracy analysis
 
     Returns:
         df_sim: Pandas dataframe contained data from ensemble of simulations
-        realizations_dict: dictionary containing path to loaded simulations
         iteration: current AHM iteration number
-    """
+        nb_real: number of realizations
 
+    """
     iteration = int(re.findall(r"[0-9]+", sorted(glob.glob(path))[-1])[-1])
     runpath_list = glob.glob(path[::-1].replace("*", str(iteration), 1)[::-1])
 
-    realizations_dict = {}
+    partial_load_simulations = functools.partial(
+        _load_simulations, ecl_base=eclbase_file
+    )
+
     # Load summary files of latest iteration
-    # with concurrent.futures.ProcessPoolExecutor() as executor:
-    for runpath, eclbase in list(zip(runpath_list, itertools.repeat(eclbase_file))):
-        realizations_dict[runpath] = _load_simulations(runpath, eclbase)
+    realizations_dict: Dict[str, Any] = {}
+    realizations_dict = dict(
+        ThreadPool(processes=None).map(partial_load_simulations, runpath_list)
+    )
 
-    # Prepare dataframe
-    # pylint: disable-msg=too-many-locals
+    n_realization = 0
+
+    # Load all simulation results for the required vector keys
     df_sim = pd.DataFrame()
-    for id_real, runpath in enumerate(realizations_dict.keys()):
-        df_tmp = pd.DataFrame()
-        dates = realizations_dict[runpath].dates
-        if id_real == 0:
-            df_sim["DATE"] = pd.Series(dates)
-            df_sim["REAL_ID"] = pd.Series(id_real * np.ones(len(dates)), dtype=int)
-        df_tmp["DATE"] = pd.Series(dates)
-        df_tmp["REAL_ID"] = pd.Series(id_real * np.ones(len(dates)), dtype=int)
+    for _, eclsum in realizations_dict.items():
+        if eclsum and eclsum.dates[-1] >= end_date:
+            df_realization = eclsum.pandas_frame(
+                column_keys=[key + "*" for key in keys]
+            )
+            df_realization["DATE"] = eclsum.dates
 
-        if id_real == 0:
-            for counter, k in enumerate(keys):
-                if counter == 0:
-                    key_list_data = [
-                        x for x in realizations_dict[runpath] if x.startswith(k)
-                    ]
-                else:
-                    key_list_data.extend(
-                        [x for x in realizations_dict[runpath] if x.startswith(k)]
-                    )
+            df_sim = df_sim.append(df_realization)
+            n_realization += 1
 
-        for key in key_list_data:
-            if id_real == 0:
-                df_sim[key] = pd.Series(realizations_dict[runpath].numpy_vector(key))
-            df_tmp[key] = pd.Series(realizations_dict[runpath].numpy_vector(key))
-
-        if id_real > 0:
-            df_sim = df_sim.append(df_tmp, ignore_index=True)
-
-    return df_sim, realizations_dict, iteration
-
-
-def save_plots_metrics(df_metrics, metrics, str_key):
-    """
-    Internal helper function to generate and save plots of evolution of
-    accuracy metrics over iterations
-
-    Args:
-        df_metrics: Pandas dataframe containing values of accuracy metrics over iterations
-        metrics: list containing names of computed accuracy metrics
-        str_key: name of quantity of interest for accuracy metric calculation
-
-    Returns:
-        Nothing
-    """
-
-    tmp_df_plot = df_metrics[df_metrics["quantity"] == str_key]
-    min_it = np.amin(tmp_df_plot["iteration"].values)
-    max_it = np.amax(tmp_df_plot["iteration"].values)
-    for acc_metric in metrics:
-        plt.figure(figsize=(6, 4))
-        plt.xlabel("Iterations")
-        plt.ylabel(acc_metric.upper() + " history")
-        plt.plot(tmp_df_plot["iteration"], tmp_df_plot[acc_metric])
-        plt.gca().yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
-        if min_it != max_it:
-            plt.xlim((min_it, max_it))
-        plt.savefig("metric_" + acc_metric + "_" + str_key + ".png")
+    return df_sim, iteration, n_realization
 
 
 def save_iteration_analytics():
@@ -334,8 +332,8 @@ def save_iteration_analytics():
 
     Returns:
         Nothing
-    """
 
+    """
     parser = argparse.ArgumentParser(prog=("Save iteration analytics to a file."))
     parser.add_argument(
         "reference_simulation", type=str, help="Path to the reference simulation case"
@@ -348,10 +346,14 @@ def save_iteration_analytics():
         "eclbase", type=str, help="Path to the simulation from runpath."
     )
     parser.add_argument(
-        "start", type=str, help="Start date (YYYY-MM-DD) for accuracy analysis."
+        "start",
+        type=lambda s: datetime.strptime(s, "%Y-%m-%d"),
+        help="Start date (YYYY-MM-DD) for accuracy analysis.",
     )
     parser.add_argument(
-        "end", type=str, help="End date (YYYY-MM-DD) for accuracy analysis."
+        "end",
+        type=lambda s: datetime.strptime(s, "%Y-%m-%d"),
+        help="End date (YYYY-MM-DD) for accuracy analysis.",
     )
     parser.add_argument(
         "quantity",
@@ -367,16 +369,17 @@ def save_iteration_analytics():
     args = parser.parse_args()
     args.runpath = args.runpath.replace("%d", "*")
 
-    print("Saving iteration analytics...", end=" ")
+    print("Saving iteration analytics...", end=" ", flush=True)
 
     # Fix list inputs
     metrics = list(args.metrics.replace("[", "").replace("]", "").split(","))
 
     # Load ensemble of FlowNet
-    (df_sim, realizations_dict, iteration,) = make_dataframe_simulation_data(
+    (df_sim, iteration, nb_real) = make_dataframe_simulation_data(
         args.runpath,
         args.eclbase,
         list(args.quantity.replace("[", "").replace("]", "").split(",")),
+        args.end,
     )
 
     # Load reference simulation (OPM-Flow/Eclipse)
@@ -397,37 +400,29 @@ def save_iteration_analytics():
     # Initiate dataframe with metrics
     df_metrics = load_csv_file(args.outfile, ["quantity", "iteration"] + metrics)
 
-    for str_key in list(args.quantity.replace("[", "").replace("]", "").split(",")):
-        # Prepare data from reference simulation
-        tmp_data = filter_dataframe(
-            df_obs,
-            "DATE",
-            np.datetime64(args.start),
-            np.datetime64(args.end),
+    # Vector keys to analyze
+    vector_keys = list(args.quantity.replace("[", "").replace("]", "").split(","))
+
+    # Prepare data from reference simulation
+    df_obs_filtered = filter_dataframe(
+        df_obs,
+        "DATE",
+        args.start,
+        args.end,
+    )
+
+    for key in vector_keys:
+
+        truth_data = (
+            df_obs_filtered.pivot(
+                index="DATE", columns="WELL_NAME", values=key.replace(":", "")
+            )
+            .add_prefix(key)
+            .fillna(0)
+            .reset_index()
         )
 
-        truth_data = pd.DataFrame()
-        truth_data["DATE"], unique_idx = np.unique(
-            tmp_data["DATE"].values, return_index=True
-        )
-        truth_data["REAL_ID"] = pd.Series(np.zeros((len(unique_idx))), dtype=int)
-        for well in np.unique(tmp_data["WELL_NAME"]):
-            truth_data[str_key[:5] + well] = np.zeros((len(unique_idx), 1))
-            truth_data.iloc[
-                [
-                    idx
-                    for idx, val in enumerate(truth_data["DATE"].values)
-                    if val in tmp_data[tmp_data["WELL_NAME"] == well]["DATE"].values
-                ],
-                truth_data.columns.get_loc(str_key[:5] + well),
-            ] = tmp_data[tmp_data["WELL_NAME"] == well][str_key[:4]].values
-
-        truth_data = truth_data.fillna(0)
-        truth_data = truth_data[list(set(truth_data.columns) & set(df_sim.columns))]
-
-        obs_opm = prepare_opm_reference_data(
-            truth_data, str_key, len(realizations_dict)
-        )
+        obs_opm = prepare_opm_reference_data(truth_data, key, nb_real)
 
         # Prepare data from ensemble of FlowNet
         ens_flownet = []
@@ -436,11 +431,11 @@ def save_iteration_analytics():
                 filter_dataframe(
                     df_sim[truth_data.columns],
                     "DATE",
-                    np.datetime64(args.start),
-                    np.datetime64(args.end),
+                    args.start,
+                    args.end,
                 ),
-                str_key,
-                len(realizations_dict),
+                key,
+                nb_real,
             )
         )
 
@@ -449,14 +444,15 @@ def save_iteration_analytics():
 
         # Appending dataframe with accuracy metrics of current iteration
         df_metrics = df_metrics.append(
-            compute_metric_ensemble(obs_opm, ens_flownet, metrics, str_key, iteration),
+            compute_metric_ensemble(obs_opm, ens_flownet, metrics, key, iteration),
             ignore_index=True,
         )
-
-        # Plotting accuracy metrics over iterations
-        save_plots_metrics(df_metrics, metrics, str_key)
 
     # Saving accuracy metrics to CSV file
     df_metrics.to_csv(args.outfile + ".csv", index=False)
 
     print("[Done]")
+
+
+if __name__ == "__main__":
+    save_iteration_analytics()

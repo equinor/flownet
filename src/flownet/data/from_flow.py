@@ -1,17 +1,17 @@
 import warnings
+import operator
 from pathlib import Path
-from typing import Union, List
-import datetime
+from typing import Union, List, Tuple
 
 import numpy as np
 import pandas as pd
-from ecl.well import WellInfo
 from ecl.grid import EclGrid
 from ecl.eclfile import EclFile, EclInitFile
 from ecl.summary import EclSum
-from ecl2df import faults
+from ecl2df import compdat, faults
 from ecl2df.eclfiles import EclFiles
 
+from ..data import perforation_strategy
 from .from_source import FromSource
 
 
@@ -21,6 +21,7 @@ class FlowData(FromSource):
 
     Args:
          input_case: Full path to eclipse case to load data from
+         layers: List with definition of isolated layers, if present.
          perforation_handling_strategy: How to deal with perforations per well.
                                                  ('bottom_point', 'top_point', 'multiple')
 
@@ -29,97 +30,122 @@ class FlowData(FromSource):
     def __init__(
         self,
         input_case: Union[Path, str],
+        layers: Tuple = (),
         perforation_handling_strategy: str = "bottom_point",
     ):
         super().__init__()
 
         self._input_case: Path = Path(input_case)
         self._eclsum = EclSum(str(self._input_case))
+        self._init = EclFile(str(self._input_case.with_suffix(".INIT")))
         self._grid = EclGrid(str(self._input_case.with_suffix(".EGRID")))
         self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
         self._init = EclInitFile(self._grid, str(self._input_case.with_suffix(".INIT")))
-        self._wells = WellInfo(
-            self._grid, rst_file=self._restart, load_segment_information=True
-        )
+        self._wells = compdat.df(EclFiles(str(self._input_case)))
+        self._layers = layers
 
         self._perforation_handling_strategy: str = perforation_handling_strategy
 
     # pylint: disable=too-many-branches
-    def _coordinates(self) -> pd.DataFrame:
+    def _well_connections(self) -> pd.DataFrame:
         """
-        Function to extract well coordinates from an Flow simulation.
+        Function to extract well connection coordinates from a Flow simulation including their
+        opening and closure time. The output of this function will be filtered based on the
+        configured perforation strategy.
 
         Returns:
-            columns: WELL_NAME, X, Y, Z
+            columns: WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID
 
         """
+        if len(self._layers) > 0 and self._grid.nz is not self._layers[-1][-1]:
+            raise ValueError(
+                f"Number of layers from config ({self._layers[-1][-1]}) is not equal to "
+                f"number of layers from flow simulation ({self._grid.nz})."
+            )
 
-        def multi_xyz_append(append_obj_list):
-            for global_conn in append_obj_list[1]:
-                coords.append(
-                    [append_obj_list[0], *self._grid.get_xyz(ijk=global_conn.ijk())]
-                )
+        new_items = []
+        for _, row in self._wells.iterrows():
+            X, Y, Z = self._grid.get_xyz(
+                ijk=(row["I"] - 1, row["J"] - 1, row["K1"] - 1)
+            )
+            if len(self._layers) > 0:
+                for count, (i, j) in enumerate(self._layers):
+                    if row["K1"] in range(i, j + 1):
+                        layer_id = count
+                        break
+            else:
+                layer_id = 0
 
+            new_row = {
+                "WELL_NAME": row["WELL"],
+                "IJK": (
+                    row["I"] - 1,
+                    row["J"] - 1,
+                    row["K1"] - 1,
+                ),
+                "X": X,
+                "Y": Y,
+                "Z": Z,
+                "DATE": row["DATE"],
+                "OPEN": bool(row["OP/SH"] == "OPEN"),
+                "LAYER_ID": layer_id,
+            }
+            new_items.append(new_row)
+
+        df = pd.DataFrame(
+            new_items,
+            columns=["WELL_NAME", "IJK", "X", "Y", "Z", "DATE", "OPEN", "LAYER_ID"],
+        )
+        df["DATE"] = pd.to_datetime(df["DATE"], format="%Y-%m-%d").dt.date
+
+        try:
+            perforation_strategy_method = getattr(
+                perforation_strategy, self._perforation_handling_strategy
+            )
+        except AttributeError as attribute_error:
+            raise NotImplementedError(
+                f"The perforation handling strategy {self._perforation_handling_strategy} is unknown."
+            ) from attribute_error
+
+        return perforation_strategy_method(df).sort_values(["DATE"])
+
+    def _well_logs(self) -> pd.DataFrame:
+        """
+        Function to extract well log information from a Flow simulation.
+
+        Returns:
+            columns: WELL_NAME, X, Y, Z, PERM (mD), PORO (-)
+
+        """
         coords: List = []
 
-        for well_name in self._wells.allWellNames():
-            global_conns = self._wells[well_name][0].globalConnections()
-            coord_append = coords.append
-            if self._perforation_handling_strategy == "bottom_point":
-                xyz = self._grid.get_xyz(ijk=global_conns[-1].ijk())
-            elif self._perforation_handling_strategy == "top_point":
-                xyz = self._grid.get_xyz(ijk=global_conns[0].ijk())
-            elif self._perforation_handling_strategy == "multiple":
-                xyz = [global_conns]
-                coord_append = multi_xyz_append
-            elif self._perforation_handling_strategy == "time_avg_open_location":
-                connection_open_time = {}
+        for well_name in self._wells["WELL"].unique():
+            unique_connections = self._wells[
+                self._wells["WELL"] == well_name
+            ].drop_duplicates(subset=["I", "J", "K1", "K2"])
+            for _, connection in unique_connections.iterrows():
+                ijk = (connection["I"] - 1, connection["J"] - 1, connection["K1"] - 1)
+                xyz = self._grid.get_xyz(ijk=ijk)
 
-                for i, conn_status in enumerate(self._wells[well_name]):
-                    time = datetime.datetime.strptime(
-                        str(conn_status.simulationTime()), "%Y-%m-%d %H:%M:%S"
-                    )
-                    if i == 0:
-                        prev_time = time
+                perm_kw = self._init.iget_named_kw("PERMX", 0)
+                poro_kw = self._init.iget_named_kw("PORO", 0)
 
-                    for connection in conn_status.globalConnections():
-                        if connection.ijk() not in connection_open_time:
-                            connection_open_time[connection.ijk()] = 0.0
-                        elif connection.isOpen():
-                            connection_open_time[connection.ijk()] += (
-                                time - prev_time
-                            ).total_seconds()
-                        else:
-                            connection_open_time[connection.ijk()] += 0.0
-
-                    prev_time = time
-
-                xyz_values = np.zeros((1, 3), dtype=np.float64)
-                total_open_time = sum(connection_open_time.values())
-
-                if total_open_time > 0:
-                    for connection, open_time in connection_open_time.items():
-                        xyz_values += np.multiply(
-                            np.array(self._grid.get_xyz(ijk=connection)),
-                            open_time / total_open_time,
-                        )
-                else:
-                    for connection, open_time in connection_open_time.items():
-                        xyz_values += np.divide(
-                            np.array(self._grid.get_xyz(ijk=connection)),
-                            len(connection_open_time.items()),
-                        )
-
-                xyz = tuple(*xyz_values)
-
-            else:
-                raise Exception(
-                    f"perforation strategy {self._perforation_handling_strategy} unknown"
+                coords.append(
+                    [
+                        well_name,
+                        *xyz,
+                        perm_kw[
+                            self._grid.cell(i=ijk[0], j=ijk[1], k=ijk[2]).active_index
+                        ],
+                        poro_kw[
+                            self._grid.cell(i=ijk[0], j=ijk[1], k=ijk[2]).active_index
+                        ],
+                    ]
                 )
 
-            coord_append([well_name, *xyz])
-
-        return pd.DataFrame(coords, columns=["WELL_NAME", "X", "Y", "Z"])
+        return pd.DataFrame(
+            coords, columns=["WELL_NAME", "X", "Y", "Z", "PERM", "PORO"]
+        )
 
     def _production_data(self) -> pd.DataFrame:
         """
@@ -134,6 +160,9 @@ class FlowData(FromSource):
                 - WOPR          Well Oil Production Rate
                 - WGPR          Well Gas Production Rate
                 - WWPR          Well Water Production Rate
+                - WOPT          Well Cumulative Oil Production
+                - WGPT          Well Cumulative Gas Production Rate
+                - WWPT          Well Cumulative Water Production Rate
                 - WBHP          Well Bottom Hole Pressure
                 - WTHP          Well Tubing Head Pressure
                 - WGIR          Well Gas Injection Rate
@@ -147,11 +176,23 @@ class FlowData(FromSource):
             * Improve robustness pf setting of Phase and Type.
 
         """
-        keys = ["WOPR", "WGPR", "WWPR", "WBHP", "WTHP", "WGIR", "WWIR", "WSTAT"]
+        keys = [
+            "WOPR",
+            "WGPR",
+            "WWPR",
+            "WOPT",
+            "WGPT",
+            "WWPT",
+            "WBHP",
+            "WTHP",
+            "WGIR",
+            "WWIR",
+            "WGIT",
+            "WWIT",
+            "WSTAT",
+        ]
 
         df_production_data = pd.DataFrame()
-
-        start_date = self._get_start_date()
 
         # Suppress a depreciation warning inside LibEcl
         warnings.simplefilter("ignore", category=DeprecationWarning)
@@ -171,30 +212,6 @@ class FlowData(FromSource):
                         )
                     except KeyError:
                         df[f"{prod_key}"] = np.nan
-
-                # Find number of leading empty rows (with only nan or 0 values)
-                zero = df.fillna(0).eq(0).all(1).sum()
-
-                if zero < df.shape[0]:
-                    # If there are no empty rows, prepend one for the start date
-                    if zero == 0:
-                        df1 = df.head(1)
-                        as_list = df1.index.tolist()
-                        idx = as_list.index(df1.index)
-                        as_list[idx] = pd.to_datetime(start_date)
-                        df1.index = as_list
-                        df = pd.concat([df1, df])
-                        for col in df.columns:
-                            df[col].values[0] = 0
-                        zero = 1
-
-                    # Keep only the last empty row (well activation date)
-                    df = df.iloc[max(zero - 1, 0) :]
-
-                    # Assign well targets to the correct schedule dates
-                    df = df.shift(-1)
-                    # Make sure the row for the final date is not empty
-                    df.iloc[-1] = df.iloc[-2]
 
                 # Set columns that have only exact zero values to np.nan
                 df.loc[:, (df == 0).all(axis=0)] = np.nan
@@ -225,6 +242,7 @@ class FlowData(FromSource):
 
         df_production_data["WSTAT"] = df_production_data["WSTAT"].map(
             {
+                0: wstat_default,
                 1: "OPEN",  # Producer OPEN
                 2: "OPEN",  # Injector OPEN
                 3: "SHUT",
@@ -299,19 +317,30 @@ class FlowData(FromSource):
 
         return df_faults.drop(["I", "J", "K"], axis=1)
 
-    def _grid_cell_bounding_boxes(self) -> np.ndarray:
+    def grid_cell_bounding_boxes(self, layer_id: int) -> np.ndarray:
         """
         Function to get the bounding box (x, y and z min + max) for all grid cells
 
+        Args:
+            layer_id: The FlowNet layer id to be used to create the bounding box.
+
         Returns:
             A (active grid cells x 6) numpy array with columns [ xmin, xmax, ymin, ymax, zmin, zmax ]
+            filtered on layer_id if not None.
         """
-        xyz = np.empty((8 * self._grid.get_num_active(), 3))
-        for active_index in range(self._grid.get_num_active()):
-            for corner in range(0, 8):
-                xyz[active_index * 8 + corner, :] = self._grid.get_cell_corner(
-                    corner, active_index=active_index
-                )
+        if self._layers:
+            (k_min, k_max) = tuple(map(operator.sub, self._layers[layer_id], (1, 1)))
+        else:
+            (k_min, k_max) = (0, self._grid.nz)
+
+        cells = [
+            cell for cell in self._grid.cells(active=True) if (k_min <= cell.k <= k_max)
+        ]
+        xyz = np.empty((8 * len(cells), 3))
+
+        for n_cell, cell in enumerate(cells):
+            for n_corner, corner in enumerate(cell.corners):
+                xyz[n_cell * 8 + n_corner, :] = corner
 
         xmin = xyz[:, 0].reshape(-1, 8).min(axis=1)
         xmax = xyz[:, 0].reshape(-1, 8).max(axis=1)
@@ -334,11 +363,6 @@ class FlowData(FromSource):
         return np.unique(self._init[name][0])
 
     @property
-    def grid_cell_bounding_boxes(self) -> np.ndarray:
-        """Boundingboxes for all gridcells"""
-        return self._grid_cell_bounding_boxes()
-
-    @property
     def faults(self) -> pd.DataFrame:
         """dataframe with all fault data"""
         return self._faults()
@@ -349,11 +373,21 @@ class FlowData(FromSource):
         return self._production_data()
 
     @property
-    def coordinates(self) -> pd.DataFrame:
-        """dataframe with all coordinates"""
-        return self._coordinates()
+    def well_connections(self) -> pd.DataFrame:
+        """dataframe with all well connection coordinates"""
+        return self._well_connections()
+
+    @property
+    def well_logs(self) -> pd.DataFrame:
+        """dataframe with all well log"""
+        return self._well_logs()
 
     @property
     def grid(self) -> EclGrid:
         """the simulation grid with properties"""
         return self._grid
+
+    @property
+    def layers(self) -> Union[Tuple[Tuple[int, int]], Tuple]:
+        """Get the list of top and bottom k-indeces of a the orignal model that represents a FlowNet layer"""
+        return self._layers

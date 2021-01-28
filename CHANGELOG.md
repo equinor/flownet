@@ -2,15 +2,35 @@
 All notable changes to `FlowNet` will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## Unreleased
 
 ### Added
+- [#305](https://github.com/equinor/flownet/pull/305) Functionality of generating seperate flownets per layer is enabled, additional nodes are split between the layers according to the volume of concave hull of the layers.
+- [#298](https://github.com/equinor/flownet/pull/298) Connections between (well)nodes that go through non-reservoir are now removed. Angle threshold export to user.
+- [#296](https://github.com/equinor/flownet/pull/296) Adapted perforation strategy to allow for layering + bug fixes in the 'multiple' and 'multiple_based_on_workovers' perforation strategies.
+- [#284](https://github.com/equinor/flownet/pull/284) Added the option to specify cumulative phase rates as observations (WOPT, WWPT, WGPT, WGIT, WWIT)
+
+### Fixes
+- [#256](https://github.com/equinor/flownet/pull/256) Fixes issues with duplicate names in hyperopt by using the full path in yaml for hyperopt parameter names.
+- [#272](https://github.com/equinor/flownet/pull/272) Adds resampling of observation dates at requested frequency by finding nearest date among existing observation dates (i.e., no interpolated dates added)
+
+## [0.4.0] - 2020-11-18
+
+### Added
+- [#251](https://github.com/equinor/flownet/pull/251) The number of available prior distributions have been expanded. It is now also possible to define the following probability distributions in the config yaml: _normal_, _lognormal_, _truncated normal_, _triangular_, _constant_, in addidion to the prevously defined ones _uniform_ and _loguniform_. This can be done for the following parameters: _bulk volume multiplier_, _porosity_, _permeability_, _aquifer size_, _fault multipliers_, _contacts (owc, goc, gwc)_ and _relative permeability parameters_.
+- [#234](https://github.com/equinor/flownet/pull/234) Added [mlflow](https://www.mlflow.org/) in combination with [hyperopt](https://github.com/hyperopt/hyperopt) which allows running flownet in batch to explore and optimise hyperparameters.
+- [#221](https://github.com/equinor/flownet/pull/221) For traceability and reproducibility, the FlowNet configuration file is now automatically copied to the output folder. The content of 'pip freeze' is stored in the file 'pipfreeze.output' in the output folder.
+- [#220](https://github.com/equinor/flownet/pull/220) User can now provide the historical _control mode_ in the production wells and _control mode_/_target_ in the injection wells. One value for each, applied to all wells.
 - [#199](https://github.com/equinor/flownet/pull/199) Added the possibility of defining a 'base' value for all parameters related to relative permeability. This provides the opportunity to interpolate between three relative permeability models. All the 'min' values will be used to construct a pessimistic or low model, the 'base' values are used for a 'base' model, and the 'high' values are used for an optimistic or high model value. The history matching can then be done with only one (two for three phase models - oil/water and gas/oil interpolated independently) relative permeability parameter(s) per SATNUM region.
+- [#197](https://github.com/equinor/flownet/pull/197) Added opening/closing of connections based on straddling/plugging/perforations through time. This PR also adds a new perforation strategy `multiple_based_on_workovers` which models the well connections with as few connections as possible taking into account opening/closing of groups of connections. 
 - [#188](https://github.com/equinor/flownet/pull/188) The possibility to extract regions from an input simulation model extended to also include SATNUM regions. For relative permeability, the scheme keyword can be set to 'regions_from_sim' in the configuration file.
 - [#189](https://github.com/equinor/flownet/pull/189) User can now provide both a _base_ configuration file, and an optional extra configuration file which will be used to override the base settings.
+- [#155](https://github.com/equinor/flownet/pull/155) Adds reading of simulation 'well logs' to condition the priors of permeability and porosity based using kriging
 
 ### Changed
 - [#199](https://github.com/equinor/flownet/pull/199) Removed deprecated parameters in pyscal ('krowend', 'krogend') from config file. Added 'kroend' to config file. 
+- [#228](https://github.com/equinor/flownet/pull/228) FlowNet is now `pip` installable without any dependency compilations (also the custom ERT forward model running Flow is installed automatically). Note that any `simulator` part of configuration files need to be removed.
+
 
 ## [0.3.0] - 2020-09-14
 ### Added

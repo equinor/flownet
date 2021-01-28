@@ -7,8 +7,8 @@ import pandas as pd
 
 from ..network_model import NetworkModel
 from ..utils import write_grdecl_file
-from .probability_distributions import UniformDistribution, LogUniformDistribution
-from ._base_parameter import Parameter
+from .probability_distributions import ProbabilityDistribution
+from ._base_parameter import Parameter, parameter_probability_distribution_class
 
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
@@ -23,12 +23,15 @@ class Equilibration(Parameter):
 
     Args
         distribution_values:
-            A dataframe with five columns ("parameter", "minimum", "maximum",
-            "loguniform", "eqlnum") which state:
+            A dataframe with eight columns ("parameter", "minimum", "maximum", "mean", "base", "stddev",
+            "distribution", "eqlnum") which state:
                 * The name of the parameter,
-                * The minimum value of the parameter,
-                * The maximum value of the parameter,
-                * Whether the distribution is uniform of loguniform,
+                * The minimum value of the parameter (set to None if not applicable),
+                * The maximum value of the parameter (set to None if not applicable),
+                * The mean value of the parameter,
+                * The mode of the parameter distribution (set to None if not applicable),
+                * The standard deviation of the parameter,
+                * The type of probability distribution,
                 * To which EQLNUM this applies.
         network: FlowNet network instance.
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
@@ -54,10 +57,8 @@ class Equilibration(Parameter):
 
         self._ti2ci: pd.DataFrame = ti2ci
 
-        self._random_variables = [
-            LogUniformDistribution(row["minimum"], row["maximum"])
-            if row["loguniform"]
-            else UniformDistribution(row["minimum"], row["maximum"])
+        self._random_variables: List[ProbabilityDistribution] = [
+            parameter_probability_distribution_class(row)
             for _, row in distribution_values.iterrows()
         ]
 

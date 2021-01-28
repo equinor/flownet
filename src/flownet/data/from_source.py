@@ -18,9 +18,9 @@ class FromSource(ABC):
 
     @property
     @abstractmethod
-    def coordinates(self) -> pd.DataFrame:
+    def well_connections(self) -> pd.DataFrame:
         raise NotImplementedError(
-            "The coordinates property is required to be implemented in a FromSource class."
+            "The  well_connections property is required to be implemented in a FromSource class."
         )
 
     @property
@@ -28,4 +28,11 @@ class FromSource(ABC):
     def faults(self) -> Optional[pd.DataFrame]:
         raise NotImplementedError(
             "The faults property is required to be implemented in a FromSource class."
+        )
+
+    @property
+    @abstractmethod
+    def well_logs(self) -> Optional[pd.DataFrame]:
+        raise NotImplementedError(
+            "The well_log property is required to be implemented in a FromSource class."
         )

@@ -5,15 +5,12 @@ import functools
 import pandas as pd
 from pyscal import WaterOilGas, WaterOil, GasOil, PyscalFactory, PyscalList
 
+from configsuite import ConfigSuite
 from ..utils import write_grdecl_file
 from ..utils.constants import H_CONSTANT
 
-from .probability_distributions import (
-    UniformDistribution,
-    LogUniformDistribution,
-    ProbabilityDistribution,
-)
-from ._base_parameter import Parameter
+from .probability_distributions import ProbabilityDistribution
+from ._base_parameter import Parameter, parameter_probability_distribution_class
 
 
 def gen_wog(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOilGas:
@@ -114,16 +111,19 @@ class RelativePermeability(Parameter):
 
     Args:
         distribution_values:
-            A dataframe with five columns ("parameter", "minimum", "maximum",
-            "loguniform", "satnum") which state:
+            A dataframe with eight columns ("parameter", "minimum", "maximum", "mean", "base", "stddev",
+            "distribution", "satnum") which state:
                 * The name of the parameter,
-                * The minimum value of the parameter,
-                * The maximum value of the parameter,
-                * Whether the distribution is uniform of loguniform,
+                * The minimum value of the parameter (set to None if not applicable),
+                * The maximum value of the parameter (set to None if not applicable),
+                * The mean value of the parameter,
+                * The mode of the parameter distribution (set to None if not applicable),
+                * The standard deviation of the parameter,
+                * The type of probability distribution,
                 * To which SATNUM this applies.
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
         satnum: A dataframe defining the SATNUM for each flow tube.
-        fast_pyscal: Run pyscal in fast-mode skipping checks. Useful for large models/ensemble.
+        config: Information from the FlowNet config yaml
         interpolation_values:
             A dataframe with information about the relative permeability models used for interpolation.
             One row corresponds to one model, the column names should be the names of the parameters
@@ -137,15 +137,12 @@ class RelativePermeability(Parameter):
         distribution_values: pd.DataFrame,
         ti2ci: pd.DataFrame,
         satnum: pd.DataFrame,
-        phases: List,
-        fast_pyscal: bool = False,
+        config: ConfigSuite.snapshot,
         interpolation_values: Optional[pd.DataFrame] = None,
     ):
         self._ti2ci: pd.DataFrame = ti2ci
         self._random_variables: List[ProbabilityDistribution] = [
-            LogUniformDistribution(row["minimum"], row["maximum"])
-            if row["loguniform"]
-            else UniformDistribution(row["minimum"], row["maximum"])
+            parameter_probability_distribution_class(row)
             for _, row in distribution_values.iterrows()
         ]
 
@@ -154,18 +151,21 @@ class RelativePermeability(Parameter):
             distribution_values["parameter"].unique()
         )
         self._satnum: pd.DataFrame = satnum
-        self._phases = phases
+        self._phases = config.flownet.phases
         self._interpolation_values: Optional[pd.DataFrame] = None
         self._scal_for_interp: Optional[PyscalList] = None
         if isinstance(interpolation_values, pd.DataFrame):
             self._interpolation_values = interpolation_values
-            # self._rec will be indexed by SATNUM region, starting at 1
+            # self._scal_for_interp will be indexed by SATNUM region, starting at 1
             self._scal_for_interp = PyscalFactory.create_scal_recommendation_list(
                 interpolation_values
             )
 
         self._swof, self._sgof = self._check_parameters()
-        self._fast_pyscal: bool = fast_pyscal
+        self._fast_pyscal: bool = config.flownet.fast_pyscal
+        self._independent_interpolation = (
+            config.model_parameters.relative_permeability.independent_interpolation
+        )
 
     def _check_parameters(self) -> Tuple[bool, bool]:
         """
@@ -276,22 +276,16 @@ class RelativePermeability(Parameter):
         partial_gen_wo = functools.partial(gen_wo, fast_pyscal=True)
         partial_gen_og = functools.partial(gen_og, fast_pyscal=True)
 
-        if isinstance(self._interpolation_values, pd.DataFrame):
-            for i, parameter in enumerate(parameters, 1):
-                if self._scal_for_interp is not None:
-                    relperm = self._scal_for_interp[i].interpolate(
-                        parameter.get("interpolate"),
-                        parameter.get("interpolate gas"),
-                    )
-                    if self._swof:
-                        str_swofs += relperm.SWOF(header=False)
-                    if self._sgof:
-                        str_sgofs += relperm.SGOF(header=False)
-                    if not self._swof and not self._sgof:
-                        raise ValueError(
-                            "It seems like both SWOF and SGOF should not be generated."
-                            "Either one of the two should be generated. Can't continue..."
-                        )
+        if self._scal_for_interp is not None:
+            wog_list = self._scal_for_interp.interpolate(
+                [param.get("interpolate") for param in parameters],
+                [param.get("interpolate gas") for param in parameters]
+                if self._independent_interpolation
+                else None,
+                h=H_CONSTANT,
+            )
+            str_props_section = wog_list.SWOF()
+            str_props_section += wog_list.SGOF()
         else:
             if self._swof and self._sgof:
                 with concurrent.futures.ProcessPoolExecutor() as executor:
@@ -318,8 +312,8 @@ class RelativePermeability(Parameter):
                     "Either one of the two should be generated. Can't continue..."
                 )
 
-        str_props_section = f"SWOF\n{str_swofs}\n" if self._swof else ""
-        str_props_section += f"SGOF\n{str_sgofs}\n" if self._sgof else ""
+            str_props_section = f"SWOF\n{str_swofs}\n" if self._swof else ""
+            str_props_section += f"SGOF\n{str_sgofs}\n" if self._sgof else ""
 
         str_runspec_section = "\n".join(self._phases).upper() + "\n"
 

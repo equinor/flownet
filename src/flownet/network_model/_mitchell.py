@@ -5,7 +5,7 @@ from scipy.spatial import Delaunay  # pylint: disable=no-name-in-module
 import numpy as np
 
 from ..utils.types import Coordinate
-
+from ._hull import check_in_hull
 
 # pylint: disable=too-many-branches,too-many-statements
 def mitchell_best_candidate_modified_3d(
@@ -88,7 +88,12 @@ def mitchell_best_candidate_modified_3d(
         z_max = max(z)
 
     # Determine the convex hull of the original or linearly scaled perforations
-    hull = Delaunay(np.column_stack([x, y, z]))
+    if np.all(z == z[0]):
+        # 2D cases
+        hull = Delaunay(np.column_stack([x, y]))
+    else:
+        # 3D cases
+        hull = Delaunay(np.column_stack([x, y, z]))
 
     # Generate all new flow nodes
     for i in range(num_points, num_points + num_added_flow_nodes):
@@ -104,14 +109,6 @@ def mitchell_best_candidate_modified_3d(
         x_candidate = np.zeros(num_candidates)
         y_candidate = np.zeros(num_candidates)
         z_candidate = np.zeros(num_candidates)
-
-        if concave_hull_bounding_boxes is not None:
-            xmin_grid_cells = concave_hull_bounding_boxes[:, 0]
-            xmax_grid_cells = concave_hull_bounding_boxes[:, 1]
-            ymin_grid_cells = concave_hull_bounding_boxes[:, 2]
-            ymax_grid_cells = concave_hull_bounding_boxes[:, 3]
-            zmin_grid_cells = concave_hull_bounding_boxes[:, 4]
-            zmax_grid_cells = concave_hull_bounding_boxes[:, 5]
 
         # Repeat while not all random points are inside the convex hull
         while not all(in_hull):
@@ -130,26 +127,13 @@ def mitchell_best_candidate_modified_3d(
             candidates = np.vstack([x_candidate, y_candidate, z_candidate]).T
 
             if concave_hull_bounding_boxes is not None:
-                for c_index, candidate in enumerate(candidates):
-                    if not in_hull[c_index]:
-                        in_hull[c_index] = (
-                            (
-                                (candidate[0] >= xmin_grid_cells)
-                                & (candidate[0] <= xmax_grid_cells)
-                            )
-                            & (
-                                (candidate[1] >= ymin_grid_cells)
-                                & (candidate[1] <= ymax_grid_cells)
-                            )
-                            & (
-                                (candidate[2] >= zmin_grid_cells)
-                                & (candidate[2] <= zmax_grid_cells)
-                            )
-                        ).any()
-
+                in_hull = check_in_hull(concave_hull_bounding_boxes, candidates)
             else:
                 # Test whether all points are inside the convex hull of the perforations
-                in_hull = hull.find_simplex(candidates) >= 0
+                if np.all(z == z[0]):
+                    in_hull = hull.find_simplex(candidates[:, (0, 1)]) >= 0
+                else:
+                    in_hull = hull.find_simplex(candidates) >= 0
 
         best_distance = 0
         best_candidate = 0
@@ -163,9 +147,12 @@ def mitchell_best_candidate_modified_3d(
             delta_y_relative = np.power(
                 ((y[0:i] - y_candidate[j]) / (y_max - y_min)), 2
             )
-            delta_z_relative = np.power(
-                ((z[0:i] - z_candidate[j]) / (z_max - z_min)), 2
-            )
+            if np.all(z == z[0]):
+                delta_z_relative = 0
+            else:
+                delta_z_relative = np.power(
+                    ((z[0:i] - z_candidate[j]) / (z_max - z_min)), 2
+                )
             dists = np.sqrt(delta_x_relative + delta_y_relative + delta_z_relative)
 
             # Select the shortest distance

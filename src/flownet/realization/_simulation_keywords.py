@@ -102,11 +102,14 @@ class WCONHIST(Keyword):
         self,
         date: datetime.date,
         well_name: str,
-        control_mode: str,
+        prod_control_mode: str,
         status: str = "1*",
         oil_rate: float = np.nan,
         water_rate: float = np.nan,
         gas_rate: float = np.nan,
+        oil_total: float = np.nan,
+        water_total: float = np.nan,
+        gas_total: float = np.nan,
         vfp_table: str = "1*",
         artificial_lift: str = "1*",
         thp: float = np.nan,
@@ -116,10 +119,13 @@ class WCONHIST(Keyword):
         self.name = "WCONHIST"
         self.well_name: str = well_name
         self.status: str = status
-        self.control_mode: str = control_mode
+        self.prod_control_mode: str = prod_control_mode
         self.oil_rate: float = oil_rate
         self.water_rate: float = water_rate
         self.gas_rate: float = gas_rate
+        self.oil_total: float = oil_total
+        self.water_total: float = water_total
+        self.gas_total: float = gas_total
         self.vfp_table: str = vfp_table
         self.artificial_lift: str = artificial_lift
         self.thp: float = thp
@@ -146,10 +152,11 @@ class WCONINJH(Keyword):
         inj_type: str,
         status: str = "1*",
         rate: float = np.nan,
+        total: float = np.nan,
         bhp: float = np.nan,
         thp: float = np.nan,
         vfp_table: str = "1*",
-        target: str = "1*",
+        inj_control_mode: str = "1*",
     ):
         super().__init__(date)
         self.name = "WCONINJH"
@@ -157,10 +164,11 @@ class WCONINJH(Keyword):
         self.inj_type: str = inj_type
         self.status: str = status
         self.rate: float = rate
+        self.total: float = total
         self.bhp: float = bhp
         self.thp: float = thp
         self.vfp_table: str = vfp_table
-        self.target: str = target
+        self.inj_control_mode: str = inj_control_mode
 
 
 class WELSPECS(Keyword):

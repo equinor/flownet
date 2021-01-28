@@ -7,6 +7,7 @@ from operator import attrgetter
 import numpy as np
 import pandas as pd
 
+from configsuite import ConfigSuite
 from ._simulation_keywords import Keyword, COMPDAT, WCONHIST, WCONINJH, WELSPECS
 from ..network_model import NetworkModel
 
@@ -15,55 +16,52 @@ class Schedule:
     """
     Python class to to store all schedule items for the Flownet run.
 
+    Args:
+        network: FlowNet network instance
+        df_production_data: Dataframe with all production data
+        config: Information from the FlowNet config yaml
+
     """
 
     def __init__(
         self,
-        network: NetworkModel,
-        df_production_data: pd.DataFrame,
-        case_name: str,
-        control_mode: str = "RESV",
+        network: NetworkModel = None,
+        df_production_data: Optional[pd.DataFrame] = None,
+        config: ConfigSuite.snapshot = None,
     ):
         self._schedule_items: List = []
-        self._network: NetworkModel = network
-        self._df_production_data: pd.DataFrame = df_production_data
-        self._control_mode: str = control_mode
-        self._case_name: str = case_name
-
-        self._create_schedule()
+        self._prod_control_mode: str
+        self._inj_control_mode: str
+        self._case_name: str
+        if network and isinstance(df_production_data, pd.DataFrame) and config:
+            # All info is given, make a netork
+            self._network: NetworkModel = network
+            self._df_production_data: pd.DataFrame = df_production_data
+            self._prod_control_mode = config.flownet.prod_control_mode
+            self._inj_control_mode = config.flownet.inj_control_mode
+            self._case_name = config.name
+            self._create_schedule()
+        elif not network and not df_production_data and not config:
+            self._prod_control_mode = "RESV"
+            self._inj_control_mode = "RATE"
+            self._case_name = "none"
+        else:
+            raise ValueError(
+                "Cannot initiate Schedule object. \
+                Either supply all arguments to fully initiate a Schedule object \
+                or nothing to initiate an empty Schedule object."
+            )
 
     def _create_schedule(self):
         """
         Helper function that calls all functions involved in creating the schedule for the FlowNet run.
         """
         print("Creating simulation schedule file...", flush=True, end=" ")
-        self._calculate_entity_dates()
         self._calculate_compdat()
         self._calculate_welspecs()
         self._calculate_wconhist()
         self._calculate_wconinjh()
         print("done.", flush=True)
-
-    def _calculate_entity_dates(self):
-        """
-        Helper function that calculate the start dates of all entities.
-
-        Returns:
-            Nothing
-
-        """
-        self._df_production_data["ent_date"] = np.nan
-        for _, row in self._network.df_entity_connections.iterrows():
-            for entity in ["start_entity", "end_entity"]:
-                date = None
-                well_name = row[[entity]][0]
-                if row[[entity]].values[0] and row[[entity]].values[0] != "aquifer":
-                    date = self._retrieve_date_first_non_zero_prodinj(
-                        self._df_production_data, well_name
-                    )
-                self._df_production_data.loc[
-                    self._df_production_data["WELL_NAME"] == well_name, "ent_date"
-                ] = date
 
     def _calculate_compdat(self):
         """
@@ -76,30 +74,75 @@ class Schedule:
         for index, row in self._network.df_entity_connections.iterrows():
             for e_index, entity in enumerate(["start_entity", "end_entity"]):
                 if row[[entity]].values[0] and row[[entity]].values[0] != "aquifer":
+
                     entity_index = 0 - e_index  # first, or last
                     grid_mask = self._network.active_mask(model_index=index)
                     i = self._network.grid[grid_mask].index[entity_index]
 
-                    date = self._retrieve_date_first_non_zero_prodinj(
-                        self._df_production_data, row[[entity]][0]
-                    )
-                    if date:
+                    for (
+                        _,
+                        well_connection_state,
+                    ) in self._network.df_well_connections.loc[
+                        (
+                            self._network.df_well_connections["WELL_NAME"]
+                            == row[[entity]].values[0]
+                        )
+                        & (
+                            (
+                                (
+                                    np.isclose(
+                                        self._network.df_well_connections["X"],
+                                        row["xstart"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Y"],
+                                        row["ystart"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Z"],
+                                        row["zstart"],
+                                    )
+                                )
+                            )
+                            | (
+                                (
+                                    np.isclose(
+                                        self._network.df_well_connections["X"],
+                                        row["xend"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Y"],
+                                        row["yend"],
+                                    )
+                                )
+                                & (
+                                    np.isclose(
+                                        self._network.df_well_connections["Z"],
+                                        row["zend"],
+                                    )
+                                )
+                            )
+                        )
+                    ].iterrows():
                         self.append(
                             COMPDAT(
-                                date=date,
+                                date=well_connection_state["DATE"],
                                 well_name=row[[entity]][0],
                                 i=i,
                                 j=0,
                                 k1=0,
                                 k2=0,
                                 rw=0.22,
-                                status="OPEN",
+                                status="OPEN"
+                                if well_connection_state["OPEN"]
+                                else "SHUT",
                             )
-                        )
-                    else:
-                        print(
-                            f"Skipping COMPDAT for well {row[[entity]][0]} as no positive production or "
-                            f"injection data has been supplied."
                         )
 
     def _calculate_welspecs(self):
@@ -111,17 +154,15 @@ class Schedule:
 
         """
         for well_name in self._df_production_data["WELL_NAME"].unique():
-            date = self._retrieve_date_first_non_zero_prodinj(
-                self._df_production_data, well_name
-            )
+            date = self._network.df_well_connections[
+                self._network.df_well_connections["WELL_NAME"] == well_name
+            ]["DATE"].values[0]
 
-            if date:
-                well_dates = self._df_production_data[
-                    (self._df_production_data["WELL_NAME"] == well_name)
-                    & (self._df_production_data["date"] == date)
-                ]
+            phase = self._df_production_data[
+                (self._df_production_data["WELL_NAME"] == well_name)
+            ]["PHASE"].values[0]
 
-                phase = well_dates["PHASE"].values[0]
+            try:
                 self.append(
                     WELSPECS(
                         date=date,
@@ -133,11 +174,14 @@ class Schedule:
                         phase=phase,
                     )
                 )
-            else:
+            except IndexError:
                 print(
-                    f"Skipping WELSPECS for well {well_name} as no positive production or injection data"
-                    f" has been supplied."
+                    f"""The schedule could not be created for well '{well_name}'.\n
+                This most likely is a result of this well not having any connections.\n
+                Try adding more additional nodes, relax angle constraint for the Delaunay triangles,\n
+                maximum distance and/or convex hull."""
                 )
+                raise
 
     def _calculate_wconhist(self):
         """
@@ -162,11 +206,14 @@ class Schedule:
                         date=value["date"],
                         well_name=value["WELL_NAME"],
                         status=value["WSTAT"],
-                        control_mode=self._control_mode,
+                        prod_control_mode=self._prod_control_mode,
                         vfp_table=vfp_tables[value["WELL_NAME"]],
                         oil_rate=value["WOPR"],
                         water_rate=value["WWPR"],
                         gas_rate=value["WGPR"],
+                        oil_total=value["WOPT"],
+                        water_total=value["WWPT"],
+                        gas_total=value["WGPT"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
                     )
@@ -195,8 +242,10 @@ class Schedule:
                         inj_type="WATER",
                         status=value["WSTAT"],
                         rate=value["WWIR"],
+                        total=value["WWIT"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
+                        inj_control_mode=self._inj_control_mode,
                     )
                 )
             elif value["TYPE"] == "GI" and start_date and value["date"] >= start_date:
@@ -207,8 +256,10 @@ class Schedule:
                         inj_type="GAS",
                         status=value["WSTAT"],
                         rate=value["WGIR"],
+                        total=value["WGIT"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
+                        inj_control_mode=self._inj_control_mode,
                     )
                 )
 
@@ -226,7 +277,7 @@ class Schedule:
         if isinstance(item, int):
             output = self._schedule_items[item]
         elif isinstance(item, datetime.date):
-            output = self.get_keywords(date=item)
+            output = self.get_keywords(dates=item)
         elif isinstance(item, Keyword):
             output = self.get_keywords(kw_class=item)
         else:
@@ -255,7 +306,7 @@ class Schedule:
             Date-sorted schedule items
 
         """
-        return sorted(self._schedule_items, key=attrgetter("date"))
+        return sorted(self._schedule_items, key=attrgetter("dates"))
 
     def append(self, _keyword):
         """
@@ -293,56 +344,60 @@ class Schedule:
 
     def get_keywords(
         self,
-        date: datetime.date = None,
+        dates: Optional[Union[List[datetime.date], datetime.date]] = None,
         kw_class: Optional[Union[Keyword, str]] = None,
         well_name: str = None,
         ignore_nan: str = None,
     ) -> List[Keyword]:
         """
-        Returns a list of all keywords at a given date and/or of a
+        Returns a list of all keywords at given dates and/or of a
         particular keyword class.
 
         Args:
-            date: Date at which to lookup keywords
+            dates: Date or list of dates at which to lookup keywords
             kw_class: keyword class or class name string
             well_name: well name
             ignore_nan: keyword attribute to ignore nan values
 
         Returns:
-            keywords at specified date and/or with a specific well name and/or of a specific keyword class
+            keywords at specified dates and/or with a specific well name and/or of a specific keyword class
 
         """
-        if date and not kw_class and not well_name:
-            output = [kw for kw in self._schedule_items if kw.date == date]
-        elif kw_class and not date and not well_name:
+
+        if isinstance(dates, datetime.date):
+            dates = [dates]
+
+        if dates and not kw_class and not well_name:
+            output = [kw for kw in self._schedule_items if kw.date in dates]
+        elif kw_class and not dates and not well_name:
             output = [
                 kw for kw in self._schedule_items if kw.__class__.__name__ == kw_class
             ]
-        elif date and kw_class and not well_name:
+        elif dates and kw_class and not well_name:
             output = [
                 kw
                 for kw in self._schedule_items
-                if kw.date == date and kw.__class__.__name__ == kw_class
+                if kw.date in dates and kw.__class__.__name__ == kw_class
             ]
-        elif well_name and not date and not kw_class:
+        elif well_name and not dates and not kw_class:
             output = [kw for kw in self._schedule_items if kw.well_name == well_name]
-        elif date and not kw_class and well_name:
+        elif dates and not kw_class and well_name:
             output = [
                 kw
                 for kw in self._schedule_items
-                if kw.date == date and kw.well_name == well_name
+                if kw.date in dates and kw.well_name == well_name
             ]
-        elif kw_class and not date and well_name:
+        elif kw_class and not dates and well_name:
             output = [
                 kw
                 for kw in self._schedule_items
                 if kw.__class__.__name__ == kw_class and kw.well_name == well_name
             ]
-        elif date and kw_class and well_name:
+        elif dates and kw_class and well_name:
             output = [
                 kw
                 for kw in self._schedule_items
-                if kw.date == date
+                if kw.date in dates
                 and kw.__class__.__name__ == kw_class
                 and kw.well_name == well_name
             ]
@@ -494,35 +549,30 @@ class Schedule:
         num_training_dates = round(len(self.get_dates()) * training_set_fraction)
         i = 0
 
-        for date in self.get_dates()[0 : num_training_dates - 1]:
+        for date in self.get_dates()[1 : num_training_dates - 1]:
             keywords_wconhist: List[Keyword] = self.get_keywords(
-                date=date, kw_class="WCONHIST"
+                dates=date, kw_class="WCONHIST"
             )
             if keywords_wconhist:
                 for keyword_wconhist in keywords_wconhist:
-                    if not self.get_well_start_date(keyword_wconhist.well_name) == date:
-                        if not np.isnan(keyword_wconhist.oil_rate):
-                            i += 1
-                        if not np.isnan(keyword_wconhist.gas_rate):
-                            i += 1
-                        if not np.isnan(keyword_wconhist.bhp):
-                            i += 1
-                        if not np.isnan(keyword_wconhist.thp):
-                            i += 1
+                    if not np.isnan(keyword_wconhist.oil_rate):
+                        i += 1
+                    if not np.isnan(keyword_wconhist.gas_rate):
+                        i += 1
+                    if not np.isnan(keyword_wconhist.bhp):
+                        i += 1
+                    if not np.isnan(keyword_wconhist.thp):
+                        i += 1
 
             keywords_wconinjh: List[Keyword] = self.get_keywords(
-                date=date, kw_class="WCONINJH"
+                dates=date, kw_class="WCONINJH"
             )
             if keywords_wconinjh:
                 for keyword__wconinjh in keywords_wconinjh:
-                    if (
-                        not self.get_well_start_date(keyword__wconinjh.well_name)
-                        == date
-                    ):
-                        if not np.isnan(keyword__wconinjh.bhp):
-                            i += 1
-                        if not np.isnan(keyword__wconinjh.thp):
-                            i += 1
+                    if not np.isnan(keyword__wconinjh.bhp):
+                        i += 1
+                    if not np.isnan(keyword__wconinjh.thp):
+                        i += 1
 
         return i
 

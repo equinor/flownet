@@ -4,12 +4,8 @@ import jinja2
 import pandas as pd
 
 from ..network_model import NetworkModel
-from .probability_distributions import (
-    UniformDistribution,
-    LogUniformDistribution,
-    ProbabilityDistribution,
-)
-from ._base_parameter import Parameter
+from .probability_distributions import ProbabilityDistribution
+from ._base_parameter import Parameter, parameter_probability_distribution_class
 
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
@@ -24,23 +20,22 @@ class FaultTransmissibility(Parameter):
 
     Args:
         distribution_values:
-            A dataframe with five columns ("parameter", "minimum", "maximum",
-            "loguniform") which state:
+            A dataframe with seven columns ("parameter", "minimum", "maximum", "mean", "base", "stddev",
+            "distribution") which state:
                 * The name of the parameter,
-                * The minimum value of the parameter,
-                * The maximum value of the parameter,
-                * Whether the distribution is uniform of loguniform
+                * The minimum value of the parameter (set to None if not applicable),
+                * The maximum value of the parameter (set to None if not applicable),
+                * The mean value of the parameter,
+                * The mode of the parameter distribution (set to None if not applicable),
+                * The standard deviation of the parameter,
+                * The type of probability distribution,
         network: FlowNet network instance.
 
     """
 
     def __init__(self, distribution_values: pd.DataFrame, network: NetworkModel):
         self._random_variables: List[ProbabilityDistribution] = [
-            LogUniformDistribution(row["minimum_fault_mult"], row["maximum_fault_mult"])
-            if row["loguniform_fault_mult"]
-            else UniformDistribution(
-                row["minimum_fault_mult"], row["maximum_fault_mult"]
-            )
+            parameter_probability_distribution_class(row, "fault_mult")
             for _, row in distribution_values.iterrows()
         ]
 
@@ -51,7 +46,7 @@ class FaultTransmissibility(Parameter):
         """Creates FAULTS include content - which are given to the RUNSPEC and GRID section.
 
         Returns:
-            Include content for aquifers
+            Include content for faults
 
         """
         output_runspec = ""

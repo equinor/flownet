@@ -15,6 +15,7 @@ class NetworkModel:
     def __init__(
         self,
         df_entity_connections: pd.DataFrame,
+        df_well_connections: pd.DataFrame,
         cell_length: float,
         area: float,
         fault_planes: Optional[pd.DataFrame] = None,
@@ -27,6 +28,8 @@ class NetworkModel:
             df_entity_connections: A dataframe containing information about the individual one
                                    dimensional models. Columns required are xstart, ystart, zstart,
                                    xend, yend, zend, start_entity and end_entity
+            df_well_connections: A dataframe containing information about the (individual) connections of a
+                                 well, and their open or closed state throughout time.
             cell_length: Preferred length of each grid cell along the model.
             area: surface area of the flow path.
             fault_planes: DataFrame with fault plane coordinates
@@ -41,6 +44,7 @@ class NetworkModel:
 
         """
         self._df_entity_connections: pd.DataFrame = df_entity_connections
+        self.df_well_connections: pd.DataFrame = df_well_connections
         self._cell_length: float = cell_length
         self._area: float = area
         self._grid: pd.DataFrame = self._calculate_grid_corner_points()
@@ -90,6 +94,28 @@ class NetworkModel:
                 "zend",
             ]
         ].values[selector]
+
+        return (coordinates_start + coordinates_end) / 2
+
+    @property
+    def connection_midpoints(self) -> np.ndarray:
+        """
+        Returns a numpy array with the midpoint of each connection in the network
+
+        Returns:
+            (Nx3) np.ndarray with connection midpoint coordinates.
+
+        """
+        coordinates_start = self._df_entity_connections[
+            ["xstart", "ystart", "zstart"]
+        ].values
+        coordinates_end = self._df_entity_connections[
+            [
+                "xend",
+                "yend",
+                "zend",
+            ]
+        ].values
 
         return (coordinates_start + coordinates_end) / 2
 

@@ -6,12 +6,8 @@ import pandas as pd
 from ..network_model import NetworkModel
 from ..utils.constants import C_DARCY
 from ..utils import write_grdecl_file
-from .probability_distributions import (
-    UniformDistribution,
-    LogUniformDistribution,
-    ProbabilityDistribution,
-)
-from ._base_parameter import Parameter
+from .probability_distributions import ProbabilityDistribution
+from ._base_parameter import Parameter, parameter_probability_distribution_class
 
 
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
@@ -91,8 +87,8 @@ class PorvPoroTrans(Parameter):
 
     Args:
         distribution_values:
-            A dataframe with index equal to tube model index, and with nine columns
-            specifiying min, max and uniform/loguniform for three different parameters
+            A dataframe with index equal to tube model index, and with eighteen columns
+            specifiying min, max, mean, mode, stddev and distribution for three different parameters
             (bulkvolume_mult, porosity and permeability).
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
         network: The FlowNet NetworkModel instance.
@@ -109,31 +105,15 @@ class PorvPoroTrans(Parameter):
 
         self._random_variables: List[ProbabilityDistribution] = (
             [  # Add random variables for bulk volume multipliers
-                LogUniformDistribution(
-                    row["minimum_bulkvolume_mult"], row["maximum_bulkvolume_mult"]
-                )
-                if row["loguniform_bulkvolume_mult"]
-                else UniformDistribution(
-                    row["minimum_bulkvolume_mult"], row["maximum_bulkvolume_mult"]
-                )
+                parameter_probability_distribution_class(row, "bulkvolume_mult")
                 for _, row in distribution_values.iterrows()
             ]
             + [  # Add random variables for porosity
-                LogUniformDistribution(row["minimum_porosity"], row["maximum_porosity"])
-                if row["loguniform_porosity"]
-                else UniformDistribution(
-                    row["minimum_porosity"], row["maximum_porosity"]
-                )
+                parameter_probability_distribution_class(row, "porosity")
                 for _, row in distribution_values.iterrows()
             ]
             + [  # Add random variables for permeability
-                LogUniformDistribution(
-                    row["minimum_permeability"], row["maximum_permeability"]
-                )
-                if row["loguniform_permeability"]
-                else UniformDistribution(
-                    row["minimum_permeability"], row["maximum_permeability"]
-                )
+                parameter_probability_distribution_class(row, "permeability")
                 for _, row in distribution_values.iterrows()
             ]
         )
@@ -143,11 +123,11 @@ class PorvPoroTrans(Parameter):
 
     def render_output(self) -> Dict:
         """
-        Creates PORO and PORV include content - which are given to
+        Creates PORO, PORV, PERMX, PERMY, PERMZ and NNC include content - which are given to
         the GRID and EDIT section respectively.
 
         Returns:
-             PORO and PORV include content.
+             PORO, PORV, PERMX, PERMY, PERMZ and NNC include content.
 
         """
 

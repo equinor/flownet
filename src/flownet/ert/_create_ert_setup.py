@@ -1,13 +1,15 @@
 import os
+import subprocess
 import pathlib
 import argparse
 import pickle
 import shutil
-from typing import List, IO
+from typing import Optional, List, IO
 
 from configsuite import ConfigSuite
 import jinja2
 import numpy as np
+import pandas as pd
 
 from ._create_synthetic_refcase import create_synthetic_refcase
 from ..parameters import Parameter
@@ -22,7 +24,43 @@ _TEMPLATE_ENVIRONMENT.globals["isnan"] = np.isnan
 _MODULE_FOLDER = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
 
 
-def _create_observation_file(
+def resample_schedule_dates(schedule: Schedule, resampling: Optional[str]) -> List:
+    """
+    Resampling dates based on requested frequency without introducing interpolated dates,
+    i.e., keeps nearest existing date
+
+    Args:
+        schedule: FlowNet Schedule instance to create observations from.
+        resampling: Pandas resampling frequency (str)
+
+    Returns:
+        dates: list of resampled dates
+
+    """
+    df_dates_schedule = pd.to_datetime(schedule.get_dates())
+
+    if resampling:
+        df_dates_resampled = pd.date_range(
+            schedule.get_dates()[0],
+            schedule.get_dates()[-1],
+            freq=resampling,
+        )
+        df_schedule = pd.DataFrame(
+            data=range(len(df_dates_schedule)), index=df_dates_schedule
+        )
+        idx = np.zeros(len(df_dates_resampled), dtype=int)
+        for i, k in enumerate(df_dates_resampled):
+            idx[i] = df_schedule.index.get_loc(k, method="nearest")
+        dates = [
+            d.date() for d in df_schedule.iloc[np.unique(idx)].index.to_pydatetime()
+        ]
+    else:
+        dates = [d.date() for d in df_dates_schedule[1:]]
+
+    return dates
+
+
+def create_observation_file(
     schedule: Schedule,
     obs_file: pathlib.Path,
     config: ConfigSuite.snapshot,
@@ -46,28 +84,38 @@ def _create_observation_file(
         Nothing
 
     """
-    num_training_dates = round(len(schedule.get_dates()) * training_set_fraction)
+    dates = resample_schedule_dates(schedule, config.flownet.data_source.resampling)
 
-    if yaml:
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations.yamlobs.jinja2")
-        with open(obs_file, "w") as fh:
+    num_dates = len(dates)
+    num_training_dates = round(num_dates * training_set_fraction)
+
+    export_settings = [
+        ["_complete", 0, num_dates],
+        ["_training", 0, num_training_dates],
+        ["_test", num_training_dates + 1, num_dates],
+    ]
+
+    file_root = os.path.splitext(obs_file)[0]
+
+    for setting in export_settings:
+        if yaml:
+            obs_export_type = "yamlobs"
+        else:
+            obs_export_type = "ertobs"
+        export_filename = f"{file_root}{setting[0]}.{obs_export_type}"
+        template = _TEMPLATE_ENVIRONMENT.get_template(
+            f"observations.{obs_export_type}.jinja2"
+        )
+        with open(export_filename, "w") as fh:
             fh.write(
                 template.render(
                     {
+                        "dates": dates,
                         "schedule": schedule,
                         "error_config": config.flownet.data_source.simulation.vectors,
-                    }
-                )
-            )
-    else:
-        template = _TEMPLATE_ENVIRONMENT.get_template("observations.ertobs.jinja2")
-        with open(obs_file, "w") as fh:
-            fh.write(
-                template.render(
-                    {
-                        "schedule": schedule,
-                        "error_config": config.flownet.data_source.simulation.vectors,
-                        "num_training_dates": num_training_dates,
+                        "num_beginning_date": setting[1],
+                        "num_end_date": setting[2],
+                        "last_training_date": dates[num_training_dates - 1],
                     }
                 )
             )
@@ -158,6 +206,13 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     with open(output_folder / "parameters.pickled", "wb") as fh:
         pickle.dump(parameters, fh)
 
+    if hasattr(config.ert, "analysis"):
+        analysis_metric = "[" + ",".join(list(config.ert.analysis.metric)) + "]"
+        analysis_quantity = "[" + ",".join(list(config.ert.analysis.quantity)) + "]"
+    else:
+        analysis_metric = str(None)
+        analysis_quantity = str(None)
+
     configuration = {
         "pickled_network": output_folder.resolve() / "network.pickled",
         "pickled_schedule": output_folder.resolve() / "schedule.pickled",
@@ -166,6 +221,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         "random_seed": None,
         "debug": args.debug if hasattr(args, "debug") else False,
         "pred_schedule_file": getattr(config.ert, "pred_schedule_file", None),
+        "analysis_metric": analysis_metric,
+        "analysis_quantity": analysis_quantity,
     }
 
     if not prediction_setup:
@@ -216,6 +273,10 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         output_folder / "SAVE_ITERATION_ANALYTICS_WORKFLOW_JOB",
     )
 
+    shutil.copyfile(args.config, output_folder / args.config.name)
+    with open(os.path.join(output_folder, "pipfreeze.output"), "w") as fh:
+        subprocess.call(["pip", "freeze"], stdout=fh)
+
     for section in ["RUNSPEC", "PROPS", "SOLUTION", "SCHEDULE"]:
         static_source_path = pathlib.Path(static_path) / f"{section}.inc"
         if static_source_path.is_file():
@@ -224,18 +285,21 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         else:
             # Otherwise create an empty one.
             (output_folder / f"{section}.inc").touch()
-
     if not prediction_setup:
         if parameters is not None:
-            _create_observation_file(
+            create_observation_file(
                 schedule,
                 output_folder / "observations.ertobs",
                 config,
                 training_set_fraction,
             )
 
-            _create_observation_file(
-                schedule, output_folder / "observations.yamlobs", config, yaml=True
+            create_observation_file(
+                schedule,
+                output_folder / "observations.yamlobs",
+                config,
+                training_set_fraction,
+                yaml=True,
             )
 
         _create_ert_parameter_file(parameters, output_folder)
