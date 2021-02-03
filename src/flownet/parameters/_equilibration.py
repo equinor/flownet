@@ -141,7 +141,7 @@ class Equilibration(Parameter):
                 rsvd = _TEMPLATE_ENVIRONMENT.get_template("RSVD.jinja2").render(
                     {
                         "nr_eqlnum": len(self._unique_eqlnums),
-                        "nr_rsvd":  len(df_rsvd["eqlnum"].unique()),
+                        "nr_rsvd": len(df_rsvd["eqlnum"].unique()),
                         "rsvd": df_rsvd,
                     }
                 )
