@@ -131,8 +131,9 @@ class Equilibration(Parameter):
                     if len(df_rsvd["eqlnum"].unique()) != len(self._unique_eqlnums):
                         raise ValueError(
                             "Number of RSVD tables different from "
-                            "number of EQLNUM regions! The number of RSVD tables"
-                            "must be either one or equal to number of EQLNUMs."
+                            "number of EQLNUM regions! If a column for RSVD table is "
+                            "present, the number of tables must be equal "
+                            "to the number of EQLNUMs."
                         )
                 elif len(df_rsvd.columns) == 2:
                     df_rsvd.columns = ["depth", "rs"]
