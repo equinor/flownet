@@ -166,11 +166,15 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
 
         df_foreign = df_w_groups.loc[
             (
-                ((df_w_groups["X"] > xmin) & (df_w_groups["X"] < xmax))
-                & ((df_w_groups["Y"] > ymin) & (df_w_groups["Y"] < ymax))
-                & ((df_w_groups["Z"] > zmin) & (df_w_groups["Z"] < zmax))
+                ((df_w_groups["X"] >= xmin) & (df_w_groups["X"] <= xmax))
+                & ((df_w_groups["Y"] >= ymin) & (df_w_groups["Y"] <= ymax))
+                & ((df_w_groups["Z"] >= zmin) & (df_w_groups["Z"] <= zmax))
             )
             & (df_w_groups["GROUPID"] != groupid)
+            & (
+                df_w_groups["WELL_NAME"]
+                == df_w_groups[df_w_groups["GROUPID"] == groupid]["WELL_NAME"].values[0]
+            )
         ]
 
         # Step 3
