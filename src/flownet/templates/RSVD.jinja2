@@ -1,7 +1,12 @@
 RSVD
-{% for i in range(nr_eqlnum) -%}
+{% for i in range(1, nr_eqlnum + 1) -%}
+{%- if nr_rsvd > 1 -%}
+{%- for _, row in rsvd[rsvd['eqlnum']==i].iterrows() -%}
+{{ row['depth'] }} {{ row['rs'] }}
+{% endfor %}/
+{%- else -%}
 {%- for _, row in rsvd.iterrows() -%}
 {{ row['depth'] }} {{ row['rs'] }}
 {% endfor %}/
+{% endif %}
 {% endfor %}
-
