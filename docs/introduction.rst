@@ -64,7 +64,7 @@ FlowNet currently supports the following automatic parametrization:
 - Fault transmissibilities
 - Permeabilities
 - Porosity and porevolumes
-- Relative permeabilities
+- :doc:`Relative permeabilities <./parameters/relative_permeability>
 - Rock compressibility
 
 To be added:
