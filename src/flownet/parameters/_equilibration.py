@@ -125,10 +125,18 @@ class Equilibration(Parameter):
             )
 
             if self._rsvd is not None:
+                df_rsvd = pd.read_csv(self._rsvd)
+                # adding column with eqlnum, repeating blocks of dataframe
+                if len(df_rsvd.columns) == 2:
+                    df_rsvd = pd.concat(
+                        [df_rsvd.assign(eqlnum=eql) for eql in self._unique_eqlnums],
+                        ignore_index=True,
+                    )
+
                 rsvd = _TEMPLATE_ENVIRONMENT.get_template("RSVD.jinja2").render(
                     {
                         "nr_eqlnum": len(self._unique_eqlnums),
-                        "rsvd": pd.read_csv(self._rsvd, names=["depth", "rs"]),
+                        "rsvd": df_rsvd,
                     }
                 )
 
@@ -142,6 +150,7 @@ class Equilibration(Parameter):
                     "parameters": parameters,
                 }
             )
+            + "\n"
             + rsvd
             + f"\n{thpres}",
         }
