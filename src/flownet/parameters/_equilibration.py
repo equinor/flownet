@@ -129,9 +129,10 @@ class Equilibration(Parameter):
                 # adding column with eqlnum, repeating blocks of dataframe
                 if len(df_rsvd.columns) == 2:
                     df_rsvd = pd.concat(
-                        [df_rsvd.assign(eqlnum=eql) for eql in self._unique_eqlnums], ignore_index=True
+                        [df_rsvd.assign(eqlnum=eql) for eql in self._unique_eqlnums],
+                        ignore_index=True,
                     )
-                    
+
                 rsvd = _TEMPLATE_ENVIRONMENT.get_template("RSVD.jinja2").render(
                     {
                         "nr_eqlnum": len(self._unique_eqlnums),
