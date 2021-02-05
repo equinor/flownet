@@ -1579,7 +1579,7 @@ def parse_config(
         Parsed config, where values can be extracted like e.g. 'config.ert.queue.system'.
 
     """
-    # pylint: disable=too-many-branches, too-many-statements, too-many-lines
+    # pylint: disable=too-many-branches, too-many-statements, too-many-lines, too-many-locals
 
     if update_config is None:
         input_config = yaml.safe_load(base_config.read_text())
