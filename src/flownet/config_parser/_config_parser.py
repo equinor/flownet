@@ -3,10 +3,10 @@ import os
 import pathlib
 from typing import Dict, Optional, List, Union
 
-import pandas as pd
 import yaml
 import configsuite
 from configsuite import types, MetaKeys as MK, ConfigSuite
+import pandas as pd
 
 from ._merge_configs import merge_configs
 from ..data.from_flow import FlowData
@@ -1603,6 +1603,17 @@ def parse_config(
 
     config = suite.snapshot
 
+    # If 'regions_from_sim' is defined, or a csv file with rsvd tables 
+    # is defined, we need to import the simulation case to check number
+    # regions
+    if config.model_parameters.equil.scheme == "regions_from_sim" or config.flownet.pvt.rsvd:
+        if config.flownet.data_source.simulation.input_case is None:
+            raise ValueError(
+                "Input simulation case is not defined - EQLNUM regions can not be extracted"
+            )
+        field_data = FlowData(config.flownet.data_source.simulation.input_case)
+        unique_regions = field_data.get_unique_regions("EQLNUM")
+
     layers = config.flownet.data_source.simulation.layers
     if len(layers) > 0:
         if not all(
@@ -1657,12 +1668,6 @@ def parse_config(
         )
 
     if config.model_parameters.equil.scheme == "regions_from_sim":
-        if config.flownet.data_source.simulation.input_case is None:
-            raise ValueError(
-                "Input simulation case is not defined - EQLNUM regions can not be extracted"
-            )
-        field_data = FlowData(config.flownet.data_source.simulation.input_case)
-        unique_regions = field_data.get_unique_regions("EQLNUM")
         default_exists = False
         defined_regions = []
         for reg in config.model_parameters.equil.regions:
@@ -1879,26 +1884,18 @@ def parse_config(
                     "Column names in csv file with rsvd values should be "
                     "'depth', 'rs' and 'eqlnum' (in any order)."
                 )
+            if not set(df_rsvd["eqlnum"]) == set(unique_regions):
+                raise ValueError(
+                    "Rsvd tables not defined for all EQLNUM regions. Must be defined as one "
+                    "table used for all regions, or one table for each region."
+                )
         else:
             raise ValueError(
                 "Something is wrong with the csv file containing the rsvd tables."
                 "It should contain either two columns with headers 'depth' and 'rs', "
                 "or three columns with headers 'depth','rs' and 'eqlnum'."
             )
-        # We need to import the simulation case to check number of regions
-        # if 'regions_from_sim' it has been imported allready
-        if not config.model_parameters.equil.scheme == "regions_from_sim":
-            if config.flownet.data_source.simulation.input_case is None:
-                raise ValueError(
-                    "Input simulation case is not defined - EQLNUM regions can not be extracted"
-                )
-            field_data = FlowData(config.flownet.data_source.simulation.input_case)
-            unique_regions = field_data.get_unique_regions("EQLNUM")
-        if not set(df_rsvd["eqlnum"]) == set(unique_regions):
-            raise ValueError(
-                "Rsvd tables not defined to all EQLNUM regions. Must be defined as one "
-                "table used for all regions, or one table for each region."
-            )
+        
 
     return config
 
