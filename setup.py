@@ -8,7 +8,7 @@ REQUIREMENTS = [
     "cwrap>=1.6",
     "ecl>=2.9",
     "ecl2df>=0.8.1",
-    "ert<2.20.0",
+    "ert>=2.17",
     "fmu-ensemble>=1.2",
     "hyperopt>=0.2.5",
     "jinja2>=2.10",
