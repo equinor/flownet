@@ -150,6 +150,7 @@ class Equilibration(Parameter):
                     "parameters": parameters,
                 }
             )
+            + "\n"
             + rsvd
             + f"\n{thpres}",
         }
