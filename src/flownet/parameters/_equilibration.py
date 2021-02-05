@@ -126,23 +126,15 @@ class Equilibration(Parameter):
 
             if self._rsvd is not None:
                 df_rsvd = pd.read_csv(self._rsvd)
-                if len(df_rsvd.columns) == 3:
-                    df_rsvd.columns = ["depth", "rs", "eqlnum"]
-                    if len(df_rsvd["eqlnum"].unique()) != len(self._unique_eqlnums):
-                        raise ValueError(
-                            "Number of RSVD tables different from "
-                            "number of EQLNUM regions! If a column for RSVD table is "
-                            "present, the number of tables must be equal "
-                            "to the number of EQLNUMs."
-                        )
-                elif len(df_rsvd.columns) == 2:
-                    df_rsvd.columns = ["depth", "rs"]
-                    df_rsvd["eqlnum"] = 1
-
+                # adding column with eqlnum, repeating blocks of dataframe
+                if len(df_rsvd.columns) == 2:
+                    df_rsvd = pd.concat(
+                        [df_rsvd.assign(eqlnum=eql) for eql in self._unique_eqlnums], ignore_index=True
+                    )
+                    
                 rsvd = _TEMPLATE_ENVIRONMENT.get_template("RSVD.jinja2").render(
                     {
                         "nr_eqlnum": len(self._unique_eqlnums),
-                        "nr_rsvd": len(df_rsvd["eqlnum"].unique()),
                         "rsvd": df_rsvd,
                     }
                 )
