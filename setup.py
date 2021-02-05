@@ -20,6 +20,7 @@ REQUIREMENTS = [
     "psutil>=5.7",
     "pyarrow>=0.14",
     "pykrige>=1.5",
+    "pyrsistent>=0.17.3",
     "pyscal>=0.7.4",
     "pyvista>=0.23",
     "pyyaml>=5.2",
