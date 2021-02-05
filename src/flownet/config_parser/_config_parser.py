@@ -1603,13 +1603,17 @@ def parse_config(
 
     config = suite.snapshot
 
-    # If 'regions_from_sim' is defined, or a csv file with rsvd tables 
+    # If 'regions_from_sim' is defined, or a csv file with rsvd tables
     # is defined, we need to import the simulation case to check number
     # regions
-    if config.model_parameters.equil.scheme == "regions_from_sim" or config.flownet.pvt.rsvd:
+    if (
+        config.model_parameters.equil.scheme == "regions_from_sim"
+        or config.flownet.pvt.rsvd
+    ):
         if config.flownet.data_source.simulation.input_case is None:
             raise ValueError(
-                "Input simulation case is not defined - EQLNUM regions can not be extracted"
+                "Input simulation case is not defined. "
+                "EQLNUM regions can not be extracted"
             )
         field_data = FlowData(config.flownet.data_source.simulation.input_case)
         unique_regions = field_data.get_unique_regions("EQLNUM")
@@ -1895,7 +1899,6 @@ def parse_config(
                 "It should contain either two columns with headers 'depth' and 'rs', "
                 "or three columns with headers 'depth','rs' and 'eqlnum'."
             )
-        
 
     return config
 
