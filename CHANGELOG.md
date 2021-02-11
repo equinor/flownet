@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - [#284](https://github.com/equinor/flownet/pull/284) Added the option to specify cumulative phase rates as observations (WOPT, WWPT, WGPT, WGIT, WWIT)
 
 ### Fixes
+- [#325](https://github.com/equinor/flownet/pull/325) Fixes bug where the analytics module would repeat the 8th iteration analytics for iterations larger than 9.
 - [#256](https://github.com/equinor/flownet/pull/256) Fixes issues with duplicate names in hyperopt by using the full path in yaml for hyperopt parameter names.
 - [#272](https://github.com/equinor/flownet/pull/272) Adds resampling of observation dates at requested frequency by finding nearest date among existing observation dates (i.e., no interpolated dates added)
 
