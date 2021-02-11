@@ -152,17 +152,17 @@ class RelativePermeability(Parameter):
         )
         self._satnum: pd.DataFrame = satnum
         self._phases = config.flownet.phases
+        self._fast_pyscal: bool = config.flownet.fast_pyscal
         self._interpolation_values: Optional[pd.DataFrame] = None
         self._scal_for_interp: Optional[PyscalList] = None
         if isinstance(interpolation_values, pd.DataFrame):
             self._interpolation_values = interpolation_values
             # self._scal_for_interp will be indexed by SATNUM region, starting at 1
             self._scal_for_interp = PyscalFactory.create_scal_recommendation_list(
-                interpolation_values
+                interpolation_values, fast=self._fast_pyscal
             )
 
         self._swof, self._sgof = self._check_parameters()
-        self._fast_pyscal: bool = config.flownet.fast_pyscal
         self._independent_interpolation = (
             config.model_parameters.relative_permeability.independent_interpolation
         )
