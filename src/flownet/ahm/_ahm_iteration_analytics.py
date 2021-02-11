@@ -5,7 +5,6 @@ import functools
 import glob
 import os
 import pathlib
-import re
 from typing import Any, Dict, Optional, List, Tuple
 
 import numpy as np
