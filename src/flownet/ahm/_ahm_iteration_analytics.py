@@ -290,7 +290,9 @@ def make_dataframe_simulation_data(
         nb_real: number of realizations
 
     """
-    iteration = int(re.findall(r"[0-9]+", sorted(glob.glob(path))[-1])[-1])
+    iteration = sorted(
+        [int(rel_iter.replace("/", "").split("-")[-1]) for rel_iter in glob.glob(path)]
+    )[-1]
     runpath_list = glob.glob(path[::-1].replace("*", str(iteration), 1)[::-1])
 
     partial_load_simulations = functools.partial(
