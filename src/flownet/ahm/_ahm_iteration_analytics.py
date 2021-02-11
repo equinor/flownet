@@ -39,7 +39,7 @@ def filter_dataframe(
 
 def prepare_opm_reference_data(
     df_opm: pd.DataFrame, str_key: str, n_real: int
-) -> np.array:
+) -> np.ndarray:
     """
     This function extracts data from selected columns of the Pandas dataframe
     containing data from reference simulation, rearranges it into a stacked
@@ -66,7 +66,7 @@ def prepare_opm_reference_data(
 
 def prepare_flownet_data(
     df_flownet: pd.DataFrame, str_key: str, n_real: int
-) -> np.array:
+) -> np.ndarray:
     """
     This function extracts data from selected columns of the Pandas dataframe
     containing data from an ensemble of FlowNet simulations, rearranges it into
@@ -94,8 +94,8 @@ def prepare_flownet_data(
 
 
 def normalize_data(
-    data_opm_reference: np.array, data_ensembles_flownet: List[np.array]
-) -> Tuple[np.array, List[np.array]]:
+    data_opm_reference: np.ndarray, data_ensembles_flownet: List[np.ndarray]
+) -> Tuple[np.ndarray, List[np.ndarray]]:
     """
     This function normalizes data from a 2D numpy array containing data from the
     reference simulation and multiple ensembles of FlowNet simulations,
@@ -151,7 +151,7 @@ def normalize_data(
 
 
 def accuracy_metric(
-    data_reference: pd.DataFrame, data_test: np.array, metric: str
+    data_reference: pd.DataFrame, data_test: np.ndarray, metric: str
 ) -> float:
     """
     This function computes a score value based on the specified accuracy metric
@@ -238,8 +238,8 @@ def load_csv_file(csv_file: str, csv_columns: List[str]) -> pd.DataFrame:
 
 
 def compute_metric_ensemble(
-    obs: np.array,
-    list_ensembles: List[np.array],
+    obs: np.ndarray,
+    list_ensembles: List[np.ndarray],
     metrics: List[str],
     str_key: str,
     iteration: int,

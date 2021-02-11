@@ -405,7 +405,7 @@ def _create_entity_connection_matrix(
             tube_coordinates = linspace(
                 start=start,
                 stop=end,
-                num=n_non_reservoir_evaluation,
+                num=n_non_reservoir_evaluation,  # type: ignore
                 endpoint=False,
                 dtype=float,
                 axis=1,
