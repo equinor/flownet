@@ -40,10 +40,10 @@ jobs:
           INPUT_MODEL_FOLDER: ./flownet-testdata/${{ matrix.flownet-model }}/input_model
           # If you want the CI to (temporarily) run against your fork of the testdada,
           # change the value her from "equinor" to your username.
-          TESTDATA_REPO_OWNER: equinor
+          TESTDATA_REPO_OWNER: edubarrosTNO
           # If you want the CI to (temporarily) run against another branch than master,
           # change the value her from "master" to the relevant branch name.
-          TESTDATA_REPO_BRANCH: master
+          TESTDATA_REPO_BRANCH: i324-remove-unused-well-connections-norne
         run: |
           git clone --depth 1 --branch $TESTDATA_REPO_BRANCH https://github.com/$TESTDATA_REPO_OWNER/flownet-testdata.git --recursive
           for f in $INPUT_MODEL_FOLDER/*.tar.gz; do tar -zxvf "$f" -C $INPUT_MODEL_FOLDER; done
