@@ -23,7 +23,7 @@ REQUIREMENTS = [
     "pyscal~=0.6.1",
     "pyvista>=0.23",
     "pyyaml>=5.2",
-    "semeio==0.5.6",
+    "semeio~=0.6.8",
     "scikit-learn>=0.22",
     "scipy>=1.4",
     "webviz-config>=0.0.42",
