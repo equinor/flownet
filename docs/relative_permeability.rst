@@ -1,1 +1,1 @@
-FlowNet uses _`pyscal <https://github.com/equinor/pyscal>`_
+FlowNet uses `pyscal <https://github.com/equinor/pyscal>`_
