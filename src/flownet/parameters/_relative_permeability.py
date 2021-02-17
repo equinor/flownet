@@ -284,37 +284,40 @@ class RelativePermeability(Parameter):
                 else None,
                 h=H_CONSTANT,
             )
-            str_props_section = wog_list.SWOF()
-            str_props_section += wog_list.SGOF()
+
         else:
-            if self._swof and self._sgof:
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    for _, relperm in zip(  # type: ignore[assignment]
-                        parameters, executor.map(partial_gen_wog, parameters)
-                    ):
-                        str_swofs += relperm.SWOF(header=False)
-                        str_sgofs += relperm.SGOF(header=False)
-            elif self._swof:
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    for _, relperm in zip(  # type: ignore[assignment]
-                        parameters, executor.map(partial_gen_wo, parameters)
-                    ):
-                        str_swofs += relperm.SWOF(header=False)
-            elif self._sgof:
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    for _, relperm in zip(  # type: ignore[assignment]
-                        parameters, executor.map(partial_gen_og, parameters)
-                    ):
-                        str_sgofs += relperm.SGOF(header=False)
-            else:
-                raise ValueError(
-                    "It seems like both SWOF and SGOF should not be generated."
-                    "Either one of the two should be generated. Can't continue..."
-                )
+            wog_list = PyscalFactory.create_pyscal_list(
+                parameters, fast=self._fast_pyscal)
+#            if self._swof and self._sgof:  
+#                with concurrent.futures.ThreadPoolExecutor() as executor:
+#                    for _, relperm in zip(  # type: ignore[assignment]
+#                       parameters, executor.map(partial_gen_wog, parameters)
+#                   ):
+#                       str_swofs += relperm.SWOF(header=False)
+#                       str_sgofs += relperm.SGOF(header=False)
+#           elif self._swof:
+#                with concurrent.futures.ThreadPoolExecutor() as executor:
+#                    for _, relperm in zip(  # type: ignore[assignment]
+#                       parameters, executor.map(partial_gen_wo, parameters)
+#                    ):
+#                        str_swofs += relperm.SWOF(header=False)
+#            elif self._sgof:
+#                with concurrent.futures.ThreadPoolExecutor() as executor:
+#                    for _, relperm in zip(  # type: ignore[assignment]
+#                        parameters, executor.map(partial_gen_og, parameters)
+#                    ):
+#                        str_sgofs += relperm.SGOF(header=False)
+#            else:
+#                raise ValueError(
+#                    "It seems like both SWOF and SGOF should not be generated."
+#                    "Either one of the two should be generated. Can't continue..."
+#                )
+#
+#            str_props_section = f"SWOF\n{str_swofs}\n" if self._swof else ""
+#            str_props_section += f"SGOF\n{str_sgofs}\n" if self._sgof else ""
 
-            str_props_section = f"SWOF\n{str_swofs}\n" if self._swof else ""
-            str_props_section += f"SGOF\n{str_sgofs}\n" if self._sgof else ""
-
+        str_props_section = wog_list.SWOF()
+        str_props_section += wog_list.SGOF()
         str_runspec_section = "\n".join(self._phases).upper() + "\n"
 
         return {
