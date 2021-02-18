@@ -12,7 +12,7 @@ flownet:
     .
     .
     relative_permeability:
-      :ref:`label-name`scheme: global, regions_from_sim or interpolate
+      :ref:`Link title <label-name>`scheme: global, regions_from_sim or interpolate
       interpolate:
       independent_interpolation:
       regions:
