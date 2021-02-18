@@ -288,7 +288,7 @@ class RelativePermeability(Parameter):
             str_props_section = wog_list.SWOF()
             str_props_section += wog_list.SGOF()
         else:
-            max_workers = (os.cpu_count() or 1) * 5
+            max_workers = min(32, (os.cpu_count() or 1) + 4)
             if self._swof and self._sgof:
                 with concurrent.futures.ThreadPoolExecutor(
                     max_workers=max_workers
