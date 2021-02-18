@@ -1,9 +1,5 @@
 {%- for date in schedule.get_dates() %}
-{%- if date > startdate: %}
-DATES
- {{ date.strftime('%d %b %Y').upper() }} /
-/
-{%- endif %}
+
 {%- if schedule.get_keywords(dates=date, kw_class="WELSPECS"): %}
 WELSPECS
 -- WELL GROUP LOCATION BHP   PHASE DRAIN INFLOW OPEN CROSS PVT   DEN FIPNUM
@@ -42,6 +38,12 @@ WCONINJH
  '{{ kw.well_name }}' '{{ kw.inj_type }}' '{{ kw.status }}' {{ kw.rate | isnan }} {{ kw.bhp | isnan }} {{ kw.thp | isnan }} {{ kw.vfp_table }} 4* '{{ kw.inj_control_mode }}' /
 {%- endfor %}
 /
-
 {%- endif %}
+
+{%- if date > startdate: %}
+DATES
+ {{ date.strftime('%d %b %Y').upper() }} /
+/
+{%- endif %}
+
 {%- endfor %}
