@@ -12,7 +12,7 @@ flownet:
     .
     .
     relative_permeability:
-      scheme_: global, regions_from_sim or interpolate
+      scheme_.: global, regions_from_sim or interpolate
       interpolate:
       independent_interpolation:
       regions:
