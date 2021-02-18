@@ -289,20 +289,26 @@ class RelativePermeability(Parameter):
             str_props_section += wog_list.SGOF()
         else:
             if self._swof and self._sgof:
-                with concurrent.futures.ThreadPoolExecutor(max_workers=3*os.cpu_count()) as executor:
+                with concurrent.futures.ThreadPoolExecutor(
+                    max_workers=3 * os.cpu_count()
+                ) as executor:
                     for _, relperm in zip(  # type: ignore[assignment]
                         parameters, executor.map(partial_gen_wog, parameters)
                     ):
                         str_swofs += relperm.SWOF(header=False)
                         str_sgofs += relperm.SGOF(header=False)
             elif self._swof:
-                with concurrent.futures.ThreadPoolExecutor(max_workers=3*os.cpu_count()) as executor:
+                with concurrent.futures.ThreadPoolExecutor(
+                    max_workers=3 * os.cpu_count()
+                ) as executor:
                     for _, relperm in zip(  # type: ignore[assignment]
                         parameters, executor.map(partial_gen_wo, parameters)
                     ):
                         str_swofs += relperm.SWOF(header=False)
             elif self._sgof:
-                with concurrent.futures.ThreadPoolExecutor(max_workers=3*os.cpu_count()) as executor:
+                with concurrent.futures.ThreadPoolExecutor(
+                    max_workers=3 * os.cpu_count()
+                ) as executor:
                     for _, relperm in zip(  # type: ignore[assignment]
                         parameters, executor.map(partial_gen_og, parameters)
                     ):
