@@ -288,7 +288,12 @@ class RelativePermeability(Parameter):
             str_props_section = wog_list.SWOF()
             str_props_section += wog_list.SGOF()
         else:
-            max_workers = min(32, (os.cpu_count() or 1) + 4)
+            # this function is called repeatedly by ERT.
+            # setting maximum number of threads to be spawned to 5
+            # (meaning it will be a maximum of 5 for each realization)
+            # since the number of realizations run by ERT will typically
+            # be close to the number of CPUs on the machine/cluster 
+            max_workers = 5
             if self._swof and self._sgof:
                 with concurrent.futures.ThreadPoolExecutor(
                     max_workers=max_workers
