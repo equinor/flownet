@@ -5,7 +5,7 @@ import signal
 
 import psutil
 
-TIMEOUT = 900  # Kill ERT if no new output to stdout for 15 minutes.
+TIMEOUT = 3600  # Kill ERT if no new output to stdout for 15 minutes.
 
 
 def run_ert_subprocess(command: str, cwd: pathlib.Path, runpath: str) -> None:
