@@ -224,21 +224,21 @@ class NetworkModel:
         df_concat = (
             df_concat.apply(
                 lambda x: np.rint(
-                    np.array((x - minx) * 1000 / (maxx - minx), dtype=np.float)
+                    np.array((x - minx) * 1000 / (maxx - minx), dtype=np.double)
                 )
                 if x.name in ["x"]
                 else x
             )
             .apply(
                 lambda y: np.rint(
-                    np.array((y - miny) * 1000 / (maxy - miny), dtype=np.float)
+                    np.array((y - miny) * 1000 / (maxy - miny), dtype=np.double)
                 )
                 if y.name in ["y"]
                 else y
             )
             .apply(
                 lambda z: np.rint(
-                    np.array((z - minz) * 1000 / (maxz - minz), dtype=np.float)
+                    np.array((z - minz) * 1000 / (maxz - minz), dtype=np.double)
                 )
                 if z.name in ["z"]
                 else z
@@ -376,7 +376,7 @@ class NetworkModel:
                 ),
                 axis=1,
             )
-            triangle_in_box = np.any(
+            triangle_in_box: np.ndarray = np.any(  # type: ignore
                 np.column_stack((vertex1_in_box, vertex2_in_box, vertex3_in_box)),
                 axis=1,
             )
@@ -503,11 +503,11 @@ class NetworkModel:
         return self._calculate_connections_at_nodes()
 
     @property
-    def cell_midpoints(self) -> np.ndarray:
+    def cell_midpoints(self) -> Tuple[Any, Any, Any]:
         """
         Returns a numpy array with the midpoint of each cell in the network
         Returns:
-            (Nx3) np.ndarray with connection midpoint coordinates.
+            Tuple with connection midpoint coordinates.
         """
         x_mid = (
             self._grid[["x0", "x1", "x2", "x3", "x4", "x5", "x6", "x7"]]

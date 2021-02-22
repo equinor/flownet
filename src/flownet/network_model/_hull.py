@@ -1,11 +1,9 @@
-from typing import List
-
 import numpy as np
 
 
 def check_in_hull(
     concave_hull_bounding_boxes: np.ndarray, coordinates: np.ndarray
-) -> List[bool]:
+) -> np.ndarray:
     """Checks if all coordinates are inside the concave hull bounding boxes.
 
     Args:
@@ -13,7 +11,7 @@ def check_in_hull(
         connections (np.ndarray): All coordianates to check
 
     Returns:
-        List[bool]: List
+        np.ndarray with bools
     """
 
     xmin_grid_cells = concave_hull_bounding_boxes[:, 0]
