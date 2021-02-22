@@ -1,0 +1,4 @@
+workflow:
+  type: auto_scale
+  clustering:
+    type: limited_kmeans
