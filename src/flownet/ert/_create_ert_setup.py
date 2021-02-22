@@ -281,7 +281,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         _MODULE_FOLDER / ".." / "static" / "MISFIT_PREPROCESSOR_WORKFLOW",
         output_folder / "MISFIT_PREPROCESSOR_WORKFLOW",
     )
-    
+
     shutil.copyfile(
         _MODULE_FOLDER / ".." / "static" / "misfit_preprocessor_config.yml",
         output_folder / "misfit_preprocessor_config.yml",
