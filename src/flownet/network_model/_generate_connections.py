@@ -405,17 +405,17 @@ def _create_entity_connection_matrix(
             tube_coordinates = linspace(
                 start=start,
                 stop=end,
-                num=n_non_reservoir_evaluation,
+                num=n_non_reservoir_evaluation,  # type: ignore
                 endpoint=False,
                 dtype=float,
                 axis=1,
             ).T
 
             if not any(
-                [
+                (
                     all(check_in_hull(concave_hull, tube_coordinates))
                     for concave_hull in concave_hull_list
-                ]
+                )
             ):
                 continue
 
