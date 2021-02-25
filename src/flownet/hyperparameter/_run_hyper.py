@@ -88,7 +88,7 @@ def flownet_ahm_run(x: list, args: argparse.Namespace):
         run_flownet_history_matching(config, run_args)
 
         df_analytics = pd.read_csv(
-            (run_args.output_folder / config.ert.analysis.outfile).with_suffix(".csv")
+            (run_args.output_folder / config.ert.analysis[0].outfile).with_suffix(".csv")
         ).drop_duplicates()
 
         hyperopt_loss = 0.0
