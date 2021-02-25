@@ -554,9 +554,11 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     },
                     "analysis": {
                         MK.Type: types.List,
+                        MK.Description: "List of analysis workflows to run.",
                         MK.Content: {
                             MK.Item: {
                                 MK.Type: types.NamedDict,
+                                MK.Description: "Definitions of the analysis workflow.",
                                 MK.Content: {
                                     "metric": {
                                         MK.Type: types.List,
@@ -582,11 +584,21 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                         MK.Description: "List of summary vectors for which accuracy "
                                         "is to be computed",
                                     },
-                                    "start": {MK.Type: types.Date, MK.AllowNone: True},
-                                    "end": {MK.Type: types.Date, MK.AllowNone: True},
+                                    "start": {
+                                        MK.Type: types.Date,
+                                        MK.AllowNone: True,
+                                        MK.Description: "Start date in YYYY-MM-DD format.",
+                                    },
+                                    "end": {
+                                        MK.Type: types.Date,
+                                        MK.AllowNone: True,
+                                        MK.Description: "End date in YYYY-MM-DD format.",
+                                    },
                                     "outfile": {
                                         MK.Type: types.String,
                                         MK.AllowNone: True,
+                                        MK.Description: "The filename of the output of the workflow. "
+                                        "In case multiple analysis workflows are run this name should be unique.",
                                     },
                                 },
                             },
@@ -1867,7 +1879,8 @@ def parse_config(
             )
 
     if (
-        config.ert.analysis[0].metric
+        hasattr(config.ert, "analysis")
+        and len(config.ert.analysis)
         and config.flownet.hyperopt.loss.metric not in config.ert.analysis[0].metric
     ):
         raise ValueError(
