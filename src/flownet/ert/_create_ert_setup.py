@@ -262,27 +262,30 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     analytics_workflow_template = _TEMPLATE_ENVIRONMENT.get_template(
         "SAVE_ITERATION_ANALYTICS_WORKFLOW.jinja2"
     )
-    for i, analysis_item in enumerate(config.ert.analysis):
-        with open(output_folder / f"SAVE_ITERATION_ANALYTICS_WORKFLOW_{i}", "w") as fh:
-            fh.write(
-                analytics_workflow_template.render(
-                    {
-                        "reference_simulation": path_ref_sim,
-                        "perforation_strategy": config.flownet.perforation_handling_strategy,
-                        "run_path": config.ert.runpath,
-                        "ecl_base": config.ert.eclbase,
-                        "analysis_start": analysis_item.start,
-                        "analysis_end": analysis_item.end,
-                        "analysis_quantity": "["
-                        + ",".join(list(analysis_item.quantity))
-                        + "]",
-                        "analysis_metric": "["
-                        + ",".join(list(analysis_item.metric))
-                        + "]",
-                        "analysis_outfile": analysis_item.outfile,
-                    }
+    if hasattr(config.ert, "analysis"):
+        for i, analysis_item in enumerate(config.ert.analysis):
+            with open(
+                output_folder / f"SAVE_ITERATION_ANALYTICS_WORKFLOW_{i}", "w"
+            ) as fh:
+                fh.write(
+                    analytics_workflow_template.render(
+                        {
+                            "reference_simulation": path_ref_sim,
+                            "perforation_strategy": config.flownet.perforation_handling_strategy,
+                            "run_path": config.ert.runpath,
+                            "ecl_base": config.ert.eclbase,
+                            "analysis_start": analysis_item.start,
+                            "analysis_end": analysis_item.end,
+                            "analysis_quantity": "["
+                            + ",".join(list(analysis_item.quantity))
+                            + "]",
+                            "analysis_metric": "["
+                            + ",".join(list(analysis_item.metric))
+                            + "]",
+                            "analysis_outfile": analysis_item.outfile,
+                        }
+                    )
                 )
-            )
 
     shutil.copyfile(args.config, output_folder / args.config.name)
     with open(os.path.join(output_folder, "pipfreeze.output"), "w") as fh:
