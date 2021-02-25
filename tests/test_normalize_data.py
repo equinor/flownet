@@ -24,9 +24,9 @@ def test_normalize_data() -> None:
     res_6 = [np.array([[0.1, 0.0], [0.1, 0.0]]), np.array([[0.2, 0.0], [0.2, 0.0]])]
     assert (
         np.allclose(tmp_1[0], res_1)
-        and all([np.allclose(x, y) for x, y in zip(tmp_1[1], res_2)])
+        and all(np.allclose(x, y) for x, y in zip(tmp_1[1], res_2))
         and np.allclose(tmp_2[0], res_3)
-        and all([np.allclose(x, y) for x, y in zip(tmp_2[1], res_4)])
+        and all(np.allclose(x, y) for x, y in zip(tmp_2[1], res_4))
         and np.allclose(tmp_3[0], res_5)
-        and all([np.allclose(x, y) for x, y in zip(tmp_3[1], res_6)])
+        and all(np.allclose(x, y) for x, y in zip(tmp_3[1], res_6))
     )
