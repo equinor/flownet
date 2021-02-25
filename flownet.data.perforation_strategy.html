@@ -172,7 +172,7 @@
 <span id="flownet-data-perforation-strategy-module"></span><h1>flownet.data.perforation_strategy module<a class="headerlink" href="#module-flownet.data.perforation_strategy" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="flownet.data.perforation_strategy.bottom_point">
-<code class="sig-prename descclassname">flownet.data.perforation_strategy.</code><code class="sig-name descname">bottom_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.perforation_strategy.bottom_point" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">flownet.data.perforation_strategy.</span></code><code class="sig-name descname"><span class="pre">bottom_point</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.perforation_strategy.bottom_point" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function returns the bottom point of the well (assuming it is the last open connection specified, anywhere
 in time).</p>
 <dl class="field-list simple">
@@ -187,7 +187,7 @@ in time).</p>
 
 <dl class="py function">
 <dt id="flownet.data.perforation_strategy.multiple">
-<code class="sig-prename descclassname">flownet.data.perforation_strategy.</code><code class="sig-name descname">multiple</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.perforation_strategy.multiple" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">flownet.data.perforation_strategy.</span></code><code class="sig-name descname"><span class="pre">multiple</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.perforation_strategy.multiple" title="Permalink to this definition">¶</a></dt>
 <dd><p>This strategy creates multiple connections per well, as many as there is data available. Connections that
 repeatedly have the same state through time are reduced to only having records for state changes.</p>
 <dl class="simple">
@@ -207,7 +207,7 @@ connections per well will lead to useful results.</p>
 
 <dl class="py function">
 <dt id="flownet.data.perforation_strategy.multiple_based_on_workovers">
-<code class="sig-prename descclassname">flownet.data.perforation_strategy.</code><code class="sig-name descname">multiple_based_on_workovers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.perforation_strategy.multiple_based_on_workovers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">flownet.data.perforation_strategy.</span></code><code class="sig-name descname"><span class="pre">multiple_based_on_workovers</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.perforation_strategy.multiple_based_on_workovers" title="Permalink to this definition">¶</a></dt>
 <dd><p>This strategy creates multiple connections per well when the well during the historic production period has been
 straddled or plugged (i.e., individual connections have been shut).</p>
 <p>The following steps are performed per layer:</p>
@@ -237,7 +237,7 @@ are returned, including their respective open/closing times.</p></li>
 
 <dl class="py function">
 <dt id="flownet.data.perforation_strategy.time_avg_open_location">
-<code class="sig-prename descclassname">flownet.data.perforation_strategy.</code><code class="sig-name descname">time_avg_open_location</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.perforation_strategy.time_avg_open_location" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">flownet.data.perforation_strategy.</span></code><code class="sig-name descname"><span class="pre">time_avg_open_location</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.perforation_strategy.time_avg_open_location" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>df</strong> – </p>
@@ -248,7 +248,7 @@ are returned, including their respective open/closing times.</p></li>
 
 <dl class="py function">
 <dt id="flownet.data.perforation_strategy.top_point">
-<code class="sig-prename descclassname">flownet.data.perforation_strategy.</code><code class="sig-name descname">top_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#flownet.data.perforation_strategy.top_point" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">flownet.data.perforation_strategy.</span></code><code class="sig-name descname"><span class="pre">top_point</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.perforation_strategy.top_point" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function returns the top point of the well (assuming it is the first open connection specified, anywhere
 in time).</p>
 <dl class="field-list simple">
