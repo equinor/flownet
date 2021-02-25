@@ -553,31 +553,42 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         "and webviz",
                     },
                     "analysis": {
-                        MK.Type: types.NamedDict,
+                        MK.Type: types.List,
                         MK.Content: {
-                            "metric": {
-                                MK.Type: types.List,
+                            MK.Item: {
+                                MK.Type: types.NamedDict,
                                 MK.Content: {
-                                    MK.Item: {MK.Type: types.String, MK.AllowNone: True}
+                                    "metric": {
+                                        MK.Type: types.List,
+                                        MK.Content: {
+                                            MK.Item: {
+                                                MK.Type: types.String,
+                                                MK.AllowNone: True,
+                                            }
+                                        },
+                                        MK.Transformation: _to_upper,
+                                        MK.Description: "List of accuracy metrics to be computed "
+                                        "in FlowNet analysis workflow",
+                                    },
+                                    "quantity": {
+                                        MK.Type: types.List,
+                                        MK.Content: {
+                                            MK.Item: {
+                                                MK.Type: types.String,
+                                                MK.AllowNone: True,
+                                            }
+                                        },
+                                        MK.Transformation: _to_upper,
+                                        MK.Description: "List of summary vectors for which accuracy "
+                                        "is to be computed",
+                                    },
+                                    "start": {MK.Type: types.Date, MK.AllowNone: True},
+                                    "end": {MK.Type: types.Date, MK.AllowNone: True},
+                                    "outfile": {
+                                        MK.Type: types.String,
+                                        MK.AllowNone: True,
+                                    },
                                 },
-                                MK.Transformation: _to_upper,
-                                MK.Description: "List of accuracy metrics to be computed "
-                                "in FlowNet analysis workflow",
-                            },
-                            "quantity": {
-                                MK.Type: types.List,
-                                MK.Content: {
-                                    MK.Item: {MK.Type: types.String, MK.AllowNone: True}
-                                },
-                                MK.Transformation: _to_upper,
-                                MK.Description: "List of summary vectors for which accuracy "
-                                "is to be computed",
-                            },
-                            "start": {MK.Type: types.Date, MK.AllowNone: True},
-                            "end": {MK.Type: types.Date, MK.AllowNone: True},
-                            "outfile": {
-                                MK.Type: types.String,
-                                MK.AllowNone: True,
                             },
                         },
                     },
@@ -1856,8 +1867,8 @@ def parse_config(
             )
 
     if (
-        config.ert.analysis.metric
-        and config.flownet.hyperopt.loss.metric not in config.ert.analysis.metric
+        config.ert.analysis[0].metric
+        and config.flownet.hyperopt.loss.metric not in config.ert.analysis[0].metric
     ):
         raise ValueError(
             f"Key {config.flownet.hyperopt.loss.metric} is not defined as an analysis"
