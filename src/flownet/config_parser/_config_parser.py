@@ -1873,14 +1873,17 @@ def parse_config(
         )
 
     for key in config.flownet.hyperopt.loss.keys:
-        if not key in config.ert.analysis.quantity:
+        if (
+            not len(config.ert.analysis) > 0
+            or not key in config.ert.analysis[0].quantity
+        ):
             raise ValueError(
                 f"Key {key} is not defined as an analysis quantity ({config.flownet.hyperopt.loss.keys})."
             )
 
     if (
         hasattr(config.ert, "analysis")
-        and len(config.ert.analysis)
+        and len(config.ert.analysis) > 0
         and config.flownet.hyperopt.loss.metric not in config.ert.analysis[0].metric
     ):
         raise ValueError(
