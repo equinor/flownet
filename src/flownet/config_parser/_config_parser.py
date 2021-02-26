@@ -1674,6 +1674,13 @@ def parse_config(
             "The concave hulls of the layers are used to split "
             "the number of additional nodes between the layers."
         )
+    if layers and not len(layers) is len(config.flownet.additional_flow_nodes):
+        raise ValueError(
+            f"For each layer in the FlowNet model you have to supply an entry in the "
+            "additional flow nodes list. Currenly you have {str(len(layers))} layers "
+            "and {str(len(config.flownet.additional_flow_nodes))} additional flow node "
+            "defitions."
+        )
 
     req_relp_parameters: List[str] = []
     if (
