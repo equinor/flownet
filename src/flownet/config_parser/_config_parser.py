@@ -440,7 +440,8 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     "min_permeability": {
                         MK.Type: types.Number,
                         MK.AllowNone: True,
-                        MK.Description: "Minimum allowed permeability in mD before a tube is removed.",
+                        MK.Description: "Minimum allowed permeability in mD before a tube is removed "
+                        "(i.e., its cells are made inactive).",
                     },
                     "hyperopt": {
                         MK.Type: types.NamedDict,
