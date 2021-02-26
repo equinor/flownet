@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
+- [#341](https://github.com/equinor/flownet/pull/341) Added option to add a min permeability threshold for which tubes are deactivated when the permeability is below this value.
 - [#305](https://github.com/equinor/flownet/pull/305) Functionality of generating seperate flownets per layer is enabled, additional nodes are split between the layers according to the volume of concave hull of the layers.
 - [#298](https://github.com/equinor/flownet/pull/298) Connections between (well)nodes that go through non-reservoir are now removed. Angle threshold export to user.
 - [#296](https://github.com/equinor/flownet/pull/296) Adapted perforation strategy to allow for layering + bug fixes in the 'multiple' and 'multiple_based_on_workovers' perforation strategies.

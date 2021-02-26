@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import jinja2
 import pandas as pd
@@ -100,6 +100,7 @@ class PorvPoroTrans(Parameter):
         distribution_values: pd.DataFrame,
         ti2ci: pd.DataFrame,
         network: NetworkModel,
+        min_permeability: Optional[float] = None,
     ):
         self._ti2ci: pd.DataFrame = ti2ci
 
@@ -120,6 +121,7 @@ class PorvPoroTrans(Parameter):
 
         self._network: NetworkModel = network
         self._number_tubes: int = len(self._ti2ci.index.unique())
+        self.min_permeability = min_permeability
 
     def render_output(self) -> Dict:
         """
@@ -185,6 +187,12 @@ class PorvPoroTrans(Parameter):
         perm_per_tube["PERMZ"] = perm_per_tube["PERMX"]
 
         merged_df = self._ti2ci.merge(perm_per_tube, left_index=True, right_index=True)
+
+        # Remove tubes if permeability is below a given threshold
+        if self.min_permeability:
+            properties_per_cell.loc[
+                merged_df["PERMX"] < self.min_permeability, ["PORV"]
+            ] = 0
 
         output = ""
         output += write_grdecl_file(merged_df, "PERMX")  # type: ignore[operator]
