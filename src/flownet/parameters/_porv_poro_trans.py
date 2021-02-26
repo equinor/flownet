@@ -186,6 +186,8 @@ class PorvPoroTrans(Parameter):
 
         merged_df = self._ti2ci.merge(perm_per_tube, left_index=True, right_index=True)
 
+        properties_per_cell.loc[merged_df["PERMX"] < 50, ["PORV"]] = 0
+
         output = ""
         output += write_grdecl_file(merged_df, "PERMX")  # type: ignore[operator]
         output += write_grdecl_file(merged_df, "PERMY")  # type: ignore[operator]
