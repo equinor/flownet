@@ -1,7 +1,6 @@
 from typing import Dict, List, Tuple, Union, Optional
 import concurrent.futures
 import functools
-import os
 
 import pandas as pd
 from pyscal import WaterOilGas, WaterOil, GasOil, PyscalFactory, PyscalList
@@ -12,6 +11,8 @@ from ..utils.constants import H_CONSTANT
 
 from .probability_distributions import ProbabilityDistribution
 from ._base_parameter import Parameter, parameter_probability_distribution_class
+
+MAX_WORKERS = 5  # Number of workers to be allowed for permeability calculations.
 
 
 def gen_wog(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOilGas:
@@ -289,14 +290,14 @@ class RelativePermeability(Parameter):
             str_props_section += wog_list.SGOF()
         else:
             # this function is called repeatedly by ERT.
-            # setting maximum number of threads to be spawned to 5
-            # (meaning it will be a maximum of 5 for each realization)
+            # setting maximum number of threads to be spawned to MAX_WORKERS
+            # (meaning it will be a maximum of MAX_WORKERS for each realization)
             # since the number of realizations run by ERT will typically
-            # be close to the number of CPUs on the machine/cluster 
-            max_workers = 5
+            # be close to the number of CPUs on the machine/cluster
+
             if self._swof and self._sgof:
                 with concurrent.futures.ThreadPoolExecutor(
-                    max_workers=max_workers
+                    max_workers=MAX_WORKERS
                 ) as executor:
                     for _, relperm in zip(  # type: ignore[assignment]
                         parameters, executor.map(partial_gen_wog, parameters)
@@ -305,7 +306,7 @@ class RelativePermeability(Parameter):
                         str_sgofs += relperm.SGOF(header=False)
             elif self._swof:
                 with concurrent.futures.ThreadPoolExecutor(
-                    max_workers=max_workers
+                    max_workers=MAX_WORKERS
                 ) as executor:
                     for _, relperm in zip(  # type: ignore[assignment]
                         parameters, executor.map(partial_gen_wo, parameters)
@@ -313,7 +314,7 @@ class RelativePermeability(Parameter):
                         str_swofs += relperm.SWOF(header=False)
             elif self._sgof:
                 with concurrent.futures.ThreadPoolExecutor(
-                    max_workers=max_workers
+                    max_workers=MAX_WORKERS
                 ) as executor:
                     for _, relperm in zip(  # type: ignore[assignment]
                         parameters, executor.map(partial_gen_og, parameters)
