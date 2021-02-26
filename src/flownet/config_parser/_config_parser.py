@@ -1687,6 +1687,11 @@ def parse_config(
             f"and {str(len(config.flownet.additional_flow_nodes))} additional flow node "
             "defitions."
         )
+    if not layers and len(config.flownet.additional_flow_nodes) > 1:
+        raise ValueError(
+            "You supplied multiple entries for the additional flow nodes but "
+            "there is only a single layer."
+        )
 
     req_relp_parameters: List[str] = []
     if (
