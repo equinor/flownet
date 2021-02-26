@@ -590,7 +590,9 @@ def create_connections(
         Desired restructuring of start-end coordinates into separate columns, as per Flow needs.
 
     """
-    if df_coordinates["LAYER_ID"].nunique() > 1 and concave_hull_list is not None:
+    if isinstance(configuration.flownet.additional_flow_nodes, tuple):
+        additional_flow_nodes_list = list(configuration.flownet.additional_flow_nodes)
+    elif df_coordinates["LAYER_ID"].nunique() > 1 and concave_hull_list is not None:
         additional_flow_nodes_list = _split_additional_flow_nodes(
             total_additional_nodes=configuration.flownet.additional_flow_nodes,
             concave_hull_list=concave_hull_list,
