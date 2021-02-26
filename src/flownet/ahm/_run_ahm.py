@@ -734,7 +734,9 @@ def run_flownet_history_matching(
     datum_depths = list(datum_depths)
 
     parameters = [
-        PorvPoroTrans(porv_poro_trans_dist_values, ti2ci, network),
+        PorvPoroTrans(
+            porv_poro_trans_dist_values, ti2ci, network, config.flownet.min_permeability
+        ),
         RelativePermeability(
             relperm_dist_values,
             ti2ci,

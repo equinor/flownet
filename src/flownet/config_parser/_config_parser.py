@@ -443,6 +443,12 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Description: "Number of points along a tube to check whether they are in"
                         "non reservoir for removal purposes.",
                     },
+                    "min_permeability": {
+                        MK.Type: types.Number,
+                        MK.AllowNone: True,
+                        MK.Description: "Minimum allowed permeability in mD before a tube is removed "
+                        "(i.e., its cells are made inactive).",
+                    },
                     "hyperopt": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
