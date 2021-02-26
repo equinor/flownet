@@ -1682,9 +1682,9 @@ def parse_config(
         )
     if layers and not len(layers) is len(config.flownet.additional_flow_nodes):
         raise ValueError(
-            f"For each layer in the FlowNet model you have to supply an entry in the "
-            "additional flow nodes list. Currenly you have {str(len(layers))} layers "
-            "and {str(len(config.flownet.additional_flow_nodes))} additional flow node "
+            "For each layer in the FlowNet model you have to supply an entry in the "
+            f"additional flow nodes list. Currenly you have {str(len(layers))} layers "
+            f"and {str(len(config.flownet.additional_flow_nodes))} additional flow node "
             "defitions."
         )
 
