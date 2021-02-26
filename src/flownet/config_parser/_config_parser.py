@@ -453,6 +453,8 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             },
                             "loss": {
                                 MK.Type: types.NamedDict,
+                                MK.Description: "Definition of the hyperopt loss function. The definitions "
+                                "refer to the first analysis workflow ONLY.",
                                 MK.Content: {
                                     "keys": {
                                         MK.Type: types.List,
