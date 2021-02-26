@@ -384,8 +384,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.AllowNone: True,
                     },
                     "additional_flow_nodes": {
-                        MK.Type: types.Integer,
-                        MK.Default: 100,
+                        MK.Type: types.List,
+                        MK.Description: "List of additional flow nodes to add for each layer.",
+                        MK.Content: {
+                            MK.Item: {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                            },
+                        },
                     },
                     "additional_node_candidates": {
                         MK.Type: types.Integer,
