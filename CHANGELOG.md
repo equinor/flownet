@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - [#272](https://github.com/equinor/flownet/pull/272) Adds resampling of observation dates at requested frequency by finding nearest date among existing observation dates (i.e., no interpolated dates added)
 
 ### Changes
+- [#337](https://github.com/equinor/flownet/pull/337) You can now add multiple analytics workflows in your FlowNet config. This is also a breaking change in that it requires you to change the ert.analysis keyword to being a list.
 - [#322](https://github.com/equinor/flownet/pull/322) RSVD input through csv files can now be done either as one table used for all EQLNUM regions, or as one table for each EQLNUM region. The csv file needs a header with column names "depth", "rs" and "eqlnum" (the latter only when multiple tables are defined).
 
 ## [0.4.0] - 2020-11-18
