@@ -412,10 +412,10 @@ def _create_entity_connection_matrix(
             ).T
 
             if not any(
-                [
+                (
                     all(check_in_hull(concave_hull, tube_coordinates))
                     for concave_hull in concave_hull_list
-                ]
+                )
             ):
                 continue
 

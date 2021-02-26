@@ -113,8 +113,8 @@ def test_generate_connections() -> None:
     )
 
     assert len(starts) == len(ends)
-    assert all([starts[i] == approx(STARTS_NONE[i]) for i in range(len(starts))])
-    assert all([ends[i] == approx(ENDS_NONE[i]) for i in range(len(ends))])
+    assert all(starts[i] == approx(STARTS_NONE[i]) for i in range(len(starts)))
+    assert all(ends[i] == approx(ENDS_NONE[i]) for i in range(len(ends)))
 
     starts, ends = _generate_connections(
         df_coordinates=DF_COORDINATES,

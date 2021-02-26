@@ -5,17 +5,20 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
+- [#341](https://github.com/equinor/flownet/pull/341) Added option to add a min permeability threshold for which tubes are deactivated when the permeability is below this value.
 - [#305](https://github.com/equinor/flownet/pull/305) Functionality of generating seperate flownets per layer is enabled, additional nodes are split between the layers according to the volume of concave hull of the layers.
 - [#298](https://github.com/equinor/flownet/pull/298) Connections between (well)nodes that go through non-reservoir are now removed. Angle threshold export to user.
 - [#296](https://github.com/equinor/flownet/pull/296) Adapted perforation strategy to allow for layering + bug fixes in the 'multiple' and 'multiple_based_on_workovers' perforation strategies.
 - [#284](https://github.com/equinor/flownet/pull/284) Added the option to specify cumulative phase rates as observations (WOPT, WWPT, WGPT, WGIT, WWIT)
 
 ### Fixes
+- [#339](https://github.com/equinor/flownet/pull/339) Fixes bug where the analytics module would fail when a well name filter was supplied.
 - [#325](https://github.com/equinor/flownet/pull/325) Fixes bug where the analytics module would repeat the 8th iteration analytics for iterations larger than 9.
 - [#256](https://github.com/equinor/flownet/pull/256) Fixes issues with duplicate names in hyperopt by using the full path in yaml for hyperopt parameter names.
 - [#272](https://github.com/equinor/flownet/pull/272) Adds resampling of observation dates at requested frequency by finding nearest date among existing observation dates (i.e., no interpolated dates added)
 
 ### Changes
+- [#337](https://github.com/equinor/flownet/pull/337) You can now add multiple analytics workflows in your FlowNet config. This is also a breaking change in that it requires you to change the ert.analysis keyword to being a list.
 - [#322](https://github.com/equinor/flownet/pull/322) RSVD input through csv files can now be done either as one table used for all EQLNUM regions, or as one table for each EQLNUM region. The csv file needs a header with column names "depth", "rs" and "eqlnum" (the latter only when multiple tables are defined).
 
 ## [0.4.0] - 2020-11-18
