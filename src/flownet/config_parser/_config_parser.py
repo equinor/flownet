@@ -384,8 +384,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.AllowNone: True,
                     },
                     "additional_flow_nodes": {
-                        MK.Type: types.Integer,
-                        MK.Default: 100,
+                        MK.Type: types.List,
+                        MK.Description: "List of additional flow nodes to add for each layer.",
+                        MK.Content: {
+                            MK.Item: {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                            },
+                        },
                     },
                     "additional_node_candidates": {
                         MK.Type: types.Integer,
@@ -1673,6 +1679,18 @@ def parse_config(
             "Concave_hull should be True when layers are defined. "
             "The concave hulls of the layers are used to split "
             "the number of additional nodes between the layers."
+        )
+    if layers and not len(layers) is len(config.flownet.additional_flow_nodes):
+        raise ValueError(
+            "For each layer in the FlowNet model you have to supply an entry in the "
+            f"additional flow nodes list. Currenly you have {str(len(layers))} layers "
+            f"and {str(len(config.flownet.additional_flow_nodes))} additional flow node "
+            "defitions."
+        )
+    if not layers and len(config.flownet.additional_flow_nodes) > 1:
+        raise ValueError(
+            "You supplied multiple entries for the additional flow nodes but "
+            "there is only a single layer."
         )
 
     req_relp_parameters: List[str] = []
