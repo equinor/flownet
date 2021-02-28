@@ -10,7 +10,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changes
 
-## [0.5.0] - 2020-02-26
+## [0.5.0] - 2021-02-26
 
 ### Added
 - [#341](https://github.com/equinor/flownet/pull/341) Added option to add a min permeability threshold for which tubes are deactivated when the permeability is below this value.
