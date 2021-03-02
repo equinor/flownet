@@ -51,6 +51,13 @@ mean
 stddev
   The standard deviation of the prior probability distributions
 
+The table below describes the available prior probability distributions, and how they
+should be defined in the FlowNet config yaml. If one choice of probability distribution
+has several rows in the table, it means that there are more than one way to define that 
+specific probability distribution. The **uniform** distribution can for example be defined
+by providing the *min* and *max* values, but it can also be defined by providing the *min* 
+and *mean* values (where FlowNet will calculate the *max* value), or by providing the
+*mean* and *max* values.
 
 +---------------------------+------------------+------+------+------+------+------+
 | Probability distributions | distribution     | min  | max  | mean | base |stddev|
