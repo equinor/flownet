@@ -34,4 +34,23 @@ The following ones are available in Flownet:
 The following keys are available for defining the different prior distributions
 
 distribution
-  The type of probability distribution
+  The type of probability distribution. 
+
+min
+  The minimum value of the chosen prior probability distribution. 
+
+max
+  The maximum value of the chosen prior probability distribution. 
+
+base
+  
+  
+
+When using the interpolation option for relative permeability, some of the keywords above 
+have a different meaning. This applies to *min*, *max*, and *base*. The SCALrecommendation 
+option in pyscal takes in three values for each of the input parameters, used to create
+three sets of input curves as an envelope to interpolate between. There will be one *pessimistic*
+set of curves, consisting of the low values supplied in the config file (this will be the *min* 
+values, unless *low_optimistic* is set to *True*), one *optimistic* set of curves, consiting of
+the high values supplied in the config yaml file (this will be the *max* values, unless *low_optimistic*
+is set to *True*), and one *base* set of curves using the *base* values supplied.
