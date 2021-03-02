@@ -43,13 +43,20 @@ max
   The maximum value of the chosen prior probability distribution. 
 
 base
-
+  The mode of the prior probability distribution
+  
 mean
+  The mean or expected value of the prior probability distribution
 
 stddev
+  The standard deviation of the prior probability distributions
 
 
-  
++------------+-------+------+------+------+------+------+
+| Distribution type  | Min  | Max  | Mean | Base |Stddev|
++============+=======+======+======+======+======+======+
+| Normal             |      |      |   x  |      |   x  |        
++--------------------+------+------+------+------+------+
   
 
 When using the interpolation option for relative permeability, some of the keywords above 
