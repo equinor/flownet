@@ -43,13 +43,33 @@ max
   The maximum value of the chosen prior probability distribution. 
 
 base
+
+mean
+
+stddev
+
+
   
   
 
 When using the interpolation option for relative permeability, some of the keywords above 
-have a different meaning. This applies to *min*, *max*, and *base*. The SCALrecommendation 
-option in pyscal takes in three values for each of the input parameters, used to create
-three sets of input curves as an envelope to interpolate between. There will be one *pessimistic*
+have a different meaning. This applies to **min**, **base**, and **max**. There is also an
+additional keyword **low_optimistic** which only is meaningful for relative permeability.
+
+Each of the input parameters needs a low, base, and high value to be defined. This is done through
+the **min** (low), **base** and **max** (high) keywords. 
+For some parameters a low numerical value is favorable. This can be indicated by setting 
+**low_optimistic** to **True** for that parameter (the default value of low_optimistic is False).
+
+
+
+The SCALrecommendation 
+option in pyscal takes three values for each of the input parameters to create
+three sets of input curves, later used as an envelope to interpolate between. 
+
+
+
+There will be one *pessimistic*
 set of curves, consisting of the low values supplied in the config file (this will be the *min* 
 values, unless *low_optimistic* is set to *True*), one *optimistic* set of curves, consiting of
 the high values supplied in the config yaml file (this will be the *max* values, unless *low_optimistic*
