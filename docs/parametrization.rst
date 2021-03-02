@@ -28,4 +28,10 @@ The following ones are available in Flownet:
 .. _Permeabilities:
 .. _porosity-and-pore-volume: 
 
-Here
+
+
+
+The following keys are available for defining the different prior distributions
+
+distribution
+  The type of probability distribution
