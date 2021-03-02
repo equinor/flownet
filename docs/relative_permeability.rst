@@ -1,7 +1,10 @@
 FlowNet uses `pyscal <https://github.com/equinor/pyscal>`_ for generating relative permeability input curves for Flow. 
-For detailed documentation on pyscal, read the `pyscal documentation <https://equinor.github.io/pyscal>`_ 
+For detailed documentation on pyscal, read the `pyscal documentation <https://equinor.github.io/pyscal>`_. This text 
+will only describe how FlowNet uses pyscal.
 
-pyscal can parameterise curves using either Corey parameters or LET parameters. FlowNet currently only accepts Corey parameters as input.
+pyscal can parameterize curves using either Corey parameters or LET parameters. 
+FlowNet only accepts Corey parameters as input at this point.
+
 
 The input related to relative permeability modelling has its own section in the config yaml file. 
 
