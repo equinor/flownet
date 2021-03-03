@@ -384,8 +384,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.AllowNone: True,
                     },
                     "additional_flow_nodes": {
-                        MK.Type: types.Integer,
-                        MK.Default: 100,
+                        MK.Type: types.List,
+                        MK.Description: "List of additional flow nodes to add for each layer.",
+                        MK.Content: {
+                            MK.Item: {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                            },
+                        },
                     },
                     "additional_node_candidates": {
                         MK.Type: types.Integer,
@@ -437,6 +443,12 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Description: "Number of points along a tube to check whether they are in"
                         "non reservoir for removal purposes.",
                     },
+                    "min_permeability": {
+                        MK.Type: types.Number,
+                        MK.AllowNone: True,
+                        MK.Description: "Minimum allowed permeability in mD before a tube is removed "
+                        "(i.e., its cells are made inactive).",
+                    },
                     "hyperopt": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
@@ -453,6 +465,8 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             },
                             "loss": {
                                 MK.Type: types.NamedDict,
+                                MK.Description: "Definition of the hyperopt loss function. The definitions "
+                                "refer to the first analysis workflow ONLY.",
                                 MK.Content: {
                                     "keys": {
                                         MK.Type: types.List,
@@ -553,31 +567,54 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         "and webviz",
                     },
                     "analysis": {
-                        MK.Type: types.NamedDict,
+                        MK.Type: types.List,
+                        MK.Description: "List of analysis workflows to run.",
                         MK.Content: {
-                            "metric": {
-                                MK.Type: types.List,
+                            MK.Item: {
+                                MK.Type: types.NamedDict,
+                                MK.Description: "Definitions of the analysis workflow.",
                                 MK.Content: {
-                                    MK.Item: {MK.Type: types.String, MK.AllowNone: True}
+                                    "metric": {
+                                        MK.Type: types.List,
+                                        MK.Content: {
+                                            MK.Item: {
+                                                MK.Type: types.String,
+                                                MK.AllowNone: True,
+                                            }
+                                        },
+                                        MK.Transformation: _to_upper,
+                                        MK.Description: "List of accuracy metrics to be computed "
+                                        "in FlowNet analysis workflow",
+                                    },
+                                    "quantity": {
+                                        MK.Type: types.List,
+                                        MK.Content: {
+                                            MK.Item: {
+                                                MK.Type: types.String,
+                                                MK.AllowNone: True,
+                                            }
+                                        },
+                                        MK.Transformation: _to_upper,
+                                        MK.Description: "List of summary vectors for which accuracy "
+                                        "is to be computed",
+                                    },
+                                    "start": {
+                                        MK.Type: types.Date,
+                                        MK.AllowNone: True,
+                                        MK.Description: "Start date in YYYY-MM-DD format.",
+                                    },
+                                    "end": {
+                                        MK.Type: types.Date,
+                                        MK.AllowNone: True,
+                                        MK.Description: "End date in YYYY-MM-DD format.",
+                                    },
+                                    "outfile": {
+                                        MK.Type: types.String,
+                                        MK.AllowNone: True,
+                                        MK.Description: "The filename of the output of the workflow. "
+                                        "In case multiple analysis workflows are run this name should be unique.",
+                                    },
                                 },
-                                MK.Transformation: _to_upper,
-                                MK.Description: "List of accuracy metrics to be computed "
-                                "in FlowNet analysis workflow",
-                            },
-                            "quantity": {
-                                MK.Type: types.List,
-                                MK.Content: {
-                                    MK.Item: {MK.Type: types.String, MK.AllowNone: True}
-                                },
-                                MK.Transformation: _to_upper,
-                                MK.Description: "List of summary vectors for which accuracy "
-                                "is to be computed",
-                            },
-                            "start": {MK.Type: types.Date, MK.AllowNone: True},
-                            "end": {MK.Type: types.Date, MK.AllowNone: True},
-                            "outfile": {
-                                MK.Type: types.String,
-                                MK.AllowNone: True,
                             },
                         },
                     },
@@ -1643,6 +1680,18 @@ def parse_config(
             "The concave hulls of the layers are used to split "
             "the number of additional nodes between the layers."
         )
+    if layers and not len(layers) is len(config.flownet.additional_flow_nodes):
+        raise ValueError(
+            "For each layer in the FlowNet model you have to supply an entry in the "
+            f"additional flow nodes list. Currenly you have {str(len(layers))} layers "
+            f"and {str(len(config.flownet.additional_flow_nodes))} additional flow node "
+            "defitions."
+        )
+    if not layers and len(config.flownet.additional_flow_nodes) > 1:
+        raise ValueError(
+            "You supplied multiple entries for the additional flow nodes but "
+            "there is only a single layer."
+        )
 
     req_relp_parameters: List[str] = []
     if (
@@ -1850,14 +1899,18 @@ def parse_config(
         )
 
     for key in config.flownet.hyperopt.loss.keys:
-        if not key in config.ert.analysis.quantity:
+        if (
+            not len(config.ert.analysis) > 0
+            or not key in config.ert.analysis[0].quantity
+        ):
             raise ValueError(
                 f"Key {key} is not defined as an analysis quantity ({config.flownet.hyperopt.loss.keys})."
             )
 
     if (
-        config.ert.analysis.metric
-        and config.flownet.hyperopt.loss.metric not in config.ert.analysis.metric
+        hasattr(config.ert, "analysis")
+        and len(config.ert.analysis) > 0
+        and config.flownet.hyperopt.loss.metric not in config.ert.analysis[0].metric
     ):
         raise ValueError(
             f"Key {config.flownet.hyperopt.loss.metric} is not defined as an analysis"

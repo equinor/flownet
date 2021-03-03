@@ -292,7 +292,7 @@ def make_dataframe_simulation_data(
     iteration = sorted(
         [int(rel_iter.replace("/", "").split("-")[-1]) for rel_iter in glob.glob(path)]
     )[-1]
-    runpath_list = glob.glob(path[::-1].replace("*", str(iteration), 1)[::-1])
+    runpath_list = glob.glob(path[::-1].replace("*", str(iteration)[::-1], 1)[::-1])
 
     partial_load_simulations = functools.partial(
         _load_simulations, ecl_base=eclbase_file
@@ -416,21 +416,22 @@ def save_iteration_analytics():
 
         truth_data = (
             df_obs_filtered.pivot(
-                index="DATE", columns="WELL_NAME", values=key.replace(":", "")
+                index="DATE", columns="WELL_NAME", values=key.split(":")[0]
             )
-            .add_prefix(key)
+            .add_prefix(key.split(":")[0] + ":")
             .fillna(0)
             .reset_index()
         )
 
         obs_opm = prepare_opm_reference_data(truth_data, key, nb_real)
+        truth_data = truth_data.loc[:, truth_data.columns.str.startswith(key)]
 
         # Prepare data from ensemble of FlowNet
         ens_flownet = []
         ens_flownet.append(
             prepare_flownet_data(
                 filter_dataframe(
-                    df_sim[truth_data.columns],
+                    df_sim[list(truth_data.columns) + ["DATE"]],
                     "DATE",
                     args.start,
                     args.end,
