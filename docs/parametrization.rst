@@ -169,40 +169,37 @@ independent_interpolation
   
 regions
   This is a list where each list elements will contain information about the saturation endpoints 
-  and relative permeability endpoints within one SATNUM region, in addition to a region identifier.
+  and relative permeability endpoints within one SATNUM region, in addition to a region identifier. The 
+  endpoints are shown in two figures below for clarification.
   The number of list elements needs to be equal to the number of SATNUM regions in the model,
   unless one of the regions is defined with identifier *None*. 
   
   id
     Region identifier. Default value is None.
-
   swirr
-    The irreducible water saturation
-  
+    The irreducible water saturation.
   swl
-
+    Connate water saturation.
   swcr
-  
+    Critical water saturation
   sorw
-  
+    Residual oil saturation (that cannot be displaced by water)
   krwend
-  
+    Maximum relative permeability for water
   kroend
-  
-  no
-  
-  now
-  
+    Maximum relative permeability for oil
+  nw, now, ng, nog
+    Exponents in Corey parametrization
   sorg
-  
+    Residual oil saturation (that cannot be displaced by gas)
   sgcr
-  
-  ng
-  
-  nog
-  
+    Critical gas saturation
   krgend
+    Maximum relative permeability for gas
 
+  A water/oil model needs *swirr*, *swl*, *swcr*, *sorw*, *nw*, *now*, *krwend* and *kroend* to be defined.
+  An oil/gas model needs *swirr*, *swl*, *sgcr*, *sorg*, *ng*, *nog*, *krgend* and *kroend* to be defined.
+  A three phase model needs all 13 parameters to be defined.
     
 
 
