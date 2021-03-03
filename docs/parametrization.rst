@@ -1,9 +1,21 @@
 Prior distributions in FlowNet
 ===========================================
 
-The different parameters to be tuned are defined in the FlowNet config yaml.
-All parameters needs an initial guess on what values they can take. 
-This is referred to as the prior probability distribution.
+The different parameters to be tuned are defined in the **model_parameters** 
+section of the FlowNet config yaml. At present, the model can be parameterized 
+with the following parameters:
+
+* Permeability
+* Porosity
+* Bulk volume multiplier
+* Fault multiplier
+* Saturation endpoints and relative permeability endpoints
+* Datum pressures and contacts
+* Aquifer size (relative to the bulk volume in the model)
+
+
+All parameters need an initial guess 
+on what values they can take. This is referred to as the prior probability distribution.
 
 The following keys are available for defining the different prior distributions
 
@@ -67,8 +79,66 @@ and *mean* values (where FlowNet will calculate the *max* value), or by providin
 
 
 
-Prior distributions when using the interpolation option for relative permeability
----------------------------------------------------------------------------------
+Permeability
+------------
+
+
+
+Porosity
+--------
+
+
+
+Bulk volume multiplier
+----------------------
+
+
+Fault multiplier
+----------------
+
+
+Saturation endpoints and relative permeability endpoints
+--------------------------------------------------------
+
+FlowNet uses `pyscal <https://github.com/equinor/pyscal>`_ for generating relative permeability input curves for Flow. 
+For detailed documentation on pyscal, read the `pyscal documentation <https://equinor.github.io/pyscal>`_. This text 
+will only describe how FlowNet uses pyscal.
+
+pyscal can parameterize curves using either Corey parameters or LET parameters. 
+FlowNet only accepts Corey parameters as input at this point.
+
+
+The input related to relative permeability modelling has its own section in the config yaml file. 
+
+
+flownet:
+  model_parameters:
+    relative_permeability:
+      scheme_.: 
+      interpolate: 
+      independent_interpolation:
+|      regions:
+        id:
+        swirr:
+        swl:
+        swcr:
+        sorw:
+        krwend:
+        kroend:
+        no:
+        now:
+        sorg:
+        sgcr:
+        ng:
+        nog:
+        krgend:
+          min:
+          mean:
+          max:
+          base:
+          stddev:
+          distribution:
+          low_optimistic:
 
 
 When using the interpolation option for relative permeability, some of the keywords above 
