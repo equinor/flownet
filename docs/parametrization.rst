@@ -143,6 +143,15 @@ The input related to relative permeability modelling has its own section in the 
             low_optimistic:
 
 
+scheme
+  The scheme parameter decides how many sets of relative permeability curves to generate as
+  input to Flow. There are three options.
+  * global: only one set of relative permeability curves will be generated, and applied to all
+    flow tubes in the model
+  * individual
+  * regions_from_sim
+  
+
 When using the interpolation option for relative permeability, some of the keywords above 
 have a different meaning. This applies to **min**, **base**, and **max**. There is also an
 additional keyword **low_optimistic** which only is meaningful to define for relative permeability.
