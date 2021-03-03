@@ -214,12 +214,10 @@ regions
   option to **True**. The default value is False.
 
 .. image:: https://equinor.github.io/pyscal/_images/gasoil-endpoints.png
-  :alt: Visualization of the gas/oil saturation endpoints and gas/oil relative permeability endpoints
-  as modelled by pyscal. 
+  :alt: Visualization of the gas/oil saturation endpoints and gas/oil relative permeability endpoints as modelled by pyscal. 
 
 .. image:: https://equinor.github.io/pyscal/_images/wateroil-endpoints.png
-  :alt: Visualization of the water/oil saturation endpoints and water/oil relative permeability endpoints
-  as modelled by pyscal. 
+  :alt: Visualization of the water/oil saturation endpoints and water/oil relative permeability endpoints as modelled by pyscal. 
 
 
 When using the interpolation option for relative permeability, some of the keywords above 
