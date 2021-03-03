@@ -176,9 +176,6 @@ regions
   id
     Region identifier. Default value is None.
 
-.. image:: https://equinor.github.io/pyscal/_images/gasoil-endpoints.png
-  
-
   swirr
     The irreducible water saturation
   
@@ -215,6 +212,8 @@ regions
   only have one history matching parameter (possibly two if oil/gas and water/oil are 
   interpolated independently). This option is selected by setting this **interpolate** 
   option to **True**. The default value is False.
+
+.. image:: https://equinor.github.io/pyscal/_images/gasoil-endpoints.png
 
 When using the interpolation option for relative permeability, some of the keywords above 
 have a different meaning. This applies to **min**, **base**, and **max**. There is also an
