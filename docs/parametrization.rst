@@ -116,31 +116,31 @@ The input related to relative permeability modelling has its own section in the 
   flownet:
     model_parameters:
       relative_permeability:
-        scheme_.: 
+        scheme: 
         interpolate: 
         independent_interpolation:
         regions:
-        id:
-        swirr:
-        swl:
-        swcr:
-        sorw:
-        krwend:
-        kroend:
-        no:
-        now:
-        sorg:
-        sgcr:
-        ng:
-        nog:
-        krgend:
-          min:
-          mean:
-          max:
-          base:
-          stddev:
-          distribution:
-          low_optimistic:
+          id:
+          swirr:
+          swl:
+          swcr:
+          sorw:
+          krwend:
+          kroend:
+          no:
+          now:
+          sorg:
+          sgcr:
+          ng:
+          nog:
+          krgend:
+            min:
+            mean:
+            max:
+            base:
+            stddev:
+            distribution:
+            low_optimistic:
 
 
 When using the interpolation option for relative permeability, some of the keywords above 
