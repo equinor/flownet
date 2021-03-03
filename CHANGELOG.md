@@ -10,6 +10,15 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changes
 
+## [0.5.1] - 2021-03-03
+
+### Added
+
+### Fixes
+- [#346](https://github.com/equinor/flownet/pull/346) Fixes bug where the analytics module would fail for iterations larger than 9 (i.e., iteration number with two or more digits).
+
+### Changes
+
 ## [0.5.0] - 2021-02-26
 
 ### Added
