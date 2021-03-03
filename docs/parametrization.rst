@@ -177,7 +177,7 @@ regions
     Region identifier. Default value is None.
 
 .. image:: https://equinor.github.io/pyscal/_images/gasoil-endpoints.png
-  :alt: my-picture1
+  
 
   swirr
     The irreducible water saturation
