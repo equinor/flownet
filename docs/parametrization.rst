@@ -111,13 +111,15 @@ FlowNet only accepts Corey parameters as input at this point.
 The input related to relative permeability modelling has its own section in the config yaml file. 
 
 
-flownet:
-  model_parameters:
-    relative_permeability:
-      scheme_.: 
-      interpolate: 
-      independent_interpolation:
-|      regions:
+.. code-block:: yaml
+
+  flownet:
+    model_parameters:
+      relative_permeability:
+        scheme_.: 
+        interpolate: 
+        independent_interpolation:
+        regions:
         id:
         swirr:
         swl:
