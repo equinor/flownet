@@ -67,7 +67,8 @@ and *mean* values (where FlowNet will calculate the *max* value), or by providin
 
 
 
-  
+Prior distributions when using the interpolation option for relative permeability
+---------------------------------------------------------------------------------
 
 When using the interpolation option for relative permeability, some of the keywords above 
 have a different meaning. This applies to **min**, **base**, and **max**. There is also an
