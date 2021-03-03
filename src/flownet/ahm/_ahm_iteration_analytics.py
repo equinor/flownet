@@ -292,7 +292,7 @@ def make_dataframe_simulation_data(
     iteration = sorted(
         [int(rel_iter.replace("/", "").split("-")[-1]) for rel_iter in glob.glob(path)]
     )[-1]
-    runpath_list = glob.glob(path[::-1].replace("*", str(iteration), 1)[::-1])
+    runpath_list = glob.glob(path[::-1].replace("*", str(iteration)[::-1], 1)[::-1])
 
     partial_load_simulations = functools.partial(
         _load_simulations, ecl_base=eclbase_file
