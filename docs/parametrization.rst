@@ -168,11 +168,43 @@ independent_interpolation
   
   
 regions
+  This is a list where each list elements will contain information about the saturation endpoints 
+  and relative permeability endpoints within one SATNUM region, in addition to a region identifier.
+  The number of list elements needs to be equal to the number of SATNUM regions in the model,
+  unless one of the regions is defined with identifier *None*. 
+  
   id
     Region identifier. Default value is None.
-  swirr
 
+.. image:: https://equinor.github.io/pyscal/_images/gasoil-endpoints.png
+  :alt: my-picture1
+
+  swirr
+    The irreducible water saturation
+  
   swl
+
+  swcr
+  
+  sorw
+  
+  krwend
+  
+  kroend
+  
+  no
+  
+  now
+  
+  sorg
+  
+  sgcr
+  
+  ng
+  
+  nog
+  
+  krgend
 
     
 
