@@ -70,25 +70,27 @@ and *mean* values (where FlowNet will calculate the *max* value), or by providin
 Prior distributions when using the interpolation option for relative permeability
 ---------------------------------------------------------------------------------
 
+
 When using the interpolation option for relative permeability, some of the keywords above 
 have a different meaning. This applies to **min**, **base**, and **max**. There is also an
-additional keyword **low_optimistic** which only is meaningful for relative permeability.
+additional keyword **low_optimistic** which only is meaningful to define for relative permeability.
 
 Each of the input parameters needs a low, base, and high value to be defined. This is done through
 the **min** (low), **base** and **max** (high) keywords. 
 For some parameters a low numerical value is favorable. This can be indicated by setting 
 **low_optimistic** to **True** for that parameter (the default value of low_optimistic is False).
 
-
-
 The SCALrecommendation 
 option in pyscal takes three values for each of the input parameters to create
 three sets of input curves, later used as an envelope to interpolate between. 
 
-
-
 There will be one *pessimistic*
 set of curves, consisting of the low values supplied in the config file (this will be the *min* 
-values, unless *low_optimistic* is set to *True*), one *optimistic* set of curves, consiting of
+values, unless *low_optimistic* is set to *True*), one *optimistic* set of curves, consisting of
 the high values supplied in the config yaml file (this will be the *max* values, unless *low_optimistic*
 is set to *True*), and one *base* set of curves using the *base* values supplied.
+
+pyscal will generate an interpolation parameter (two if **independent_interpolation** is set to **True**)
+going from -1 (representing the pessimistic curve set) to 1 (representing the optimistic curve set).
+FlowNet will pass this interpolation parameter to ERT for history matching, instead of the individual 
+saturation endpoint or relative permeability endpoint parameters.
