@@ -145,12 +145,33 @@ The input related to relative permeability modelling has its own section in the 
 
 scheme
   The scheme parameter decides how many sets of relative permeability curves to generate as
-  input to Flow. There are three options.
-  * global: only one set of relative permeability curves will be generated, and applied to all
-    flow tubes in the model
-  * individual
-  * regions_from_sim
+  input to Flow. There are three options. With **shceme: global** only one set of relative 
+  permeability curves will be generated, and applied to all flow tubes in the model. With
+  **shceme: individual** all flow tubes in the model will have its own set of relative permeability
+  curves. With **scheme: regions_from_sim** FlowNet will extract the SATNUM regions from the 
+  input model provided, and assign the same set of relative permeability curves to all flow tubes 
+  that are (mostly) located within the same SATNUM region. The default value is global.
+
+interpolate
+  pyscal has an option to use SCALrecommendation. This is due to the fact that SCAL experts often
+  will provide three sets of relative permeability curves (one pessimistic set , one base set and 
+  one optimistic set) to run sensitivities on a reservoir model. This introduces the option of 
+  generating new sets of relative permeability curves within the envelope created by the low/bas/high 
+  sets of curves by using an interpolation parameter (potentially two interpolation parameters in three
+  phase models). The default value is False
+
+independent_interpolation
+  if **interpolate** is set to **True** and the model has three active phases, this parameter will
+  decide whether or not the interpolation for water/oil relative permeability and gas/oil permeability
+  will be performed independently. The default value is False.
   
+  
+  To limit the number of history 
+  matching parameters, FlowNet provides the option to 
+  interpolate between three sets of relative permeability curves. This way each SATNUM region will 
+  only have one history matching parameter (possibly two if oil/gas and water/oil are 
+  interpolated independently). This option is selected by setting this **interpolate** 
+  option to **True**. The default value is False.
 
 When using the interpolation option for relative permeability, some of the keywords above 
 have a different meaning. This applies to **min**, **base**, and **max**. There is also an
