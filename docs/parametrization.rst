@@ -158,7 +158,8 @@ interpolate
   one optimistic set) to run sensitivities on a reservoir model. This introduces the option of 
   generating new sets of relative permeability curves within the envelope created by the low/bas/high 
   sets of curves by using an interpolation parameter (potentially two interpolation parameters in three
-  phase models). The default value is False
+  phase models). This will limit the number of history matching parameters, especially when the number 
+  of SATNUM regions is large. The default value is False.
 
 independent_interpolation
   if **interpolate** is set to **True** and the model has three active phases, this parameter will
@@ -166,6 +167,16 @@ independent_interpolation
   will be performed independently. The default value is False.
   
   
+regions
+  id
+    Region identifier. Default value is None.
+  swirr
+
+  swl
+
+    
+
+
   To limit the number of history 
   matching parameters, FlowNet provides the option to 
   interpolate between three sets of relative permeability curves. This way each SATNUM region will 
