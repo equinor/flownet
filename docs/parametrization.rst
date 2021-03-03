@@ -82,20 +82,69 @@ and *mean* values (where FlowNet will calculate the *max* value), or by providin
 Permeability
 ------------
 
+.. code-block:: yaml
+
+  flownet:
+    model_parameters:
+      permeability:
+        min:
+        mean:
+        max:
+        base:
+        stddev:
+        distribution:
+        
 
 
 Porosity
 --------
+
+.. code-block:: yaml
+
+  flownet:
+    model_parameters:
+      porosity:
+        min:
+        mean:
+        max:
+        base:
+        stddev:
+        distribution:
+        
 
 
 
 Bulk volume multiplier
 ----------------------
 
+.. code-block:: yaml
+
+  flownet:
+    model_parameters:
+      bulkvolume_mult:
+        min:
+        mean:
+        max:
+        base:
+        stddev:
+        distribution:
+        
 
 Fault multiplier
 ----------------
 
+.. code-block:: yaml
+
+  flownet:
+    model_parameters:
+      fault_mult:
+        min:
+        mean:
+        max:
+        base:
+        stddev:
+        distribution:
+        
 
 Saturation endpoints and relative permeability endpoints
 --------------------------------------------------------
