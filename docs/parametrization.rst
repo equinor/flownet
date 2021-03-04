@@ -169,6 +169,7 @@ Fault multiplier
 Defines the prior probability distribution for fault transmissibility multipliers. Only one distribution
 should be defined, and it will be used for all faults in the model. The fault transmissibilities for different
 faults are drawn independently.
+
 .. code-block:: yaml
 
   flownet:
