@@ -107,21 +107,21 @@ Defines the prior probability distribution for porosity. Only one distribution
 should be defined, and it will be used for all flow tubes. The porosity values for
 different flow tubes are drawn independently.
 
-+----------------------------------+----------------------------------+
-| Available options in config yaml | Example of usage                 |
-+----------------------------------+----------------------------------+
-| .. code-block:: yaml             | .. code-block:: yaml             |
-|                                  |                                  |
-|    flownet:                      |    flownet:                      |
-|      model_parameters:           |      model_parameters:           |
-|        permeability:             |        permeability:             |
-|          min:                    |          min: 10                 |
-|          max:                    |          max: 1000               |
-|          base:                   |          distribution: logunif   |
-|          mean:                   |                                  |
-|          stddev:                 |                                  |
-|          distribution:           |                                  |
-+----------------------------------+----------------------------------+
++----------------------------------+----------------------------------+----------------------------------+----------------------------------+
+| Available options in config yaml | Example of usage                 | Example of usage                 | Example of usage                 |
++----------------------------------+----------------------------------+----------------------------------+----------------------------------+
+| .. code-block:: yaml             | .. code-block:: yaml             | .. code-block:: yaml             | .. code-block:: yaml             |
+|                                  |                                  |                                  |                                  |
+|    flownet:                      |    flownet:                      |    flownet:                      |    flownet:                      |
+|      model_parameters:           |      model_parameters:           |      model_parameters:           |      model_parameters:           |
+|        permeability:             |        permeability:             |        permeability:             |        permeability:             |
+|          min:                    |          min: 10                 |          min: 10                 |          min: 10                 |
+|          max:                    |          max: 1000               |          mean: 100               |          base: 50                |
+|          base:                   |          distribution: logunif   |          distribution: uniform   |          max: 200                |
+|          mean:                   |                                  |                                  |          distribution: triangular|
+|          stddev:                 |                                  |                                  |                                  | 
+|          distribution:           |                                  |                                  |                                  |
++----------------------------------+----------------------------------+----------------------------------+----------------------------------+
 
 .. code-block:: yaml
 
