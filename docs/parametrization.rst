@@ -265,6 +265,14 @@ regions
   An oil/gas model needs *swirr*, *swl*, *sgcr*, *sorg*, *ng*, *nog*, *krgend* and *kroend* to be defined.
   A three phase model needs all 13 relative permeability parameters to be defined.
 
+.. figure:: https://equinor.github.io/pyscal/_images/gasoil-endpoints.png
+  
+   Visualization of the gas/oil saturation endpoints and gas/oil relative permeability endpoints as modelled by pyscal. 
+
+.. figure:: https://equinor.github.io/pyscal/_images/wateroil-endpoints.png
+  
+   Visualization of the water/oil saturation endpoints and water/oil relative permeability endpoints as modelled by pyscal. 
+
 
 +----------------------------------+----------------------------------+
 | Available options in config yaml | Example of usage                 |
@@ -326,13 +334,7 @@ regions
   interpolated independently). This option is selected by setting this **interpolate** 
   option to **True**. The default value is False.
 
-.. figure:: https://equinor.github.io/pyscal/_images/gasoil-endpoints.png
-  
-   Visualization of the gas/oil saturation endpoints and gas/oil relative permeability endpoints as modelled by pyscal. 
 
-.. figure:: https://equinor.github.io/pyscal/_images/wateroil-endpoints.png
-  
-   Visualization of the water/oil saturation endpoints and water/oil relative permeability endpoints as modelled by pyscal. 
 
 
 When using the interpolation option for relative permeability, some of the keywords above 
