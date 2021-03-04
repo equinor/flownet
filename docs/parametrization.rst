@@ -87,18 +87,21 @@ should be defined, and it will be used for all flow tubes. The permeability valu
 different flow tubes are drawn independently.
 
 
-.. code-block:: yaml
-
-  flownet:
-    model_parameters:
-      permeability:
-        min:
-        mean:
-        max:
-        base:
-        stddev:
-        distribution:
-        
++----------------------------------+----------------------------------+----------------------------------+----------------------------------+
+| Available options in config yaml | Example of usage                 | Example of usage                 | Example of usage                 |
++----------------------------------+----------------------------------+----------------------------------+----------------------------------+
+| .. code-block:: yaml             | .. code-block:: yaml             | .. code-block:: yaml             | .. code-block:: yaml             |
+|                                  |                                  |                                  |                                  |
+|    flownet:                      |    flownet:                      |    flownet:                      |    flownet:                      |
+|      model_parameters:           |      model_parameters:           |      model_parameters:           |      model_parameters:           |
+|        permeability:             |        permeability:             |        permeability:             |        permeability:             |
+|          min:                    |          min: 10                 |          min: 10                 |          min: 10                 |
+|          max:                    |          max: 1000               |          mean: 100               |          base: 50                |
+|          base:                   |          distribution: logunif   |          distribution: uniform   |          max: 200                |
+|          mean:                   |                                  |                                  |          distribution: triangular|
+|          stddev:                 |                                  |                                  |                                  | 
+|          distribution:           |                                  |                                  |                                  |
++----------------------------------+----------------------------------+----------------------------------+----------------------------------+
 
 
 Porosity
@@ -114,10 +117,10 @@ different flow tubes are drawn independently.
 |                                  |                                  |                                  |                                  |
 |    flownet:                      |    flownet:                      |    flownet:                      |    flownet:                      |
 |      model_parameters:           |      model_parameters:           |      model_parameters:           |      model_parameters:           |
-|        permeability:             |        permeability:             |        permeability:             |        permeability:             |
-|          min:                    |          min: 10                 |          min: 10                 |          min: 10                 |
-|          max:                    |          max: 1000               |          mean: 100               |          base: 50                |
-|          base:                   |          distribution: logunif   |          distribution: uniform   |          max: 200                |
+|        porosity    :             |        porosity:                 |        porosity:                 |        porosity:                 |
+|          min:                    |          min: 0.15               |          mean: 0.25              |          min: 0.15               |
+|          max:                    |          max: 0.35               |          stddev: 0.03            |          mean: 0.22              |
+|          base:                   |          distribution: uniform   |          distribution: normal    |          max: 0.31               |
 |          mean:                   |                                  |                                  |          distribution: triangular|
 |          stddev:                 |                                  |                                  |                                  | 
 |          distribution:           |                                  |                                  |                                  |
