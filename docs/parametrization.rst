@@ -82,6 +82,11 @@ and *mean* values (where FlowNet will calculate the *max* value), or by providin
 Permeability
 ------------
 
+Defines the prior probability distribution for permeability. Only one distribution
+should be defined, and it will be used for all flow tubes. The permeability values for
+different flow tubes are drawn independently.
+
+
 .. code-block:: yaml
 
   flownet:
@@ -98,6 +103,9 @@ Permeability
 
 Porosity
 --------
+Defines the prior probability distribution for porosity. Only one distribution
+should be defined, and it will be used for all flow tubes. The porosity values for
+different flow tubes are drawn independently.
 
 .. code-block:: yaml
 
@@ -117,6 +125,16 @@ Porosity
 Bulk volume multiplier
 ----------------------
 
+Each flow tube can be thought to represent the bulk volume in the region between the 
+two nodes it connects. There could be several reasons why the bulk volume in a flow tube 
+should be adjusted up or down, hence there is a need to be able to tune the bulk volume
+for efficient history matching.
+
+This part of the config file defines the prior probability distribution 
+for a bulk volume multiplier. Only one distribution
+should be defined, and it will be used for all flow tubes. The values for
+different flow tubes are drawn independently.
+
 .. code-block:: yaml
 
   flownet:
@@ -132,7 +150,9 @@ Bulk volume multiplier
 
 Fault multiplier
 ----------------
-
+Defines the prior probability distribution for fault transmissibility multipliers. Only one distribution
+should be defined, and it will be used for all faults in the model. The fault transmissibilities for different
+faults are drawn independently.
 .. code-block:: yaml
 
   flownet:
@@ -183,13 +203,6 @@ The input related to relative permeability modelling has its own section in the 
           ng:
           nog:
           krgend:
-            min:
-            mean:
-            max:
-            base:
-            stddev:
-            distribution:
-            low_optimistic:
 
 
 scheme
@@ -212,8 +225,8 @@ interpolate
 
 independent_interpolation
   if **interpolate** is set to **True** and the model has three active phases, this parameter will
-  decide whether or not the interpolation for water/oil relative permeability and gas/oil permeability
-  will be performed independently. The default value is False.
+  decide whether or not the interpolation for water/oil relative permeability and gas/oil relative 
+  permeability will be performed independently. The default value is False.
   
   
 regions
@@ -245,10 +258,13 @@ regions
     Critical gas saturation
   krgend
     Maximum relative permeability for gas
+  
 
   A water/oil model needs *swirr*, *swl*, *swcr*, *sorw*, *nw*, *now*, *krwend* and *kroend* to be defined.
   An oil/gas model needs *swirr*, *swl*, *sgcr*, *sorg*, *ng*, *nog*, *krgend* and *kroend* to be defined.
-  A three phase model needs all 13 parameters to be defined.
+  A three phase model needs all 13 relative permeability parameters to be defined.
+
+
     
 
 
