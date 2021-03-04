@@ -323,20 +323,6 @@ regions
 +----------------------------------+----------------------------------+
 
 
-  
-    
-
-
-  To limit the number of history 
-  matching parameters, FlowNet provides the option to 
-  interpolate between three sets of relative permeability curves. This way each SATNUM region will 
-  only have one history matching parameter (possibly two if oil/gas and water/oil are 
-  interpolated independently). This option is selected by setting this **interpolate** 
-  option to **True**. The default value is False.
-
-
-
-
 When using the interpolation option for relative permeability, some of the keywords above 
 have a different meaning. This applies to **min**, **base**, and **max**. There is also an
 additional keyword **low_optimistic** which only is meaningful to define for relative permeability.
