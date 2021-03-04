@@ -69,6 +69,59 @@ def create_schema(_to_abs_path) -> Dict:
                             "server": {MK.Type: types.String, MK.AllowNone: True},
                             "max_running": {MK.Type: types.Integer},
                         },
+                    "analysis": {
+                        MK.Type: types.List,
+                        MK.Description: "List of analysis workflows to run.",
+                        MK.Content: {
+                            MK.Item: {
+                                MK.Type: types.NamedDict,
+                                MK.Description: "Definitions of the analysis workflow.",
+                                MK.Content: {
+                                    "metric": {
+                                        MK.Type: types.List,
+                                        MK.Content: {
+                                            MK.Item: {
+                                                MK.Type: types.String,
+                                                MK.AllowNone: True,
+                                            }
+                                        },
+                                        MK.Transformation: _to_upper,
+                                        MK.Description: "List of accuracy metrics to be computed "
+                                        "in FlowNet analysis workflow",
+                                    },
+                                    "quantity": {
+                                        MK.Type: types.List,
+                                        MK.Content: {
+                                            MK.Item: {
+                                                MK.Type: types.String,
+                                                MK.AllowNone: True,
+                                            }
+                                        },
+                                        MK.Transformation: _to_upper,
+                                        MK.Description: "List of summary vectors for which accuracy "
+                                        "is to be computed",
+                                    },
+                                    "start": {
+                                        MK.Type: types.Date,
+                                        MK.AllowNone: True,
+                                        MK.Description: "Start date in YYYY-MM-DD format.",
+                                    },
+                                    "end": {
+                                        MK.Type: types.Date,
+                                        MK.AllowNone: True,
+                                        MK.Description: "End date in YYYY-MM-DD format.",
+                                    },
+                                    "outfile": {
+                                        MK.Type: types.String,
+                                        MK.AllowNone: True,
+                                        MK.Description: "The filename of the output of the workflow. "
+                                        "In case multiple analysis workflows are run this name should be unique.",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
                     },
                 },
             },
