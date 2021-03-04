@@ -20,16 +20,27 @@ on what values they can take. This is referred to as the prior probability distr
 The following keys are available for defining the different prior distributions
 
 distribution
-  The type of probability distribution. 
+  The type of probability distribution. If a model parameter is included, the distribution
+  type must be defined. The other parameters below are included depending on choice of
+  distribution. The default value distribution type is *uniform*.
 
 min
-  The minimum value of the chosen prior probability distribution. 
-
+  Depending on modelling choices, this parameter can have different meanings.
+  The parameter can act as the minimum value of the chosen prior probability distribution,
+  or as the low value of a relative permeability
+  modelling parameter when using the SCALrecommendation option in pyscal. 
+  
 max
-  The maximum value of the chosen prior probability distribution. 
+  Depending on modelling choices, this parameter can have different meanings.
+  The parameter can act as the maximum value of the chosen prior probability distribution,
+  or as the high value of a relative permeability
+  modelling parameter when using the SCALrecommendation option in pyscal.
 
 base
-  The mode of the prior probability distribution
+  Depending on modelling choices, this parameter can have different meanings.
+  It can act as the mode of the prior probability distribution in a triangular distribution,
+  or as the constant value in a Dirac distribution, or the *base* value of a relative permeability
+  modelling parameter when using the SCALrecommendation option in pyscal.
   
 mean
   The mean or expected value of the prior probability distribution
@@ -74,7 +85,7 @@ and *mean* values (where FlowNet will calculate the *max* value), or by providin
 +---------------------------+------------------+------+------+------+------+------+
 | Log-normal                | lognormal        |      |      |   x  |      |  x   |        
 +---------------------------+------------------+------+------+------+------+------+
-| Constant (Dirac)          | const            |      |      |      |   x  |      |        
+| Dirac (constant)          | const            |      |      |      |  x   |      |        
 +---------------------------+------------------+------+------+------+------+------+
 
 
@@ -117,7 +128,7 @@ different flow tubes are drawn independently.
 |                                  |                                  |                                  |                                  |
 |    flownet:                      |    flownet:                      |    flownet:                      |    flownet:                      |
 |      model_parameters:           |      model_parameters:           |      model_parameters:           |      model_parameters:           |
-|        porosity    :             |        porosity:                 |        porosity:                 |        porosity:                 |
+|        porosity:                 |        porosity:                 |        porosity:                 |        porosity:                 |
 |          min:                    |          min: 0.15               |          mean: 0.25              |          min: 0.15               |
 |          max:                    |          max: 0.35               |          stddev: 0.03            |          mean: 0.22              |
 |          base:                   |          distribution: uniform   |          distribution: normal    |          max: 0.31               |
@@ -192,55 +203,8 @@ pyscal can parameterize curves using either Corey parameters or LET parameters.
 FlowNet only accepts Corey parameters as input at this point.
 
 
-The input related to relative permeability modelling has its own section in the config yaml file. 
-
-+----------------------------------+----------------------------------+
-| Available options in config yaml | Example of usage                 |
-+----------------------------------+----------------------------------+
-|                                  |                                  |
-| .. code-block:: yaml             | .. code-block:: yaml             |
-|                                  |                                  |
-|  flownet:                        |  flownet:                        |
-|    model_parameters:             |    model_parameters:             |
-|      relative_permeability:      |      relative_permeability:      |
-|        scheme:                   |        scheme: global            |
-|        interpolate:              |        interpolate: true         |
-|        independent_interpolation:|        regions:                  |
-|        regions:                  |          swirr:                  |
-|          id:                     |            min:                  |
-|          swirr:                  |            max:                  |
-|            min:                  |          swl:                    |
-|            max:                  |            min:                  |
-|            mean:                 |            max:                  |
-|            base:                 |          swcr:                   |
-|            stddev:               |            min:                  |
-|            distribution:         |            max:                  |
-|            low_optimistic:       |          sorw:                   |
-|          swl:                    |            min:                  |
-|            <same as for swirr>   |            max:                  |
-|          swcr:                   |          nw:                     |
-|            <same as for swirr>   |            min:                  |
-|          sorw:                   |            max:                  |
-|            <same as for swirr>   |          now:                    |
-|          krwend:                 |            min:                  |
-|            <same as for swirr>   |            max:                  |
-|          kroend:                 |          krwend:                 |
-|            <same as for swirr>   |            min:                  |
-|          no:                     |            max:                  |
-|            <same as for swirr>   |          kroend:                 |
-|          now:                    |            min:                  |
-|            <same as for swirr>   |            max:                  |
-|          sorg:                   |                                  |
-|            <same as for swirr>   |                                  |
-|          sgcr:                   |                                  |
-|            <same as for swirr>   |                                  |
-|          ng:                     |                                  |
-|            <same as for swirr>   |                                  |
-|          nog:                    |                                  |
-|            <same as for swirr>   |                                  |
-|          krgend:                 |                                  |                
-|            <same as for swirr>   |                                  |
-+----------------------------------+----------------------------------+
+The input related to relative permeability modelling has its own section in the config yaml file,
+where the following parameters can be defined. 
 
 scheme
   The scheme parameter decides how many sets of relative permeability curves to generate as
@@ -302,6 +266,56 @@ regions
   A three phase model needs all 13 relative permeability parameters to be defined.
 
 
++----------------------------------+----------------------------------+
+| Available options in config yaml | Example of usage                 |
++----------------------------------+----------------------------------+
+|                                  |                                  |
+| .. code-block:: yaml             | .. code-block:: yaml             |
+|                                  |                                  |
+|  flownet:                        |  flownet:                        |
+|    model_parameters:             |    model_parameters:             |
+|      relative_permeability:      |      relative_permeability:      |
+|        scheme:                   |        scheme: global            |
+|        interpolate:              |        interpolate: true         |
+|        independent_interpolation:|        regions:                  |
+|        regions:                  |          swirr:                  |
+|          id:                     |            min:                  |
+|          swirr:                  |            max:                  |
+|            min:                  |          swl:                    |
+|            max:                  |            min:                  |
+|            mean:                 |            max:                  |
+|            base:                 |          swcr:                   |
+|            stddev:               |            min:                  |
+|            distribution:         |            max:                  |
+|            low_optimistic:       |          sorw:                   |
+|          swl:                    |            min:                  |
+|            <same as for swirr>   |            max:                  |
+|          swcr:                   |          nw:                     |
+|            <same as for swirr>   |            min:                  |
+|          sorw:                   |            max:                  |
+|            <same as for swirr>   |          now:                    |
+|          krwend:                 |            min:                  |
+|            <same as for swirr>   |            max:                  |
+|          kroend:                 |          krwend:                 |
+|            <same as for swirr>   |            min:                  |
+|          no:                     |            max:                  |
+|            <same as for swirr>   |          kroend:                 |
+|          now:                    |            min:                  |
+|            <same as for swirr>   |            max:                  |
+|          sorg:                   |                                  |
+|            <same as for swirr>   |                                  |
+|          sgcr:                   |                                  |
+|            <same as for swirr>   |                                  |
+|          ng:                     |                                  |
+|            <same as for swirr>   |                                  |
+|          nog:                    |                                  |
+|            <same as for swirr>   |                                  |
+|          krgend:                 |                                  |
+|            <same as for swirr>   |                                  |
++----------------------------------+----------------------------------+
+
+
+  
     
 
 
