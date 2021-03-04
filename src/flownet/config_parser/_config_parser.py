@@ -35,6 +35,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
     def _integer_to_list(input_data: Union[List, int]) -> List:
         """
         Converts integer to list with single item.
+
         Args:
             input_data (Union[List, int]):
 
@@ -400,7 +401,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     "additional_flow_nodes": {
                         MK.Type: types.List,
                         MK.Description: "List of additional flow nodes to add "
-                        "for each layer or single integer which the code will "
+                        "for each layer or single integer which will be "
                         "split over the layers, when they are defined.",
                         MK.LayerTransformation: _integer_to_list,
                         MK.Content: {
