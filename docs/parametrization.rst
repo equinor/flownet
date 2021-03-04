@@ -141,18 +141,21 @@ for a bulk volume multiplier. Only one distribution
 should be defined, and it will be used for all flow tubes. The values for
 different flow tubes are drawn independently.
 
-.. code-block:: yaml
-
-  flownet:
-    model_parameters:
-      bulkvolume_mult:
-        min:
-        mean:
-        max:
-        base:
-        stddev:
-        distribution:
-        
++----------------------------------+----------------------------------+----------------------------------------+----------------------------------+
+| Available options in config yaml | Example of usage                 | Example of usage                       | Example of usage                 |
++----------------------------------+----------------------------------+----------------------------------------+----------------------------------+
+| .. code-block:: yaml             | .. code-block:: yaml             | .. code-block:: yaml                   | .. code-block:: yaml             |
+|                                  |                                  |                                        |                                  |
+|    flownet:                      |    flownet:                      |    flownet:                            |    flownet:                      |
+|      model_parameters:           |      model_parameters:           |      model_parameters:                 |      model_parameters:           |
+|        bulkvolume_mult:          |        bulkvolume_mult:          |        bulkvolume_mult:                |        bulkvolume_mult:          |
+|          min:                    |          min: 0.2                |          mean: 1                       |          min: 0.2                |
+|          max:                    |          max: 4                  |          stddev: 0.1                   |          mean: 1                 |
+|          base:                   |          distribution: uniform   |          min: 0.2                      |          max: 2                  |
+|          mean:                   |                                  |          max: 2                        |          distribution: triangular|
+|          stddev:                 |                                  |          distribution: truncated_normal|                                  | 
+|          distribution:           |                                  |                                        |                                  |
++----------------------------------+----------------------------------+----------------------------------------+----------------------------------+ 
 
 Fault multiplier
 ----------------
