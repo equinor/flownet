@@ -108,7 +108,7 @@ should be defined, and it will be used for all flow tubes. The porosity values f
 different flow tubes are drawn independently.
 
 +----------------------------------+----------------------------------+
-| Available options in config yaml| Example of usage                  |
+| Available options in config yaml | Example of usage                 |
 +----------------------------------+----------------------------------+
 | .. code-block:: yaml             | .. code-block:: yaml             |
 |                                  |                                  |
