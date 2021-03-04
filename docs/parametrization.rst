@@ -107,6 +107,22 @@ Defines the prior probability distribution for porosity. Only one distribution
 should be defined, and it will be used for all flow tubes. The porosity values for
 different flow tubes are drawn independently.
 
++----------------------------------+----------------------------------+
+| Available options in config yaml| Example of usage                  |
++----------------------------------+----------------------------------+
+| .. code-block:: yaml             | .. code-block:: yaml             |
+|                                  |                                  |
+|    flownet:                      |    flownet:                      |
+|      model_parameters:           |      model_parameters:           |
+|        permeability:             |        permeability:             |
+|          min:                    |          min: 10                 |
+|          max:                    |          max: 1000               |
+|          base:                   |          distribution: logunif   |
+|          mean:                   |                                  |
+|          stddev:                 |                                  |
+|          distribution:           |                                  |
++----------------------------------+----------------------------------+
+
 .. code-block:: yaml
 
   flownet:
