@@ -194,31 +194,53 @@ FlowNet only accepts Corey parameters as input at this point.
 
 The input related to relative permeability modelling has its own section in the config yaml file. 
 
-
-.. code-block:: yaml
-
-  flownet:
-    model_parameters:
-      relative_permeability:
-        scheme: 
-        interpolate: 
-        independent_interpolation:
-        regions:
-          id:
-          swirr:
-          swl:
-          swcr:
-          sorw:
-          krwend:
-          kroend:
-          no:
-          now:
-          sorg:
-          sgcr:
-          ng:
-          nog:
-          krgend:
-
++----------------------------------+----------------------------------+
+| Available options in config yaml | Example of usage                 |
++----------------------------------+----------------------------------+
+|                                  |                                  |
+| .. code-block:: yaml             | .. code-block:: yaml             |
+|                                  |                                  |
+|  flownet:                        |  flownet:                        |
+|    model_parameters:             |    model_parameters:             |
+|      relative_permeability:      |      relative_permeability:      |
+|        scheme:                   |        scheme: global            |
+|        interpolate:              |        interpolate: true         |
+|        independent_interpolation:|        regions:                  |
+|        regions:                  |          swirr:                  |
+|          id:                     |            min:                  |
+|          swirr:                  |            max:                  |
+|            min:                  |          swl:                    |
+|            max:                  |            min:                  |
+|            mean:                 |            max:                  |
+|            base:                 |          swcr:                   |
+|            stddev:               |            min:                  |
+|            distribution:         |            max:                  |
+|            low_optimistic:       |          sorw:                   |
+|          swl:                    |            min:                  |
+|            <same as for swirr>   |            max:                  |
+|          swcr:                   |          nw:                     |
+|            <same as for swirr>   |            min:                  |
+|          sorw:                   |            max:                  |
+|            <same as for swirr>   |          now:                    |
+|          krwend:                 |            min:                  |
+|            <same as for swirr>   |            max:                  |
+|          kroend:                 |          krwend:                 |
+|            <same as for swirr>   |            min:                  |
+|          no:                     |            max:                  |
+|            <same as for swirr>   |          kroend:                 |
+|          now:                    |            min:                  |
+|            <same as for swirr>   |            max:                  |
+|          sorg:                   |                                  |
+|            <same as for swirr>   |                                  |
+|          sgcr:                   |                                  |
+|            <same as for swirr>   |                                  |
+|          ng:                     |                                  |
+|            <same as for swirr>   |                                  |
+|          nog:                    |                                  |
+|            <same as for swirr>   |                                  |
+|          krgend:                 |                                  |                
+|            <same as for swirr>   |                                  |
++----------------------------------+----------------------------------+
 
 scheme
   The scheme parameter decides how many sets of relative permeability curves to generate as
