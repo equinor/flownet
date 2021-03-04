@@ -126,19 +126,6 @@ different flow tubes are drawn independently.
 |          distribution:           |                                  |                                  |                                  |
 +----------------------------------+----------------------------------+----------------------------------+----------------------------------+
 
-.. code-block:: yaml
-
-  flownet:
-    model_parameters:
-      porosity:
-        min:
-        mean:
-        max:
-        base:
-        stddev:
-        distribution:
-        
-
 
 
 Bulk volume multiplier
