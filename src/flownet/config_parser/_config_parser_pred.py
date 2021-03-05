@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import Dict
+from typing import Dict, Optional, List, Union
 
 import yaml
 import configsuite
@@ -9,7 +9,7 @@ from configsuite import types, MetaKeys as MK, ConfigSuite
 from ._merge_configs import merge_configs
 
 
-def create_schema(_to_abs_path) -> Dict:
+def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
     """
     Returns a configsuite type schema, where configuration value types are defined, together
     with which values are optional and/or has default values.
@@ -21,6 +21,33 @@ def create_schema(_to_abs_path) -> Dict:
         Dictionary to be used as configsuite type schema
 
     """
+
+    @configsuite.transformation_msg("Tries to convert input to absolute path")
+    def _to_abs_path(path: str) -> str:
+        """
+        Helper function for the configsuite. Take in a path as a string and
+        attempts to convert it to an absolute path.
+
+        Args:
+            path: A relative or absolute path
+
+        Returns:
+            Absolute path
+
+        """
+        if path is None:
+            return ""
+        if pathlib.Path(path).is_absolute():
+            return str(pathlib.Path(path).resolve())
+        return str((config_folder / pathlib.Path(path)).resolve())
+
+    @configsuite.transformation_msg("Convert string to upper case")
+    def _to_upper(input_data: Union[List[str], str]) -> Union[List[str], str]:
+        if isinstance(input_data, str):
+            return input_data.upper()
+
+        return [x.upper() for x in input_data]
+
     return {
         MK.Type: types.NamedDict,
         MK.Content: {
@@ -69,6 +96,12 @@ def create_schema(_to_abs_path) -> Dict:
                             "server": {MK.Type: types.String, MK.AllowNone: True},
                             "max_running": {MK.Type: types.Integer},
                         },
+                    },
+                    "ref_sim": {
+                        MK.Type: types.String,
+                        MK.Transformation: _to_abs_path,
+                        MK.Description: "Reference simulation to be used in analysis",
+                    },
                     "analysis": {
                         MK.Type: types.List,
                         MK.Description: "List of analysis workflows to run.",
@@ -122,8 +155,6 @@ def create_schema(_to_abs_path) -> Dict:
                         },
                     },
                 },
-                    },
-                },
             },
         },
     }
@@ -154,27 +185,10 @@ def parse_pred_config(
             yaml.safe_load(update_config.read_text()),
         )
 
-    @configsuite.transformation_msg("Tries to convert input to absolute path")
-    def _to_abs_path(path: str) -> str:
-        """
-        Helper function for the configsuite. Take in a path as a string and
-        attempts to convert it to an absolute path.
-
-        Args:
-            path: A relative or absolute path
-
-        Returns:
-            Absolute path
-
-        """
-        if path is None:
-            return ""
-        if pathlib.Path(path).is_absolute():
-            return str(pathlib.Path(path).resolve())
-        return str((base_config.parent / pathlib.Path(path)).resolve())
-
     suite = ConfigSuite(
-        input_config, create_schema(_to_abs_path=_to_abs_path), deduce_required=True
+        input_config,
+        create_schema(config_folder=base_config.parent),
+        deduce_required=True,
     )
 
     if not suite.valid:
