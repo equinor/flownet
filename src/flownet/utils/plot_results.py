@@ -238,21 +238,21 @@ def main():
     parser.add_argument(
         "-ymin",
         type=float,
-        default=0,
+        default=[0],
         nargs="+",
         help="One or #vectors minimum y values.",
     )
     parser.add_argument(
         "-ymax",
         type=float,
-        default=1000,
+        default=[1000],
         nargs="+",
         help="One or #vectors maximum y values.",
     )
     parser.add_argument(
         "-units",
         type=str,
-        default="Cows/Lightyear",
+        default=["Cows/Lightyear"],
         nargs="+",
         help="One or #vectors unit labels.",
     )
