@@ -31,6 +31,21 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
 
     """
 
+    @configsuite.transformation_msg("Convert integer to list")
+    def _integer_to_list(input_data: Union[List, int]) -> List:
+        """
+        Converts integer to list with single item.
+
+        Args:
+            input_data (Union[List, int]):
+
+        Returns:
+            The input_data. If it wasn't a list yet is will be turned into a list.
+        """
+        if isinstance(input_data, int):
+            input_data = [input_data]
+        return input_data
+
     @configsuite.transformation_msg("Convert 'None' to None")
     def _str_none_to_none(
         input_data: Union[str, int, float, None]
@@ -385,7 +400,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     },
                     "additional_flow_nodes": {
                         MK.Type: types.List,
-                        MK.Description: "List of additional flow nodes to add for each layer.",
+                        MK.Description: "List of additional flow nodes to add "
+                        "for each layer or single integer which will be "
+                        "split over the layers, when they are defined.",
+                        MK.LayerTransformation: _integer_to_list,
                         MK.Content: {
                             MK.Item: {
                                 MK.Type: types.Number,
@@ -1680,10 +1698,15 @@ def parse_config(
             "The concave hulls of the layers are used to split "
             "the number of additional nodes between the layers."
         )
-    if layers and not len(layers) is len(config.flownet.additional_flow_nodes):
+    if (
+        layers
+        and not len(layers) is len(config.flownet.additional_flow_nodes)
+        and len(config.flownet.additional_flow_nodes) != 1
+    ):
         raise ValueError(
-            "For each layer in the FlowNet model you have to supply an entry in the "
-            f"additional flow nodes list. Currenly you have {str(len(layers))} layers "
+            "Either add for each layer in the FlowNet model an entry in the "
+            "additional flow nodes list or fill out a single additional flow "
+            f"node value to be split over the layers. Currenly you have {str(len(layers))} layers "
             f"and {str(len(config.flownet.additional_flow_nodes))} additional flow node "
             "defitions."
         )

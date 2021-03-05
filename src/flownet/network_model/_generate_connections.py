@@ -131,7 +131,11 @@ def _split_additional_flow_nodes(
 
     fractions = [v / sum(volumes) for v in volumes]
     sep_add_flownodes = [round(frac * total_additional_nodes) for frac in fractions]
-
+    print(
+        f"The total {str(total_additional_nodes)} additional flow nodes "
+        "are split over the layers based on the volume of the bounding boxes, "
+        f"{str(sep_add_flownodes)}."
+    )
     return sep_add_flownodes
 
 
@@ -590,15 +594,17 @@ def create_connections(
         Desired restructuring of start-end coordinates into separate columns, as per Flow needs.
 
     """
-    if isinstance(configuration.flownet.additional_flow_nodes, tuple):
-        additional_flow_nodes_list = list(configuration.flownet.additional_flow_nodes)
-    elif df_coordinates["LAYER_ID"].nunique() > 1 and concave_hull_list is not None:
+    if (
+        df_coordinates["LAYER_ID"].nunique() > 1
+        and concave_hull_list is not None
+        and len(configuration.flownet.additional_flow_nodes) == 1
+    ):
         additional_flow_nodes_list = _split_additional_flow_nodes(
-            total_additional_nodes=configuration.flownet.additional_flow_nodes,
+            total_additional_nodes=configuration.flownet.additional_flow_nodes[0],
             concave_hull_list=concave_hull_list,
         )
     else:
-        additional_flow_nodes_list = [configuration.flownet.additional_flow_nodes]
+        additional_flow_nodes_list = list(configuration.flownet.additional_flow_nodes)
 
     starts: List[Coordinate] = []
     ends: List[Coordinate] = []
