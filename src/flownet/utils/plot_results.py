@@ -1,7 +1,7 @@
 import argparse
 import pathlib
 import re
-from typing import Optional, List, Tuple
+from typing import Optional, List
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -13,28 +13,47 @@ matplotlib.use("Agg")
 
 
 def plot_ensembles(
+    plot_type: str,
     vector: str,
     ensembles_data: List[pd.DataFrame],
-    color: Tuple[float, float, float, float],
+    plot_settings: dict,
 ):
     """Function to plot a list of ensembles.
 
     Args:
+        plot_type: prior or posterior
         vector: Name of the vector to plot
         ensembles_data: List of dataframes with ensemble data
-        color: Color to use when plotting the ensemble
+        plot_settings: Settings dictionary for the plots.
+
+    Returns:
+        Nothing
+
+    Raises:
+        Value error if incorrect plot type.
+
     """
-    for ensemble_data in ensembles_data:
+    if not plot_type in ("prior", "posterior"):
+        raise ValueError("Plot type should be either prior or posterior.")
+
+    for i, ensemble_data in enumerate(ensembles_data):
         ensemble_data = (
             remove_duplicates(ensemble_data[["DATE", "REAL", vector]])
             .pivot(index="DATE", columns="REAL", values=vector)
             .dropna()
         )
 
+        color = (
+            plot_settings[f"{plot_type}_colors"][0]
+            if len(plot_settings[f"{plot_type}_colors"][0]) == 1
+            else plot_settings[f"{plot_type}_colors"][i]
+        )
+
         plt.plot(
             ensemble_data.index,
             ensemble_data.values,
             color=color,
+            alpha=0.1,
         )
 
 
@@ -59,16 +78,17 @@ def plot(
     plt.figure()  # (figsize=[16, 8])
 
     if len(prior_data):
-        plot_ensembles(vector, prior_data, (0.5, 0.5, 0.5, 0.1))
+        plot_ensembles("prior", vector, prior_data, plot_settings)
 
     if len(posterior_data):
-        plot_ensembles(vector, posterior_data, (0.0, 0.1, 0.6, 0.1))
+        plot_ensembles("posterior", vector, posterior_data, plot_settings)
 
     if reference_simulation:
         plt.plot(
             reference_simulation.dates,
             reference_simulation.numpy_vector(vector),
-            color=(1.0, 0.0, 0.0, 1.0),
+            color=plot_settings["reference_simulation_color"],
+            alpha=1,
         )
 
     plt.ylim([plot_settings["ymin"], plot_settings["ymax"]])
@@ -100,24 +120,39 @@ def check_args(args):
         ValueError in case the input arguments are inconsistent.
 
     """
-    if not (len(args.ymin) == 1 or len(args.ymin) == len(args.vector)):
+    if not (len(args.ymin) == 1 or len(args.ymin) == len(args.vectors)):
         raise ValueError(
             f"You should either supply a single minimum y-value or as many as you have vectors ({len(args.vectors)}."
         )
 
-    if not (len(args.ymax) == 1 or len(args.ymax) == len(args.vector)):
+    if not (len(args.ymax) == 1 or len(args.ymax) == len(args.vectors)):
         raise ValueError(
             f"You should either supply a single maximum y-value or as many as you have vectors ({len(args.vectors)}."
         )
 
-    if not (len(args.units) == 1 or len(args.units) == len(args.vector)):
+    if not (len(args.units) == 1 or len(args.units) == len(args.vectors)):
         raise ValueError(
-            f"You should either supply a units label or as many as you have vectors ({len(args.vectors)}."
+            f"You should either supply a single units label or as many as you have vectors ({len(args.vectors)}."
         )
 
     if len(args.prior) and len(args.posterior) and not args.reference_simulation:
         raise ValueError(
             "There is no prior, posterior or reference simulation to plot. Supply at least something for me to plot."
+        )
+
+    if not (len(args.prior_colors) == 1 or len(args.prior_colors) == len(args.prior)):
+        raise ValueError(
+            "You should either supply a single prior color or as "
+            f"many as you have prior distributions ({len(args.prior)}."
+        )
+
+    if not (
+        len(args.posterior_colors) == 1
+        or len(args.posterior_colors) == len(args.posterior)
+    ):
+        raise ValueError(
+            "You should either supply a single posterior color or as "
+            f"many as you have posterior distributions ({len(args.posterior)}."
         )
 
 
@@ -178,6 +213,26 @@ def main():
         nargs="+",
         help="One or #vectors unit labels.",
     )
+    parser.add_argument(
+        "-prior_colors",
+        type=str,
+        default=["gray"],
+        nargs="+",
+        help="One or #prior ensembles colors.",
+    )
+    parser.add_argument(
+        "-posterior_colors",
+        type=str,
+        default=["blue"],
+        nargs="+",
+        help="One or #posterior ensembles colors.",
+    )
+    parser.add_argument(
+        "-reference_simulation_color",
+        type=str,
+        default="red",
+        help="The reference simulation color.",
+    )
     args = parser.parse_args()
 
     check_args(args)
@@ -207,6 +262,9 @@ def main():
             "ymin": args.ymin[0] if len(args.ymin) == 1 else args.ymin[i],
             "ymax": args.ymax[0] if len(args.ymax) == 1 else args.ymax[i],
             "units": args.units[0] if len(args.units) == 1 else args.units[i],
+            "prior_colors": args.prior_colors,
+            "posterior_colors": args.posterior_colors,
+            "reference_simulation_color": args.reference_simulation_color,
         }
 
         print(f"Plotting {vector}...", end=" ", flush=True)
