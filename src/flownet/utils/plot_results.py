@@ -146,7 +146,11 @@ def check_args(args):
             f"You should either supply a single units label or as many as you have vectors ({len(args.vectors)}."
         )
 
-    if len(args.prior) and len(args.posterior) and not args.reference_simulation:
+    if (
+        not len(args.prior) > 0
+        and not len(args.posterior) > 0
+        and not args.reference_simulation
+    ):
         raise ValueError(
             "There is no prior, posterior or reference simulation to plot. Supply at least something for me to plot."
         )
