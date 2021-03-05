@@ -306,7 +306,11 @@ def main():
 
     prior_data = build_ensemble_df_list(args.prior, args.vectors)
     posterior_data = build_ensemble_df_list(args.posterior, args.vectors)
-    reference_eclsum = EclSum(str(args.reference_simulation.with_suffix(".UNSMRY")))
+
+    if args.reference_simulation is not None:
+        reference_eclsum = EclSum(str(args.reference_simulation.with_suffix(".UNSMRY")))
+    else:
+        reference_eclsum = None
 
     for i, vector in enumerate(args.vectors):
 
