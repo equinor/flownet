@@ -167,10 +167,22 @@ def check_args(args):
         )
 
 
-def build_ensemble_df_list(ensemble_data, vectors):
+def build_ensemble_df_list(
+    ensemble_paths: List[str], vectors: List[str]
+) -> List[pd.DataFrame]:
+    """Helper function to read and prepare ensemble data.
+
+    Args:
+        ensemble_paths: The ensemble paths to retrieve data from
+        vectors: List of vector to extract
+
+    Returns:
+        List of ensemble dataframe with required data to create plots.
+
+    """
     data: list = []
 
-    for prior in ensemble_data:
+    for prior in ensemble_paths:
 
         df_data = ensemble.ScratchEnsemble(
             "flownet_ensemble",
