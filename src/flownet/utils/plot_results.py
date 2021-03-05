@@ -167,6 +167,26 @@ def check_args(args):
         )
 
 
+def build_ensemble_df_list(ensemble_data, vectors):
+    data: list = []
+
+    for prior in ensemble_data:
+
+        df_data = ensemble.ScratchEnsemble(
+            "flownet_ensemble",
+            paths=prior.replace("%d", "*"),
+        ).get_smry(column_keys=vectors)
+
+        df_data_sorted = df_data.sort_values("DATE")
+        df_realizations = df_data_sorted[
+            df_data_sorted["DATE"] == df_data_sorted.values[-1][0]
+        ]["REAL"]
+
+        data.append(df_data.merge(df_realizations, how="inner"))
+
+    return data
+
+
 def main():
     """Main function for the plotting of simulations results from FlowNet.
 
@@ -268,36 +288,8 @@ def main():
 
     check_args(args)
 
-    prior_data: list = []
-    for prior in args.prior:
-
-        df_data = ensemble.ScratchEnsemble(
-            "flownet_ensemble",
-            paths=prior.replace("%d", "*"),
-        ).get_smry(column_keys=args.vectors)
-
-        df_data_sorted = df_data.sort_values("DATE")
-        df_realizations = df_data_sorted[
-            df_data_sorted["DATE"] == df_data_sorted.values[-1][0]
-        ]["REAL"]
-
-        prior_data.append(df_data.merge(df_realizations, how="inner"))
-
-    posterior_data: list = []
-    for posterior in args.posterior:
-
-        df_data = ensemble.ScratchEnsemble(
-            "flownet_ensemble",
-            paths=posterior.replace("%d", "*"),
-        ).get_smry(column_keys=args.vectors)
-
-        df_data_sorted = df_data.sort_values("DATE")
-        df_realizations = df_data_sorted[
-            df_data_sorted["DATE"] == df_data_sorted.values[-1][0]
-        ]["REAL"]
-
-        posterior_data.append(df_data.merge(df_realizations, how="inner"))
-
+    prior_data = build_ensemble_df_list(args.prior, args.vectors)
+    posterior_data = build_ensemble_df_list(args.posterior, args.vectors)
     reference_eclsum = EclSum(str(args.reference_simulation.with_suffix(".UNSMRY")))
 
     for i, vector in enumerate(args.vectors):
