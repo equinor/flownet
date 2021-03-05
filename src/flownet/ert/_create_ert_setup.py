@@ -179,7 +179,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     output_folder = pathlib.Path(args.output_folder)
     os.makedirs(output_folder, exist_ok=True)
 
-    if not prediction_setup:
+    if prediction_setup and config.ert.ref_sim:
+        path_ref_sim = pathlib.Path(config.ert.ref_sim).resolve()
+    elif not prediction_setup:
         # Derive absolute path to reference simulation case
         if config.flownet.data_source.simulation.input_case:
             path_ref_sim = pathlib.Path(

@@ -23,7 +23,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
     """
 
     @configsuite.transformation_msg("Tries to convert input to absolute path")
-    def _to_abs_path(path: str) -> str:
+    def _to_abs_path(path: Optional[str]) -> str:
         """
         Helper function for the configsuite. Take in a path as a string and
         attempts to convert it to an absolute path.
@@ -39,7 +39,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
             return ""
         if pathlib.Path(path).is_absolute():
             return str(pathlib.Path(path).resolve())
-        return str((config_folder / pathlib.Path(path)).resolve())
+        return str((config_folder / pathlib.Path(path)).resolve())  # type: ignore
 
     @configsuite.transformation_msg("Convert string to upper case")
     def _to_upper(input_data: Union[List[str], str]) -> Union[List[str], str]:
@@ -101,6 +101,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Type: types.String,
                         MK.Transformation: _to_abs_path,
                         MK.Description: "Reference simulation to be used in analysis",
+                        MK.AllowNone: True,
                     },
                     "analysis": {
                         MK.Type: types.List,
@@ -204,6 +205,12 @@ def parse_pred_config(
     ):
         raise ValueError(
             "Queue name and server needs to be provided if system is not 'LOCAL'."
+        )
+
+    if config.ert.analysis and not config.ert.ref_sim:
+        raise ValueError(
+            "Path to the folder of a reference simulation (ref_sim), "
+            "required for the analytics workflow is missing."
         )
 
     return config
