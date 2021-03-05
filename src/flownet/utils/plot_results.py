@@ -1,6 +1,7 @@
 import argparse
 import pathlib
 import re
+from datetime import datetime
 from typing import Optional, List
 
 import matplotlib
@@ -13,7 +14,7 @@ matplotlib.use("Agg")
 
 
 def plot_ensembles(
-    plot_type: str,
+    ensemble_type: str,
     vector: str,
     ensembles_data: List[pd.DataFrame],
     plot_settings: dict,
@@ -21,7 +22,7 @@ def plot_ensembles(
     """Function to plot a list of ensembles.
 
     Args:
-        plot_type: prior or posterior
+        ensemble_type: prior or posterior
         vector: Name of the vector to plot
         ensembles_data: List of dataframes with ensemble data
         plot_settings: Settings dictionary for the plots.
@@ -33,10 +34,11 @@ def plot_ensembles(
         Value error if incorrect plot type.
 
     """
-    if not plot_type in ("prior", "posterior"):
+    if not ensemble_type in ("prior", "posterior"):
         raise ValueError("Plot type should be either prior or posterior.")
 
     for i, ensemble_data in enumerate(ensembles_data):
+
         ensemble_data = (
             remove_duplicates(ensemble_data[["DATE", "REAL", vector]])
             .pivot(index="DATE", columns="REAL", values=vector)
@@ -44,16 +46,22 @@ def plot_ensembles(
         )
 
         color = (
-            plot_settings[f"{plot_type}_colors"][0]
-            if len(plot_settings[f"{plot_type}_colors"][0]) == 1
-            else plot_settings[f"{plot_type}_colors"][i]
+            plot_settings[f"{ensemble_type}_colors"][0]
+            if len(plot_settings[f"{ensemble_type}_colors"]) == 1
+            else plot_settings[f"{ensemble_type}_colors"][i]
+        )
+        alpha = (
+            plot_settings[f"{ensemble_type}_alphas"][0]
+            if len(plot_settings[f"{ensemble_type}_alphas"]) == 1
+            else plot_settings[f"{ensemble_type}_alphas"][i]
         )
 
         plt.plot(
             ensemble_data.index,
             ensemble_data.values,
             color=color,
-            alpha=0.1,
+            alpha=alpha,
+            linestyle="solid",
         )
 
 
@@ -90,6 +98,9 @@ def plot(
             color=plot_settings["reference_simulation_color"],
             alpha=1,
         )
+
+    if plot_settings["vertical_line"]:
+        plt.axvline(x=plot_settings["vertical_line"], color="k", linestyle="--")
 
     plt.ylim([plot_settings["ymin"], plot_settings["ymax"]])
     plt.xlabel("date")
@@ -214,6 +225,20 @@ def main():
         help="One or #vectors unit labels.",
     )
     parser.add_argument(
+        "-prior_alphas",
+        type=float,
+        default=[0.1],
+        nargs="+",
+        help="One or #prior ensembles alpha (transparency) values.",
+    )
+    parser.add_argument(
+        "-posterior_alphas",
+        type=float,
+        default=[0.1],
+        nargs="+",
+        help="One or #posterior ensembles alpha (transparency) values.",
+    )
+    parser.add_argument(
         "-prior_colors",
         type=str,
         default=["gray"],
@@ -233,26 +258,45 @@ def main():
         default="red",
         help="The reference simulation color.",
     )
+    parser.add_argument(
+        "-vertical_line",
+        type=lambda s: datetime.strptime(s, "%Y-%m-%d"),
+        default=None,
+        help="The reference simulation color.",
+    )
     args = parser.parse_args()
 
     check_args(args)
 
     prior_data: list = []
     for prior in args.prior:
-        prior_data.append(
-            ensemble.ScratchEnsemble(
-                "flownet_ensemble",
-                paths=prior.replace("%d", "*"),
-            ).get_smry(column_keys=args.vectors)
-        )
+
+        df_data = ensemble.ScratchEnsemble(
+            "flownet_ensemble",
+            paths=prior.replace("%d", "*"),
+        ).get_smry(column_keys=args.vectors)
+
+        df_data_sorted = df_data.sort_values("DATE")
+        df_realizations = df_data_sorted[
+            df_data_sorted["DATE"] == df_data_sorted.values[-1][0]
+        ]["REAL"]
+
+        prior_data.append(df_data.merge(df_realizations, how="inner"))
 
     posterior_data: list = []
     for posterior in args.posterior:
-        posterior_data.append(
-            ensemble.ScratchEnsemble(
-                "flownet_ensemble", paths=posterior.replace("%d", "*")
-            ).get_smry(column_keys=args.vectors)
-        )
+
+        df_data = ensemble.ScratchEnsemble(
+            "flownet_ensemble",
+            paths=posterior.replace("%d", "*"),
+        ).get_smry(column_keys=args.vectors)
+
+        df_data_sorted = df_data.sort_values("DATE")
+        df_realizations = df_data_sorted[
+            df_data_sorted["DATE"] == df_data_sorted.values[-1][0]
+        ]["REAL"]
+
+        posterior_data.append(df_data.merge(df_realizations, how="inner"))
 
     reference_eclsum = EclSum(str(args.reference_simulation.with_suffix(".UNSMRY")))
 
@@ -262,9 +306,12 @@ def main():
             "ymin": args.ymin[0] if len(args.ymin) == 1 else args.ymin[i],
             "ymax": args.ymax[0] if len(args.ymax) == 1 else args.ymax[i],
             "units": args.units[0] if len(args.units) == 1 else args.units[i],
+            "prior_alphas": args.prior_alphas,
+            "posterior_alphas": args.posterior_alphas,
             "prior_colors": args.prior_colors,
             "posterior_colors": args.posterior_colors,
             "reference_simulation_color": args.reference_simulation_color,
+            "vertical_line": args.vertical_line,
         }
 
         print(f"Plotting {vector}...", end=" ", flush=True)
