@@ -1,16 +1,15 @@
 import pathlib
-import os.path
 from datetime import datetime, date
 import collections
 
 import numpy as np
 import pandas as pd
-import yaml
 import jinja2
 
 from flownet.realization import Schedule
 from flownet.ert import create_observation_file, resample_schedule_dates
 from flownet.realization._simulation_keywords import WCONHIST, WCONINJH
+from flownet.utils.observations import _read_ert_obs, _read_yaml_obs
 
 _OBSERVATION_FILES = pathlib.Path("./tests/observation_files")
 _PRODUCTION_DATA_FILE_NAME = pathlib.Path(_OBSERVATION_FILES / "ProductionData.csv")
@@ -28,57 +27,6 @@ _TEMPLATE_ENVIRONMENT = jinja2.Environment(
 _TEMPLATE_ENVIRONMENT.globals["isnan"] = np.isnan
 
 
-def _read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
-    """This function reads the content of a ERT observation file and returns the information in a dictionary.
-
-    Args:
-        ert_obs_file_name: path to the ERT observation file
-    Returns:
-        ert_obs: dictionary that contains the information in a ERT observation file
-    """
-    assert os.path.exists(ert_obs_file_name) == 1
-    ert_obs = {}
-    text = ""
-    with open(ert_obs_file_name, "r") as a_ert_file:
-        for line in a_ert_file:
-            text = text + line
-
-    text = text.replace(" ", "")
-    text = text.split("};")
-    for item in text:
-        if "SUMMARY_OBSERVATION" in item:
-            tmp = item.split("{")[1].split(";")
-            dic = {}
-            for var in tmp:
-                tmp2 = var.split("=")
-                if len(tmp2) > 1:
-                    dic[tmp2[0]] = tmp2[1]
-            if not dic["KEY"] in ert_obs:
-                ert_obs[dic["KEY"]] = [[], [], []]
-            ert_obs[dic["KEY"]][0].append(
-                datetime.strptime(dic["DATE"], "%d/%m/%Y").toordinal()
-            )
-            ert_obs[dic["KEY"]][1].append(float(dic["VALUE"]))
-            ert_obs[dic["KEY"]][2].append(float(dic["ERROR"]))
-
-    return ert_obs
-
-
-def _read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
-    """This function reads the content of a YAML observation file and returns the information in a dictionary.
-
-    Args:
-        yaml_obs_file_name: path to the YAML observation file
-    Returns:
-        dictionary that contains the information in a YAML observation file
-    """
-    assert os.path.exists(yaml_obs_file_name) == 1
-    a_yaml_file = open(yaml_obs_file_name, "r")
-    yaml.allow_duplicate_keys = True
-
-    return yaml.load(a_yaml_file, Loader=yaml.FullLoader)
-
-
 def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
     """This function compares if the given dictionaries: ert_obs_dict and yaml_obs_dict contain the same information.
 
@@ -88,7 +36,7 @@ def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
     Returns:
         None: the function stops by assert functions if both dictionaries have different information.
     """
-    yaml_obs = {}
+    yaml_obs: dict = {}
     for item in yaml_obs_dict:
         for list_item in yaml_obs_dict[item]:
             for lost_item in list_item["observations"]:

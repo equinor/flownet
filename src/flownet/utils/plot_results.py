@@ -10,6 +10,8 @@ import pandas as pd
 from fmu import ensemble
 from ecl.summary import EclSum
 
+from .observations import _read_ert_obs
+
 matplotlib.use("Agg")
 
 
@@ -101,6 +103,19 @@ def plot(
 
     if plot_settings["vertical_line"]:
         plt.axvline(x=plot_settings["vertical_line"], color="k", linestyle="--")
+
+    if plot_settings["errors"] is not None:
+        if vector in plot_settings["errors"]:
+            plt.errorbar(
+                plot_settings["errors"][vector][0],
+                plot_settings["errors"][vector][1],
+                yerr=plot_settings["errors"][vector][2],
+                fmt="o",
+                color="k",
+                ecolor="k",
+                capsize=5,
+                elinewidth=2,
+            )
 
     plt.ylim([plot_settings["ymin"], plot_settings["ymax"]])
     plt.xlabel("date")
@@ -300,12 +315,23 @@ def main():
         default=None,
         help="The reference simulation color.",
     )
+    parser.add_argument(
+        "-ertobs",
+        type=pathlib.Path,
+        default=None,
+        help="Path to an ERT observation file.",
+    )
     args = parser.parse_args()
 
     check_args(args)
 
     prior_data = build_ensemble_df_list(args.prior, args.vectors)
     posterior_data = build_ensemble_df_list(args.posterior, args.vectors)
+
+    if args.ertobs is not None:
+        ertobs = _read_ert_obs(args.ertobs)
+    else:
+        ertobs = None
 
     if args.reference_simulation is not None:
         reference_eclsum = EclSum(str(args.reference_simulation.with_suffix(".UNSMRY")))
@@ -324,6 +350,7 @@ def main():
             "posterior_colors": args.posterior_colors,
             "reference_simulation_color": args.reference_simulation_color,
             "vertical_line": args.vertical_line,
+            "errors": ertobs,
         }
 
         print(f"Plotting {vector}...", end=" ", flush=True)
