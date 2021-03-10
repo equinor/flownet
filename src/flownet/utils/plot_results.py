@@ -168,7 +168,7 @@ def check_args(args):
         and not args.reference_simulation
     ):
         raise ValueError(
-            "There is no prior, posterior or reference simulation to plot. Supply at least something for me to plot."
+            "There is no prior, posterior or reference simulation to plot. Supply at least at one of the three to plot."
         )
 
     if not (len(args.prior_colors) == 1 or len(args.prior_colors) == len(args.prior)):
@@ -233,89 +233,109 @@ def main():
         "vectors",
         type=str,
         nargs="+",
-        help="One or more vectors to plot separated by spaces. Example: WOPR:WELL1 FOPR",
+        help="One or more vectors to plot separated by spaces. "
+        "Example: WOPR:WELL1 FOPR",
     )
     parser.add_argument(
         "-prior",
         type=str,
         nargs="+",
-        help="One or more paths to prior ensembles separated by a space."
-        "The path should include a '%d' which indicates the realization number.",
+        help="One or more paths to prior ensembles separated by a space. "
+        "The path should include a '%d' which indicates the realization number. "
+        "Example: runpath/realization-%d/iter-0/",
     )
     parser.add_argument(
         "-posterior",
         type=str,
         nargs="+",
-        help="One or more paths to posterior ensembles separated by a space."
-        "The path should include a '%d' which indicates the realization number.",
+        help="One or more paths to posterior ensembles separated by a space. "
+        "The path should include a '%d' which indicates the realization number. "
+        "Example: runpath/realization-%d/iter-4/",
     )
     parser.add_argument(
         "-reference_simulation",
         "-r",
         type=pathlib.Path,
-        help="Path to the reference simulation case.",
+        help="Path to the reference simulation case. "
+        "Example: path/to/SIMULATION.DATA",
     )
     parser.add_argument(
         "-ymin",
         type=float,
         default=[0],
         nargs="+",
-        help="One or #vectors minimum y values.",
+        help="Lower cut-off of the y-axis. Can be one number or multiple values, "
+        "depending on the number of vectors you are plotting. In the latter case, "
+        "the number of y-min values should be equal to the number of vectors.",
     )
     parser.add_argument(
         "-ymax",
         type=float,
         default=[1000],
         nargs="+",
-        help="One or #vectors maximum y values.",
+        help="Upper cut-off of the y-axis. Can be one number or multiple values, "
+        "depending on the number of vectors you are plotting. In the latter case, "
+        "the number of y-max values should be equal to the number of vectors.",
     )
     parser.add_argument(
         "-units",
         type=str,
         default=[""],
         nargs="+",
-        help="One or #vectors unit labels.",
+        help="Unit label for the y-axis. Can be one number or multiple units, "
+        "depending on the number of vectors you are plotting. In the latter case, "
+        "the number of units should be equal to the number of vectors.",
     )
     parser.add_argument(
         "-prior_alphas",
         type=float,
         default=[0.1],
         nargs="+",
-        help="One or #prior ensembles alpha (transparency) values.",
+        help="Transparency of prior, value between 0 (transparent) and 1 (opaque). "
+        "Can be one number or multiple values, depending on the number of priors you "
+        "are plotting. In the latter case, the number of alpha values should be equal "
+        "to the number of priors.",
     )
     parser.add_argument(
         "-posterior_alphas",
         type=float,
         default=[0.1],
         nargs="+",
-        help="One or #posterior ensembles alpha (transparency) values.",
+        help="Transparency of posterior, value between 0 (transparent) and 1(opaque). "
+        "Can be one number or multiple values, depending on the number of posteriors "
+        "you are plotting. In the latter case, the number of alpha values should be equal "
+        "to the number of posteriors.",
     )
     parser.add_argument(
         "-prior_colors",
         type=str,
         default=["gray"],
         nargs="+",
-        help="One or #prior ensembles colors.",
+        help="Color of prior lines. Can be one number or multiple colors, depending on "
+        "the number of priors you are plotting. In the latter case, the number of colors "
+        "should be equal to the number of priors.",
     )
     parser.add_argument(
         "-posterior_colors",
         type=str,
         default=["blue"],
         nargs="+",
-        help="One or #posterior ensembles colors.",
+        help="Color of posterior. Can be one number or colors, depending on the number "
+        "of posteriors you are plotting. In the latter case, the number of colors should "
+        "be equal to the number of posteriors.",
     )
     parser.add_argument(
         "-reference_simulation_color",
         type=str,
         default="red",
-        help="The reference simulation color.",
+        help="The reference simulation color. Examples: 'red', 'blue', 'green'.",
     )
     parser.add_argument(
         "-vertical_lines",
         type=lambda s: datetime.strptime(s, "%Y-%m-%d"),
         default=None,
         nargs="+",
-        help="One or more date (YYYY-MM-DD) to add vertical lines in the plot.",
+        help="One or more dates (YYYY-MM-DD) to add vertical lines in the plot.",
     )
     parser.add_argument(
         "-ertobs",
