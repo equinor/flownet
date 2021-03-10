@@ -42,7 +42,7 @@ def compare(ert_obs_dict: dict, yaml_obs_dict: dict) -> None:
             for lost_item in list_item["observations"]:
                 if not list_item["key"] in yaml_obs:
                     yaml_obs[list_item["key"]] = [[], [], []]
-                yaml_obs[list_item["key"]][0].append(lost_item["date"].toordinal())
+                yaml_obs[list_item["key"]][0].append(lost_item["date"])
                 yaml_obs[list_item["key"]][1].append(float(lost_item["value"]))
                 yaml_obs[list_item["key"]][2].append(float(lost_item["error"]))
             assert yaml_obs[list_item["key"]][0] == ert_obs_dict[list_item["key"]][0]

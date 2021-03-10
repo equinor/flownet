@@ -30,7 +30,9 @@ def _read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
                     dic[tmp2[0]] = tmp2[1]
             if not dic["KEY"] in ert_obs:
                 ert_obs[dic["KEY"]] = [[], [], []]
-            ert_obs[dic["KEY"]][0].append(datetime.strptime(dic["DATE"], "%d/%m/%Y"))
+            ert_obs[dic["KEY"]][0].append(
+                datetime.strptime(dic["DATE"], "%d/%m/%Y").date()
+            )
             ert_obs[dic["KEY"]][1].append(float(dic["VALUE"]))
             ert_obs[dic["KEY"]][2].append(float(dic["ERROR"]))
 
