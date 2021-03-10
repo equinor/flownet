@@ -272,7 +272,7 @@ def main():
     parser.add_argument(
         "-units",
         type=str,
-        default=["Cows/Lightyear"],
+        default=[""],
         nargs="+",
         help="One or #vectors unit labels.",
     )
