@@ -101,8 +101,9 @@ def plot(
             alpha=1,
         )
 
-    if plot_settings["vertical_line"]:
-        plt.axvline(x=plot_settings["vertical_line"], color="k", linestyle="--")
+    if plot_settings["vertical_lines"] is not None:
+        for vertical_line_date in plot_settings["vertical_lines"]:
+            plt.axvline(x=vertical_line_date, color="k", linestyle="--")
 
     if plot_settings["errors"] is not None:
         if vector in plot_settings["errors"]:
@@ -310,10 +311,11 @@ def main():
         help="The reference simulation color.",
     )
     parser.add_argument(
-        "-vertical_line",
+        "-vertical_lines",
         type=lambda s: datetime.strptime(s, "%Y-%m-%d"),
         default=None,
-        help="The reference simulation color.",
+        nargs="+",
+        help="One or more date (YYYY-MM-DD) to add vertical lines in the plot.",
     )
     parser.add_argument(
         "-ertobs",
@@ -349,7 +351,7 @@ def main():
             "prior_colors": args.prior_colors,
             "posterior_colors": args.posterior_colors,
             "reference_simulation_color": args.reference_simulation_color,
-            "vertical_line": args.vertical_line,
+            "vertical_lines": args.vertical_lines,
             "errors": ertobs,
         }
 
