@@ -9,6 +9,8 @@ Submodules
 
    flownet.utils.constants
    flownet.utils.kriging
+   flownet.utils.observations
+   flownet.utils.plot_results
    flownet.utils.raytracing
    flownet.utils.types
    flownet.utils.write_grdecl_file
