@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 - [#349](https://github.com/equinor/flownet/pull/349) Analytics workflow now also available for prediction mode.
+- [#351](https://github.com/equinor/flownet/pull/351) Added simple plotting tool that allows for plotting of FlowNet ensembles and observations.
+
 ### Fixes
 
 ### Changes
