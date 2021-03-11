@@ -1,5 +1,4 @@
-import pathlib
-from typing import Optional, List, Union
+from typing import List, Union
 
 import configsuite
 
