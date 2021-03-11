@@ -289,10 +289,17 @@ def make_dataframe_simulation_data(
         nb_real: number of realizations
 
     """
-    iteration = sorted(
-        [int(rel_iter.replace("/", "").split("-")[-1]) for rel_iter in glob.glob(path)]
-    )[-1]
-    runpath_list = glob.glob(path[::-1].replace("*", str(iteration)[::-1], 1)[::-1])
+    if "pred" in path:
+        runpath_list = glob.glob(path)
+        iteration = "latest"
+    else:
+        iteration = sorted(
+            [
+                int(rel_iter.replace("/", "").split("-")[-1])
+                for rel_iter in glob.glob(path)
+            ]
+        )[-1]
+        runpath_list = glob.glob(path[::-1].replace("*", str(iteration)[::-1], 1)[::-1])
 
     partial_load_simulations = functools.partial(
         _load_simulations, ecl_base=eclbase_file
@@ -339,9 +346,6 @@ def save_iteration_analytics():
     parser.add_argument(
         "reference_simulation", type=str, help="Path to the reference simulation case"
     )
-    parser.add_argument(
-        "perforation_strategy", type=str, help="Perforation handling strategy"
-    )
     parser.add_argument("runpath", type=str, help="Path to the ERT runpath.")
     parser.add_argument(
         "eclbase", type=str, help="Path to the simulation from runpath."
@@ -384,10 +388,7 @@ def save_iteration_analytics():
     )
 
     # Load reference simulation (OPM-Flow/Eclipse)
-    field_data = FlowData(
-        args.reference_simulation,
-        perforation_handling_strategy=args.perforation_strategy,
-    )
+    field_data = FlowData(args.reference_simulation)
     df_obs: pd.DataFrame = field_data.production
     df_obs["DATE"] = df_obs["date"]
 

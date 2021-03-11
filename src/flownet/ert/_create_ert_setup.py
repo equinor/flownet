@@ -273,7 +273,6 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                     analytics_workflow_template.render(
                         {
                             "reference_simulation": path_ref_sim,
-                            "perforation_strategy": config.flownet.perforation_handling_strategy,
                             "run_path": config.ert.runpath,
                             "ecl_base": config.ert.eclbase,
                             "analysis_start": analysis_item.start,
