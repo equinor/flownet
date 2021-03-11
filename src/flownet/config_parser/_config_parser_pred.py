@@ -1,12 +1,13 @@
 import os
 import pathlib
-from typing import Dict, Optional, List, Union
+from typing import Dict, Optional
 
 import yaml
 import configsuite
 from configsuite import types, MetaKeys as MK, ConfigSuite
 
 from ._merge_configs import merge_configs
+from ._config_transformations import _to_upper
 
 
 def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
@@ -15,24 +16,23 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
     with which values are optional and/or has default values.
 
     Args:
-        _to_abs_path: Use absolute path transformation
-
+        config_folder: Optional path to folder with config file
     Returns:
         Dictionary to be used as configsuite type schema
 
     """
 
-    @configsuite.transformation_msg("Tries to convert input to absolute path")
+    @configsuite.transformation_msg("Convert input string to absolute path")
     def _to_abs_path(path: Optional[str]) -> str:
         """
-        Helper function for the configsuite. Take in a path as a string and
+        Helper function for the configsuite. Takes in a path as a string and
         attempts to convert it to an absolute path.
 
         Args:
-            path: A relative or absolute path
+            path: A relative or absolute path or None
 
         Returns:
-            Absolute path
+            Absolute path or empty string
 
         """
         if path is None:
@@ -40,13 +40,6 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
         if pathlib.Path(path).is_absolute():
             return str(pathlib.Path(path).resolve())
         return str((config_folder / pathlib.Path(path)).resolve())  # type: ignore
-
-    @configsuite.transformation_msg("Convert string to upper case")
-    def _to_upper(input_data: Union[List[str], str]) -> Union[List[str], str]:
-        if isinstance(input_data, str):
-            return input_data.upper()
-
-        return [x.upper() for x in input_data]
 
     return {
         MK.Type: types.NamedDict,
