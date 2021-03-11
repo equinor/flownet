@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixes
 
 ### Changes
+- [#349](https://github.com/equinor/flownet/pull/349) Analytics workflow now also available for prediction mode.
 - [#347](https://github.com/equinor/flownet/pull/347) Additional flow nodes is now allowed to be either a list (equal length of number of layers) or a single integer (which will be split over the layers according to volume of concave hull).
 
 ## [0.5.1] - 2021-03-03
