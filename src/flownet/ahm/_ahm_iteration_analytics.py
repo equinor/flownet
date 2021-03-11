@@ -272,7 +272,7 @@ def compute_metric_ensemble(
 
 def make_dataframe_simulation_data(
     mode: str, path: str, eclbase_file: str, keys: List[str], end_date: datetime
-) -> Tuple[pd.DataFrame, int, int]:
+) -> Tuple[pd.DataFrame, Any, int]:
     """
     Internal helper function to generate dataframe containing
     data from ensemble of simulations from selected simulation keys
