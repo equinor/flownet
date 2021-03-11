@@ -8,6 +8,7 @@ import warnings
 import numpy as np
 import pandas as pd
 from scipy.stats import mode
+from scipy.spatial import KDTree
 from configsuite import ConfigSuite
 
 from ..realization import Schedule
@@ -26,6 +27,42 @@ from ..parameters import (
     Parameter,
 )
 from ..data import FlowData
+
+
+def _distribute_model_bulk_volume(
+    network: NetworkModel, field_data: FlowData
+) -> List[float]:
+    """Helper function that distributes the original model's volume
+    over the FlowNet's tube by assigning original model grid cell
+    volume to the nearest FlowNet tube midpoint.
+
+    Args:
+        network: FlowNet network instance
+        field_data: FlowData class with information from simulation model data source
+
+    Returns:
+        A list with multipliers for the total bulk volume for each flownet tube, that
+        distribute the bulk volume according to the spatial distribution of the volume
+        in the original model.
+
+    """
+    flownet_tube_midpoints = np.array(network.get_connection_midpoints())
+    model_cell_mid_points = np.array(
+        [cell.coordinate for cell in field_data.grid.cells()]
+    )
+    model_cell_active_state = [cell.active for cell in field_data.grid.cells()]
+    model_cell_volume = [cell.volume for cell in field_data.grid.cells()]
+
+    tree = KDTree(flownet_tube_midpoints)
+    _, matched_indices = tree.query(model_cell_mid_points, k=[1])
+
+    tube_volumes = np.zeros(len(flownet_tube_midpoints))
+
+    for cell_i, tube_i in enumerate(matched_indices):
+        if model_cell_active_state[cell_i]:
+            tube_volumes[tube_i] += model_cell_volume[cell_i]
+
+    return tube_volumes / sum(tube_volumes)
 
 
 def _from_regions_to_flow_tubes(
@@ -454,6 +491,10 @@ def run_flownet_history_matching(
     # Create a tube index to cell index dataframe:
     ti2ci = pd.DataFrame(data=network.grid.index, index=network.grid.model)
 
+    volume_distribution: Optional[list] = None
+    # if config.model_parameters.bulkvolume_mult.geometric_distribution:
+    volume_distribution = _distribute_model_bulk_volume(network, field_data)
+
     porv_poro_trans_dist_values = _get_distribution(
         ["bulkvolume_mult", "porosity", "permeability"],
         config.model_parameters,
@@ -735,7 +776,11 @@ def run_flownet_history_matching(
 
     parameters = [
         PorvPoroTrans(
-            porv_poro_trans_dist_values, ti2ci, network, config.flownet.min_permeability
+            porv_poro_trans_dist_values,
+            ti2ci,
+            network,
+            config.flownet.min_permeability,
+            volume_distribution,
         ),
         RelativePermeability(
             relperm_dist_values,

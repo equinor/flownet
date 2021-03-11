@@ -1,6 +1,7 @@
 from typing import Dict, List, Optional
 
 import jinja2
+import numpy as np
 import pandas as pd
 
 from ..network_model import NetworkModel
@@ -92,6 +93,10 @@ class PorvPoroTrans(Parameter):
             (bulkvolume_mult, porosity and permeability).
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
         network: The FlowNet NetworkModel instance.
+        min_permeability: The minimum permeability threshold for which tube volumes are set to zero
+            and thus made inactive.
+        volume_distribution: A list of multipliers to distribute the original model volume over tubes.
+            That is, the total volume of a single tube as a function of the total (bulk) volume.
 
     """
 
@@ -101,6 +106,7 @@ class PorvPoroTrans(Parameter):
         ti2ci: pd.DataFrame,
         network: NetworkModel,
         min_permeability: Optional[float] = None,
+        volume_distribution: Optional[List[float]] = None,
     ):
         self._ti2ci: pd.DataFrame = ti2ci
 
@@ -121,7 +127,8 @@ class PorvPoroTrans(Parameter):
 
         self._network: NetworkModel = network
         self._number_tubes: int = len(self._ti2ci.index.unique())
-        self.min_permeability = min_permeability
+        self.min_permeability: Optional[float] = min_permeability
+        self.volume_distribution: Optional[List[float]] = volume_distribution
 
     def render_output(self) -> Dict:
         """
@@ -137,11 +144,23 @@ class PorvPoroTrans(Parameter):
 
         properties_per_cell = pd.DataFrame(index=self._ti2ci.index)
 
-        properties_per_cell["INITIAL_BULKVOLUME"] = (
-            self._network.total_bulkvolume
-            * self._network.grid["cell_length"].values
-            / self._network.grid["cell_length"].sum()
-        )
+        properties_per_cell["INITIAL_BULKVOLUME"] = 0
+        if self.volume_distribution is not None:
+            volumes = np.array(
+                [
+                    self.volume_distribution[i]
+                    for i in properties_per_cell.index.to_list()
+                ]
+            )
+            properties_per_cell["INITIAL_BULKVOLUME"] = (
+                self._network.total_bulkvolume * volumes / volumes.sum()
+            )
+        else:
+            properties_per_cell["INITIAL_BULKVOLUME"] = (
+                self._network.total_bulkvolume
+                * self._network.grid["cell_length"].values
+                / self._network.grid["cell_length"].sum()
+            )
 
         properties_per_cell["PORO"] = self._ti2ci.merge(
             pd.DataFrame(
