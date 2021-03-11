@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
-
+- [#349](https://github.com/equinor/flownet/pull/349) Analytics workflow now also available for prediction mode.
 ### Fixes
 
 ### Changes
