@@ -74,7 +74,7 @@ def plot(
     reference_simulation: Optional[EclSum],
     plot_settings: dict,
 ):
-    """Main plotting function that generate builds up a single plot build up
+    """Main plotting function that generates a single plot
     from potentially multiple ensembles and other data.
 
     Args:
@@ -87,10 +87,10 @@ def plot(
     """
     plt.figure()  # (figsize=[16, 8])
 
-    if len(prior_data):
+    if prior_data:
         plot_ensembles("prior", vector, prior_data, plot_settings)
 
-    if len(posterior_data):
+    if posterior_data:
         plot_ensembles("posterior", vector, posterior_data, plot_settings)
 
     if reference_simulation:
@@ -163,12 +163,13 @@ def check_args(args):
         )
 
     if (
-        not len(args.prior) > 0
-        and not len(args.posterior) > 0
-        and not args.reference_simulation
+        args.prior is None
+        and args.posterior is None
+        and args.reference_simulation is None
     ):
         raise ValueError(
-            "There is no prior, posterior or reference simulation to plot. Supply at least at one of the three to plot."
+            "There is no prior, no posterior and no reference simulation to plot. Supply at least at one "
+            "of the three to plot."
         )
 
     if not (len(args.prior_colors) == 1 or len(args.prior_colors) == len(args.prior)):
@@ -188,7 +189,7 @@ def check_args(args):
 
 
 def build_ensemble_df_list(
-    ensemble_paths: List[str], vectors: List[str]
+    ensemble_paths: Optional[List[str]], vectors: List[str]
 ) -> List[pd.DataFrame]:
     """Helper function to read and prepare ensemble data.
 
@@ -202,19 +203,20 @@ def build_ensemble_df_list(
     """
     data: list = []
 
-    for prior in ensemble_paths:
+    if ensemble_paths is not None:
+        for prior in ensemble_paths:
 
-        df_data = ensemble.ScratchEnsemble(
-            "flownet_ensemble",
-            paths=prior.replace("%d", "*"),
-        ).get_smry(column_keys=vectors)
+            df_data = ensemble.ScratchEnsemble(
+                "flownet_ensemble",
+                paths=prior.replace("%d", "*"),
+            ).get_smry(column_keys=vectors)
 
-        df_data_sorted = df_data.sort_values("DATE")
-        df_realizations = df_data_sorted[
-            df_data_sorted["DATE"] == df_data_sorted.values[-1][0]
-        ]["REAL"]
+            df_data_sorted = df_data.sort_values("DATE")
+            df_realizations = df_data_sorted[
+                df_data_sorted["DATE"] == df_data_sorted.values[-1][0]
+            ]["REAL"]
 
-        data.append(df_data.merge(df_realizations, how="inner"))
+            data.append(df_data.merge(df_realizations, how="inner"))
 
     return data
 
@@ -240,6 +242,7 @@ def main():
         "-prior",
         type=str,
         nargs="+",
+        default=None,
         help="One or more paths to prior ensembles separated by a space. "
         "The path should include a '%d' which indicates the realization number. "
         "Example: runpath/realization-%d/iter-0/",
@@ -248,6 +251,7 @@ def main():
         "-posterior",
         type=str,
         nargs="+",
+        default=None,
         help="One or more paths to posterior ensembles separated by a space. "
         "The path should include a '%d' which indicates the realization number. "
         "Example: runpath/realization-%d/iter-4/",
@@ -256,6 +260,7 @@ def main():
         "-reference_simulation",
         "-r",
         type=pathlib.Path,
+        default=None,
         help="Path to the reference simulation case. "
         "Example: path/to/SIMULATION.DATA",
     )
