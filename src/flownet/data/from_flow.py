@@ -360,7 +360,7 @@ class FlowData(FromSource):
         return np.unique(self._init[name][0])
 
     def get_well_connections(self, perforation_handling_strategy: str) -> pd.DataFrame:
-        """dataframe with all well connection coordinates"""
+        """dataframe with all well connection coordinates, filtered based on the perforation_handling_strategy"""
         return self._well_connections(
             perforation_handling_strategy=perforation_handling_strategy
         )
