@@ -17,7 +17,7 @@ class FromSource(ABC):
         )
 
     @abstractmethod
-    def get_well_connections(self) -> pd.DataFrame:
+    def get_well_connections(self, perforation_handling_strategy: str) -> pd.DataFrame:
         raise NotImplementedError(
             "The  get_well_connections method is required to be implemented in a FromSource class."
         )
