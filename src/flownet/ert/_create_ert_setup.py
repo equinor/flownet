@@ -181,7 +181,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
 
     if prediction_setup and config.ert.ref_sim:
         path_ref_sim = pathlib.Path(config.ert.ref_sim).resolve()
+        mode = "pred"
     elif not prediction_setup:
+        mode = "ahm"
         # Derive absolute path to reference simulation case
         if config.flownet.data_source.simulation.input_case:
             path_ref_sim = pathlib.Path(
@@ -272,6 +274,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                 fh.write(
                     analytics_workflow_template.render(
                         {
+                            "mode": mode,
                             "reference_simulation": path_ref_sim,
                             "run_path": config.ert.runpath,
                             "ecl_base": config.ert.eclbase,

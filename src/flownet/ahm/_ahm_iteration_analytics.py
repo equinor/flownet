@@ -271,7 +271,7 @@ def compute_metric_ensemble(
 
 
 def make_dataframe_simulation_data(
-    path: str, eclbase_file: str, keys: List[str], end_date: datetime
+    mode: str, path: str, eclbase_file: str, keys: List[str], end_date: datetime
 ) -> Tuple[pd.DataFrame, int, int]:
     """
     Internal helper function to generate dataframe containing
@@ -289,7 +289,7 @@ def make_dataframe_simulation_data(
         nb_real: number of realizations
 
     """
-    if "pred" in path:
+    if "pred" in mode:
         runpath_list = glob.glob(path)
         iteration = "latest"
     else:
@@ -343,6 +343,7 @@ def save_iteration_analytics():
 
     """
     parser = argparse.ArgumentParser(prog=("Save iteration analytics to a file."))
+    parser.add_argument("mode", type=str, help="Mode: ahm or pred")
     parser.add_argument(
         "reference_simulation", type=str, help="Path to the reference simulation case"
     )
@@ -381,6 +382,7 @@ def save_iteration_analytics():
 
     # Load ensemble of FlowNet
     (df_sim, iteration, nb_real) = make_dataframe_simulation_data(
+        args.mode,
         args.runpath,
         args.eclbase,
         list(args.quantity.replace("[", "").replace("]", "").split(",")),
