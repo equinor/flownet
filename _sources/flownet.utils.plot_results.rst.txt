@@ -1,0 +1,8 @@
+flownet.utils.plot\_results module
+==================================
+
+.. automodule:: flownet.utils.plot_results
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

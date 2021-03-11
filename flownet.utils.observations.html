@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>flownet.utils.kriging module &mdash; FlowNet  documentation</title>
+  <title>flownet.utils.observations module &mdash; FlowNet  documentation</title>
   
 
   
@@ -41,8 +41,8 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="flownet.utils.observations module" href="flownet.utils.observations.html" />
-    <link rel="prev" title="flownet.utils.constants module" href="flownet.utils.constants.html" /> 
+    <link rel="next" title="flownet.utils.plot_results module" href="flownet.utils.plot_results.html" />
+    <link rel="prev" title="flownet.utils.kriging module" href="flownet.utils.kriging.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -149,13 +149,13 @@
         
           <li><a href="flownet.utils.html">flownet.utils package</a> &raquo;</li>
         
-      <li>flownet.utils.kriging module</li>
+      <li>flownet.utils.observations module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/flownet.utils.kriging.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/flownet.utils.observations.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -168,25 +168,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-flownet.utils.kriging">
-<span id="flownet-utils-kriging-module"></span><h1>flownet.utils.kriging module<a class="headerlink" href="#module-flownet.utils.kriging" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-flownet.utils.observations">
+<span id="flownet-utils-observations-module"></span><h1>flownet.utils.observations module<a class="headerlink" href="#module-flownet.utils.observations" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="flownet.utils.kriging.execute">
-<code class="sig-prename descclassname"><span class="pre">flownet.utils.kriging.</span></code><code class="sig-name descname"><span class="pre">execute</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variogram_model</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'spherical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variogram_parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_lags</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anisotropy_scaling_z</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">scipy.interpolate.interpolate.RegularGridInterpolator</span><span class="p"><span class="pre">,</span> </span><span class="pre">scipy.interpolate.interpolate.RegularGridInterpolator</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.utils.kriging.execute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Executes spatial kriging of input data and returns an scipy.interpolate.RegularInterpolator object.</p>
+<dt id="flownet.utils.observations._read_ert_obs">
+<code class="sig-prename descclassname"><span class="pre">flownet.utils.observations.</span></code><code class="sig-name descname"><span class="pre">_read_ert_obs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ert_obs_file_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="headerlink" href="#flownet.utils.observations._read_ert_obs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function reads the content of a ERT observation file and returns the information in a dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – 3xN np.ndarray with columns X, Y, Z, MEASUREMENT</p></li>
-<li><p><strong>n</strong> – Number of kriged values in each direct. E.g, n = 10 -&gt; 10x10x10 = 1000 values</p></li>
-<li><p><strong>variogram_model</strong> – Variogram options as allowed in pykrige</p></li>
-<li><p><strong>nlags</strong> – nlag as defined in pykrige</p></li>
-<li><p><strong>anisotropy_scaling_z</strong> – anisotropy in the z-scale</p></li>
-<li><p><strong>..</strong> – </p></li>
-</ul>
+<dd class="field-odd"><p><strong>ert_obs_file_name</strong> – path to the ERT observation file</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Tuple of RegularInterpolators for the kriged measurement and uncertainty in a 3D volume</p>
+<dd class="field-even"><p>dictionary that contains the information in a ERT observation file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ert_obs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.utils.observations._read_yaml_obs">
+<code class="sig-prename descclassname"><span class="pre">flownet.utils.observations.</span></code><code class="sig-name descname"><span class="pre">_read_yaml_obs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">yaml_obs_file_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="headerlink" href="#flownet.utils.observations._read_yaml_obs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function reads the content of a YAML observation file and returns the information in a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>yaml_obs_file_name</strong> – path to the YAML observation file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary that contains the information in a YAML observation file</p>
 </dd>
 </dl>
 </dd></dl>
@@ -199,8 +209,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="flownet.utils.observations.html" class="btn btn-neutral float-right" title="flownet.utils.observations module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="flownet.utils.constants.html" class="btn btn-neutral float-left" title="flownet.utils.constants module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="flownet.utils.plot_results.html" class="btn btn-neutral float-right" title="flownet.utils.plot_results module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="flownet.utils.kriging.html" class="btn btn-neutral float-left" title="flownet.utils.kriging module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
