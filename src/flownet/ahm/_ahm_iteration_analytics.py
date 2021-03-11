@@ -272,7 +272,7 @@ def compute_metric_ensemble(
 
 def make_dataframe_simulation_data(
     mode: str, path: str, eclbase_file: str, keys: List[str], end_date: datetime
-) -> Tuple[pd.DataFrame, Any, int]:
+) -> Tuple[pd.DataFrame, str, int]:
     """
     Internal helper function to generate dataframe containing
     data from ensemble of simulations from selected simulation keys
@@ -294,10 +294,7 @@ def make_dataframe_simulation_data(
         iteration = "latest"
     else:
         iteration = sorted(
-            [
-                int(rel_iter.replace("/", "").split("-")[-1])
-                for rel_iter in glob.glob(path)
-            ]
+            [rel_iter.replace("/", "").split("-")[-1] for rel_iter in glob.glob(path)]
         )[-1]
         runpath_list = glob.glob(path[::-1].replace("*", str(iteration)[::-1], 1)[::-1])
 
