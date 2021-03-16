@@ -3,6 +3,7 @@ import concurrent.futures
 import functools
 
 import pandas as pd
+import numpy as np
 from pyscal import WaterOilGas, WaterOil, GasOil, PyscalFactory, PyscalList
 
 from configsuite import ConfigSuite
@@ -13,6 +14,80 @@ from .probability_distributions import ProbabilityDistribution
 from ._base_parameter import Parameter, parameter_probability_distribution_class
 
 MAX_WORKERS = 5  # Number of workers to be allowed for permeability calculations.
+
+
+def swof_from_param(param: Dict) -> str:
+    """
+
+    :param parameters:
+    :return:
+    """
+    swl = param["swl"]
+    swcr = param["swcr"]
+    sorw = param["sorw"]
+    kroend = param["kroend"]
+    krwend = param["krwend"]
+    now = param["now"]
+    nw = param["nw"]
+
+    sw_list = list(np.arange(swl, 1, H_CONSTANT)) + [swcr] + [1 - sorw] + [1]
+    sw_list.sort()
+    sw_list = np.array(sw_list)
+    swn = (np.array(sw_list) - swcr) / (1 - swcr - sorw)
+    son = (1 - np.array(sw_list) - sorw) / (1 - sorw - swl)
+    son[son < 0] = 0
+    swn[swn < 0] = 0
+    krow = kroend * son ** now
+    krw = krwend * swn ** nw
+    krw_interp = (1 - krwend) / sorw * (sw_list - 1) + 1
+    krw[krw > krwend] = krw_interp[krw > krwend]
+    krow = np.nan_to_num(krow)
+    krw = np.nan_to_num(krw)
+    pc = np.zeros(len(sw_list))
+
+    swof = np.transpose(np.stack((sw_list, krw, krow, pc)))
+    swof_string = np.array2string(swof, formatter={"float_kind": lambda x: "%.7f" % x})
+    swof_string = " " + swof_string.replace("[", "").replace("]", "")
+    return swof_string
+
+
+def sgof_from_param(param: Dict) -> str:
+    """
+
+    :param parameters:
+    :return:
+    """
+    swl = param["swl"]
+    sorg = param["sorg"]
+    sgcr = param["sgcr"]
+    krgend = param["krgend"]
+    kroend = param["kroend"]
+    ng = param["ng"]
+    nog = param["nog"]
+
+    sg_list = (
+        [0] + list(np.arange(sgcr, 1 - swl, H_CONSTANT)) + [1 - sorg - swl] + [1 - swl]
+    )
+    sg_list.sort()
+    sg_list = np.array(sg_list)
+    sl_list = 1 - sg_list
+
+    son = (np.array(sl_list) - sorg - swl) / (1 - sorg - swl)
+    son[son < 0] = 0
+    sgn = (np.array(sg_list) - sgcr) / (1 - swl - sgcr - sorg)
+    sgn[sgn < 0] = 0
+    krog = kroend * son ** nog
+    krg = krgend * sgn ** ng
+    krg_interp = (1 - krgend) / sorg * (sg_list - 1) + 1 + swl / sorg * (1 - krgend)
+    krg[krg > krgend] = krg_interp[krg > krgend]
+    krog = np.nan_to_num(krog)
+    krg = np.nan_to_num(krg)
+    pc = np.zeros(len(sg_list))
+
+    sgof = np.transpose(np.stack((sg_list, krg, krog, pc)))
+    sgof_string = np.array2string(sgof, formatter={"float_kind": lambda x: "%.7f" % x})
+    sgof_string = " " + sgof_string.replace("[", "").replace("]", "")
+    return sgof_string
 
 
 def gen_wog(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOilGas:
@@ -294,41 +369,46 @@ class RelativePermeability(Parameter):
             # (meaning it will be a maximum of MAX_WORKERS for each realization)
             # since the number of realizations run by ERT will typically
             # be close to the number of CPUs on the machine/cluster
-
-            if self._swof and self._sgof:
-                with concurrent.futures.ThreadPoolExecutor(
-                    max_workers=MAX_WORKERS
-                ) as executor:
-                    for _, relperm in zip(  # type: ignore[assignment]
-                        parameters, executor.map(partial_gen_wog, parameters)
-                    ):
-                        str_swofs += relperm.SWOF(header=False)
-                        str_sgofs += relperm.SGOF(header=False)
-            elif self._swof:
-                with concurrent.futures.ThreadPoolExecutor(
-                    max_workers=MAX_WORKERS
-                ) as executor:
-                    for _, relperm in zip(  # type: ignore[assignment]
-                        parameters, executor.map(partial_gen_wo, parameters)
-                    ):
-                        str_swofs += relperm.SWOF(header=False)
-            elif self._sgof:
-                with concurrent.futures.ThreadPoolExecutor(
-                    max_workers=MAX_WORKERS
-                ) as executor:
-                    for _, relperm in zip(  # type: ignore[assignment]
-                        parameters, executor.map(partial_gen_og, parameters)
-                    ):
-                        str_sgofs += relperm.SGOF(header=False)
+            if len(self._unique_satnums) > 10:
+                for param in parameters:
+                    if self._swof:
+                        str_swofs += swof_from_param(param) + "\n/\n"
+                    if self._sgof:
+                        str_sgofs += sgof_from_param(param) + "\n/\n"
             else:
-                raise ValueError(
-                    "It seems like both SWOF and SGOF should not be generated."
-                    "Either one of the two should be generated. Can't continue..."
-                )
+                if self._swof and self._sgof:
+                    with concurrent.futures.ThreadPoolExecutor(
+                        max_workers=MAX_WORKERS
+                    ) as executor:
+                        for _, relperm in zip(  # type: ignore[assignment]
+                            parameters, executor.map(partial_gen_wog, parameters)
+                        ):
+                            str_swofs += relperm.SWOF(header=False)
+                            str_sgofs += relperm.SGOF(header=False)
+                elif self._swof:
+                    with concurrent.futures.ThreadPoolExecutor(
+                        max_workers=MAX_WORKERS
+                    ) as executor:
+                        for _, relperm in zip(  # type: ignore[assignment]
+                            parameters, executor.map(partial_gen_wo, parameters)
+                        ):
+                            str_swofs += relperm.SWOF(header=False)
+                elif self._sgof:
+                    with concurrent.futures.ThreadPoolExecutor(
+                        max_workers=MAX_WORKERS
+                    ) as executor:
+                        for _, relperm in zip(  # type: ignore[assignment]
+                            parameters, executor.map(partial_gen_og, parameters)
+                        ):
+                            str_sgofs += relperm.SGOF(header=False)
+                else:
+                    raise ValueError(
+                        "It seems like both SWOF and SGOF should not be generated."
+                        "Either one of the two should be generated. Can't continue..."
+                    )
 
             str_props_section = f"SWOF\n{str_swofs}\n" if self._swof else ""
             str_props_section += f"SGOF\n{str_sgofs}\n" if self._sgof else ""
-
         str_runspec_section = "\n".join(self._phases).upper() + "\n"
 
         return {
