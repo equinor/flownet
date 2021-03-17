@@ -1,6 +1,7 @@
 from typing import Dict, List, Tuple, Union, Optional
 import concurrent.futures
 import functools
+import time
 
 import pandas as pd
 import numpy as np
@@ -16,11 +17,15 @@ from ._base_parameter import Parameter, parameter_probability_distribution_class
 MAX_WORKERS = 5  # Number of workers to be allowed for permeability calculations.
 
 
-def swof_from_param(param: Dict) -> str:
+def swof_from_parameters(param: Dict) -> str:
     """
+    Creates a SWOF table based on a dictionary of input parameters/values
 
-    :param parameters:
-    :return:
+    Args:
+        param (Dict): Dictionary of saturation and relative permeability endpoints
+
+    Returns:
+        A string with the resulting SWOF table
     """
     swl = param["swl"]
     swcr = param["swcr"]
@@ -30,32 +35,36 @@ def swof_from_param(param: Dict) -> str:
     now = param["now"]
     nw = param["nw"]
 
-    sw_list = list(np.arange(swl, 1, H_CONSTANT)) + [swcr] + [1 - sorw] + [1]
-    sw_list.sort()
-    sw_list = np.array(sw_list)
-    swn = (np.array(sw_list) - swcr) / (1 - swcr - sorw)
-    son = (1 - np.array(sw_list) - sorw) / (1 - sorw - swl)
-    son[son < 0] = 0
-    swn[swn < 0] = 0
+    # array of water saturations to calculate krow and krw for
+    sw = np.sort(np.append(np.arange(swl, 1, H_CONSTANT),[swcr, 1 - sorw, 1]))
+    # normalized saturations
+    swn = ((sw - swcr) / (1 - swcr - sorw)).clip(min=0)
+    son = ((1 - sw - sorw) / (1 - sorw - swl)).clip(min=0)
+    # calculate relative permeabilities
     krow = kroend * son ** now
     krw = krwend * swn ** nw
-    krw_interp = (1 - krwend) / sorw * (sw_list - 1) + 1
+    # interpolate between krwend and krwmax (=1)
+    krw_interp = (1 - krwend) / sorw * (sw - 1) + 1
     krw[krw > krwend] = krw_interp[krw > krwend]
-    krow = np.nan_to_num(krow)
-    krw = np.nan_to_num(krw)
-    pc = np.zeros(len(sw_list))
+    # only zero capillary pressure implemented
+    pc = np.zeros(len(sw))
 
-    swof = np.transpose(np.stack((sw_list, krw, krow, pc)))
+    swof = np.transpose(np.stack((sw, krw, krow, pc)))
     swof_string = np.array2string(swof, formatter={"float_kind": lambda x: "%.7f" % x})
     swof_string = " " + swof_string.replace("[", "").replace("]", "")
+
     return swof_string
 
 
-def sgof_from_param(param: Dict) -> str:
+def sgof_from_parameters(param: Dict) -> str:
     """
+    Creates a SGOF table based on a dictionary of input parameters/values
 
-    :param parameters:
-    :return:
+    Args:
+        param (Dict): Dictionary of saturation and relative permeability endpoints
+
+    Returns:
+        A string with the resulting SGOF table
     """
     swl = param["swl"]
     sorg = param["sorg"]
@@ -65,29 +74,26 @@ def sgof_from_param(param: Dict) -> str:
     ng = param["ng"]
     nog = param["nog"]
 
-    sg_list = (
-        [0] + list(np.arange(sgcr, 1 - swl, H_CONSTANT)) + [1 - sorg - swl] + [1 - swl]
-    )
-    sg_list.sort()
-    sg_list = np.array(sg_list)
-    sl_list = 1 - sg_list
-
-    son = (np.array(sl_list) - sorg - swl) / (1 - sorg - swl)
-    son[son < 0] = 0
-    sgn = (np.array(sg_list) - sgcr) / (1 - swl - sgcr - sorg)
-    sgn[sgn < 0] = 0
+    # array of gas saturations to calculate krog and krg for
+    sg = np.sort(np.append(np.arange(sgcr, 1-swl, H_CONSTANT), [1-sorg-swl, 1-swl, 0]))
+    # normalized saturations
+    son = (((1-sg) - sorg - swl) / (1 - sorg - swl)).clip(min=0)
+    sgn = ((sg - sgcr) / (1 - swl - sgcr - sorg)).clip(min=0)
+    # calculate relative permeabilities
     krog = kroend * son ** nog
     krg = krgend * sgn ** ng
-    krg_interp = (1 - krgend) / sorg * (sg_list - 1) + 1 + swl / sorg * (1 - krgend)
+    # interpolate betwene krgend and krgmax (=1)
+    krg_interp = (1 - krgend) / sorg * (sg - 1) + 1 + swl / sorg * (1 - krgend)
     krg[krg > krgend] = krg_interp[krg > krgend]
-    krog = np.nan_to_num(krog)
-    krg = np.nan_to_num(krg)
-    pc = np.zeros(len(sg_list))
+    # only zero capillary pressure implemented
+    pc = np.zeros(len(sg))
 
-    sgof = np.transpose(np.stack((sg_list, krg, krog, pc)))
+    sgof = np.transpose(np.stack((sg, krg, krog, pc)))
     sgof_string = np.array2string(sgof, formatter={"float_kind": lambda x: "%.7f" % x})
     sgof_string = " " + sgof_string.replace("[", "").replace("]", "")
+
     return sgof_string
+
 
 
 def gen_wog(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOilGas:
@@ -369,12 +375,16 @@ class RelativePermeability(Parameter):
             # (meaning it will be a maximum of MAX_WORKERS for each realization)
             # since the number of realizations run by ERT will typically
             # be close to the number of CPUs on the machine/cluster
+
+            # if the number of SATNUM regions is above 10 then
+            # SWOFs/SGOFs are not made by pyscal (bypassing functionality
+            # for computational speed)
             if len(self._unique_satnums) > 10:
                 for param in parameters:
                     if self._swof:
-                        str_swofs += swof_from_param(param) + "\n/\n"
+                        str_swofs += swof_from_parameters(param) + "\n/\n"
                     if self._sgof:
-                        str_sgofs += sgof_from_param(param) + "\n/\n"
+                        str_sgofs += sgof_from_parameters(param) + "\n/\n"
             else:
                 if self._swof and self._sgof:
                     with concurrent.futures.ThreadPoolExecutor(
