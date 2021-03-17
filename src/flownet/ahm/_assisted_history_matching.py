@@ -231,10 +231,16 @@ def save_iteration_parameters():
 
     print("Saving ERT parameters to file...", end=" ")
 
-    iteration = int(re.findall(r"[0-9]+", sorted(glob.glob(args.runpath))[-1])[-1])
-    runpath_list = glob.glob(args.runpath[::-1].replace("*", str(iteration), 1)[::-1])
+    iteration = sorted(
+        [
+            int(rel_iter.replace("/", "").split("-")[-1])
+            for rel_iter in glob.glob(args.runpath)
+        ]
+    )[-1]
+    runpath_list = glob.glob(
+        args.runpath[::-1].replace("*", str(iteration)[::-1], 1)[::-1]
+    )
     realizations_dict = {}
-
     with concurrent.futures.ProcessPoolExecutor() as executor:
         for result in executor.map(_load_parameters, runpath_list):
             realizations_dict[result[0]] = result[1]
