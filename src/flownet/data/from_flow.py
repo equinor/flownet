@@ -50,6 +50,10 @@ class FlowData(FromSource):
         opening and closure time. The output of this function will be filtered based on the
         configured perforation strategy.
 
+        Args:
+            perforation_handling_strategy: Strategy to be used when creating perforations. Valid options are
+                        'bottom'_point', 'top_point', 'multiple', 'time_avg_open_location' and 'multiple_based_on_workovers'.
+
         Returns:
             columns: WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID
 
@@ -360,7 +364,18 @@ class FlowData(FromSource):
         return np.unique(self._init[name][0])
 
     def get_well_connections(self, perforation_handling_strategy: str) -> pd.DataFrame:
-        """dataframe with all well connection coordinates, filtered based on the perforation_handling_strategy"""
+        """
+        Function to get dataframe with all well connection coordinates, filtered based on the perforation_handling_strategy.
+
+        Args:
+            perforation_handling_strategy: Strategy to be used when creating perforations. Valid options are
+                        'bottom'_point', 'top_point', 'multiple', 'time_avg_open_location' and 'multiple_based_on_workovers'.
+
+        Returns:
+            Dataframe with all well connection coordinates, filtered based on the perforation_handling_strategy.
+            Columns: WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID
+        """
+
         return self._well_connections(
             perforation_handling_strategy=perforation_handling_strategy
         )

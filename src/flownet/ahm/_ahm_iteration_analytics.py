@@ -278,10 +278,14 @@ def make_dataframe_simulation_data(
     data from ensemble of simulations from selected simulation keys
 
     Args:
+        mode: String with mode in which flownet is run: prediction (pred) or assisted hisotory matching (ahm)
         path: path to folder containing ensemble of simulations
         eclbase_file: name of simulation case file
         keys: list of prefix of quantities of interest to be loaded
         end_date: end date of time period for accuracy analysis
+
+    Raises:
+        ValueError: If mode is invalid (not pred or ahm).
 
     Returns:
         df_sim: Pandas dataframe contained data from ensemble of simulations
@@ -289,14 +293,18 @@ def make_dataframe_simulation_data(
         nb_real: number of realizations
 
     """
-    if "pred" in mode:
+    if mode == "pred":
         runpath_list = glob.glob(path)
         iteration = "latest"
-    else:
+    elif mode == "ahm":
         iteration = sorted(
             [rel_iter.replace("/", "").split("-")[-1] for rel_iter in glob.glob(path)]
         )[-1]
         runpath_list = glob.glob(path[::-1].replace("*", str(iteration)[::-1], 1)[::-1])
+    else:
+        raise ValueError(
+            f"{mode} is not a valid mode to run flownet with. Chose ahm or pred."
+        )
 
     partial_load_simulations = functools.partial(
         _load_simulations, ecl_base=eclbase_file
