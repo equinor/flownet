@@ -1,7 +1,6 @@
 from typing import Dict, List, Tuple, Union, Optional
 import concurrent.futures
 import functools
-import time
 
 import pandas as pd
 import numpy as np
@@ -36,7 +35,7 @@ def swof_from_parameters(param: Dict) -> str:
     nw = param["nw"]
 
     # array of water saturations to calculate krow and krw for
-    sw = np.sort(np.append(np.arange(swl, 1, H_CONSTANT),[swcr, 1 - sorw, 1]))
+    sw = np.sort(np.append(np.arange(swl, 1, H_CONSTANT), [swcr, 1 - sorw, 1]))
     # normalized saturations
     swn = ((sw - swcr) / (1 - swcr - sorw)).clip(min=0)
     son = ((1 - sw - sorw) / (1 - sorw - swl)).clip(min=0)
@@ -75,14 +74,16 @@ def sgof_from_parameters(param: Dict) -> str:
     nog = param["nog"]
 
     # array of gas saturations to calculate krog and krg for
-    sg = np.sort(np.append(np.arange(sgcr, 1-swl, H_CONSTANT), [1-sorg-swl, 1-swl, 0]))
+    sg = np.sort(
+        np.append(np.arange(sgcr, 1 - swl, H_CONSTANT), [1 - sorg - swl, 1 - swl, 0])
+    )
     # normalized saturations
-    son = (((1-sg) - sorg - swl) / (1 - sorg - swl)).clip(min=0)
+    son = (((1 - sg) - sorg - swl) / (1 - sorg - swl)).clip(min=0)
     sgn = ((sg - sgcr) / (1 - swl - sgcr - sorg)).clip(min=0)
     # calculate relative permeabilities
     krog = kroend * son ** nog
     krg = krgend * sgn ** ng
-    # interpolate betwene krgend and krgmax (=1)
+    # interpolate between krgend and krgmax (=1)
     krg_interp = (1 - krgend) / sorg * (sg - 1) + 1 + swl / sorg * (1 - krgend)
     krg[krg > krgend] = krg_interp[krg > krgend]
     # only zero capillary pressure implemented
@@ -93,7 +94,6 @@ def sgof_from_parameters(param: Dict) -> str:
     sgof_string = " " + sgof_string.replace("[", "").replace("]", "")
 
     return sgof_string
-
 
 
 def gen_wog(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOilGas:
