@@ -333,20 +333,7 @@ def make_dataframe_simulation_data(
     return df_sim, iteration, n_realization
 
 
-def save_iteration_analytics():
-    """
-    This function is called as a post-simulation workflow in ERT, saving all
-    accuracy metrics of all iterations to a file and plotting evolution of accuracy
-    metrics over iterations. The resulting accuracy metric values are stored in
-    a CSV file in the FlowNet output folder, along with the figures
-
-    Args:
-        None
-
-    Returns:
-        Nothing
-
-    """
+def parse_arguments():
     parser = argparse.ArgumentParser(prog=("Save iteration analytics to a file."))
     parser.add_argument("mode", type=str, help="Mode: ahm or pred")
     parser.add_argument(
@@ -380,17 +367,39 @@ def save_iteration_analytics():
     args = parser.parse_args()
     args.runpath = args.runpath.replace("%d", "*")
 
+    return args
+
+
+def save_iteration_analytics():
+    """
+    This function is called as a post-simulation workflow in ERT, saving all
+    accuracy metrics of all iterations to a file and plotting evolution of accuracy
+    metrics over iterations. The resulting accuracy metric values are stored in
+    a CSV file in the FlowNet output folder, along with the figures
+
+    Args:
+        None
+
+    Returns:
+        Nothing
+
+    """
+    args = parse_arguments()
+
     print("Saving iteration analytics...", end=" ", flush=True)
 
     # Fix list inputs
     metrics = list(args.metrics.replace("[", "").replace("]", "").split(","))
+
+    # Vector keys to analyze
+    vector_keys = list(args.quantity.replace("[", "").replace("]", "").split(","))
 
     # Load ensemble of FlowNet
     (df_sim, iteration, nb_real) = make_dataframe_simulation_data(
         args.mode,
         args.runpath,
         args.eclbase,
-        list(args.quantity.replace("[", "").replace("]", "").split(",")),
+        vector_keys,
         args.end,
     )
 
@@ -408,9 +417,6 @@ def save_iteration_analytics():
 
     # Initiate dataframe with metrics
     df_metrics = load_csv_file(args.outfile, ["quantity", "iteration"] + metrics)
-
-    # Vector keys to analyze
-    vector_keys = list(args.quantity.replace("[", "").replace("]", "").split(","))
 
     # Prepare data from reference simulation
     df_obs_filtered = filter_dataframe(
