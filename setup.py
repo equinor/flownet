@@ -66,6 +66,7 @@ setup(
             "flownet_run_flow=flownet.ert._flow_job:run_flow",
             "flownet_save_iteration_parameters=flownet.ahm:save_iteration_parameters",
             "flownet_save_iteration_analytics=flownet.ahm:save_iteration_analytics",
+            "flownet_plot_results=flownet.utils.plot_results:main",
         ],
     },
     zip_safe=False,
