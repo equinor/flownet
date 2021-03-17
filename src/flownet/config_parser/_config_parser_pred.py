@@ -114,7 +114,8 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                         },
                                         MK.Transformation: _to_upper,
                                         MK.Description: "List of accuracy metrics to be computed "
-                                        "in FlowNet analysis workflow",
+                                        "in FlowNet analysis workflow. "
+                                        "Supported metrics: MSE, RMSE, NRMSE, MAE, NMAE, R2",
                                     },
                                     "quantity": {
                                         MK.Type: types.List,
