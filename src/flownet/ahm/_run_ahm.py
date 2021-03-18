@@ -8,7 +8,7 @@ import warnings
 import numpy as np
 import pandas as pd
 from scipy.stats import mode
-from scipy.spatial import KDTree
+
 from configsuite import ConfigSuite
 
 from ..realization import Schedule
@@ -27,54 +27,6 @@ from ..parameters import (
     Parameter,
 )
 from ..data import FlowData
-
-
-def _distribute_model_bulk_volume(
-    network: NetworkModel, field_data: FlowData, ti2ci: pd.DataFrame
-) -> List[float]:
-    """Helper function that distributes the original model's volume
-    over the FlowNet's tube by assigning original model grid cell
-    volume to the nearest FlowNet tube midpoint.
-
-    Args:
-        network: FlowNet network instance
-        field_data: FlowData class with information from simulation model data source
-        ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
-
-    Returns:
-        A list with multipliers for the total bulk volume for each flownet tube cell, that
-        distributes the bulk volume according to the spatial distribution of the volume
-        in the original model.
-
-    """
-    flownet_tube_midpoints = np.array(network.get_connection_midpoints())
-    model_cell_mid_points = np.array(
-        [cell.coordinate for cell in field_data.grid.cells()]
-    )
-    model_cell_active_state = [cell.active for cell in field_data.grid.cells()]
-    model_cell_volume = [cell.volume for cell in field_data.grid.cells()]
-
-    # Determine nearest flow tube for each cell in the original model
-    tree = KDTree(flownet_tube_midpoints)
-    _, matched_indices = tree.query(model_cell_mid_points, k=[1])
-
-    # Assign original model volume to flownet tubes
-    tube_volumes = np.zeros(len(flownet_tube_midpoints))
-    for cell_i, tube_id in enumerate(matched_indices):
-        if model_cell_active_state[cell_i]:
-            tube_volumes[tube_id[0]] += model_cell_volume[cell_i]
-
-    # Distribute tube volume over individual cells
-    properties_per_cell = pd.DataFrame(index=ti2ci.index)
-    cells_per_tube = properties_per_cell.reset_index().groupby(["model"]).size()
-    cell_volumes = np.array(
-        [
-            tube_volumes[i] / cells_per_tube[i]
-            for i in properties_per_cell.index.to_list()
-        ]
-    )
-
-    return cell_volumes / sum(cell_volumes)
 
 
 def _from_regions_to_flow_tubes(
@@ -505,7 +457,7 @@ def run_flownet_history_matching(
 
     volume_distribution: Optional[list] = None
     # if config.model_parameters.bulkvolume_mult.geometric_distribution:
-    volume_distribution = _distribute_model_bulk_volume(network, field_data, ti2ci)
+    volume_distribution = network.get_bulk_volume_distribution(field_data)
 
     porv_poro_trans_dist_values = _get_distribution(
         ["bulkvolume_mult", "porosity", "permeability"],

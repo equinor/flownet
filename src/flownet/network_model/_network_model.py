@@ -4,11 +4,13 @@ from itertools import combinations, repeat, compress
 import numpy as np
 import pandas as pd
 import scipy.spatial
+from scipy.spatial import KDTree
 import pyvista as pv
 
 from ._one_dimensional_model import OneDimensionalModel
 from ..utils.types import Coordinate
 from ..utils.raytracing import moller_trumbore
+from ..data import FromSource, FlowData
 
 
 class NetworkModel:
@@ -96,6 +98,61 @@ class NetworkModel:
         ].values[selector]
 
         return (coordinates_start + coordinates_end) / 2
+
+    def get_bulk_volume_distribution(self, field_data: FromSource) -> List[float]:
+        """Function that get multipliers that distributes the original model's volume
+        over the FlowNet's tube by assigning original model grid cell
+        volumes to the nearest FlowNet tube midpoint.
+
+        Args:
+            field_data: FromSource class with information from simulation model data source
+
+        Returns:
+            A list with multipliers for the total bulk volume for each flownet tube cell, that
+            distributes the bulk volume according to the spatial distribution of the volume
+            in the original model.
+
+        Raise:
+            NotImplementedError in case a users asks for this type of distribution but is
+            not build a FlowNet up a FlowNet from a simulation file.
+
+        """
+        if not isinstance(field_data, FlowData):
+            raise NotImplementedError(
+                "Distributing the bulk volume based on the original volume distribution is"
+                "only supported for cases where a FlowNet is generated from an simulation file."
+            )
+
+        flownet_tube_midpoints = np.array(self.get_connection_midpoints())
+        model_cell_mid_points = np.array(
+            [cell.coordinate for cell in field_data.grid.cells()]
+        )
+        model_cell_active_state = [cell.active for cell in field_data.grid.cells()]
+        model_cell_volume = [cell.volume for cell in field_data.grid.cells()]
+
+        # Determine nearest flow tube for each cell in the original model
+        tree = KDTree(flownet_tube_midpoints)
+        _, matched_indices = tree.query(model_cell_mid_points, k=[1])
+
+        # Assign original model volume to flownet tubes
+        tube_volumes = np.zeros(len(flownet_tube_midpoints))
+        for cell_i, tube_id in enumerate(matched_indices):
+            if model_cell_active_state[cell_i]:
+                tube_volumes[tube_id[0]] += model_cell_volume[cell_i]
+
+        # Distribute tube volume over individual cells
+        properties_per_cell = pd.DataFrame(
+            index=pd.DataFrame(data=self.grid.index, index=self.grid.model)
+        )
+        cells_per_tube = properties_per_cell.reset_index().groupby(["model"]).size()
+        cell_volumes = np.array(
+            [
+                tube_volumes[i] / cells_per_tube[i]
+                for i in properties_per_cell.index.to_list()
+            ]
+        )
+
+        return cell_volumes / sum(cell_volumes)
 
     @property
     def connection_midpoints(self) -> np.ndarray:
