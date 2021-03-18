@@ -13,6 +13,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from ecl.summary import EclSum
 
 from flownet.data import FlowData
+from .utils import get_last_iteration
 
 
 def filter_dataframe(
@@ -297,15 +298,8 @@ def make_dataframe_simulation_data(
         runpath_list = glob.glob(path)
         iteration = "latest"
     elif mode == "ahm":
-        iteration = str(
-            sorted(
-                [
-                    int(rel_iter.replace("/", "").split("-")[-1])
-                    for rel_iter in glob.glob(path)
-                ]
-            )[-1]
-        )
-        runpath_list = glob.glob(path[::-1].replace("*", str(iteration)[::-1], 1)[::-1])
+        (iteration, runpath_list) = get_last_iteration(path)
+        iteration = str(iteration)
     else:
         raise ValueError(
             f"{mode} is not a valid mode to run flownet with. Chose ahm or pred."
