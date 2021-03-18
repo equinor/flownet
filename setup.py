@@ -61,7 +61,7 @@ setup(
         "ert": ["flow = flownet.ert.forward_models._flow_job"],
         "console_scripts": [
             "flownet=flownet._command_line:main",
-            "flownet_render_realization=flownet.realization:render_realization",
+            "flownet_render_realization=flownet.ert.forward_models:render_realization",
             "flownet_delete_simulation_output=flownet.ert.forward_models:delete_simulation_output",
             "flownet_run_flow=flownet.ert.forward_models:run_flow",
             "flownet_save_iteration_parameters=flownet.ert.forward_models:save_iteration_parameters",
