@@ -46,7 +46,7 @@ setup(
     install_requires=REQUIREMENTS,
     tests_require=TEST_REQUIRES,
     setup_requires=["setuptools_scm~=3.2"],
-    python_requires="~=3.6",
+    python_requires="~=3.7",
     extras_require={"tests": TEST_REQUIRES},
     description="Simplified training of reservoir simulation models",
     long_description=LONG_DESCRIPTION,
