@@ -56,7 +56,9 @@ setup(
     use_scm_version=True,
     package_dir={"": "src"},
     packages=find_packages("src"),
-    package_data={"flownet": ["templates/*", "static/*", "ert/FLOW_SIMULATION"]},
+    package_data={
+        "flownet": ["templates/*", "static/*", "ert/forward_models/FLOW_SIMULATION"]
+    },
     entry_points={
         "ert": ["flow = flownet.ert.forward_models._flow_job"],
         "console_scripts": [
