@@ -1,3 +1,5 @@
+import numpy as np
+
 from pyscal import WaterOil, GasOil
 from flownet.parameters._relative_permeability import (
     swof_from_parameters,
@@ -6,7 +8,11 @@ from flownet.parameters._relative_permeability import (
 from flownet.utils.constants import H_CONSTANT
 
 
-def test_SWOF() -> None:
+def test_swof_generation() -> None:
+    """
+    Testing if the FlowNet code and pyscal generate
+    the same SWOF table - test tolerance set to 4 decimals
+    """
     parameter_dict = {}
     parameter_dict["swirr"] = 0.01
     parameter_dict["swl"] = 0.05
@@ -17,7 +23,7 @@ def test_SWOF() -> None:
     parameter_dict["nw"] = 2.25
     parameter_dict["now"] = 2.25
 
-    wo = WaterOil(
+    wateroil = WaterOil(
         swirr=parameter_dict["swirr"],
         swl=parameter_dict["swl"],
         swcr=parameter_dict["swcr"],
@@ -25,12 +31,12 @@ def test_SWOF() -> None:
         h=H_CONSTANT,
     )
 
-    wo.add_corey_oil(now=parameter_dict["now"], kroend=parameter_dict["kroend"])
-    wo.add_corey_water(nw=parameter_dict["nw"], krwend=parameter_dict["krwend"])
+    wateroil.add_corey_oil(now=parameter_dict["now"], kroend=parameter_dict["kroend"])
+    wateroil.add_corey_water(nw=parameter_dict["nw"], krwend=parameter_dict["krwend"])
 
-    pyscal_swof_string = wo.SWOF(header=False, dataincommentrow=False).splitlines()[
-        3:-1
-    ]
+    pyscal_swof_string = wateroil.SWOF(
+        header=False, dataincommentrow=False
+    ).splitlines()[3:-1]
     numpy_swof_string = swof_from_parameters(parameter_dict).splitlines()
 
     for i, line in enumerate(pyscal_swof_string):
@@ -39,7 +45,11 @@ def test_SWOF() -> None:
         ]
 
 
-def test_SGOF() -> None:
+def test_sgof_generation() -> None:
+    """
+    Testing if the FlowNet code and pyscal generate
+    the same SGOF table - test tolerance set to 4 decimals
+    """
     parameter_dict = {}
     parameter_dict["swirr"] = 0.01
     parameter_dict["swl"] = 0.05
@@ -50,7 +60,7 @@ def test_SGOF() -> None:
     parameter_dict["ng"] = 2.25
     parameter_dict["nog"] = 2.25
 
-    go = GasOil(
+    gasoil = GasOil(
         swirr=parameter_dict["swirr"],
         swl=parameter_dict["swl"],
         sgcr=parameter_dict["sgcr"],
@@ -58,10 +68,10 @@ def test_SGOF() -> None:
         h=H_CONSTANT,
     )
 
-    go.add_corey_oil(nog=parameter_dict["nog"], kroend=parameter_dict["kroend"])
-    go.add_corey_gas(ng=parameter_dict["ng"], krgend=parameter_dict["krgend"])
+    gasoil.add_corey_oil(nog=parameter_dict["nog"], kroend=parameter_dict["kroend"])
+    gasoil.add_corey_gas(ng=parameter_dict["ng"], krgend=parameter_dict["krgend"])
 
-    pyscal_sgof_string = go.SGOF(header=False, dataincommentrow=False).splitlines()[
+    pyscal_sgof_string = gasoil.SGOF(header=False, dataincommentrow=False).splitlines()[
         3:-1
     ]
     numpy_sgof_string = sgof_from_parameters(parameter_dict).splitlines()
