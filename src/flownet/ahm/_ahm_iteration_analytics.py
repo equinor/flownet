@@ -297,9 +297,14 @@ def make_dataframe_simulation_data(
         runpath_list = glob.glob(path)
         iteration = "latest"
     elif mode == "ahm":
-        iteration = sorted(
-            [rel_iter.replace("/", "").split("-")[-1] for rel_iter in glob.glob(path)]
-        )[-1]
+        iteration = str(
+            sorted(
+                [
+                    int(rel_iter.replace("/", "").split("-")[-1])
+                    for rel_iter in glob.glob(path)
+                ]
+            )[-1]
+        )
         runpath_list = glob.glob(path[::-1].replace("*", str(iteration)[::-1], 1)[::-1])
     else:
         raise ValueError(
