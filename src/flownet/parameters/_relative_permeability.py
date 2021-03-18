@@ -1,10 +1,7 @@
 from typing import Dict, List, Tuple, Union, Optional
-import concurrent.futures
-import functools
 
 import pandas as pd
 import numpy as np
-from pyscal import WaterOilGas, WaterOil, GasOil, PyscalFactory, PyscalList
 
 from configsuite import ConfigSuite
 from ..utils import write_grdecl_file
@@ -12,8 +9,6 @@ from ..utils.constants import H_CONSTANT
 
 from .probability_distributions import ProbabilityDistribution
 from ._base_parameter import Parameter, parameter_probability_distribution_class
-
-MAX_WORKERS = 5  # Number of workers to be allowed for permeability calculations.
 
 
 def swof_from_parameters(param: Dict) -> str:
@@ -36,6 +31,8 @@ def swof_from_parameters(param: Dict) -> str:
 
     # array of water saturations to calculate krow and krw for
     sw = np.sort(np.append(np.arange(swl, 1, H_CONSTANT), [swcr, 1 - sorw, 1]))
+    # remove potential duplicate values
+    sw = sw[~(np.triu(np.abs(sw[:, None] - sw) <= 1e-5, 1)).any(0)]
     # normalized saturations
     swn = ((sw - swcr) / (1 - swcr - sorw)).clip(min=0)
     son = ((1 - sw - sorw) / (1 - sorw - swl)).clip(min=0)
@@ -50,7 +47,7 @@ def swof_from_parameters(param: Dict) -> str:
 
     swof = np.transpose(np.stack((sw, krw, krow, pc)))
     swof_string = np.array2string(swof, formatter={"float_kind": lambda x: "%.7f" % x})
-    swof_string = " " + swof_string.replace("[", "").replace("]", "")
+    swof_string = swof_string.replace(" [", "").replace("[", "").replace("]", "")
 
     return swof_string
 
@@ -77,6 +74,8 @@ def sgof_from_parameters(param: Dict) -> str:
     sg = np.sort(
         np.append(np.arange(sgcr, 1 - swl, H_CONSTANT), [1 - sorg - swl, 1 - swl, 0])
     )
+    # remove potential duplicate values
+    sg = sg[~(np.triu(np.abs(sg[:, None] - sg) <= 1e-5, 1)).any(0)]
     # normalized saturations
     son = (((1 - sg) - sorg - swl) / (1 - sorg - swl)).clip(min=0)
     sgn = ((sg - sgcr) / (1 - swl - sgcr - sorg)).clip(min=0)
@@ -96,93 +95,60 @@ def sgof_from_parameters(param: Dict) -> str:
     return sgof_string
 
 
-def gen_wog(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOilGas:
+def interpolate_wo(parameter: float, scalrec: Dict) -> Dict:
     """
-    Creates a PyScal WaterOilGas object based on the input parameters supplied.
 
     Args:
-        parameters: A dataframe consisting of all specified parameters.
-        fast_pyscal: Run pyscal in fast-mode skipping checks. Useful for large models/ensemble.
+        parameter (float): A value on the interval -1 to 1 used for interpolation
+        scalrec (Dict): A dictionary containing the relative permeability
+            and saturation endpoints for the low/base/high cases
 
     Returns:
-        A PyScal WaterOilGas object
-
+        A dictionary with the interpolated water/oil saturation and relative
+        permeability endpoints
     """
-    wog_relperm = WaterOilGas(
-        swirr=parameters["swirr"],
-        swl=parameters["swl"],
-        swcr=parameters["swcr"],
-        sorw=parameters["sorw"],
-        sorg=parameters["sorg"],
-        sgcr=parameters["sgcr"],
-        h=H_CONSTANT,
-        fast=fast_pyscal,
-    )
+    # interpolate swirr, swl, swcr, sorw, nw, now, krwend, kroend
+    if parameter < 0:
+        (i, j) = (1, 0)
+    else:
+        (i, j) = (1, 2)
+    parameter = abs(parameter)
 
-    wog_relperm.wateroil.add_corey_water(
-        nw=parameters["nw"], krwend=parameters["krwend"]
-    )
-    wog_relperm.wateroil.add_corey_oil(
-        now=parameters["now"], kroend=parameters["kroend"]
-    )
-    wog_relperm.gasoil.add_corey_gas(ng=parameters["ng"], krgend=parameters["krgend"])
-    wog_relperm.gasoil.add_corey_oil(nog=parameters["nog"], kroend=parameters["kroend"])
+    parameter_dict = {}
+    for elem in {"swirr", "swl", "swcr", "sorw", "nw", "now", "krwend", "kroend"}:
+        parameter_dict[elem] = (
+            scalrec[elem][i] * (1 - parameter) + scalrec[elem][j] * parameter
+        )
 
-    return wog_relperm
+    return parameter_dict
 
 
-def gen_wo(parameters: pd.DataFrame, fast_pyscal: bool = False) -> WaterOil:
+def interpolate_go(parameter: float, scalrec: Dict) -> Dict:
     """
-    Creates a PyScal WaterOil object based on the input parameters supplied.
 
     Args:
-        parameters: A dataframe consisting of all specified parameters.
-        fast_pyscal: Run pyscal in fast-mode skipping checks. Useful for large models/ensembles.
+        parameter (float): A value on the interval -1 to 1 used for interpolation
+        scalrec (Dict): A dataframe containing the relative permeability
+            and saturation endpoints for the low/base/high cases
 
     Returns:
-        A PyScal WaterOil object
-
+        A dictionary with the interpolated gas/oil saturation and relative
+        permeability endpoints
     """
-    wo_relperm = WaterOil(
-        swirr=parameters["swirr"],
-        swl=parameters["swl"],
-        swcr=parameters["swcr"],
-        sorw=parameters["sorw"],
-        h=H_CONSTANT,
-        fast=fast_pyscal,
-    )
+    # interpolate swirr, swl, sgcr, sorg, ng, nog, krgend, kroend
+    if parameter < 0:
+        (i, j) = (1, 0)
+    else:
+        (i, j) = (1, 2)
+    parameter = abs(parameter)
 
-    wo_relperm.add_corey_water(nw=parameters["nw"], krwend=parameters["krwend"])
-    wo_relperm.add_corey_oil(now=parameters["now"], kroend=parameters["kroend"])
+    parameter_dict = {}
+    for elem in {"swirr", "swl", "sgcr", "sorg", "ng", "nog", "krgend", "kroend"}:
+        parameter_dict[elem] = (
+            scalrec[elem][i] * (1 - parameter) + scalrec[elem][j] * parameter
+        )
 
-    return wo_relperm
-
-
-def gen_og(parameters: pd.DataFrame, fast_pyscal: bool = False) -> GasOil:
-    """
-    Creates a PyScal GasOil object based on the input parameters supplied.
-
-    Args:
-        parameters: A dataframe consisting of all specified parameters.
-        fast_pyscal: Run pyscal in fast-mode skipping checks. Useful for large models/ensembles.
-
-    Returns:
-        A PyScal GasOil object
-
-    """
-    og_relperm = GasOil(
-        swirr=parameters["swirr"],
-        swl=parameters["swl"],
-        sorg=parameters["sorg"],
-        sgcr=parameters["sgcr"],
-        h=H_CONSTANT,
-        fast=fast_pyscal,
-    )
-
-    og_relperm.add_corey_gas(ng=parameters["ng"], krgend=parameters["krgend"])
-    og_relperm.add_corey_oil(nog=parameters["nog"], kroend=parameters["kroend"])
-
-    return og_relperm
+    return parameter_dict
 
 
 class RelativePermeability(Parameter):
@@ -237,13 +203,9 @@ class RelativePermeability(Parameter):
         self._phases = config.flownet.phases
         self._fast_pyscal: bool = config.flownet.fast_pyscal
         self._interpolation_values: Optional[pd.DataFrame] = None
-        self._scal_for_interp: Optional[PyscalList] = None
+
         if isinstance(interpolation_values, pd.DataFrame):
             self._interpolation_values = interpolation_values
-            # self._scal_for_interp will be indexed by SATNUM region, starting at 1
-            self._scal_for_interp = PyscalFactory.create_scal_recommendation_list(
-                interpolation_values, fast=self._fast_pyscal
-            )
 
         self._swof, self._sgof = self._check_parameters()
         self._independent_interpolation = (
@@ -355,70 +317,42 @@ class RelativePermeability(Parameter):
             )
             parameters.append(param_value_dict)
 
-        partial_gen_wog = functools.partial(gen_wog, fast_pyscal=True)
-        partial_gen_wo = functools.partial(gen_wo, fast_pyscal=True)
-        partial_gen_og = functools.partial(gen_og, fast_pyscal=True)
-
-        if self._scal_for_interp is not None:
-            wog_list = self._scal_for_interp.interpolate(
-                [param.get("interpolate") for param in parameters],
-                [param.get("interpolate gas") for param in parameters]
-                if self._independent_interpolation
-                else None,
-                h=H_CONSTANT,
-            )
-            str_props_section = wog_list.SWOF()
-            str_props_section += wog_list.SGOF()
+        if self._interpolation_values is not None:
+            for satnum in self._unique_satnums:
+                # all endpoints and corey exponents are interpolated
+                # linearly between two of the input case - between
+                # 'low' and 'base' if parameter < 0
+                # and between 'base' and 'high' if parameter >= 0.
+                # pyscal interpolates endpoints and then interpolates
+                # between the non-linear parts of the relative permeability
+                # curves wrt normalised saturation (not interpolating corey
+                # exponents - using scipy interp1d). Resulting SWOFs and
+                # SGOFs are seemingly pretty similar, but not equal.
+                parameter_dict = (
+                    self._interpolation_values.loc[
+                        self._interpolation_values["SATNUM"] == satnum
+                    ]
+                    .reset_index(drop=True)
+                    .to_dict()
+                )
+                interp_wo = parameters[satnum - 1].get("interpolate")
+                interp_go = (
+                    parameters[satnum - 1].get("interpolate gas")
+                    if self._independent_interpolation
+                    else interp_wo
+                )
+                param_wo = interpolate_wo(interp_wo, parameter_dict)
+                param_go = interpolate_go(interp_go, parameter_dict)
+                str_swofs += swof_from_parameters(param_wo) + "\n/\n"
+                str_sgofs += sgof_from_parameters(param_go) + "\n/\n"
         else:
-            # this function is called repeatedly by ERT.
-            # setting maximum number of threads to be spawned to MAX_WORKERS
-            # (meaning it will be a maximum of MAX_WORKERS for each realization)
-            # since the number of realizations run by ERT will typically
-            # be close to the number of CPUs on the machine/cluster
-
-            # if the number of SATNUM regions is above 10 then
-            # SWOFs/SGOFs are not made by pyscal (bypassing functionality
-            # for computational speed)
-            if len(self._unique_satnums) > 10:
-                for param in parameters:
-                    if self._swof:
-                        str_swofs += swof_from_parameters(param) + "\n/\n"
-                    if self._sgof:
-                        str_sgofs += sgof_from_parameters(param) + "\n/\n"
-            else:
-                if self._swof and self._sgof:
-                    with concurrent.futures.ThreadPoolExecutor(
-                        max_workers=MAX_WORKERS
-                    ) as executor:
-                        for _, relperm in zip(  # type: ignore[assignment]
-                            parameters, executor.map(partial_gen_wog, parameters)
-                        ):
-                            str_swofs += relperm.SWOF(header=False)
-                            str_sgofs += relperm.SGOF(header=False)
-                elif self._swof:
-                    with concurrent.futures.ThreadPoolExecutor(
-                        max_workers=MAX_WORKERS
-                    ) as executor:
-                        for _, relperm in zip(  # type: ignore[assignment]
-                            parameters, executor.map(partial_gen_wo, parameters)
-                        ):
-                            str_swofs += relperm.SWOF(header=False)
-                elif self._sgof:
-                    with concurrent.futures.ThreadPoolExecutor(
-                        max_workers=MAX_WORKERS
-                    ) as executor:
-                        for _, relperm in zip(  # type: ignore[assignment]
-                            parameters, executor.map(partial_gen_og, parameters)
-                        ):
-                            str_sgofs += relperm.SGOF(header=False)
-                else:
-                    raise ValueError(
-                        "It seems like both SWOF and SGOF should not be generated."
-                        "Either one of the two should be generated. Can't continue..."
-                    )
-
-            str_props_section = f"SWOF\n{str_swofs}\n" if self._swof else ""
-            str_props_section += f"SGOF\n{str_sgofs}\n" if self._sgof else ""
+            for param in parameters:
+                if self._swof:
+                    str_swofs += swof_from_parameters(param) + "\n/\n"
+                if self._sgof:
+                    str_sgofs += sgof_from_parameters(param) + "\n/\n"
+        str_props_section = f"SWOF\n{str_swofs}\n" if self._swof else ""
+        str_props_section += f"SGOF\n{str_sgofs}\n" if self._sgof else ""
         str_runspec_section = "\n".join(self._phases).upper() + "\n"
 
         return {
