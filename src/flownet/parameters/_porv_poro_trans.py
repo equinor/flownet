@@ -146,12 +146,7 @@ class PorvPoroTrans(Parameter):
 
         properties_per_cell["INITIAL_BULKVOLUME"] = 0
         if self.volume_distribution is not None:
-            volumes = np.array(
-                [
-                    self.volume_distribution[i]
-                    for i in properties_per_cell.index.to_list()
-                ]
-            )
+            volumes = np.array(self.volume_distribution)
             properties_per_cell["INITIAL_BULKVOLUME"] = (
                 self._network.total_bulkvolume * volumes / volumes.sum()
             )
