@@ -1,6 +1,35 @@
+import math
 import numpy as np
+import pandas as pd
 
-from flownet.ahm._ahm_iteration_analytics import normalize_data
+from flownet.ahm._ahm_iteration_analytics import (
+    prepare_opm_reference_data,
+    prepare_flownet_data,
+    normalize_data,
+    accuracy_metric,
+)
+
+
+def test_prepare_opm_reference_data() -> None:
+    data = {"key_1": [1, 2], "key_2": [3, 4]}
+    assert np.allclose(
+        prepare_opm_reference_data(
+            pd.DataFrame(data, columns=["key_1", "key_2"]), "key_", 2
+        ),
+        np.array([[1, 1], [3, 3], [2, 2], [4, 4]]),
+    )
+
+
+def test_prepare_flownet_data() -> None:
+    data = {
+        "realization_id": [1, 1, 2, 2],
+        "key_1": [11, 12, 21, 22],
+        "key_2": [13, 14, 23, 24],
+    }
+    assert np.allclose(
+        prepare_flownet_data(pd.DataFrame(data, columns=["key_1", "key_2"]), "key_", 2),
+        np.array([[11, 21], [13, 23], [12, 22], [14, 24]]),
+    )
 
 
 def test_normalize_data() -> None:
@@ -29,4 +58,15 @@ def test_normalize_data() -> None:
         and all(np.allclose(x, y) for x, y in zip(tmp_2[1], res_4))
         and np.allclose(tmp_3[0], res_5)
         and all(np.allclose(x, y) for x, y in zip(tmp_3[1], res_6))
+    )
+
+
+def test_calculation_accuracy_metric() -> None:
+    assert math.isclose(
+        accuracy_metric(
+            np.array([[0.5, 0.5, 0.5], [0.5, 0.5, 0.5]]),
+            np.array([[0.4, 0.4, 0.4], [0.6, 0.6, 0.6]]),
+            "RMSE",
+        ),
+        0.1,
     )
