@@ -7,7 +7,7 @@ import shutil
 from typing import Dict, Tuple
 import pandas as pd
 
-from .utils import get_last_iteration
+from flownet.ert.forward_models.utils import get_last_iteration
 
 
 def _load_parameters(runpath: str) -> Tuple[int, Dict]:

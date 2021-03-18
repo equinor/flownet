@@ -58,7 +58,7 @@ setup(
     packages=find_packages("src"),
     package_data={"flownet": ["templates/*", "static/*", "ert/FLOW_SIMULATION"]},
     entry_points={
-        "ert": ["flow = flownet.ert._flow_job"],
+        "ert": ["flow = flownet.ert.forward_models._flow_job"],
         "console_scripts": [
             "flownet=flownet._command_line:main",
             "flownet_render_realization=flownet.realization:render_realization",

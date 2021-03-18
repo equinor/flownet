@@ -13,7 +13,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from ecl.summary import EclSum
 
 from flownet.data import FlowData
-from .utils import get_last_iteration
+from flownet.ert.forward_models.utils import get_last_iteration
 
 
 def filter_dataframe(
