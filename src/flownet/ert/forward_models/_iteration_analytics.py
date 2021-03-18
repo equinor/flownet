@@ -298,8 +298,8 @@ def make_dataframe_simulation_data(
         runpath_list = glob.glob(path)
         iteration = "latest"
     elif mode == "ahm":
-        (iteration, runpath_list) = get_last_iteration(path)
-        iteration = str(iteration)
+        (i, runpath_list) = get_last_iteration(path)
+        iteration = str(i)
     else:
         raise ValueError(
             f"{mode} is not a valid mode to run flownet with. Chose ahm or pred."
