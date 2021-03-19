@@ -2,6 +2,8 @@ from pyscal import WaterOil, GasOil
 from flownet.parameters._relative_permeability import (
     swof_from_parameters,
     sgof_from_parameters,
+    interpolate_wo,
+    interpolate_go,
 )
 from flownet.utils.constants import H_CONSTANT
 
@@ -78,3 +80,45 @@ def test_sgof_generation() -> None:
         assert [round(float(elem), 4) for elem in line.split()] == [
             round(float(elem), 4) for elem in numpy_sgof_string[i].split()
         ]
+
+
+def test_scalrec_extremes_wo() -> None:
+    # assert that interpolation reproduces the low/base/high values
+    parameter_dict = {
+        "swirr": {0: 0.01, 1: 0.01, 2: 0.01},
+        "swl": {0: 0.05, 1: 0.05, 2: 0.05},
+        "swcr": {0: 0.1, 1: 0.2, 2: 0.3},
+        "sorw": {0: 0.2, 1: 0.25, 2: 0.3},
+        "krwend": {0: 0.4, 1: 0.5, 2: 0.6},
+        "kroend": {0: 0.9, 1: 0.95, 2: 1},
+        "nw": {0: 1.5, 1: 2.25, 2: 3},
+        "now": {0: 1.5, 1: 2.25, 2: 3},
+    }
+    interpolated_parameter_dict_low = interpolate_wo(-1, parameter_dict)
+    interpolated_parameter_dict_base = interpolate_wo(0, parameter_dict)
+    interpolated_parameter_dict_high = interpolate_wo(1, parameter_dict)
+    for elem in parameter_dict.keys():
+        assert parameter_dict[elem][0] == interpolated_parameter_dict_low[elem]
+        assert parameter_dict[elem][1] == interpolated_parameter_dict_base[elem]
+        assert parameter_dict[elem][2] == interpolated_parameter_dict_high[elem]
+
+
+def test_scalrec_extremes_go() -> None:
+    # assert that interpolation reproduces the low/base/high values
+    parameter_dict = {
+        "swirr": {0: 0.01, 1: 0.01, 2: 0.01},
+        "swl": {0: 0.05, 1: 0.05, 2: 0.05},
+        "sgcr": {0: 0.1, 1: 0.15, 2: 0.2},
+        "sorg": {0: 0.3, 1: 0.55, 2: 0.8},
+        "krgend": {0: 0.9, 1: 0.95, 2: 1},
+        "kroend": {0: 0.9, 1: 0.95, 2: 1},
+        "ng": {0: 1.5, 1: 2.25, 2: 3},
+        "nog": {0: 1.5, 1: 2.25, 2: 3},
+    }
+    interpolated_parameter_dict_low = interpolate_go(-1, parameter_dict)
+    interpolated_parameter_dict_base = interpolate_go(0, parameter_dict)
+    interpolated_parameter_dict_high = interpolate_go(1, parameter_dict)
+    for elem in parameter_dict.keys():
+        assert parameter_dict[elem][0] == interpolated_parameter_dict_low[elem]
+        assert parameter_dict[elem][1] == interpolated_parameter_dict_base[elem]
+        assert parameter_dict[elem][2] == interpolated_parameter_dict_high[elem]
