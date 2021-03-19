@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>flownet.realization._render_realization module &mdash; FlowNet  documentation</title>
+  <title>flownet.ert.forward_models._render_realization module &mdash; FlowNet  documentation</title>
   
 
   
@@ -41,8 +41,8 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="flownet.realization._schedule module" href="flownet.realization._schedule.html" />
-    <link rel="prev" title="flownet.realization package" href="flownet.realization.html" /> 
+    <link rel="next" title="flownet.ert.forward_models._save_iteration_parameters module" href="flownet.ert.forward_models._save_iteration_parameters.html" />
+    <link rel="prev" title="flownet.ert.forward_models._iteration_analytics module" href="flownet.ert.forward_models._iteration_analytics.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -147,15 +147,17 @@
         
           <li><a href="api.html">FlowNet Python API</a> &raquo;</li>
         
-          <li><a href="flownet.realization.html">flownet.realization package</a> &raquo;</li>
+          <li><a href="flownet.ert.html">flownet.ert package</a> &raquo;</li>
         
-      <li>flownet.realization._render_realization module</li>
+          <li><a href="flownet.ert.forward_models.html">flownet.ert.forward_models package</a> &raquo;</li>
+        
+      <li>flownet.ert.forward_models._render_realization module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/flownet.realization._render_realization.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/flownet.ert.forward_models._render_realization.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -168,11 +170,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-flownet.realization._render_realization">
-<span id="flownet-realization-render-realization-module"></span><h1>flownet.realization._render_realization module<a class="headerlink" href="#module-flownet.realization._render_realization" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-flownet.ert.forward_models._render_realization">
+<span id="flownet-ert-forward-models-render-realization-module"></span><h1>flownet.ert.forward_models._render_realization module<a class="headerlink" href="#module-flownet.ert.forward_models._render_realization" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="flownet.realization._render_realization._dims2simulation_input">
-<code class="sig-prename descclassname"><span class="pre">flownet.realization._render_realization.</span></code><code class="sig-name descname"><span class="pre">_dims2simulation_input</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><span class="pre">flownet.parameters._base_parameter.Parameter</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.realization._render_realization._dims2simulation_input" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.ert.forward_models._render_realization._dims2simulation_input">
+<code class="sig-prename descclassname"><span class="pre">flownet.ert.forward_models._render_realization.</span></code><code class="sig-name descname"><span class="pre">_dims2simulation_input</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><span class="pre">flownet.parameters._base_parameter.Parameter</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.ert.forward_models._render_realization._dims2simulation_input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lists all dims required by all parameters and creates a dictionary that
 will be included in the simulation_input.</p>
 <dl class="field-list simple">
@@ -186,8 +188,8 @@ will be included in the simulation_input.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.realization._render_realization._ert_samples2simulation_input">
-<code class="sig-prename descclassname"><span class="pre">flownet.realization._render_realization.</span></code><code class="sig-name descname"><span class="pre">_ert_samples2simulation_input</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_samples</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><span class="pre">flownet.parameters._base_parameter.Parameter</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realization_index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.realization._render_realization._ert_samples2simulation_input" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.ert.forward_models._render_realization._ert_samples2simulation_input">
+<code class="sig-prename descclassname"><span class="pre">flownet.ert.forward_models._render_realization.</span></code><code class="sig-name descname"><span class="pre">_ert_samples2simulation_input</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_samples</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><span class="pre">flownet.parameters._base_parameter.Parameter</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realization_index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.ert.forward_models._render_realization._ert_samples2simulation_input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads an ERT made json file with parameter values, or a previously stored parquet file
 for a whole ensemble. The parameter values are then plugged into the corresponding parameter,
 and finally the render method is called on the different parameters, returning the Flow
@@ -207,8 +209,8 @@ INCLUDEs to ad to the simulation model.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.realization._render_realization.render_realization">
-<code class="sig-prename descclassname"><span class="pre">flownet.realization._render_realization.</span></code><code class="sig-name descname"><span class="pre">render_realization</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._render_realization.render_realization" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.ert.forward_models._render_realization.render_realization">
+<code class="sig-prename descclassname"><span class="pre">flownet.ert.forward_models._render_realization.</span></code><code class="sig-name descname"><span class="pre">render_realization</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert.forward_models._render_realization.render_realization" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function is called by a forward model in ERT, creating a simulation
 realization from drawn parameter values, and a previously stored network
 grid.</p>
@@ -227,8 +229,8 @@ grid.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="flownet.realization._schedule.html" class="btn btn-neutral float-right" title="flownet.realization._schedule module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="flownet.realization.html" class="btn btn-neutral float-left" title="flownet.realization package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="flownet.ert.forward_models._save_iteration_parameters.html" class="btn btn-neutral float-right" title="flownet.ert.forward_models._save_iteration_parameters module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="flownet.ert.forward_models._iteration_analytics.html" class="btn btn-neutral float-left" title="flownet.ert.forward_models._iteration_analytics module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

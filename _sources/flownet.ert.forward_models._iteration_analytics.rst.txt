@@ -1,0 +1,8 @@
+flownet.ert.forward\_models.\_iteration\_analytics module
+=========================================================
+
+.. automodule:: flownet.ert.forward_models._iteration_analytics
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

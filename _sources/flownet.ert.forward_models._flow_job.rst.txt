@@ -1,7 +1,7 @@
-flownet.ahm.\_ahm\_iteration\_analytics module
+flownet.ert.forward\_models.\_flow\_job module
 ==============================================
 
-.. automodule:: flownet.ahm._ahm_iteration_analytics
+.. automodule:: flownet.ert.forward_models._flow_job
    :members:
    :undoc-members:
    :show-inheritance:

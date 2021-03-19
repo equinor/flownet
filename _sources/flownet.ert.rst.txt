@@ -1,6 +1,14 @@
 flownet.ert package
 ===================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   flownet.ert.forward_models
+
 Submodules
 ----------
 
@@ -9,7 +17,6 @@ Submodules
 
    flownet.ert._create_ert_setup
    flownet.ert._create_synthetic_refcase
-   flownet.ert._flow_job
    flownet.ert._run_subprocess
 
 Module contents

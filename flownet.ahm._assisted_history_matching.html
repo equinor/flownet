@@ -42,7 +42,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="flownet.ahm._run_ahm module" href="flownet.ahm._run_ahm.html" />
-    <link rel="prev" title="flownet.ahm._ahm_iteration_analytics module" href="flownet.ahm._ahm_iteration_analytics.html" /> 
+    <link rel="prev" title="flownet.ahm package" href="flownet.ahm.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -172,7 +172,7 @@
 <span id="flownet-ahm-assisted-history-matching-module"></span><h1>flownet.ahm._assisted_history_matching module<a class="headerlink" href="#module-flownet.ahm._assisted_history_matching" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="flownet.ahm._assisted_history_matching.AssistedHistoryMatching">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">flownet.ahm._assisted_history_matching.</span></code><code class="sig-name descname"><span class="pre">AssistedHistoryMatching</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">network:</span> <span class="pre">flownet.network_model._network_model.NetworkModel,</span> <span class="pre">schedule:</span> <span class="pre">flownet.realization._schedule.Schedule,</span> <span class="pre">parameters:</span> <span class="pre">List[flownet.parameters._base_parameter.Parameter],</span> <span class="pre">config:</span> <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f94e7268f98&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._assisted_history_matching.AssistedHistoryMatching" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">flownet.ahm._assisted_history_matching.</span></code><code class="sig-name descname"><span class="pre">AssistedHistoryMatching</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">network:</span> <span class="pre">flownet.network_model._network_model.NetworkModel,</span> <span class="pre">schedule:</span> <span class="pre">flownet.realization._schedule.Schedule,</span> <span class="pre">parameters:</span> <span class="pre">List[flownet.parameters._base_parameter.Parameter],</span> <span class="pre">config:</span> <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fbc8a0b6138&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._assisted_history_matching.AssistedHistoryMatching" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A class facilitating assisted history matching. Takes in a network of grid
 cells together with a dictionary of parameters with prior distributions.</p>
@@ -225,57 +225,6 @@ manually run</p>
 
 </dd></dl>
 
-<dl class="py function">
-<dt id="flownet.ahm._assisted_history_matching._load_parameters">
-<code class="sig-prename descclassname"><span class="pre">flownet.ahm._assisted_history_matching.</span></code><code class="sig-name descname"><span class="pre">_load_parameters</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runpath</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.ahm._assisted_history_matching._load_parameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal helper function to load parameter.json files in
-parallel.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>runpath</strong> – Path to where the realization is run.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Dictionary with the realizations’ parameters.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="flownet.ahm._assisted_history_matching.delete_simulation_output">
-<code class="sig-prename descclassname"><span class="pre">flownet.ahm._assisted_history_matching.</span></code><code class="sig-name descname"><span class="pre">delete_simulation_output</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._assisted_history_matching.delete_simulation_output" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is called by a forward model in ERT, deleting unnecessary
-simulation output files.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Nothing</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="flownet.ahm._assisted_history_matching.save_iteration_parameters">
-<code class="sig-prename descclassname"><span class="pre">flownet.ahm._assisted_history_matching.</span></code><code class="sig-name descname"><span class="pre">save_iteration_parameters</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ahm._assisted_history_matching.save_iteration_parameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is called as a pre-simulation workflow in ERT, saving all
-parameters of an iteration to a file.</p>
-<p>The resulting dataframe is saved as a gzipped parquet file using a PyArrow table
-and has the following format (example for 5 realizations and 2 parameters):</p>
-<div class="line-block">
-<div class="line">index = realization | parameter 1 | parameter 2 |</div>
-</div>
-<p><a href="#id1"><span class="problematic" id="id2">|=====================|=============|=============|</span></a>
-|                   1 |         x.x |         x.x |
-|                   3 |         x.x |         x.x |
-|                   5 |         x.x |         x.x |
-|                   4 |         x.x |         x.x |
-|                   2 |         x.x |         x.x |</p>
-<p>Mind that the dataframe is not ordered.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Nothing</p>
-</dd>
-</dl>
-</dd></dl>
-
 </div>
 
 
@@ -285,7 +234,7 @@ and has the following format (example for 5 realizations and 2 parameters):</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="flownet.ahm._run_ahm.html" class="btn btn-neutral float-right" title="flownet.ahm._run_ahm module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="flownet.ahm._ahm_iteration_analytics.html" class="btn btn-neutral float-left" title="flownet.ahm._ahm_iteration_analytics module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="flownet.ahm.html" class="btn btn-neutral float-left" title="flownet.ahm package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
