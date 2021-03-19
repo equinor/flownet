@@ -302,7 +302,7 @@ def make_dataframe_simulation_data(
         iteration = str(i)
     else:
         raise ValueError(
-            f"{mode} is not a valid mode to run flownet with. Chose ahm or pred."
+            f"{mode} is not a valid mode to run flownet with. Choose ahm or pred."
         )
 
     partial_load_simulations = functools.partial(

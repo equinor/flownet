@@ -22,8 +22,6 @@ class FlowData(FromSource):
     Args:
          input_case: Full path to eclipse case to load data from
          layers: List with definition of isolated layers, if present.
-         perforation_handling_strategy: How to deal with perforations per well.
-                                                 ('bottom_point', 'top_point', 'multiple')
 
     """
 
