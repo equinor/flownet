@@ -41,7 +41,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="flownet.config_parser._merge_configs module" href="flownet.config_parser._merge_configs.html" />
+    <link rel="next" title="flownet.config_parser._config_transformations module" href="flownet.config_parser._config_transformations.html" />
     <link rel="prev" title="flownet.config_parser._config_parser_hyperparam module" href="flownet.config_parser._config_parser_hyperparam.html" /> 
 </head>
 
@@ -172,12 +172,12 @@
 <span id="flownet-config-parser-config-parser-pred-module"></span><h1>flownet.config_parser._config_parser_pred module<a class="headerlink" href="#module-flownet.config_parser._config_parser_pred" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="flownet.config_parser._config_parser_pred.create_schema">
-<code class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_pred.</span></code><code class="sig-name descname"><span class="pre">create_schema</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_to_abs_path</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.config_parser._config_parser_pred.create_schema" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_pred.</span></code><code class="sig-name descname"><span class="pre">create_schema</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_folder</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.config_parser._config_parser_pred.create_schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a configsuite type schema, where configuration value types are defined, together
 with which values are optional and/or has default values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>_to_abs_path</strong> – Use absolute path transformation</p>
+<dd class="field-odd"><p><strong>config_folder</strong> – Optional path to folder with config file</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Dictionary to be used as configsuite type schema</p>
@@ -187,7 +187,7 @@ with which values are optional and/or has default values.</p>
 
 <dl class="py function">
 <dt id="flownet.config_parser._config_parser_pred.parse_pred_config">
-<code class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_pred.</span></code><code class="sig-name descname"><span class="pre">parse_pred_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f94e7268f98&gt;</span><a class="headerlink" href="#flownet.config_parser._config_parser_pred.parse_pred_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_pred.</span></code><code class="sig-name descname"><span class="pre">parse_pred_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fbc8a0b6138&gt;</span><a class="headerlink" href="#flownet.config_parser._config_parser_pred.parse_pred_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes in path to a yaml configuration file, parses it, populates with default values
 where that is defined and the has not provided his/her own value. Also error checks input
 arguments, and making sure they are of expected type.</p>
@@ -213,7 +213,7 @@ key/values to override in main configuration file.</p></li>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="flownet.config_parser._merge_configs.html" class="btn btn-neutral float-right" title="flownet.config_parser._merge_configs module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="flownet.config_parser._config_transformations.html" class="btn btn-neutral float-right" title="flownet.config_parser._config_transformations module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="flownet.config_parser._config_parser_hyperparam.html" class="btn btn-neutral float-left" title="flownet.config_parser._config_parser_hyperparam module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

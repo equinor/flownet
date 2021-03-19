@@ -172,7 +172,7 @@
 <span id="flownet-data-from-flow-module"></span><h1>flownet.data.from_flow module<a class="headerlink" href="#module-flownet.data.from_flow" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="flownet.data.from_flow.FlowData">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">flownet.data.from_flow.</span></code><code class="sig-name descname"><span class="pre">FlowData</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perforation_handling_strategy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'bottom_point'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_flow.FlowData" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">flownet.data.from_flow.</span></code><code class="sig-name descname"><span class="pre">FlowData</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_flow.FlowData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flownet.data.from_source.html#flownet.data.from_source.FromSource" title="flownet.data.from_source.FromSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.data.from_source.FromSource</span></code></a></p>
 <p>Flow data source class</p>
 <dl class="field-list simple">
@@ -180,8 +180,6 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_case</strong> – Full path to eclipse case to load data from</p></li>
 <li><p><strong>layers</strong> – List with definition of isolated layers, if present.</p></li>
-<li><p><strong>perforation_handling_strategy</strong> – How to deal with perforations per well.
-(‘bottom_point’, ‘top_point’, ‘multiple’)</p></li>
 </ul>
 </dd>
 </dl>
@@ -256,16 +254,26 @@ following vectors to the summary file: WOPR, WGPR, WWPR, WBHP, WTHP, WGIR, WWIR<
 
 <dl class="py method">
 <dt id="flownet.data.from_flow.FlowData._well_connections">
-<code class="sig-name descname"><span class="pre">_well_connections</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.from_flow.FlowData._well_connections" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">_well_connections</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">perforation_handling_strategy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.from_flow.FlowData._well_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to extract well connection coordinates from a Flow simulation including their
 opening and closure time. The output of this function will be filtered based on the
 configured perforation strategy.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>perforation_handling_strategy</strong> – Strategy to be used when creating perforations.</p></li>
+<li><p><strong>options are bottom_point</strong> (<em>Valid</em>) – </p></li>
+<li><p><strong>top_point</strong> – </p></li>
+<li><p><strong>multiple</strong> – </p></li>
+<li><p><strong>and</strong> (<em>time_avg_open_location</em>) – </p></li>
+<li><p><strong>multiple_based_on_workovers.</strong> – </p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>columns</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>columns</p>
 </dd>
 </dl>
 </dd></dl>
@@ -294,6 +302,32 @@ configured perforation strategy.</p>
 <dt id="flownet.data.from_flow.FlowData.get_unique_regions">
 <code class="sig-name descname"><span class="pre">get_unique_regions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#flownet.data.from_flow.FlowData.get_unique_regions" title="Permalink to this definition">¶</a></dt>
 <dd><p>array with unique ‘name’ regions</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="flownet.data.from_flow.FlowData.get_well_connections">
+<code class="sig-name descname"><span class="pre">get_well_connections</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">perforation_handling_strategy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.from_flow.FlowData.get_well_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to get dataframe with all well connection coordinates,
+filtered based on the perforation_handling_strategy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>perforation_handling_strategy</strong> – Strategy to be used when creating perforations.</p></li>
+<li><p><strong>options are bottom_point</strong> (<em>Valid</em>) – </p></li>
+<li><p><strong>top_point</strong> – </p></li>
+<li><p><strong>multiple</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<p>:param :
+:param time_avg_open_location and multiple_based_on_workovers.:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dataframe with all well connection coordinates,
+filtered based on the perforation_handling_strategy.
+Columns: WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -333,12 +367,6 @@ filtered on layer_id if not None.</p>
 <dt id="flownet.data.from_flow.FlowData.production">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">production</span></code><a class="headerlink" href="#flownet.data.from_flow.FlowData.production" title="Permalink to this definition">¶</a></dt>
 <dd><p>dataframe with all production data</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="flownet.data.from_flow.FlowData.well_connections">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">well_connections</span></code><a class="headerlink" href="#flownet.data.from_flow.FlowData.well_connections" title="Permalink to this definition">¶</a></dt>
-<dd><p>dataframe with all well connection coordinates</p>
 </dd></dl>
 
 <dl class="py method">
