@@ -467,6 +467,13 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Description: "Minimum allowed permeability in mD before a tube is removed "
                         "(i.e., its cells are made inactive).",
                     },
+                    "prior_volume_distribution": {
+                        MK.Type: types.String,
+                        MK.Default: "tube_length",
+                        MK.Description: "Volume distribution method of tubes (or cells in tube) to be "
+                        "applied on the prior volume distribution. Based on tube length by default. "
+                        "Valid options are: 'tube_length' or 'voronoi_per_tube'",
+                    },
                     "hyperopt": {
                         MK.Type: types.NamedDict,
                         MK.Content: {

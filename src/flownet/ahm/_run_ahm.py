@@ -440,6 +440,8 @@ def run_flownet_history_matching(
         area=area,
         fault_planes=df_fault_planes,
         fault_tolerance=config.flownet.fault_tolerance,
+        initial_volume_distribution_method=config.flownet.prior_volume_distribution,
+        field_data=field_data,
     )
 
     schedule = Schedule(network, df_production_data, config)
@@ -454,10 +456,6 @@ def run_flownet_history_matching(
 
     # Create a tube index to cell index dataframe:
     ti2ci = pd.DataFrame(data=network.grid.index, index=network.grid.model)
-
-    volume_distribution: Optional[list] = None
-    # if config.model_parameters.bulkvolume_mult.geometric_distribution:
-    volume_distribution = network.get_bulk_volume_distribution(field_data)
 
     porv_poro_trans_dist_values = _get_distribution(
         ["bulkvolume_mult", "porosity", "permeability"],
@@ -744,7 +742,6 @@ def run_flownet_history_matching(
             ti2ci,
             network,
             config.flownet.min_permeability,
-            volume_distribution,
         ),
         RelativePermeability(
             relperm_dist_values,

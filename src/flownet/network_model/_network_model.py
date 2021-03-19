@@ -22,23 +22,29 @@ class NetworkModel:
         area: float,
         fault_planes: Optional[pd.DataFrame] = None,
         fault_tolerance: float = 1.0e-5,
+        initial_volume_distribution_method: str = "tube_length",
+        field_data: Optional[FromSource] = None,
     ):
         """
         Creates a network of one dimensional models.
 
         Args:
             df_entity_connections: A dataframe containing information about the individual one
-                                   dimensional models. Columns required are xstart, ystart, zstart,
-                                   xend, yend, zend, start_entity and end_entity
+                dimensional models. Columns required are xstart, ystart, zstart,
+                xend, yend, zend, start_entity and end_entity
             df_well_connections: A dataframe containing information about the (individual) connections of a
-                                 well, and their open or closed state throughout time.
+                well, and their open or closed state throughout time.
             cell_length: Preferred length of each grid cell along the model.
             area: surface area of the flow path.
             fault_planes: DataFrame with fault plane coordinates
             fault_tolerance: minimum distance between corners of a triangle. This value should be set as low
-                             as possible to ensure a high resolution fault plane generation. However, this might lead
-                             to a very slow fault tracing process therefore one might want to increase the tolerance.
-                             Always check that the resulting lower resolution fault plane still is what you expected.
+                as possible to ensure a high resolution fault plane generation. However, this might lead
+                to a very slow fault tracing process therefore one might want to increase the tolerance.
+                Always check that the resulting lower resolution fault plane still is what you expected.
+            initial_volume_distribution_method: Method to be used to make an initial distribution of the
+                in-place volume of the FlowNet.
+            field_data: FromSource class with information from simulation model data source.
+
 
         Start and end coordinates in df and cell_length should have the same
         unit. The area should have the same unit (but squared) as the
@@ -51,6 +57,8 @@ class NetworkModel:
         self._area: float = area
         self._grid: pd.DataFrame = self._calculate_grid_corner_points()
         self._nncs: List[Tuple[int, int]] = self._calculate_nncs()
+        self._initial_volume_distribution_method = initial_volume_distribution_method
+        self._field_data = field_data
 
         self._fault_planes: Optional[pd.DataFrame] = None
         self._faults: Optional[Dict] = None
@@ -99,36 +107,18 @@ class NetworkModel:
 
         return (coordinates_start + coordinates_end) / 2
 
-    def get_bulk_volume_distribution(self, field_data: FromSource) -> List[float]:
-        """Function that get multipliers that distributes the original model's volume
-        over the FlowNet's tube by assigning original model grid cell
-        volumes to the nearest FlowNet tube midpoint.
+    def _bulk_volume_distribution_tube_length(self) -> np.ndarray:
+        return self.grid["cell_length"].values / self.grid["cell_length"].sum()
 
-        Args:
-            field_data: FromSource class with information from simulation model data source
-
-        Returns:
-            A list with multipliers for the total bulk volume for each flownet tube cell, that
-            distributes the bulk volume according to the spatial distribution of the volume
-            in the original model.
-
-        Raise:
-            NotImplementedError in case a users asks for this type of distribution but is
-            not build a FlowNet up a FlowNet from a simulation file.
-
-        """
-        if not isinstance(field_data, FlowData):
-            raise NotImplementedError(
-                "Distributing the bulk volume based on the original volume distribution is"
-                "only supported for cases where a FlowNet is generated from an simulation file."
-            )
-
+    def _bulk_volume_distribution_voronoi_per_tube(self) -> np.ndarray:
         flownet_tube_midpoints = np.array(self.get_connection_midpoints())
         model_cell_mid_points = np.array(
-            [cell.coordinate for cell in field_data.grid.cells()]
+            [cell.coordinate for cell in self._field_data.grid.cells()]
         )
-        model_cell_active_state = [cell.active for cell in field_data.grid.cells()]
-        model_cell_volume = [cell.volume for cell in field_data.grid.cells()]
+        model_cell_active_state = [
+            cell.active for cell in self._field_data.grid.cells()
+        ]
+        model_cell_volume = [cell.volume for cell in self._field_data.grid.cells()]
 
         # Determine nearest flow tube for each cell in the original model
         tree = KDTree(flownet_tube_midpoints)
@@ -153,6 +143,49 @@ class NetworkModel:
         )
 
         return cell_volumes / sum(cell_volumes)
+
+    def get_bulk_volume_distribution(self) -> np.ndarray:
+        """Function that get multipliers that distributes the original model's volume
+        over the FlowNet's tube by assigning original model grid cell
+        volumes to the nearest FlowNet tube midpoint.
+
+        Returns:
+            A list with multipliers for the total bulk volume for each flownet tube cell, that
+            distributes the bulk volume according to the spatial distribution of the volume
+            in the original model.
+
+        Raise:
+            NotImplementedError in case a users asks for this type of distribution but is
+            not build a FlowNet up a FlowNet from a simulation file.
+
+        """
+        if self._initial_volume_distribution_method == "voronoi_per_tube":
+            if not isinstance(self._field_data, FlowData):
+                raise NotImplementedError(
+                    "Distributing the bulk volume based on the original volume distribution is"
+                    "only supported for cases where a FlowNet is generated from an simulation file."
+                )
+            distribution_multipliers = self._bulk_volume_distribution_voronoi_per_tube(
+                self._field_data
+            )
+        elif self._initial_volume_distribution_method == "tube_length":
+            distribution_multipliers = self._bulk_volume_distribution_tube_length()
+        else:
+            raise ValueError(
+                f"'{self._initial_volume_distribution_method}' is not a valid prior volume "
+                "distribution method."
+            )
+
+        return distribution_multipliers
+
+    @property
+    def initial_cell_volumes(self) -> np.ndarray:
+        """[summary]
+
+        Returns:
+            np.ndarray: [description]
+        """
+        return self.total_bulkvolume * self.get_bulk_volume_distribution()
 
     @property
     def connection_midpoints(self) -> np.ndarray:
