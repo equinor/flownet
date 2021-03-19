@@ -50,11 +50,7 @@ def _locate_test_case() -> Path:
 # pylint: disable=protected-access
 def test_grid_cell_bounding_boxes() -> None:
     layers = ()
-    flowdata = FlowData(
-        _locate_test_case(),
-        layers,
-        "multiple_based_on_workovers",
-    )
+    flowdata = FlowData(_locate_test_case(), layers)
 
     # Test one layer for the whole field and no layers equal
     flowdata._layers = ((1, flowdata.grid.nz),)

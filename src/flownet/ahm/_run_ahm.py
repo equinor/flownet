@@ -399,10 +399,11 @@ def run_flownet_history_matching(
     field_data = FlowData(
         config.flownet.data_source.simulation.input_case,
         layers=config.flownet.data_source.simulation.layers,
-        perforation_handling_strategy=config.flownet.perforation_handling_strategy,
     )
     df_production_data: pd.DataFrame = field_data.production
-    df_well_connections: pd.DataFrame = field_data.well_connections
+    df_well_connections: pd.DataFrame = field_data.get_well_connections(
+        config.flownet.perforation_handling_strategy
+    )
 
     # Load log data if required
     df_well_logs: Optional[pd.DataFrame] = (
