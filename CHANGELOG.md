@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixes
 
 ### Changes
+- [#363](https://github.com/equinor/flownet/pull/363) Drop Python 3.6 support.
 
 ## [0.5.2] - 2021-03-19
 
