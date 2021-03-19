@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
+- [#351](https://github.com/equinor/flownet/pull/351) Added simple plotting tool that allows for plotting of FlowNet ensembles and observations.
 
 ### Fixes
 
