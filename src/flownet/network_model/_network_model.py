@@ -136,10 +136,10 @@ class NetworkModel:
             raise TypeError(
                 "The volume_distribution_multiplier should be of type np.ndarray."
             )
-        if volume_distribution_multipliers.shape[0] != len(self.cell_midpoints):
+        if volume_distribution_multipliers.shape[0] != len(self.cell_midpoints[0]):
             raise ValueError(
                 "The shape of the volume_distribution_multipliers np.ndarray should "
-                f"be {len(self.cell_midpoints)} x 1."
+                f"be {len(self.cell_midpoints[0])} x 1."
             )
         if not isclose(volume_distribution_multipliers.sum(), 1):
             raise ValueError(
@@ -568,7 +568,8 @@ class NetworkModel:
     @property
     def cell_midpoints(self) -> Tuple[Any, Any, Any]:
         """
-        Returns a numpy array with the midpoint of each cell in the network
+        Returns a tuple array with the midpoint of each cell in the network
+
         Returns:
             Tuple with connection midpoint coordinates.
         """
