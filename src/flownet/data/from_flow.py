@@ -1,10 +1,11 @@
 import warnings
 import operator
 from pathlib import Path
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, Optional
 
 import numpy as np
 import pandas as pd
+from scipy.spatial import KDTree
 from ecl.grid import EclGrid
 from ecl.eclfile import EclFile, EclInitFile
 from ecl.summary import EclSum
@@ -13,6 +14,7 @@ from ecl2df.eclfiles import EclFiles
 
 from ..data import perforation_strategy
 from .from_source import FromSource
+from ..network_model import NetworkModel
 
 
 class FlowData(FromSource):
@@ -381,6 +383,108 @@ class FlowData(FromSource):
         return self._well_connections(
             perforation_handling_strategy=perforation_handling_strategy
         )
+
+    @staticmethod
+    def _bulk_volume_distribution_tube_length(network: NetworkModel) -> np.ndarray:
+        """Generate bulk volume distribution per grid cell based on the total length
+        of each tube in the FlowNet.
+
+        Args:
+            network: FlowNet network instance.
+
+        Returns:
+            A list with multipliers for the total bulk volume for each flownet tube cell.
+        """
+        return network.grid["cell_length"].values / network.grid["cell_length"].sum()
+
+    def _bulk_volume_distribution_voronoi_per_tube(
+        self, network: NetworkModel
+    ) -> np.ndarray:
+        """Generate bulk volume distribution per grid cell in the FlowNet model based on the geometrical
+        distribution of the volume in the original (full field) simulation model.
+
+        Args:
+            network: FlowNet network instance.
+
+        Returns:
+            A list with multipliers for the total bulk volume for each flownet tube cell.
+        """
+        flownet_tube_midpoints = np.array(network.get_connection_midpoints())
+        model_cell_mid_points = np.array(
+            [cell.coordinate for cell in self._grid.cells()]
+        )
+        model_cell_active_state = [cell.active for cell in self._grid.cells()]
+        model_cell_volume = [cell.volume for cell in self._grid.cells()]
+
+        # Determine nearest flow tube for each cell in the original model
+        tree = KDTree(flownet_tube_midpoints)
+        _, matched_indices = tree.query(model_cell_mid_points, k=[1])
+
+        # Assign original model volume to flownet tubes
+        tube_volumes = np.zeros(len(flownet_tube_midpoints))
+        for cell_i, tube_id in enumerate(matched_indices):
+            if model_cell_active_state[cell_i]:
+                tube_volumes[tube_id[0]] += model_cell_volume[cell_i]
+
+        # Distribute tube volume over individual cells
+        properties_per_cell = pd.DataFrame(
+            index=pd.DataFrame(data=network.grid.index, index=network.grid.model)
+        )
+        cells_per_tube = properties_per_cell.reset_index().groupby(["model"]).size()
+        cell_volumes = np.array(
+            [
+                tube_volumes[i] / cells_per_tube[i]
+                for i in properties_per_cell.index.to_list()
+            ]
+        )
+
+        return cell_volumes / sum(cell_volumes)
+
+    def get_bulk_volume_distribution(
+        self,
+        initial_volume_distribution_method: str = "tube_length",
+        network: Optional[NetworkModel] = None,
+    ) -> np.ndarray:
+        """Function that get multipliers that distributes the original model's volume
+        over the FlowNet's tube by assigning original model grid cell
+        volumes to the nearest FlowNet tube midpoint.
+
+        Args:
+            initial_volume_distribution_method: Method to be used to make an initial distribution of the
+                in-place volume of the FlowNet.
+            network: FlowNet network instance.
+
+        Returns:
+            A list with multipliers for the total bulk volume for each flownet tube cell, that
+            distributes the bulk volume according to the spatial distribution of the volume
+            in the original model.
+
+        Raise:
+            NotImplementedError in case a users asks for this type of distribution but is
+            not build a FlowNet up a FlowNet from a simulation file.
+
+        """
+        if not isinstance(network, NetworkModel):
+            raise TypeError(
+                "To be able to distribute volume you need "
+                "to supply the target FlowNet network model that you want to distribute towards."
+            )
+
+        if initial_volume_distribution_method == "voronoi_per_tube":
+            distribution_multipliers = self._bulk_volume_distribution_voronoi_per_tube(
+                network
+            )
+        elif initial_volume_distribution_method == "tube_length":
+            distribution_multipliers = self._bulk_volume_distribution_tube_length(
+                network
+            )
+        else:
+            raise ValueError(
+                f"'{initial_volume_distribution_method}' is not a valid prior volume "
+                "distribution method."
+            )
+
+        return distribution_multipliers
 
     @property
     def faults(self) -> pd.DataFrame:

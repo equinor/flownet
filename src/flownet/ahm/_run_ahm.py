@@ -441,8 +441,10 @@ def run_flownet_history_matching(
         area=area,
         fault_planes=df_fault_planes,
         fault_tolerance=config.flownet.fault_tolerance,
-        initial_volume_distribution_method=config.flownet.prior_volume_distribution,
-        field_data=field_data,
+    )
+
+    network.volume_distribution_multipliers = field_data.get_bulk_volume_distribution(
+        config.flownet.prior_volume_distribution, network=network
     )
 
     schedule = Schedule(network, df_production_data, config)

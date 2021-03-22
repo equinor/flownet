@@ -1,16 +1,15 @@
 from typing import List, Tuple, Optional, Dict, Any, Union
 from itertools import combinations, repeat, compress
 
+from math import isclose
 import numpy as np
 import pandas as pd
 import scipy.spatial
-from scipy.spatial import KDTree
 import pyvista as pv
 
 from ._one_dimensional_model import OneDimensionalModel
 from ..utils.types import Coordinate
 from ..utils.raytracing import moller_trumbore
-from ..data import FromSource, FlowData
 
 
 class NetworkModel:
@@ -22,8 +21,6 @@ class NetworkModel:
         area: float,
         fault_planes: Optional[pd.DataFrame] = None,
         fault_tolerance: float = 1.0e-5,
-        initial_volume_distribution_method: str = "tube_length",
-        field_data: Optional[FromSource] = None,
     ):
         """
         Creates a network of one dimensional models.
@@ -41,10 +38,6 @@ class NetworkModel:
                 as possible to ensure a high resolution fault plane generation. However, this might lead
                 to a very slow fault tracing process therefore one might want to increase the tolerance.
                 Always check that the resulting lower resolution fault plane still is what you expected.
-            initial_volume_distribution_method: Method to be used to make an initial distribution of the
-                in-place volume of the FlowNet.
-            field_data: FromSource class with information from simulation model data source.
-
 
         Start and end coordinates in df and cell_length should have the same
         unit. The area should have the same unit (but squared) as the
@@ -57,8 +50,10 @@ class NetworkModel:
         self._area: float = area
         self._grid: pd.DataFrame = self._calculate_grid_corner_points()
         self._nncs: List[Tuple[int, int]] = self._calculate_nncs()
-        self._initial_volume_distribution_method = initial_volume_distribution_method
-        self._field_data = field_data
+
+        self._volume_distribution_multipliers = np.ones(
+            (len(self.connection_midpoints), 1)
+        ) / len(self.connection_midpoints)
 
         self._fault_planes: Optional[pd.DataFrame] = None
         self._faults: Optional[Dict] = None
@@ -107,85 +102,63 @@ class NetworkModel:
 
         return (coordinates_start + coordinates_end) / 2
 
-    def _bulk_volume_distribution_tube_length(self) -> np.ndarray:
-        return self.grid["cell_length"].values / self.grid["cell_length"].sum()
-
-    def _bulk_volume_distribution_voronoi_per_tube(self) -> np.ndarray:
-        flownet_tube_midpoints = np.array(self.get_connection_midpoints())
-        model_cell_mid_points = np.array(
-            [cell.coordinate for cell in self._field_data.grid.cells()]
-        )
-        model_cell_active_state = [
-            cell.active for cell in self._field_data.grid.cells()
-        ]
-        model_cell_volume = [cell.volume for cell in self._field_data.grid.cells()]
-
-        # Determine nearest flow tube for each cell in the original model
-        tree = KDTree(flownet_tube_midpoints)
-        _, matched_indices = tree.query(model_cell_mid_points, k=[1])
-
-        # Assign original model volume to flownet tubes
-        tube_volumes = np.zeros(len(flownet_tube_midpoints))
-        for cell_i, tube_id in enumerate(matched_indices):
-            if model_cell_active_state[cell_i]:
-                tube_volumes[tube_id[0]] += model_cell_volume[cell_i]
-
-        # Distribute tube volume over individual cells
-        properties_per_cell = pd.DataFrame(
-            index=pd.DataFrame(data=self.grid.index, index=self.grid.model)
-        )
-        cells_per_tube = properties_per_cell.reset_index().groupby(["model"]).size()
-        cell_volumes = np.array(
-            [
-                tube_volumes[i] / cells_per_tube[i]
-                for i in properties_per_cell.index.to_list()
-            ]
-        )
-
-        return cell_volumes / sum(cell_volumes)
-
-    def get_bulk_volume_distribution(self) -> np.ndarray:
-        """Function that get multipliers that distributes the original model's volume
-        over the FlowNet's tube by assigning original model grid cell
-        volumes to the nearest FlowNet tube midpoint.
+    @property
+    def volume_distribution_multipliers(self) -> np.ndarray:
+        """Volume distribution multipliers for each grid cell in the flownet.
 
         Returns:
-            A list with multipliers for the total bulk volume for each flownet tube cell, that
-            distributes the bulk volume according to the spatial distribution of the volume
-            in the original model.
-
-        Raise:
-            NotImplementedError in case a users asks for this type of distribution but is
-            not build a FlowNet up a FlowNet from a simulation file.
-
+            An np.ndarray with multiplier for each FlowNet grid cell's volume.
         """
-        if self._initial_volume_distribution_method == "voronoi_per_tube":
-            if not isinstance(self._field_data, FlowData):
-                raise NotImplementedError(
-                    "Distributing the bulk volume based on the original volume distribution is"
-                    "only supported for cases where a FlowNet is generated from an simulation file."
-                )
-            distribution_multipliers = self._bulk_volume_distribution_voronoi_per_tube(
-                self._field_data
+        return self._volume_distribution_multipliers
+
+    @volume_distribution_multipliers.setter
+    def volume_distribution_multipliers(
+        self, volume_distribution_multipliers: np.ndarray
+    ):
+        """Set
+
+        Args:
+            volume_distribution_multipliers: Array with volume multipliers
+                for each grid cell in the FlowNet. The sum of the multipliers
+                should be 1. If you whish to increase or decrease the bulk
+                volume you could do that using the bulk_volume_multiplier
+                parameter in your FlowNet configuration file.
+
+        Raises:
+            TypeError: When the supplied type is not np.ndarray
+            ValueError: When the shape not of (N_gridcells X 1) or
+                when the sum of of the elements is not (close to) 1.
+
+        Returns:
+            Nothing
+        """
+        if not isinstance(volume_distribution_multipliers, np.ndarray):
+            raise TypeError(
+                "The volume_distribution_multiplier should be of type np.ndarray."
             )
-        elif self._initial_volume_distribution_method == "tube_length":
-            distribution_multipliers = self._bulk_volume_distribution_tube_length()
-        else:
+        if volume_distribution_multipliers.shape[0] != len(self.cell_midpoints):
             raise ValueError(
-                f"'{self._initial_volume_distribution_method}' is not a valid prior volume "
-                "distribution method."
+                "The shape of the volume_distribution_multipliers np.ndarray should "
+                f"be {len(self.cell_midpoints)} x 1."
+            )
+        if not isclose(volume_distribution_multipliers.sum(), 1):
+            raise ValueError(
+                "The sum of the volume_distribution_multipliers should be 1, if not, you "
+                "are either increasing or decreasing the bulk volume. This should not be "
+                "done on the initial bulk volume but rather using the bulk_volume_multiplier "
+                "parameters in your FlowNet configuration file."
             )
 
-        return distribution_multipliers
+        self._volume_distribution_multipliers = volume_distribution_multipliers
 
     @property
     def initial_cell_volumes(self) -> np.ndarray:
-        """[summary]
+        """Initial bulk volume for each individual grid cell in the FlowNet.
 
         Returns:
-            np.ndarray: [description]
+            An np.ndarray with the initial bulk volumes for each grid cell in a FlowNet model.
         """
-        return self.total_bulkvolume * self.get_bulk_volume_distribution()
+        return self.total_bulkvolume * self.volume_distribution_multipliers
 
     @property
     def connection_midpoints(self) -> np.ndarray:

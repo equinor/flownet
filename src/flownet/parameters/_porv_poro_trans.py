@@ -1,7 +1,6 @@
 from typing import Dict, List, Optional
 
 import jinja2
-import numpy as np
 import pandas as pd
 
 from ..network_model import NetworkModel
