@@ -90,7 +90,7 @@ def sgof_from_parameters(parameters: Dict) -> str:
 
     sgof = np.transpose(np.stack((sg, krg, krog, pc)))
     sgof_string = np.array2string(sgof, formatter={"float_kind": lambda x: "%.7f" % x})
-    sgof_string = " " + sgof_string.replace("[", "").replace("]", "")
+    sgof_string = sgof_string.replace(" [", "").replace("[", "").replace("]", "")
 
     return sgof_string
 
