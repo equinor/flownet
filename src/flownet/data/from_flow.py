@@ -22,8 +22,6 @@ class FlowData(FromSource):
     Args:
          input_case: Full path to eclipse case to load data from
          layers: List with definition of isolated layers, if present.
-         perforation_handling_strategy: How to deal with perforations per well.
-                                                 ('bottom_point', 'top_point', 'multiple')
 
     """
 
@@ -31,7 +29,6 @@ class FlowData(FromSource):
         self,
         input_case: Union[Path, str],
         layers: Tuple = (),
-        perforation_handling_strategy: str = "bottom_point",
     ):
         super().__init__()
 
@@ -44,14 +41,17 @@ class FlowData(FromSource):
         self._wells = compdat.df(EclFiles(str(self._input_case)))
         self._layers = layers
 
-        self._perforation_handling_strategy: str = perforation_handling_strategy
-
     # pylint: disable=too-many-branches
-    def _well_connections(self) -> pd.DataFrame:
+    def _well_connections(self, perforation_handling_strategy: str) -> pd.DataFrame:
         """
         Function to extract well connection coordinates from a Flow simulation including their
         opening and closure time. The output of this function will be filtered based on the
         configured perforation strategy.
+
+        Args:
+            perforation_handling_strategy: Strategy to be used when creating perforations.
+            Valid options are bottom_point, top_point, multiple, time_avg_open_location and
+            multiple_based_on_workovers.
 
         Returns:
             columns: WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID
@@ -100,11 +100,11 @@ class FlowData(FromSource):
 
         try:
             perforation_strategy_method = getattr(
-                perforation_strategy, self._perforation_handling_strategy
+                perforation_strategy, perforation_handling_strategy
             )
         except AttributeError as attribute_error:
             raise NotImplementedError(
-                f"The perforation handling strategy {self._perforation_handling_strategy} is unknown."
+                f"The perforation handling strategy {perforation_handling_strategy} is unknown."
             ) from attribute_error
 
         return perforation_strategy_method(df).sort_values(["DATE"])
@@ -362,6 +362,26 @@ class FlowData(FromSource):
         """array with unique 'name' regions"""
         return np.unique(self._init[name][0])
 
+    def get_well_connections(self, perforation_handling_strategy: str) -> pd.DataFrame:
+        """
+        Function to get dataframe with all well connection coordinates,
+        filtered based on the perforation_handling_strategy.
+
+        Args:
+            perforation_handling_strategy: Strategy to be used when creating perforations.
+            Valid options are bottom_point, top_point, multiple,
+            time_avg_open_location and multiple_based_on_workovers.
+
+        Returns:
+            Dataframe with all well connection coordinates,
+            filtered based on the perforation_handling_strategy.
+            Columns: WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID
+        """
+
+        return self._well_connections(
+            perforation_handling_strategy=perforation_handling_strategy
+        )
+
     @property
     def faults(self) -> pd.DataFrame:
         """dataframe with all fault data"""
@@ -371,11 +391,6 @@ class FlowData(FromSource):
     def production(self) -> pd.DataFrame:
         """dataframe with all production data"""
         return self._production_data()
-
-    @property
-    def well_connections(self) -> pd.DataFrame:
-        """dataframe with all well connection coordinates"""
-        return self._well_connections()
 
     @property
     def well_logs(self) -> pd.DataFrame:
