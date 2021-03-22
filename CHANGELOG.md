@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changes
 - [#363](https://github.com/equinor/flownet/pull/363) Drop Python 3.6 support.
+- [#361](https://github.com/equinor/flownet/pull/361) Adding numpy code for SWOF/SGOF table generation, instead of using pyscal, to improve computational efficiency when running many realizations with many SATNUM regions. Keeping pyscal in the tests for comparison. 
 
 ## [0.5.2] - 2021-03-19
 
