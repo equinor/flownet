@@ -52,7 +52,7 @@ def swof_from_parameters(parameters: Dict) -> str:
     return swof_string
 
 
-def sgof_from_parameters(param: Dict) -> str:
+def sgof_from_parameters(parameters: Dict) -> str:
     """
     Creates a SGOF table based on a dictionary of input parameters/values
 
