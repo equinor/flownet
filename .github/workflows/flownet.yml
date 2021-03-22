@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8"]
+        python-version: ["3.7", "3.8"]
         flownet-model: ["norne", "egg", "brugge"]
     env:
       PYTHONWARNINGS: default
@@ -85,7 +85,7 @@ jobs:
           popd
 
       - name: 🚢 Build and deploy Python package
-        if: github.event_name == 'release' && matrix.python-version == '3.6'
+        if: github.event_name == 'release' && matrix.python-version == '3.7'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.pypi_flownet_token }}
@@ -95,7 +95,7 @@ jobs:
           twine upload dist/*
 
       - name: 📚 Update GitHub pages
-        if: github.event_name != 'schedule' && github.ref == 'refs/heads/master' && matrix.python-version == '3.6'
+        if: github.event_name != 'schedule' && github.ref == 'refs/heads/master' && matrix.python-version == '3.7'
         run: |
           cp -R ./docs/_build ../_build
           git config --local user.email "flownet-github-action"

@@ -179,7 +179,11 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     output_folder = pathlib.Path(args.output_folder)
     os.makedirs(output_folder, exist_ok=True)
 
-    if not prediction_setup:
+    if prediction_setup and config.ert.ref_sim:
+        path_ref_sim = pathlib.Path(config.ert.ref_sim).resolve()
+        mode = "pred"
+    elif not prediction_setup:
+        mode = "ahm"
         # Derive absolute path to reference simulation case
         if config.flownet.data_source.simulation.input_case:
             path_ref_sim = pathlib.Path(
@@ -270,8 +274,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                 fh.write(
                     analytics_workflow_template.render(
                         {
+                            "mode": mode,
                             "reference_simulation": path_ref_sim,
-                            "perforation_strategy": config.flownet.perforation_handling_strategy,
                             "run_path": config.ert.runpath,
                             "ecl_base": config.ert.eclbase,
                             "analysis_start": analysis_item.start,
