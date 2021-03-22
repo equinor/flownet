@@ -20,27 +20,16 @@ on what values they can take. This is referred to as the prior probability distr
 The following keys are available for defining the different prior distributions
 
 distribution
-  The type of probability distribution. If a model parameter is included, the distribution
-  type must be defined. The other parameters below are included depending on choice of
-  distribution. The default value distribution type is *uniform*.
+  The type of probability distribution. 
 
 min
-  Depending on modelling choices, this parameter can have different meanings.
-  The parameter can act as the minimum value of the chosen prior probability distribution,
-  or as the low value of a relative permeability
-  modelling parameter when using the SCALrecommendation option in pyscal. 
-  
+  The minimum value of the chosen prior probability distribution. 
+
 max
-  Depending on modelling choices, this parameter can have different meanings.
-  The parameter can act as the maximum value of the chosen prior probability distribution,
-  or as the high value of a relative permeability
-  modelling parameter when using the SCALrecommendation option in pyscal.
+  The maximum value of the chosen prior probability distribution. 
 
 base
-  Depending on modelling choices, this parameter can have different meanings.
-  It can act as the mode of the prior probability distribution in a triangular distribution,
-  or as the constant value in a Dirac distribution, or the *base* value of a relative permeability
-  modelling parameter when using the SCALrecommendation option in pyscal.
+  The mode of the prior probability distribution
   
 mean
   The mean or expected value of the prior probability distribution
@@ -85,7 +74,7 @@ and *mean* values (where FlowNet will calculate the *max* value), or by providin
 +---------------------------+------------------+------+------+------+------+------+
 | Log-normal                | lognormal        |      |      |   x  |      |  x   |        
 +---------------------------+------------------+------+------+------+------+------+
-| Dirac (constant)          | const            |      |      |      |  x   |      |        
+| Constant (Dirac)          | const            |      |      |      |   x  |      |        
 +---------------------------+------------------+------+------+------+------+------+
 
 
@@ -128,7 +117,7 @@ different flow tubes are drawn independently.
 |                                  |                                  |                                  |                                  |
 |    flownet:                      |    flownet:                      |    flownet:                      |    flownet:                      |
 |      model_parameters:           |      model_parameters:           |      model_parameters:           |      model_parameters:           |
-|        porosity:                 |        porosity:                 |        porosity:                 |        porosity:                 |
+|        porosity    :             |        porosity:                 |        porosity:                 |        porosity:                 |
 |          min:                    |          min: 0.15               |          mean: 0.25              |          min: 0.15               |
 |          max:                    |          max: 0.35               |          stddev: 0.03            |          mean: 0.22              |
 |          base:                   |          distribution: uniform   |          distribution: normal    |          max: 0.31               |
@@ -195,16 +184,58 @@ faults are drawn independently.
 Saturation endpoints and relative permeability endpoints
 --------------------------------------------------------
 
-FlowNet uses `pyscal <https://github.com/equinor/pyscal>`_ for generating relative permeability input curves for Flow. 
-For detailed documentation on pyscal, read the `pyscal documentation <https://equinor.github.io/pyscal>`_. This text 
-will only describe how FlowNet uses pyscal.
+FlowNet currently uses Corey correlations for generating relative permeability input curves for Flow. At a later 
+stage LET parametrization may also be implemented.
 
-pyscal can parameterize curves using either Corey parameters or LET parameters. 
-FlowNet only accepts Corey parameters as input at this point.
+The input related to relative permeability modelling has its own section in the config yaml file. 
 
-
-The input related to relative permeability modelling has its own section in the config yaml file,
-where the following parameters can be defined. 
++----------------------------------+----------------------------------+
+| Available options in config yaml | Example of usage                 |
++----------------------------------+----------------------------------+
+|                                  |                                  |
+| .. code-block:: yaml             | .. code-block:: yaml             |
+|                                  |                                  |
+|  flownet:                        |  flownet:                        |
+|    model_parameters:             |    model_parameters:             |
+|      relative_permeability:      |      relative_permeability:      |
+|        scheme:                   |        scheme: global            |
+|        interpolate:              |        interpolate: true         |
+|        independent_interpolation:|        regions:                  |
+|        regions:                  |          swirr:                  |
+|          id:                     |            min:  0.01            |
+|          swirr:                  |            max:  0.03            |
+|            min:                  |          swl:                    |
+|            max:                  |            min:  0.03            |
+|            mean:                 |            max:  0.05            |
+|            base:                 |          swcr:                   |
+|            stddev:               |            min:  0.09            |
+|            distribution:         |            max:  0.15            |
+|            low_optimistic:       |          sorw:                   |
+|          swl:                    |            min:                  |
+|            <same as for swirr>   |            max:                  |
+|          swcr:                   |          nw:                     |
+|            <same as for swirr>   |            min:                  |
+|          sorw:                   |            max:                  |
+|            <same as for swirr>   |          now:                    |
+|          krwend:                 |            min:                  |
+|            <same as for swirr>   |            max:                  |
+|          kroend:                 |          krwend:                 |
+|            <same as for swirr>   |            min:                  |
+|          no:                     |            max:                  |
+|            <same as for swirr>   |          kroend:                 |
+|          now:                    |            min:                  |
+|            <same as for swirr>   |            max:                  |
+|          sorg:                   |                                  |
+|            <same as for swirr>   |                                  |
+|          sgcr:                   |                                  |
+|            <same as for swirr>   |                                  |
+|          ng:                     |                                  |
+|            <same as for swirr>   |                                  |
+|          nog:                    |                                  |
+|            <same as for swirr>   |                                  |
+|          krgend:                 |                                  |                
+|            <same as for swirr>   |                                  |
++----------------------------------+----------------------------------+
 
 scheme
   The scheme parameter decides how many sets of relative permeability curves to generate as
@@ -216,13 +247,16 @@ scheme
   that are (mostly) located within the same SATNUM region. The default value is global.
 
 interpolate
-  pyscal has an option to use SCALrecommendation. This is due to the fact that SCAL experts often
-  will provide three sets of relative permeability curves (one pessimistic set , one base set and 
-  one optimistic set) to run sensitivities on a reservoir model. This introduces the option of 
-  generating new sets of relative permeability curves within the envelope created by the low/bas/high 
-  sets of curves by using an interpolation parameter (potentially two interpolation parameters in three
-  phase models). This will limit the number of history matching parameters, especially when the number 
-  of SATNUM regions is large. The default value is False.
+  SCAL experts will often provide three sets of relative permeability curves (one pessimistic set, 
+  one base set and one optimistic set) to run sensitivities on a reservoir model. 
+  This introduces the option of generating new sets of relative permeability curves within the 
+  envelope created by the low/base/high sets of curves by using an interpolation parameter 
+  (potentially two interpolation parameters in three phase models). This will limit the number of 
+  history matching parameters, especially when the number of SATNUM regions is large. The default 
+  value is False. A parameter value on the interval [-1,0) will interpolate all input parameters 
+  (Corey exponents, saturation endpoints and relative permeability endpoints) linearly between the 
+  value in the low model and the base model. A parameter value on the interval [0,1] will interpolate
+  between the base model and the high model. 
 
 independent_interpolation
   if **interpolate** is set to **True** and the model has three active phases, this parameter will
@@ -231,7 +265,7 @@ independent_interpolation
   
   
 regions
-  This is a list where each list elements will contain information about the saturation endpoints 
+  This is a list where each list element will contain information about the saturation endpoints 
   and relative permeability endpoints within one SATNUM region, in addition to a region identifier. The 
   endpoints are shown in two figures below for clarification.
   The number of list elements needs to be equal to the number of SATNUM regions in the model,
@@ -260,11 +294,12 @@ regions
   krgend
     Maximum relative permeability for gas
   
-
   A water/oil model needs *swirr*, *swl*, *swcr*, *sorw*, *nw*, *now*, *krwend* and *kroend* to be defined.
   An oil/gas model needs *swirr*, *swl*, *sgcr*, *sorg*, *ng*, *nog*, *krgend* and *kroend* to be defined.
   A three phase model needs all 13 relative permeability parameters to be defined.
 
+
+  
 .. figure:: https://equinor.github.io/pyscal/_images/gasoil-endpoints.png
   
    Visualization of the gas/oil saturation endpoints and gas/oil relative permeability endpoints as modelled by pyscal. 
@@ -272,55 +307,6 @@ regions
 .. figure:: https://equinor.github.io/pyscal/_images/wateroil-endpoints.png
   
    Visualization of the water/oil saturation endpoints and water/oil relative permeability endpoints as modelled by pyscal. 
-
-
-+----------------------------------+----------------------------------+
-| Available options in config yaml | Example of usage                 |
-+----------------------------------+----------------------------------+
-|                                  |                                  |
-| .. code-block:: yaml             | .. code-block:: yaml             |
-|                                  |                                  |
-|  flownet:                        |  flownet:                        |
-|    model_parameters:             |    model_parameters:             |
-|      relative_permeability:      |      relative_permeability:      |
-|        scheme:                   |        scheme: global            |
-|        interpolate:              |        interpolate: true         |
-|        independent_interpolation:|        regions:                  |
-|        regions:                  |          swirr:                  |
-|          id:                     |            min:                  |
-|          swirr:                  |            max:                  |
-|            min:                  |          swl:                    |
-|            max:                  |            min:                  |
-|            mean:                 |            max:                  |
-|            base:                 |          swcr:                   |
-|            stddev:               |            min:                  |
-|            distribution:         |            max:                  |
-|            low_optimistic:       |          sorw:                   |
-|          swl:                    |            min:                  |
-|            <same as for swirr>   |            max:                  |
-|          swcr:                   |          nw:                     |
-|            <same as for swirr>   |            min:                  |
-|          sorw:                   |            max:                  |
-|            <same as for swirr>   |          now:                    |
-|          krwend:                 |            min:                  |
-|            <same as for swirr>   |            max:                  |
-|          kroend:                 |          krwend:                 |
-|            <same as for swirr>   |            min:                  |
-|          no:                     |            max:                  |
-|            <same as for swirr>   |          kroend:                 |
-|          now:                    |            min:                  |
-|            <same as for swirr>   |            max:                  |
-|          sorg:                   |                                  |
-|            <same as for swirr>   |                                  |
-|          sgcr:                   |                                  |
-|            <same as for swirr>   |                                  |
-|          ng:                     |                                  |
-|            <same as for swirr>   |                                  |
-|          nog:                    |                                  |
-|            <same as for swirr>   |                                  |
-|          krgend:                 |                                  |
-|            <same as for swirr>   |                                  |
-+----------------------------------+----------------------------------+
 
 
 When using the interpolation option for relative permeability, some of the keywords above 
@@ -331,18 +317,3 @@ Each of the input parameters needs a low, base, and high value to be defined. Th
 the **min** (low), **base** and **max** (high) keywords. 
 For some parameters a low numerical value is favorable. This can be indicated by setting 
 **low_optimistic** to **True** for that parameter (the default value of low_optimistic is False).
-
-The SCALrecommendation 
-option in pyscal takes three values for each of the input parameters to create
-three sets of input curves, later used as an envelope to interpolate between. 
-
-There will be one *pessimistic*
-set of curves, consisting of the low values supplied in the config file (this will be the *min* 
-values, unless *low_optimistic* is set to *True*), one *optimistic* set of curves, consisting of
-the high values supplied in the config yaml file (this will be the *max* values, unless *low_optimistic*
-is set to *True*), and one *base* set of curves using the *base* values supplied.
-
-pyscal will generate an interpolation parameter (two if **independent_interpolation** is set to **True**)
-going from -1 (representing the pessimistic curve set) to 1 (representing the optimistic curve set).
-FlowNet will pass this interpolation parameter to ERT for history matching, instead of the individual 
-saturation endpoint or relative permeability endpoint parameters.
