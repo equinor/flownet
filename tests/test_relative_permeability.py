@@ -1,4 +1,5 @@
 from pyscal import WaterOil, GasOil
+
 from flownet.parameters._relative_permeability import (
     swof_from_parameters,
     sgof_from_parameters,

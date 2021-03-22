@@ -11,23 +11,23 @@ from .probability_distributions import ProbabilityDistribution
 from ._base_parameter import Parameter, parameter_probability_distribution_class
 
 
-def swof_from_parameters(param: Dict) -> str:
+def swof_from_parameters(parameters: Dict) -> str:
     """
     Creates a SWOF table based on a dictionary of input parameters/values
 
     Args:
-        param (Dict): Dictionary of saturation and relative permeability endpoints
+        parameters: Dictionary of saturation and relative permeability endpoints
 
     Returns:
         A string with the resulting SWOF table
     """
-    swl = param["swl"]
-    swcr = param["swcr"]
-    sorw = param["sorw"]
-    kroend = param["kroend"]
-    krwend = param["krwend"]
-    now = param["now"]
-    nw = param["nw"]
+    swl = parameters["swl"]
+    swcr = parameters["swcr"]
+    sorw = parameters["sorw"]
+    kroend = parameters["kroend"]
+    krwend = parameters["krwend"]
+    now = parameters["now"]
+    nw = parameters["nw"]
 
     # array of water saturations to calculate krow and krw for
     sw = np.sort(np.append(np.arange(swl, 1, H_CONSTANT), [swcr, 1 - sorw, 1]))
@@ -57,18 +57,18 @@ def sgof_from_parameters(param: Dict) -> str:
     Creates a SGOF table based on a dictionary of input parameters/values
 
     Args:
-        param (Dict): Dictionary of saturation and relative permeability endpoints
+        parameters: Dictionary of saturation and relative permeability endpoints
 
     Returns:
         A string with the resulting SGOF table
     """
-    swl = param["swl"]
-    sorg = param["sorg"]
-    sgcr = param["sgcr"]
-    krgend = param["krgend"]
-    kroend = param["kroend"]
-    ng = param["ng"]
-    nog = param["nog"]
+    swl = parameters["swl"]
+    sorg = parameters["sorg"]
+    sgcr = parameters["sgcr"]
+    krgend = parameters["krgend"]
+    kroend = parameters["kroend"]
+    ng = parameters["ng"]
+    nog = parameters["nog"]
 
     # array of gas saturations to calculate krog and krg for
     sg = np.sort(
@@ -97,10 +97,13 @@ def sgof_from_parameters(param: Dict) -> str:
 
 def interpolate_wo(parameter: float, scalrec: Dict) -> Dict:
     """
+    Creates interpolated saturation endpoints and relative
+    permeability endpoints for water/oil based on an interpolation parameter
+    and three separate input cases (low/base/high).
 
     Args:
-        parameter (float): A value on the interval -1 to 1 used for interpolation
-        scalrec (Dict): A dictionary containing the relative permeability
+        parameter: A value on the interval -1 to 1 used for interpolation
+        scalrec: A dictionary containing the relative permeability
             and saturation endpoints for the low/base/high cases
 
     Returns:
@@ -125,10 +128,13 @@ def interpolate_wo(parameter: float, scalrec: Dict) -> Dict:
 
 def interpolate_go(parameter: float, scalrec: Dict) -> Dict:
     """
+    Creates interpolated saturation endpoints and relative
+    permeability endpoints for gas/oil based on an interpolation parameter
+    and three separate input cases (low/base/high).
 
     Args:
-        parameter (float): A value on the interval -1 to 1 used for interpolation
-        scalrec (Dict): A dataframe containing the relative permeability
+        parameter: A value on the interval -1 to 1 used for interpolation
+        scalrec: A dataframe containing the relative permeability
             and saturation endpoints for the low/base/high cases
 
     Returns:
