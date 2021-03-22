@@ -5,11 +5,23 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
-- [#351](https://github.com/equinor/flownet/pull/351) Added simple plotting tool that allows for plotting of FlowNet ensembles and observations.
 
 ### Fixes
 
 ### Changes
+- [#363](https://github.com/equinor/flownet/pull/363) Drop Python 3.6 support.
+
+## [0.5.2] - 2021-03-19
+
+### Added
+- [#365](https://github.com/equinor/flownet/pull/365) Analytics workflow now also available for prediction mode.
+- [#351](https://github.com/equinor/flownet/pull/351) Added simple plotting tool that allows for plotting of FlowNet ensembles and observations.
+
+### Fixes
+- [#365](https://github.com/equinor/flownet/pull/365) Fixes bug where the parquet parameters file would not be saved for iterations larger than 9. 
+
+### Changes
+- [#365](https://github.com/equinor/flownet/pull/365) Structure change of the code. Moved all forward models called from ERT to a seperate folder ert/forward_models. Scripts moved: delete_simulation_output, save_iteration_parameters, iteration_analytics, render_realization and flow_job. 
 - [#347](https://github.com/equinor/flownet/pull/347) Additional flow nodes is now allowed to be either a list (equal length of number of layers) or a single integer (which will be split over the layers according to volume of concave hull).
 
 ## [0.5.1] - 2021-03-03
