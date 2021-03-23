@@ -5,7 +5,6 @@ import functools
 import glob
 import os
 import pathlib
-import re
 from typing import Any, Dict, Optional, List, Tuple
 
 import numpy as np
@@ -14,6 +13,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from ecl.summary import EclSum
 
 from flownet.data import FlowData
+from flownet.ert.forward_models.utils import get_last_iteration
 
 
 def filter_dataframe(
@@ -40,7 +40,7 @@ def filter_dataframe(
 
 def prepare_opm_reference_data(
     df_opm: pd.DataFrame, str_key: str, n_real: int
-) -> np.array:
+) -> np.ndarray:
     """
     This function extracts data from selected columns of the Pandas dataframe
     containing data from reference simulation, rearranges it into a stacked
@@ -67,7 +67,7 @@ def prepare_opm_reference_data(
 
 def prepare_flownet_data(
     df_flownet: pd.DataFrame, str_key: str, n_real: int
-) -> np.array:
+) -> np.ndarray:
     """
     This function extracts data from selected columns of the Pandas dataframe
     containing data from an ensemble of FlowNet simulations, rearranges it into
@@ -95,8 +95,8 @@ def prepare_flownet_data(
 
 
 def normalize_data(
-    data_opm_reference: np.array, data_ensembles_flownet: List[np.array]
-) -> Tuple[np.array, List[np.array]]:
+    data_opm_reference: np.ndarray, data_ensembles_flownet: List[np.ndarray]
+) -> Tuple[np.ndarray, List[np.ndarray]]:
     """
     This function normalizes data from a 2D numpy array containing data from the
     reference simulation and multiple ensembles of FlowNet simulations,
@@ -152,7 +152,7 @@ def normalize_data(
 
 
 def accuracy_metric(
-    data_reference: pd.DataFrame, data_test: np.array, metric: str
+    data_reference: pd.DataFrame, data_test: np.ndarray, metric: str
 ) -> float:
     """
     This function computes a score value based on the specified accuracy metric
@@ -239,8 +239,8 @@ def load_csv_file(csv_file: str, csv_columns: List[str]) -> pd.DataFrame:
 
 
 def compute_metric_ensemble(
-    obs: np.array,
-    list_ensembles: List[np.array],
+    obs: np.ndarray,
+    list_ensembles: List[np.ndarray],
     metrics: List[str],
     str_key: str,
     iteration: int,
@@ -272,17 +272,21 @@ def compute_metric_ensemble(
 
 
 def make_dataframe_simulation_data(
-    path: str, eclbase_file: str, keys: List[str], end_date: datetime
-) -> Tuple[pd.DataFrame, int, int]:
+    mode: str, path: str, eclbase_file: str, keys: List[str], end_date: datetime
+) -> Tuple[pd.DataFrame, str, int]:
     """
     Internal helper function to generate dataframe containing
     data from ensemble of simulations from selected simulation keys
 
     Args:
+        mode: String with mode in which flownet is run: prediction (pred) or assisted hisotory matching (ahm)
         path: path to folder containing ensemble of simulations
         eclbase_file: name of simulation case file
         keys: list of prefix of quantities of interest to be loaded
         end_date: end date of time period for accuracy analysis
+
+    Raises:
+        ValueError: If mode is invalid (not pred or ahm).
 
     Returns:
         df_sim: Pandas dataframe contained data from ensemble of simulations
@@ -290,8 +294,16 @@ def make_dataframe_simulation_data(
         nb_real: number of realizations
 
     """
-    iteration = int(re.findall(r"[0-9]+", sorted(glob.glob(path))[-1])[-1])
-    runpath_list = glob.glob(path[::-1].replace("*", str(iteration), 1)[::-1])
+    if mode == "pred":
+        runpath_list = glob.glob(path)
+        iteration = "latest"
+    elif mode == "ahm":
+        (i, runpath_list) = get_last_iteration(path)
+        iteration = str(i)
+    else:
+        raise ValueError(
+            f"{mode} is not a valid mode to run flownet with. Choose ahm or pred."
+        )
 
     partial_load_simulations = functools.partial(
         _load_simulations, ecl_base=eclbase_file
@@ -320,26 +332,11 @@ def make_dataframe_simulation_data(
     return df_sim, iteration, n_realization
 
 
-def save_iteration_analytics():
-    """
-    This function is called as a post-simulation workflow in ERT, saving all
-    accuracy metrics of all iterations to a file and plotting evolution of accuracy
-    metrics over iterations. The resulting accuracy metric values are stored in
-    a CSV file in the FlowNet output folder, along with the figures
-
-    Args:
-        None
-
-    Returns:
-        Nothing
-
-    """
+def parse_arguments():
     parser = argparse.ArgumentParser(prog=("Save iteration analytics to a file."))
+    parser.add_argument("mode", type=str, help="Mode: ahm or pred")
     parser.add_argument(
         "reference_simulation", type=str, help="Path to the reference simulation case"
-    )
-    parser.add_argument(
-        "perforation_strategy", type=str, help="Perforation handling strategy"
     )
     parser.add_argument("runpath", type=str, help="Path to the ERT runpath.")
     parser.add_argument(
@@ -369,24 +366,44 @@ def save_iteration_analytics():
     args = parser.parse_args()
     args.runpath = args.runpath.replace("%d", "*")
 
+    return args
+
+
+def save_iteration_analytics():
+    """
+    This function is called as a post-simulation workflow in ERT, saving all
+    accuracy metrics of all iterations to a file and plotting evolution of accuracy
+    metrics over iterations. The resulting accuracy metric values are stored in
+    a CSV file in the FlowNet output folder, along with the figures
+
+    Args:
+        None
+
+    Returns:
+        Nothing
+
+    """
+    args = parse_arguments()
+
     print("Saving iteration analytics...", end=" ", flush=True)
 
     # Fix list inputs
     metrics = list(args.metrics.replace("[", "").replace("]", "").split(","))
 
+    # Vector keys to analyze
+    vector_keys = list(args.quantity.replace("[", "").replace("]", "").split(","))
+
     # Load ensemble of FlowNet
     (df_sim, iteration, nb_real) = make_dataframe_simulation_data(
+        args.mode,
         args.runpath,
         args.eclbase,
-        list(args.quantity.replace("[", "").replace("]", "").split(",")),
+        vector_keys,
         args.end,
     )
 
     # Load reference simulation (OPM-Flow/Eclipse)
-    field_data = FlowData(
-        args.reference_simulation,
-        perforation_handling_strategy=args.perforation_strategy,
-    )
+    field_data = FlowData(args.reference_simulation)
     df_obs: pd.DataFrame = field_data.production
     df_obs["DATE"] = df_obs["date"]
 
@@ -400,9 +417,6 @@ def save_iteration_analytics():
     # Initiate dataframe with metrics
     df_metrics = load_csv_file(args.outfile, ["quantity", "iteration"] + metrics)
 
-    # Vector keys to analyze
-    vector_keys = list(args.quantity.replace("[", "").replace("]", "").split(","))
-
     # Prepare data from reference simulation
     df_obs_filtered = filter_dataframe(
         df_obs,
@@ -415,21 +429,22 @@ def save_iteration_analytics():
 
         truth_data = (
             df_obs_filtered.pivot(
-                index="DATE", columns="WELL_NAME", values=key.replace(":", "")
+                index="DATE", columns="WELL_NAME", values=key.split(":")[0]
             )
-            .add_prefix(key)
+            .add_prefix(key.split(":")[0] + ":")
             .fillna(0)
             .reset_index()
         )
 
         obs_opm = prepare_opm_reference_data(truth_data, key, nb_real)
+        truth_data = truth_data.loc[:, truth_data.columns.str.startswith(key)]
 
         # Prepare data from ensemble of FlowNet
         ens_flownet = []
         ens_flownet.append(
             prepare_flownet_data(
                 filter_dataframe(
-                    df_sim[truth_data.columns],
+                    df_sim[list(truth_data.columns) + ["DATE"]],
                     "DATE",
                     args.start,
                     args.end,

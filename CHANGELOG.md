@@ -5,14 +5,50 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
+
+### Fixes
+
+### Changes
+- [#363](https://github.com/equinor/flownet/pull/363) Drop Python 3.6 support.
+- [#361](https://github.com/equinor/flownet/pull/361) Adding numpy code for SWOF/SGOF table generation, instead of using pyscal, to improve computational efficiency when running many realizations with many SATNUM regions. Keeping pyscal in the tests for comparison. 
+
+## [0.5.2] - 2021-03-19
+
+### Added
+- [#365](https://github.com/equinor/flownet/pull/365) Analytics workflow now also available for prediction mode.
+- [#351](https://github.com/equinor/flownet/pull/351) Added simple plotting tool that allows for plotting of FlowNet ensembles and observations.
+
+### Fixes
+- [#365](https://github.com/equinor/flownet/pull/365) Fixes bug where the parquet parameters file would not be saved for iterations larger than 9. 
+
+### Changes
+- [#365](https://github.com/equinor/flownet/pull/365) Structure change of the code. Moved all forward models called from ERT to a seperate folder ert/forward_models. Scripts moved: delete_simulation_output, save_iteration_parameters, iteration_analytics, render_realization and flow_job. 
+- [#347](https://github.com/equinor/flownet/pull/347) Additional flow nodes is now allowed to be either a list (equal length of number of layers) or a single integer (which will be split over the layers according to volume of concave hull).
+
+## [0.5.1] - 2021-03-03
+
+### Fixes
+- [#346](https://github.com/equinor/flownet/pull/346) Fixes bug where the analytics module would fail for iterations larger than 9 (i.e., iteration number with two or more digits).
+
+## [0.5.0] - 2021-02-26
+
+### Added
+- [#341](https://github.com/equinor/flownet/pull/341) Added option to add a min permeability threshold for which tubes are deactivated when the permeability is below this value.
 - [#305](https://github.com/equinor/flownet/pull/305) Functionality of generating seperate flownets per layer is enabled, additional nodes are split between the layers according to the volume of concave hull of the layers.
 - [#298](https://github.com/equinor/flownet/pull/298) Connections between (well)nodes that go through non-reservoir are now removed. Angle threshold export to user.
 - [#296](https://github.com/equinor/flownet/pull/296) Adapted perforation strategy to allow for layering + bug fixes in the 'multiple' and 'multiple_based_on_workovers' perforation strategies.
 - [#284](https://github.com/equinor/flownet/pull/284) Added the option to specify cumulative phase rates as observations (WOPT, WWPT, WGPT, WGIT, WWIT)
 
 ### Fixes
+- [#339](https://github.com/equinor/flownet/pull/339) Fixes bug where the analytics module would fail when a well name filter was supplied.
+- [#325](https://github.com/equinor/flownet/pull/325) Fixes bug where the analytics module would repeat the 8th iteration analytics for iterations larger than 9.
 - [#256](https://github.com/equinor/flownet/pull/256) Fixes issues with duplicate names in hyperopt by using the full path in yaml for hyperopt parameter names.
 - [#272](https://github.com/equinor/flownet/pull/272) Adds resampling of observation dates at requested frequency by finding nearest date among existing observation dates (i.e., no interpolated dates added)
+
+### Changes
+- [#342](https://github.com/equinor/flownet/pull/342) Additional flow nodes are now a list in the configuration file, which allows for variation in the number of addtional nodes from layer to layer.
+- [#337](https://github.com/equinor/flownet/pull/337) You can now add multiple analytics workflows in your FlowNet config. This is also a breaking change in that it requires you to change the ert.analysis keyword to being a list.
+- [#322](https://github.com/equinor/flownet/pull/322) RSVD input through csv files can now be done either as one table used for all EQLNUM regions, or as one table for each EQLNUM region. The csv file needs a header with column names "depth", "rs" and "eqlnum" (the latter only when multiple tables are defined).
 
 ## [0.4.0] - 2020-11-18
 

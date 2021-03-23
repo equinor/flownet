@@ -1,13 +1,20 @@
 import warnings
 import os
 import pathlib
-from typing import Dict, Optional, List, Union
+from typing import Dict, Optional, List
 
 import yaml
 import configsuite
 from configsuite import types, MetaKeys as MK, ConfigSuite
+import pandas as pd
 
 from ._merge_configs import merge_configs
+from ._config_transformations import (
+    _integer_to_list,
+    _str_none_to_none,
+    _to_lower,
+    _to_upper,
+)
 from ..data.from_flow import FlowData
 
 
@@ -29,38 +36,6 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
         Dictionary to be used as configsuite type schema
 
     """
-
-    @configsuite.transformation_msg("Convert 'None' to None")
-    def _str_none_to_none(
-        input_data: Union[str, int, float, None]
-    ) -> Union[str, int, float, None]:
-        """
-        Converts "None" to None
-        Args:
-            input_data (Union[str, int, float, None]):
-
-        Returns:
-            The input_data. If the input is "None" or "none" it is converted to None (str to None)
-        """
-        if isinstance(input_data, str):
-            if input_data.lower() == "none":
-                return None
-
-        return input_data
-
-    @configsuite.transformation_msg("Convert string to lower case")
-    def _to_lower(input_data: Union[List[str], str]) -> Union[List[str], str]:
-        if isinstance(input_data, str):
-            return input_data.lower()
-
-        return [x.lower() for x in input_data]
-
-    @configsuite.transformation_msg("Convert string to upper case")
-    def _to_upper(input_data: Union[List[str], str]) -> Union[List[str], str]:
-        if isinstance(input_data, str):
-            return input_data.upper()
-
-        return [x.upper() for x in input_data]
 
     @configsuite.transformation_msg("Convert input string to absolute path")
     def _to_abs_path(path: Optional[str]) -> str:
@@ -383,8 +358,17 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.AllowNone: True,
                     },
                     "additional_flow_nodes": {
-                        MK.Type: types.Integer,
-                        MK.Default: 100,
+                        MK.Type: types.List,
+                        MK.Description: "List of additional flow nodes to add "
+                        "for each layer or single integer which will be "
+                        "split over the layers, when they are defined.",
+                        MK.LayerTransformation: _integer_to_list,
+                        MK.Content: {
+                            MK.Item: {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                            },
+                        },
                     },
                     "additional_node_candidates": {
                         MK.Type: types.Integer,
@@ -436,6 +420,12 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Description: "Number of points along a tube to check whether they are in"
                         "non reservoir for removal purposes.",
                     },
+                    "min_permeability": {
+                        MK.Type: types.Number,
+                        MK.AllowNone: True,
+                        MK.Description: "Minimum allowed permeability in mD before a tube is removed "
+                        "(i.e., its cells are made inactive).",
+                    },
                     "hyperopt": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
@@ -452,6 +442,8 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             },
                             "loss": {
                                 MK.Type: types.NamedDict,
+                                MK.Description: "Definition of the hyperopt loss function. The definitions "
+                                "refer to the first analysis workflow ONLY.",
                                 MK.Content: {
                                     "keys": {
                                         MK.Type: types.List,
@@ -552,31 +544,55 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         "and webviz",
                     },
                     "analysis": {
-                        MK.Type: types.NamedDict,
+                        MK.Type: types.List,
+                        MK.Description: "List of analysis workflows to run.",
                         MK.Content: {
-                            "metric": {
-                                MK.Type: types.List,
+                            MK.Item: {
+                                MK.Type: types.NamedDict,
+                                MK.Description: "Definitions of the analysis workflow.",
                                 MK.Content: {
-                                    MK.Item: {MK.Type: types.String, MK.AllowNone: True}
+                                    "metric": {
+                                        MK.Type: types.List,
+                                        MK.Content: {
+                                            MK.Item: {
+                                                MK.Type: types.String,
+                                                MK.AllowNone: True,
+                                            }
+                                        },
+                                        MK.Transformation: _to_upper,
+                                        MK.Description: "List of accuracy metrics to be computed "
+                                        "in FlowNet analysis workflow. "
+                                        "Supported metrics: MSE, RMSE, NRMSE, MAE, NMAE, R2",
+                                    },
+                                    "quantity": {
+                                        MK.Type: types.List,
+                                        MK.Content: {
+                                            MK.Item: {
+                                                MK.Type: types.String,
+                                                MK.AllowNone: True,
+                                            }
+                                        },
+                                        MK.Transformation: _to_upper,
+                                        MK.Description: "List of summary vectors for which accuracy "
+                                        "is to be computed",
+                                    },
+                                    "start": {
+                                        MK.Type: types.Date,
+                                        MK.AllowNone: True,
+                                        MK.Description: "Start date in YYYY-MM-DD format.",
+                                    },
+                                    "end": {
+                                        MK.Type: types.Date,
+                                        MK.AllowNone: True,
+                                        MK.Description: "End date in YYYY-MM-DD format.",
+                                    },
+                                    "outfile": {
+                                        MK.Type: types.String,
+                                        MK.AllowNone: True,
+                                        MK.Description: "The filename of the output of the workflow. "
+                                        "In case multiple analysis workflows are run this name should be unique.",
+                                    },
                                 },
-                                MK.Transformation: _to_upper,
-                                MK.Description: "List of accuracy metrics to be computed "
-                                "in FlowNet analysis workflow",
-                            },
-                            "quantity": {
-                                MK.Type: types.List,
-                                MK.Content: {
-                                    MK.Item: {MK.Type: types.String, MK.AllowNone: True}
-                                },
-                                MK.Transformation: _to_upper,
-                                MK.Description: "List of summary vectors for which accuracy "
-                                "is to be computed",
-                            },
-                            "start": {MK.Type: types.Date, MK.AllowNone: True},
-                            "end": {MK.Type: types.Date, MK.AllowNone: True},
-                            "outfile": {
-                                MK.Type: types.String,
-                                MK.AllowNone: True,
                             },
                         },
                     },
@@ -1578,7 +1594,7 @@ def parse_config(
         Parsed config, where values can be extracted like e.g. 'config.ert.queue.system'.
 
     """
-    # pylint: disable=too-many-branches, too-many-statements, too-many-lines
+    # pylint: disable=too-many-branches, too-many-statements, too-many-lines, too-many-locals
 
     if update_config is None:
         input_config = yaml.safe_load(base_config.read_text())
@@ -1601,6 +1617,21 @@ def parse_config(
         )
 
     config = suite.snapshot
+
+    # If 'regions_from_sim' is defined, or a csv file with rsvd tables
+    # is defined, we need to import the simulation case to check number
+    # regions
+    if (
+        config.model_parameters.equil.scheme == "regions_from_sim"
+        or config.flownet.pvt.rsvd
+    ):
+        if config.flownet.data_source.simulation.input_case is None:
+            raise ValueError(
+                "Input simulation case is not defined. "
+                "EQLNUM regions can not be extracted"
+            )
+        field_data = FlowData(config.flownet.data_source.simulation.input_case)
+        unique_regions = field_data.get_unique_regions("EQLNUM")
 
     layers = config.flownet.data_source.simulation.layers
     if len(layers) > 0:
@@ -1626,6 +1657,23 @@ def parse_config(
             "Concave_hull should be True when layers are defined. "
             "The concave hulls of the layers are used to split "
             "the number of additional nodes between the layers."
+        )
+    if (
+        layers
+        and not len(layers) is len(config.flownet.additional_flow_nodes)
+        and len(config.flownet.additional_flow_nodes) != 1
+    ):
+        raise ValueError(
+            "Either add for each layer in the FlowNet model an entry in the "
+            "additional flow nodes list or fill out a single additional flow "
+            f"node value to be split over the layers. Currenly you have {str(len(layers))} layers "
+            f"and {str(len(config.flownet.additional_flow_nodes))} additional flow node "
+            "defitions."
+        )
+    if not layers and len(config.flownet.additional_flow_nodes) > 1:
+        raise ValueError(
+            "You supplied multiple entries for the additional flow nodes but "
+            "there is only a single layer."
         )
 
     req_relp_parameters: List[str] = []
@@ -1656,12 +1704,6 @@ def parse_config(
         )
 
     if config.model_parameters.equil.scheme == "regions_from_sim":
-        if config.flownet.data_source.simulation.input_case is None:
-            raise ValueError(
-                "Input simulation case is not defined - EQLNUM regions can not be extracted"
-            )
-        field_data = FlowData(config.flownet.data_source.simulation.input_case)
-        unique_regions = field_data.get_unique_regions("EQLNUM")
         default_exists = False
         defined_regions = []
         for reg in config.model_parameters.equil.regions:
@@ -1840,14 +1882,18 @@ def parse_config(
         )
 
     for key in config.flownet.hyperopt.loss.keys:
-        if not key in config.ert.analysis.quantity:
+        if (
+            not len(config.ert.analysis) > 0
+            or not key in config.ert.analysis[0].quantity
+        ):
             raise ValueError(
                 f"Key {key} is not defined as an analysis quantity ({config.flownet.hyperopt.loss.keys})."
             )
 
     if (
-        config.ert.analysis.metric
-        and config.flownet.hyperopt.loss.metric not in config.ert.analysis.metric
+        hasattr(config.ert, "analysis")
+        and len(config.ert.analysis) > 0
+        and config.flownet.hyperopt.loss.metric not in config.ert.analysis[0].metric
     ):
         raise ValueError(
             f"Key {config.flownet.hyperopt.loss.metric} is not defined as an analysis"
@@ -1863,6 +1909,32 @@ def parse_config(
 
     if config.flownet.hyperopt.n_runs < 1:
         raise ValueError("The minimum number of hyperopt runs 'n_runs' is 1.")
+
+    if config.flownet.pvt.rsvd:
+        df_rsvd = pd.read_csv(config.flownet.pvt.rsvd)
+        if len(df_rsvd.columns) == 2:
+            if not set(df_rsvd.columns.str.lower()) == {"depth", "rs"}:
+                raise ValueError(
+                    "With only one rsvd table as input the "
+                    "column names should be 'depth' and 'rs'."
+                )
+        elif len(df_rsvd.columns) == 3:
+            if not set(df_rsvd.columns.str.lower()) == {"depth", "eqlnum", "rs"}:
+                raise ValueError(
+                    "Column names in csv file with rsvd values should be "
+                    "'depth', 'rs' and 'eqlnum' (in any order)."
+                )
+            if not set(df_rsvd["eqlnum"]) == set(unique_regions):
+                raise ValueError(
+                    "Rsvd tables not defined for all EQLNUM regions. Must be defined as one "
+                    "table used for all regions, or one table for each region."
+                )
+        else:
+            raise ValueError(
+                "Something is wrong with the csv file containing the rsvd tables."
+                "It should contain either two columns with headers 'depth' and 'rs', "
+                "or three columns with headers 'depth','rs' and 'eqlnum'."
+            )
 
     return config
 
