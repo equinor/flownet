@@ -8,7 +8,7 @@ The configuration files follows the `YAML standard <https://yaml.org/>`_.
     :module: flownet.config_parser._config_parser.create_schema_without_arguments
 
 
-Defining prior distributions in FlowNet
+Model parameters - defining prior distributions in FlowNet
 =======================================
 
 The different parameters to be tuned are defined in the **model_parameters** 
