@@ -9,7 +9,7 @@ The configuration files follows the `YAML standard <https://yaml.org/>`_.
 
 
 Model parameters - defining prior distributions in FlowNet
-=======================================
+==========================================================
 
 The different parameters to be tuned are defined in the **model_parameters** 
 section of the FlowNet config yaml. At present, the model can be parameterized 
