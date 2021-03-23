@@ -13,7 +13,7 @@ Model parameters - defining prior distributions in FlowNet
 
 The different parameters to be tuned are defined in the **model_parameters** 
 section of the FlowNet config yaml. At present, the model can be parameterized 
-with the following parameters:
+with the following required parameters:
 
 * Permeability
 * Porosity
@@ -21,6 +21,9 @@ with the following parameters:
 * Fault multipliers
 * Saturation endpoints, relative permeability endpoints and Corey exponents
 * Datum pressures and contacts
+
+In addition there are a few optional parameters that may be included:
+* Rock compressibility
 * Aquifer size (relative to the bulk volume in the model)
 
 
@@ -47,10 +50,11 @@ mean
 stddev
   The standard deviation of the prior probability distributions
 
-Their usage will be the same for all model parameters, except for when using the interpolation 
-option for relative permeability. In that case min, base, and max will have a different meaning,
-which will be described in more detail later. There is also an additional keyword *low_optimistic* 
-which only is meaningful to define when using the interpolation option for relative permeability.
+Their usage will be the same for all the required model parameters, except for when using 
+the interpolation option for relative permeability. In that case min, base, and max will 
+have a different meaning, which will be described in more detail later. There is also an 
+additional keyword *low_optimistic* which only is meaningful to define when using the 
+interpolation option for relative permeability.
 
 The table below describes the available prior probability distributions, and how they
 should be defined in the FlowNet config yaml. If one choice of probability distribution
@@ -376,7 +380,85 @@ Equilibration
 |            same as for owc_depth |                                  |
 +----------------------------------+----------------------------------+
 
+scheme
+  The scheme parameter decides how many equilibration regions to generate as
+  input to Flow. There are three options. With **shceme: global** the model will only have one  
+  equilibration region, and applied to all flow tubes in the model. With
+  **shceme: individual** all flow tubes in the model will act as its own equilibration region. 
+  With **scheme: regions_from_sim** FlowNet will extract the EQLNUM regions from the 
+  input model provided, and assign equilibraion regions to all flow tubes accordingly. 
+  The default value is global.
 
+regions
+  This is a list where each list element will contain information about the datum depth, datum pressure and 
+  fluid contacts within one equilibration region, in addition to a region identifier.
+  The number of list elements needs to be equal to the number of EQLNUM regions in the model,
+  unless one of the regions is defined with identifier *None*. 
+  
+  id
+    Region identifier. Default value is None.
+  datum_depth:
+    Datum or reference depth in the equilibrium region.
+  datum_pressure:
+    Datum or reference pressure in the equilibrium region.
+  owc_depth:
+    Depth of the oil/water contact in the equilibrium region.
+  goc_depth:
+    Depth of the gas/oil contact in the equilibrium region.
+  gwc_depth:
+    Depth of the gas/water contact in the equilibrium region.
+
+  The *datum depth* is just a number. The *datum pressure* and the different contacts 
+  should be entered with a prior probability distribution.
+
+Rock compressibility
+--------------------
+
+Rock compressibility can be included by defining the *reference pressure* and the 
+minimum and maximum value. The minimum and maximum value will be used to define
+a uniform distribution, from which all realizations of the FlowNet will be assigned 
+a value.
+
++----------------------------------+----------------------------------+
+| Available options in config yaml | Example of usage                 |
++----------------------------------+----------------------------------+
+|                                  |                                  |
+| .. code-block:: yaml             | .. code-block:: yaml             |
+|                                  |                                  |
+|  flownet:                        |  flownet:                        |
+|    model_parameters:             |    model_parameters:             |
+|      rock_compressibility:       |      rock_compressibility:       |
+|        reference_pressure:       |        reference_pressure:       |
+|        min:                      |        min:                      |
+|        max:                      |        max:                      |
+|                                  |                                  |
++----------------------------------+----------------------------------+
+
+
+Aquifer
+-------
+
++----------------------------------+----------------------------------+
+| Available options in config yaml | Example of usage                 |
++----------------------------------+----------------------------------+
+|                                  |                                  |
+| .. code-block:: yaml             | .. code-block:: yaml             |
+|                                  |                                  |
+|  flownet:                        |  flownet:                        |
+|    model_parameters:             |    model_parameters:             |
+|      aquifer:                    |      aquifer:                    |
+|        scheme:                   |        scheme: individual        |
+|        fraction:                 |        fraction: 0.25            |
+|        delta_depth:              |        delta_depth: 1000         |
+|        size_in_bulkvolumes:      |        size_in_bulkvolumes:      |
+|           min:                   |          min: 1.0e-4             |
+|           max:                   |          max: 2                  |
+|           mean:                  |                                  |
+|           base:                  |                                  |
+|           stddev:                |                                  |
+|           distribution:          |                                  |
+|                                  |                                  |
++----------------------------------+----------------------------------+
 
 
 Assisted history matching example
