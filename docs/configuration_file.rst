@@ -358,26 +358,29 @@ Equilibration
 |      equil:                      |      equil:                      |
 |        scheme:                   |        scheme: global            |
 |        regions:                  |         regions:                 |
-|          id:                     |           datum_depth:           |
-|          datum_depth:            |           datum_pressure:        |
-|          datum_pressure:         |             min:                 |
+|          id:                     |           id: None               |
+|          datum_depth:            |           datum_depth:           |
+|          datum_pressure:         |           datum_pressure:        |
+|            min:                  |             min:                 |
+|            max:                  |             max:                 |
+|            mean:                 |           owc_depth:             |
+|            base:                 |             min:                 |
+|            stddev:               |             max:                 |
+|            distribution:         |           goc_depth:             |
+|          owc_depth:              |             min:                 |
 |            min:                  |             max:                 |
-|            max:                  |           owc_depth:             |
-|            mean:                 |             min:                 |
-|            base:                 |             max:                 |
-|            stddev:               |           goc_depth:             |
-|            distribution:         |             min:                 |
-|          owc_depth:              |             max:                 |
-|            min:                  |                                  |
-|            max:                  |                                  |
-|            mean:                 |                                  |
-|            base:                 |                                  |
-|            stddev:               |                                  |
-|            distribution:         |                                  |
-|          goc_depth:              |                                  |
-|            same as for owc_depth |                                  |
-|          gwc_depth:              |                                  |
-|            same as for owc_depth |                                  |
+|            max:                  |           id: 1                  |
+|            mean:                 |           datum_depth:           |
+|            base:                 |           datum_pressure:        |
+|            stddev:               |             min:                 |
+|            distribution:         |             max:                 |
+|          goc_depth:              |           owc_depth:             |
+|            same as for owc_depth |             min:                 |
+|          gwc_depth:              |             max:                 |
+|            same as for owc_depth |           goc_depth:             |
+|				   |	         min:                 |
+|				   |	         max:                 |
+|                                  |                                  |
 +----------------------------------+----------------------------------+
 
 scheme
