@@ -200,8 +200,8 @@ faults are drawn independently.
 
         
 
-Saturation endpoints and relative permeability endpoints
---------------------------------------------------------
+Saturation endpoints, relative permeability endpoints and Corey exponents
+-------------------------------------------------------------------------
 
 FlowNet currently uses Corey correlations for generating relative permeability input curves for Flow. At a later 
 stage LET parametrization may also be implemented.
@@ -336,6 +336,47 @@ Each of the input parameters needs a low, base, and high value to be defined. Th
 the **min** (low), **base** and **max** (high) keywords. 
 For some parameters a low numerical value is favorable. This can be indicated by setting 
 **low_optimistic** to **True** for that parameter (the default value of low_optimistic is False).
+
+
+Equilibration
+-------------
+
+
+
++----------------------------------+----------------------------------+
+| Available options in config yaml | Example of usage                 |
++----------------------------------+----------------------------------+
+|                                  |                                  |
+| .. code-block:: yaml             | .. code-block:: yaml             |
+|                                  |                                  |
+|  flownet:                        |  flownet:                        |
+|    model_parameters:             |    model_parameters:             |
+|      equil:                      |      equil:                      |
+|        scheme:                   |        scheme: global            |
+|        regions:                  |         regions:                 |
+|          id:                     |           datum_depth:           |
+|          datum_depth:            |           datum_pressure:        |
+|          datum_pressure:         |             min:                 |
+|            min:                  |             max:                 |
+|            max:                  |           owc_depth:             |
+|            mean:                 |             min:                 |
+|            base:                 |             max:                 |
+|            stddev:               |           goc_depth:             |
+|            distribution:         |             min:                 |
+|          owc_depth:              |             max:                 |
+|            min:                  |                                  |
+|            max:                  |                                  |
+|            mean:                 |                                  |
+|            base:                 |                                  |
+|            stddev:               |                                  |
+|            distribution:         |                                  |
+|          goc_depth:              |                                  |
+|            same as for owc_depth |                                  |
+|          gwc_depth:              |                                  |
+|            same as for owc_depth |                                  |
++----------------------------------+----------------------------------+
+
+
 
 
 Assisted history matching example
