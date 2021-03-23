@@ -27,7 +27,7 @@ with the following parameters:
 All parameters need an initial guess 
 on what values they can take. This is referred to as the prior probability distribution.
 
-The following keys are available for defining the different prior distributions
+The following keys are available for defining the different prior distributions: 
 
 distribution
   The type of probability distribution. 
@@ -46,6 +46,11 @@ mean
 
 stddev
   The standard deviation of the prior probability distributions
+
+Their usage will be the same for all model parameters, except for when using the interpolation 
+option for relative permeability. In that case min, base, and max will have a different meaning,
+which will be described in more detail later. There is also an additional keyword *low_optimistic* 
+which only is meaningful to define when using the interpolation option for relative permeability.
 
 The table below describes the available prior probability distributions, and how they
 should be defined in the FlowNet config yaml. If one choice of probability distribution
