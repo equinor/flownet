@@ -5,7 +5,7 @@ from flownet.ert.forward_models.utils import get_last_iteration
 
 
 def generate_example_runpath_directory(
-    runpath: str, num_realizations: int, _numiterations: int
+    runpath: str, num_realizations: int, num_iterations: int
 ) -> None:
     for i in range(0, num_realizations):
         realization_folder = "-".join(("realization", str(i)))
@@ -31,4 +31,4 @@ def test_get_last_iteration() -> None:
     remove_example_runpath_directory(runpath)
 
     assert last_iteration == (num_iterations - 1)
-    assert len(runpath_list) == realizations
+    assert len(runpath_list) == num_realizations
