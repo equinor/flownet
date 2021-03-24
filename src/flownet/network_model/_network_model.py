@@ -573,7 +573,7 @@ class NetworkModel:
     @property
     def cell_midpoints(self) -> Tuple[Any, Any, Any]:
         """
-        Returns a tuple array with the midpoint of each cell in the network
+        Returns a tuple with the midpoint of each cell in the network
 
         Returns:
             Tuple with connection midpoint coordinates.
