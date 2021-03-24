@@ -376,7 +376,19 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Description: "Number of additional nodes to create "
                         "(using Mitchell's best candidate algorithm)",
                     },
-                    "hull_factor": {MK.Type: types.Number, MK.Default: 1.2},
+                    "place_nodes_in_volume_reservoir": {
+                        MK.Type: types.Bool,
+                        MK.AllowNone: True,
+                        MK.Description: "Use boundary of reservoir volume as "
+                        "bounding box to place additional well nodes",
+                    },
+                    "hull_factor_well_perforations": {
+                        MK.Type: types.Number,
+                        MK.Default: 1.2,
+                        MK.Description: "Extend the cube around the well "
+                        "perforations to place additional nodes. "
+                        "Only used when place_nodes_in_reservoir_volume is not True",
+                    },
                     "random_seed": {
                         MK.Type: types.Number,
                         MK.AllowNone: True,

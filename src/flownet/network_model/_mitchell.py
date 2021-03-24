@@ -71,8 +71,7 @@ def mitchell_best_candidate_modified_3d(
             x_moved[count] = moved_points[0]
             y_moved[count] = moved_points[1]
             z_moved[count] = moved_points[2]
-
-    if hull_factor:
+            
         x_min = min(x_moved)
         x_max = max(x_moved)
         y_min = min(y_moved)
