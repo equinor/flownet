@@ -8,7 +8,6 @@ import warnings
 import numpy as np
 import pandas as pd
 from scipy.stats import mode
-
 from configsuite import ConfigSuite
 
 from ..realization import Schedule
@@ -443,8 +442,9 @@ def run_flownet_history_matching(
         fault_tolerance=config.flownet.fault_tolerance,
     )
 
-    network.volume_distribution_multipliers = field_data.get_bulk_volume_distribution(
-        config.flownet.prior_volume_distribution, network=network
+    network.initial_cell_volumes = field_data.get_bulk_volume_per_flownet_cell(
+        config.flownet.prior_volume_distribution,
+        network=network,
     )
 
     schedule = Schedule(network, df_production_data, config)

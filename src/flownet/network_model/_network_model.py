@@ -1,11 +1,10 @@
 from typing import List, Tuple, Optional, Dict, Any, Union
 from itertools import combinations, repeat, compress
 
-from math import isclose
 import numpy as np
 import pandas as pd
-import scipy.spatial
 import pyvista as pv
+from scipy import spatial
 
 from ._one_dimensional_model import OneDimensionalModel
 from ..utils.types import Coordinate
@@ -51,9 +50,7 @@ class NetworkModel:
         self._grid: pd.DataFrame = self._calculate_grid_corner_points()
         self._nncs: List[Tuple[int, int]] = self._calculate_nncs()
 
-        self._volume_distribution_multipliers = np.ones(
-            (len(self.connection_midpoints), 1)
-        ) / len(self.connection_midpoints)
+        self._initial_cell_volumes = np.ones((len(self.connection_midpoints), 1))
 
         self._fault_planes: Optional[pd.DataFrame] = None
         self._faults: Optional[Dict] = None
@@ -103,18 +100,16 @@ class NetworkModel:
         return (coordinates_start + coordinates_end) / 2
 
     @property
-    def volume_distribution_multipliers(self) -> np.ndarray:
+    def initial_cell_volumes(self) -> np.ndarray:
         """Volume distribution multipliers for each grid cell in the flownet.
 
         Returns:
             An np.ndarray with multiplier for each FlowNet grid cell's volume.
         """
-        return self._volume_distribution_multipliers
+        return self._initial_cell_volumes
 
-    @volume_distribution_multipliers.setter
-    def volume_distribution_multipliers(
-        self, volume_distribution_multipliers: np.ndarray
-    ):
+    @initial_cell_volumes.setter
+    def initial_cell_volumes(self, initial_cell_volumes: np.ndarray):
         """Set
 
         Args:
@@ -132,33 +127,17 @@ class NetworkModel:
         Returns:
             Nothing
         """
-        if not isinstance(volume_distribution_multipliers, np.ndarray):
+        if not isinstance(initial_cell_volumes, np.ndarray):
             raise TypeError(
                 "The volume_distribution_multiplier should be of type np.ndarray."
             )
-        if volume_distribution_multipliers.shape[0] != len(self.cell_midpoints[0]):
+        if initial_cell_volumes.shape[0] != len(self.cell_midpoints[0]):
             raise ValueError(
                 "The shape of the volume_distribution_multipliers np.ndarray should "
                 f"be {len(self.cell_midpoints[0])} x 1."
             )
-        if not isclose(volume_distribution_multipliers.sum(), 1):
-            raise ValueError(
-                "The sum of the volume_distribution_multipliers should be 1, if not, you "
-                "are either increasing or decreasing the bulk volume. This should not be "
-                "done on the initial bulk volume but rather using the bulk_volume_multiplier "
-                "parameters in your FlowNet configuration file."
-            )
 
-        self._volume_distribution_multipliers = volume_distribution_multipliers
-
-    @property
-    def initial_cell_volumes(self) -> np.ndarray:
-        """Initial bulk volume for each individual grid cell in the FlowNet.
-
-        Returns:
-            An np.ndarray with the initial bulk volumes for each grid cell in a FlowNet model.
-        """
-        return self.total_bulkvolume * self.volume_distribution_multipliers
+        self._initial_cell_volumes = initial_cell_volumes
 
     @property
     def connection_midpoints(self) -> np.ndarray:
@@ -207,15 +186,11 @@ class NetworkModel:
         return self._get_aquifer_i()
 
     @property
-    def total_bulkvolume(self):
-        """
-        Returns the bulk volume of the network. The calculation is done by finding
-        the convex hull of the network (using the end points of the input tubes)
-        and then calculating the volume of this hull.
+    def convexhull(self) -> spatial.ConvexHull:  # pylint: disable=maybe-no-member
+        """Return the convex hull of the FlowNet network.
 
         Returns:
-            Bulk volume of the convex hull.
-
+            Convex hull of the network.
         """
         x = (
             self._df_entity_connections["xstart"].tolist()
@@ -232,7 +207,21 @@ class NetworkModel:
 
         points = np.array((x, y, z), dtype=float).transpose()
 
-        return scipy.spatial.ConvexHull(points).volume  # pylint: disable=no-member
+        return spatial.ConvexHull(points)  # pylint: disable=maybe-no-member
+
+    @property
+    def total_bulkvolume(self):
+        """
+        Returns the bulk volume of the network, i.e. the volume of the convex hull of the
+        FlowNet network. The calculation is done by finding
+        the convex hull of the network (using the end points of the input tubes)
+        and then calculating the volume of this hull.
+
+        Returns:
+            Bulk volume of the convex hull.
+
+        """
+        return self.convexhull.volume  # pylint: disable=no-member
 
     def _get_aquifer_i(self) -> List[List[int]]:
         """Helper function to get the aquifer i's with zero-offset.
