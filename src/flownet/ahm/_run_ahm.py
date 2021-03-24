@@ -442,10 +442,21 @@ def run_flownet_history_matching(
         fault_tolerance=config.flownet.fault_tolerance,
     )
 
-    network.initial_cell_volumes = field_data.get_bulk_volume_per_flownet_cell(
-        config.flownet.prior_volume_distribution,
-        network=network,
-    )
+    if config.flownet.prior_volume_distribution == "voronoi_per_tube":
+        volumes_per_cell = (
+            field_data.bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model(
+                network,
+            )
+        )
+    elif config.flownet.prior_volume_distribution == "tube_length":
+        volumes_per_cell = network.bulk_volume_per_flownet_cell_based_on_tube_length()
+    else:
+        raise ValueError(
+            f"'{config.flownet.prior_volume_distribution}' is not a valid prior volume "
+            "distribution method."
+        )
+
+    network.initial_cell_volumes = volumes_per_cell
 
     schedule = Schedule(network, df_production_data, config)
 

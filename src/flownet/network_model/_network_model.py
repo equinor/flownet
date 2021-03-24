@@ -519,6 +519,22 @@ class NetworkModel:
         """
         return (self._grid["model"] == model_index) & (self._grid["ACTNUM"] == 1)
 
+    def bulk_volume_per_flownet_cell_based_on_tube_length(self) -> np.ndarray:
+        """Generate bulk volume per flownet grid cell based on the total length
+        of each tube in the FlowNet and the convex hull on the FlowNet network.
+
+        Args:
+            network: FlowNet network instance.
+
+        Returns:
+            A list with bulk volumes for each flownet tube cell.
+        """
+        return (
+            self.total_bulkvolume
+            * self.grid["cell_length"].values
+            / self.grid["cell_length"].sum()
+        )
+
     @property
     def faults(self) -> Optional[Dict[Any, Any]]:
         """Dictionary of fault names containing a list of integer zero-offset I-coordinates belonging to a fault"""
