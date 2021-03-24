@@ -439,7 +439,7 @@ class FlowData(FromSource):
             ]
         )
 
-        return cell_volumes  # / sum(cell_volumes)
+        return cell_volumes
 
     @property
     def faults(self) -> pd.DataFrame:
