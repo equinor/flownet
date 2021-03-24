@@ -9,7 +9,6 @@ FlowNet documentation
 
    introduction
    configuration_file
-   parametrization
    examples
    api
    about
