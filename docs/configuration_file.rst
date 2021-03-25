@@ -18,14 +18,14 @@ with the following required parameters:
 * Permeability
 * Porosity
 * Bulk volume multipliers
-* Fault multipliers
 * Saturation endpoints, relative permeability endpoints and Corey exponents
 * Datum pressures and contacts
 
 In addition there are a few optional parameters that may be included:
-* Rock compressibility
-* Aquifer size (relative to the bulk volume in the model)
 
+* Fault multipliers
+* Aquifer size (relative to the bulk volume in the model)
+* Rock compressibility
 
 All parameters need an initial guess 
 on what values they can take. This is referred to as the prior probability distribution.
@@ -462,6 +462,23 @@ Aquifer
 |           distribution:          |                                  |
 |                                  |                                  |
 +----------------------------------+----------------------------------+
+
+scheme:
+  The **scheme** parameter decides the number of aquifers. Setting scheme 
+  to *individual* means that all aquifer connections goes to individual aquifers.
+  Setting scheme to *global* means that all aquifer connections goes to one single 
+  aquifer.
+
+fraction:
+  Decides how many nodes the aquifer(s) should connect to. Currently the implementation
+  relies on depth only, selecting the *fraction* deepest nodes in the FlowNet.
+
+delta_depth:
+  Decides the depth of the aquifer. 
+
+size_in_bulkvolumes:
+  
+  
 
 
 Assisted history matching example
