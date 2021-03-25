@@ -12,6 +12,7 @@ def mitchell_best_candidate_modified_3d(
     perforations: List[Coordinate],
     num_added_flow_nodes: int,
     num_candidates: int = 1000,
+    place_nodes_in_volume_reservoir: Optional[bool] = None,
     hull_factor: Optional[float] = None,
     concave_hull_bounding_boxes: Optional[np.ndarray] = None,
     random_seed: Optional[int] = None,
@@ -33,6 +34,8 @@ def mitchell_best_candidate_modified_3d(
             [(xr_1, yr_1, zr_1), ..., (xr_N, yr_N, zr_N)]
         num_added_flow_nodes: Number of additional flow nodes to generate
         num_candidates: Number of candidates to consider per additional flow nodes
+        place_nodes_in_volume_reservoir: When true, additional nodes will initially be placed inside
+            the bounding box of the reservoir or layer instead of the bounding box of the well perforations.
         hull_factor: Factor to linearly scale the convex hull with. Factor will
             scale the distance of each point from the centroid of all the points.
             When a None is supplied a box-shape is used.
@@ -52,15 +55,17 @@ def mitchell_best_candidate_modified_3d(
     # Read list of coordinate tuples and convert to 1D-numpy arrays
     x, y, z = (np.asarray(t) for t in zip(*perforations))
 
+    print(place_nodes_in_volume_reservoir)
+
     # Number of real wells
     num_points = len(x)
 
-    x_moved = np.zeros(num_points)
-    y_moved = np.zeros(num_points)
-    z_moved = np.zeros(num_points)
+    x_hull = np.zeros(num_points)
+    y_hull = np.zeros(num_points)
+    z_hull = np.zeros(num_points)
 
     # Determine whether the complex hull needs to be scaled
-    if hull_factor:
+    if hull_factor != 1.0:
         # Calculate the centroid of all real perforations
         centroid = (sum(x) / num_points, sum(y) / num_points, sum(z) / num_points)
 
@@ -68,16 +73,16 @@ def mitchell_best_candidate_modified_3d(
         for count, point in enumerate(perforations):
             # Linearly scale the well perforation's location relative to the centroid
             moved_points = np.add(hull_factor * np.subtract(point, centroid), centroid)
-            x_moved[count] = moved_points[0]
-            y_moved[count] = moved_points[1]
-            z_moved[count] = moved_points[2]
-            
-        x_min = min(x_moved)
-        x_max = max(x_moved)
-        y_min = min(y_moved)
-        y_max = max(y_moved)
-        z_min = min(z_moved)
-        z_max = max(z_moved)
+            x_hull[count] = moved_points[0]
+            y_hull[count] = moved_points[1]
+            z_hull[count] = moved_points[2]
+
+        x_min = min(x_hull)
+        x_max = max(x_hull)
+        y_min = min(y_hull)
+        y_max = max(y_hull)
+        z_min = min(z_hull)
+        z_max = max(z_hull)
     else:
         x_min = min(x)
         x_max = max(x)
@@ -85,14 +90,17 @@ def mitchell_best_candidate_modified_3d(
         y_max = max(y)
         z_min = min(z)
         z_max = max(z)
+        x_hull = x
+        y_hull = y
+        z_hull = z
 
     # Determine the convex hull of the original or linearly scaled perforations
     if np.all(z == z[0]):
         # 2D cases
-        hull = Delaunay(np.column_stack([x, y]))
+        hull = Delaunay(np.column_stack([x_hull, y_hull]))
     else:
         # 3D cases
-        hull = Delaunay(np.column_stack([x, y, z]))
+        hull = Delaunay(np.column_stack([x_hull, y_hull, z_hull]))
 
     # Generate all new flow nodes
     for i in range(num_points, num_points + num_added_flow_nodes):

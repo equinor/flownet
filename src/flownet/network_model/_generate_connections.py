@@ -177,6 +177,7 @@ def _generate_connections(
             well_perforations,
             num_added_flow_nodes=additional_flow_nodes,
             num_candidates=configuration.flownet.additional_node_candidates,
+            place_nodes_in_volume_reservoir=configuration.flownet.place_nodes_in_volume_reservoir,
             hull_factor=configuration.flownet.hull_factor,
             concave_hull_bounding_boxes=concave_hull_bounding_boxes,
             random_seed=configuration.flownet.random_seed,
