@@ -50,7 +50,7 @@ mean
 stddev
   The standard deviation of the prior probability distributions
 
-Their usage will be the same for all the required model parameters, except for when using 
+Their usage will be the same for all the model parameters, except for when using 
 the interpolation option for relative permeability. In that case min, base, and max will 
 have a different meaning, which will be described in more detail later. There is also an 
 additional keyword *low_optimistic* which only is meaningful to define when using the 
@@ -179,29 +179,6 @@ different flow tubes are drawn independently.
 |          stddev:                 |                                  |          distribution: truncated_normal|
 |          distribution:           |                                  |                                        |
 +----------------------------------+----------------------------------+----------------------------------------+
-
-Fault multiplier
-----------------
-Defines the prior probability distribution for fault transmissibility multipliers. Only one distribution
-should be defined, and it will be used for all faults in the model. The fault transmissibilities for different
-faults are drawn independently.
-
-+----------------------------------+----------------------------------+----------------------------------------+
-| Available options in config yaml | Example of usage                 | Example of usage                       |
-+----------------------------------+----------------------------------+----------------------------------------+
-| .. code-block:: yaml             | .. code-block:: yaml             | .. code-block:: yaml                   |
-|                                  |                                  |                                        |
-|    flownet:                      |    flownet:                      |    flownet:                            |
-|      model_parameters:           |      model_parameters:           |      model_parameters:                 |
-|        fault_mult:               |        fault_mult:               |        fault_mult:                     |
-|          min:                    |          min: 0.0001             |          min: 0                        |
-|          max:                    |          max: 1                  |          max: 1                        |
-|          base:                   |          distribution: logunif   |          base: 0.1                     | 
-|          mean:                   |                                  |          distribution: triangular      |
-|          stddev:                 |                                  |                                        |
-|          distribution:           |                                  |                                        |
-+----------------------------------+----------------------------------+----------------------------------------+
-
         
 
 Saturation endpoints, relative permeability endpoints and Corey exponents
@@ -346,7 +323,6 @@ Equilibration
 -------------
 
 
-
 +----------------------------------+----------------------------------+
 | Available options in config yaml | Example of usage                 |
 +----------------------------------+----------------------------------+
@@ -378,8 +354,8 @@ Equilibration
 |            same as for owc_depth |             min:                 |
 |          gwc_depth:              |             max:                 |
 |            same as for owc_depth |           goc_depth:             |
-|				   |	         min:                 |
-|				   |	         max:                 |
+|				                           |	           min:                 |
+|	                        			   |	         max:                   |
 |                                  |                                  |
 +----------------------------------+----------------------------------+
 
@@ -413,6 +389,30 @@ regions
 
   The *datum depth* is just a number. The *datum pressure* and the different contacts 
   should be entered with a prior probability distribution.
+
+
+Fault multiplier
+----------------
+Defines the prior probability distribution for fault transmissibility multipliers. Only one distribution
+should be defined, and it will be used for all faults in the model. The fault transmissibilities for different
+faults are drawn independently.
+
++----------------------------------+----------------------------------+----------------------------------------+
+| Available options in config yaml | Example of usage                 | Example of usage                       |
++----------------------------------+----------------------------------+----------------------------------------+
+| .. code-block:: yaml             | .. code-block:: yaml             | .. code-block:: yaml                   |
+|                                  |                                  |                                        |
+|    flownet:                      |    flownet:                      |    flownet:                            |
+|      model_parameters:           |      model_parameters:           |      model_parameters:                 |
+|        fault_mult:               |        fault_mult:               |        fault_mult:                     |
+|          min:                    |          min: 0.0001             |          min: 0                        |
+|          max:                    |          max: 1                  |          max: 1                        |
+|          base:                   |          distribution: logunif   |          base: 0.1                     | 
+|          mean:                   |                                  |          distribution: triangular      |
+|          stddev:                 |                                  |                                        |
+|          distribution:           |                                  |                                        |
++----------------------------------+----------------------------------+----------------------------------------+
+
 
 Rock compressibility
 --------------------
@@ -474,9 +474,13 @@ fraction:
   relies on depth only, selecting the *fraction* deepest nodes in the FlowNet.
 
 delta_depth:
-  Decides the depth of the aquifer. 
+  Decides the depth of the aquifer node(s). When using the global option, a single aquifer node
+  will be placed *delta_depth* below the average position of all the nodes it should connect to.
+  When using the individual option, one aquifer node will be placed *delta_depth* below each of
+  the selected FlowNet nodes.
 
 size_in_bulkvolumes:
+  The size of the aquifer, relative to the bulk volume of the FlowNet the aquifer nodes connect to.
   
   
 
