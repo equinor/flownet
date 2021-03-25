@@ -1,7 +1,7 @@
 from typing import List, Optional
 import time
 
-from scipy.spatial import Delaunay  # pylint: disable=no-name-in-module
+from scipy.spatial import Delaunay, ConvexHull  # pylint: disable=no-name-in-module
 import numpy as np
 
 from ..utils.types import Coordinate
@@ -55,8 +55,6 @@ def mitchell_best_candidate_modified_3d(
     # Read list of coordinate tuples and convert to 1D-numpy arrays
     x, y, z = (np.asarray(t) for t in zip(*perforations))
 
-    print(place_nodes_in_volume_reservoir)
-
     # Number of real wells
     num_points = len(x)
 
@@ -65,7 +63,7 @@ def mitchell_best_candidate_modified_3d(
     z_hull = np.zeros(num_points)
 
     # Determine whether the complex hull needs to be scaled
-    if hull_factor != 1.0:
+    if not np.isclose(hull_factor, 1.0):
         # Calculate the centroid of all real perforations
         centroid = (sum(x) / num_points, sum(y) / num_points, sum(z) / num_points)
 
@@ -94,6 +92,17 @@ def mitchell_best_candidate_modified_3d(
         y_hull = y
         z_hull = z
 
+    if place_nodes_in_volume_reservoir:
+        x_mins, x_maxs, y_mins, y_maxs, z_mins, z_maxs = (
+            np.asarray(t) for t in zip(*concave_hull_bounding_boxes)
+        )
+        x_min = min(x_mins + x_maxs)
+        x_max = max(x_mins + x_maxs)
+        y_min = min(y_mins + y_maxs)
+        y_max = max(y_mins + y_maxs)
+        z_min = min(z_mins + z_maxs)
+        x_max = max(z_mins + z_maxs)
+
     # Determine the convex hull of the original or linearly scaled perforations
     if np.all(z == z[0]):
         # 2D cases
@@ -101,7 +110,7 @@ def mitchell_best_candidate_modified_3d(
     else:
         # 3D cases
         hull = Delaunay(np.column_stack([x_hull, y_hull, z_hull]))
-
+        # hull = ConvexHull(np.column_stack([x_hull, y_hull, z_hull]))
     # Generate all new flow nodes
     for i in range(num_points, num_points + num_added_flow_nodes):
         mid = time.time()
