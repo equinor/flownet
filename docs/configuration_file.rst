@@ -322,7 +322,6 @@ For some parameters a low numerical value is favorable. This can be indicated by
 Equilibration
 -------------
 
-
 +----------------------------------+----------------------------------+
 | Available options in config yaml | Example of usage                 |
 +----------------------------------+----------------------------------+
