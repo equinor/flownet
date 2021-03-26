@@ -334,27 +334,27 @@ Equilibration
 |        scheme:                   |        scheme: global            |
 |        regions:                  |         regions:                 |
 |          id:                     |           id: None               |
-|          datum_depth:            |           datum_depth:           |
+|          datum_depth:            |           datum_depth: 2500      |
 |          datum_pressure:         |           datum_pressure:        |
-|            min:                  |             min:                 |
-|            max:                  |             max:                 |
+|            min:                  |             min: 250             |
+|            max:                  |             max: 270             |
 |            mean:                 |           owc_depth:             |
-|            base:                 |             min:                 |
-|            stddev:               |             max:                 |
+|            base:                 |             min: 2565            |
+|            stddev:               |             max: 2605            |
 |            distribution:         |           goc_depth:             |
-|          owc_depth:              |             min:                 |
-|            min:                  |             max:                 |
+|          owc_depth:              |             min: 2475            |
+|            min:                  |             max: 2525            |
 |            max:                  |           id: 1                  |
-|            mean:                 |           datum_depth:           |
+|            mean:                 |           datum_depth: 2582      |
 |            base:                 |           datum_pressure:        |
-|            stddev:               |             min:                 |
-|            distribution:         |             max:                 |
+|            stddev:               |             min: 260             |
+|            distribution:         |             max: 280             |
 |          goc_depth:              |           owc_depth:             |
-|            same as for owc_depth |             min:                 |
-|          gwc_depth:              |             max:                 |
+|            same as for owc_depth |             min: 2670            |
+|          gwc_depth:              |             max: 2725            |
 |            same as for owc_depth |           goc_depth:             |
-|                                  |             min:                 |
-|                                  |             max:                 |
+|                                  |             min: 2560            |
+|                                  |             max: 2600            |
 |                                  |                                  |
 +----------------------------------+----------------------------------+
 
