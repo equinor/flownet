@@ -1955,6 +1955,22 @@ def parse_config(
                 "or three columns with headers 'depth','rs' and 'eqlnum'."
             )
 
+    if not config.flownet.prior_volume_distribution in [
+        "voronoi_per_tube",
+        "tube_length",
+    ]:
+        raise ValueError(
+            f"'{config.flownet.prior_volume_distribution}' is not a valid prior volume "
+            "distribution method. You can either use 'voronoi_per_tube' or 'tube_length'."
+        )
+    if (config.flownet.prior_volume_distribution == "voronoi_per_tube") and (
+        config.flownet.data_source.simulation.input_case is None
+    ):
+        raise ValueError(
+            f"'The {config.flownet.prior_volume_distribution}' volume distribution "
+            "method can only be used when a simulation model is supplied as datasource."
+        )
+
     return config
 
 

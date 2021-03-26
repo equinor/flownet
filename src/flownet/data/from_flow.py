@@ -398,16 +398,7 @@ class FlowData(FromSource):
         Returns:
             A list with multipliers for the total bulk volume for each flownet tube cell.
 
-        Raise:
-            NotImplementedError in case a users asks for this type of distribution but is
-            not build a FlowNet up a FlowNet from a simulation file.
         """
-        if not isinstance(network, NetworkModel):
-            raise TypeError(
-                "To be able to distribute volume you need "
-                "to supply the target FlowNet network model that you want to distribute towards."
-            )
-
         flownet_tube_midpoints = np.array(network.get_connection_midpoints())
         model_cell_mid_points = np.array(
             [cell.coordinate for cell in self._grid.cells()]
@@ -419,8 +410,7 @@ class FlowData(FromSource):
         tree = KDTree(flownet_tube_midpoints)
         _, matched_indices = tree.query(model_cell_mid_points, k=[1])
 
-        # Distribute the original model's volume per cell, that lies within the FlowNet model's
-        # convex hull, to flownet tubes that are nearest.
+        # Distribute the original model's volume per cell to flownet tubes that are nearest.
         tube_volumes = np.zeros(len(flownet_tube_midpoints))
 
         for cell_i, tube_id in enumerate(matched_indices):

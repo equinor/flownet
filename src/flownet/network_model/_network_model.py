@@ -101,7 +101,7 @@ class NetworkModel:
 
     @property
     def initial_cell_volumes(self) -> np.ndarray:
-        """Volume distribution multipliers for each grid cell in the flownet.
+        """Initial cell volume for each grid cell in the flownet.
 
         Returns:
             An np.ndarray with multiplier for each FlowNet grid cell's volume.
@@ -110,30 +110,24 @@ class NetworkModel:
 
     @initial_cell_volumes.setter
     def initial_cell_volumes(self, initial_cell_volumes: np.ndarray):
-        """Set
+        """Set the initial cell volume for each grid cell in the flownet.
 
         Args:
-            volume_distribution_multipliers: Array with volume multipliers
-                for each grid cell in the FlowNet. The sum of the multipliers
-                should be 1. If you whish to increase or decrease the bulk
-                volume you could do that using the bulk_volume_multiplier
-                parameter in your FlowNet configuration file.
+            initial_cell_volumes: Array with initial cell volumes
+                for each grid cell in the FlowNet.
 
         Raises:
             TypeError: When the supplied type is not np.ndarray
-            ValueError: When the shape not of (N_gridcells X 1) or
-                when the sum of of the elements is not (close to) 1.
+            ValueError: When the shape not of (N_gridcells X 1).
 
         Returns:
             Nothing
         """
         if not isinstance(initial_cell_volumes, np.ndarray):
-            raise TypeError(
-                "The volume_distribution_multiplier should be of type np.ndarray."
-            )
+            raise TypeError("The initial_cell_volumes should be of type np.ndarray.")
         if initial_cell_volumes.shape[0] != len(self.cell_midpoints[0]):
             raise ValueError(
-                "The shape of the volume_distribution_multipliers np.ndarray should "
+                "The shape of the initial_cell_volumes np.ndarray should "
                 f"be {len(self.cell_midpoints[0])} x 1."
             )
 
