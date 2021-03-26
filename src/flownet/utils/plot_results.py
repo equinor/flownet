@@ -122,6 +122,7 @@ def plot(
     plt.xlabel("date")
     plt.ylabel(vector + " [" + plot_settings["units"] + "]")
     plt.savefig(re.sub(r"[^\w\-_\. ]", "_", vector), dpi=300)
+    plt.close()
 
 
 def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:

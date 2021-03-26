@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - [#356](https://github.com/equinor/flownet/pull/356) Added option to distribute the original volume over the FlowNet tubes in a Voronoi-diagram style. I.e., areas with a high density of FlowNet tubes get a lower volume per tube.
 
 ### Fixes
+- [#374](https://github.com/equinor/flownet/pull/374) Fix for memory leak in result plotting script.
 
 ### Changes
 - [#363](https://github.com/equinor/flownet/pull/363) Drop Python 3.6 support.
