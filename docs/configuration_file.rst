@@ -353,8 +353,8 @@ Equilibration
 |            same as for owc_depth |             min:                 |
 |          gwc_depth:              |             max:                 |
 |            same as for owc_depth |           goc_depth:             |
-|				                           |	           min:                 |
-|	                        			   |	         max:                   |
+|                                  |             min:                 |
+|                                  |             max:                 |
 |                                  |                                  |
 +----------------------------------+----------------------------------+
 
