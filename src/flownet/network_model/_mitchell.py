@@ -95,6 +95,36 @@ def mitchell_best_candidate_modified_3d(
         # 3D cases
         hull = Delaunay(np.column_stack([x, y, z]))
 
+    in_hull = np.asarray([False] * num_candidates)
+    x_candidate = np.zeros(num_candidates)
+    y_candidate = np.zeros(num_candidates)
+    z_candidate = np.zeros(num_candidates)
+
+    # Repeat while not all random points are inside the convex hull
+    while not all(in_hull):
+        # Generate a set of random candidates that will be the new
+        # flow nodes
+        x_candidate_tmp = x_min + np.random.rand(num_candidates) * (x_max - x_min)
+        y_candidate_tmp = y_min + np.random.rand(num_candidates) * (y_max - y_min)
+        z_candidate_tmp = z_min + np.random.rand(num_candidates) * (z_max - z_min)
+
+        # Update the list of flow node candidates. Only the points that previously
+        # were not inside the convex hull are updated.
+        np.putmask(x_candidate, np.invert(in_hull), x_candidate_tmp)
+        np.putmask(y_candidate, np.invert(in_hull), y_candidate_tmp)
+        np.putmask(z_candidate, np.invert(in_hull), z_candidate_tmp)
+
+        candidates = np.vstack([x_candidate, y_candidate, z_candidate]).T
+
+        if concave_hull_bounding_boxes is not None:
+            in_hull = check_in_hull(concave_hull_bounding_boxes, candidates)
+        else:
+            # Test whether all points are inside the convex hull of the perforations
+            if np.all(z == z[0]):
+                in_hull = hull.find_simplex(candidates[:, (0, 1)]) >= 0
+            else:
+                in_hull = hull.find_simplex(candidates) >= 0
+
     # Generate all new flow nodes
     for i in range(num_points, num_points + num_added_flow_nodes):
         mid = time.time()
@@ -104,72 +134,23 @@ def mitchell_best_candidate_modified_3d(
                 f"\rAdding flow nodes:  {int(((i-num_points)/num_added_flow_nodes)*100)}%",
                 end="",
             )
-
-        in_hull = np.asarray([False] * num_candidates)
-        x_candidate = np.zeros(num_candidates)
-        y_candidate = np.zeros(num_candidates)
-        z_candidate = np.zeros(num_candidates)
-
-        # Repeat while not all random points are inside the convex hull
-        while not all(in_hull):
-            # Generate a set of random candidates that will be the new
-            # flow nodes
-            x_candidate_tmp = x_min + np.random.rand(num_candidates) * (x_max - x_min)
-            y_candidate_tmp = y_min + np.random.rand(num_candidates) * (y_max - y_min)
-            z_candidate_tmp = z_min + np.random.rand(num_candidates) * (z_max - z_min)
-
-            # Update the list of flow node candidates. Only the points that previously
-            # were not inside the convex hull are updated.
-            np.putmask(x_candidate, np.invert(in_hull), x_candidate_tmp)
-            np.putmask(y_candidate, np.invert(in_hull), y_candidate_tmp)
-            np.putmask(z_candidate, np.invert(in_hull), z_candidate_tmp)
-
-            candidates = np.vstack([x_candidate, y_candidate, z_candidate]).T
-
-            if concave_hull_bounding_boxes is not None:
-                in_hull = check_in_hull(concave_hull_bounding_boxes, candidates)
-            else:
-                # Test whether all points are inside the convex hull of the perforations
-                if np.all(z == z[0]):
-                    in_hull = hull.find_simplex(candidates[:, (0, 1)]) >= 0
-                else:
-                    in_hull = hull.find_simplex(candidates) >= 0
-
-        best_distance = 0
-        best_candidate = 0
-        # Loop through all generated candidates
-        for j in range(0, num_candidates):
-            # Calculate the distance (in x,y,z direction, relative to the size of the convex hull) to all points
-            # already in the FlowNet
-            delta_x_relative = np.power(
-                ((x[0:i] - x_candidate[j]) / (x_max - x_min)), 2
-            )
-            delta_y_relative = np.power(
-                ((y[0:i] - y_candidate[j]) / (y_max - y_min)), 2
-            )
-            if np.all(z == z[0]):
-                delta_z_relative = 0
-            else:
-                delta_z_relative = np.power(
-                    ((z[0:i] - z_candidate[j]) / (z_max - z_min)), 2
-                )
-            dists = np.sqrt(delta_x_relative + delta_y_relative + delta_z_relative)
-
-            # Select the shortest distance
-            dist = np.min(dists)
-
-            # Check if the shortest is larger than any of the previously
-            # generated candidates.
-            if dist > best_distance:
-                # If the requirement is satisfied, set the current candidate as
-                # the best candidate
-                best_distance = dist
-                best_candidate = j
+        
+        delta_x_relative = np.power((x.repeat(num_candidates) - x_candidate.repeat(x.shape[0])) / (x_max-x_min), 2)
+        delta_y_relative = np.power((y.repeat(num_candidates) - y_candidate.repeat(y.shape[0])) / (y_max-y_min), 2)
+        if np.all(z == z[0]):
+            delta_z_relative = 0
+        else:
+            delta_z_relative = np.power((z.repeat(num_candidates) - z_candidate.repeat(z.shape[0]) / (x_max-x_min)), 2)
+        
+        dists = np.sqrt(delta_x_relative + delta_y_relative + delta_z_relative)
+        best_candidate = np.argmax(dists)
 
         # Add the best candidate's coordinates; a new flow node is added
-        x = np.append(x, x_candidate[best_candidate])
-        y = np.append(y, y_candidate[best_candidate])
-        z = np.append(z, z_candidate[best_candidate])
+        x = np.append(x, x_candidate.repeat(x.shape[0])[best_candidate])
+        y = np.append(y, y_candidate.repeat(y.shape[0])[best_candidate])
+        z = np.append(z, z_candidate.repeat(z.shape[0])[best_candidate])
+
+        # Replace single candidate that has been used by a new one? 
 
     print("\rAdding flow nodes:  100%\ndone.")
 
