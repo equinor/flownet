@@ -93,15 +93,16 @@ def mitchell_best_candidate_modified_3d(
         z_hull = z
 
     if place_nodes_in_volume_reservoir:
-        x_mins, x_maxs, y_mins, y_maxs, z_mins, z_maxs = (
-            np.asarray(t) for t in zip(*concave_hull_bounding_boxes)
+        x_mins, x_maxs, y_mins, y_maxs, z_mins, z_maxs = np.hsplit(
+            concave_hull_bounding_boxes, 6
         )
-        x_min = min(x_mins + x_maxs)
-        x_max = max(x_mins + x_maxs)
-        y_min = min(y_mins + y_maxs)
-        y_max = max(y_mins + y_maxs)
-        z_min = min(z_mins + z_maxs)
-        x_max = max(z_mins + z_maxs)
+
+        x_min = min(x_mins)[0]
+        x_max = max(x_maxs)[0]
+        y_min = min(y_mins)[0]
+        y_max = max(y_maxs)[0]
+        z_min = min(z_mins)[0]
+        z_max = max(z_maxs)[0]
 
     # Determine the convex hull of the original or linearly scaled perforations
     if np.all(z == z[0]):
