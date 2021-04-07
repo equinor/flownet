@@ -1,7 +1,7 @@
 from typing import List, Optional
 import time
 
-from scipy.spatial import Delaunay, ConvexHull  # pylint: disable=no-name-in-module
+from scipy.spatial import Delaunay  # pylint: disable=no-name-in-module
 import numpy as np
 
 from ..utils.types import Coordinate
@@ -13,7 +13,7 @@ def mitchell_best_candidate_modified_3d(
     num_added_flow_nodes: int,
     num_candidates: int = 1000,
     place_nodes_in_volume_reservoir: Optional[bool] = None,
-    hull_factor: Optional[float] = None,
+    hull_factor: Optional[float] = 1.0,
     concave_hull_bounding_boxes: Optional[np.ndarray] = None,
     random_seed: Optional[int] = None,
 ) -> List[Coordinate]:
@@ -38,7 +38,7 @@ def mitchell_best_candidate_modified_3d(
             the bounding box of the reservoir or layer instead of the bounding box of the well perforations.
         hull_factor: Factor to linearly scale the convex hull with. Factor will
             scale the distance of each point from the centroid of all the points.
-            When a None is supplied a box-shape is used.
+            When hull_factor is 1.0 a box-shape is used.
         concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
         random_seed: Random seed to control the reproducibility of the FlowNet.
 
@@ -58,40 +58,7 @@ def mitchell_best_candidate_modified_3d(
     # Number of real wells
     num_points = len(x)
 
-    x_hull = np.zeros(num_points)
-    y_hull = np.zeros(num_points)
-    z_hull = np.zeros(num_points)
-
-    # Determine whether the complex hull needs to be scaled
-    if not np.isclose(hull_factor, 1.0):
-        # Calculate the centroid of all real perforations
-        centroid = (sum(x) / num_points, sum(y) / num_points, sum(z) / num_points)
-
-        # Loop through all real perforation locations
-        for count, point in enumerate(perforations):
-            # Linearly scale the well perforation's location relative to the centroid
-            moved_points = np.add(hull_factor * np.subtract(point, centroid), centroid)
-            x_hull[count] = moved_points[0]
-            y_hull[count] = moved_points[1]
-            z_hull[count] = moved_points[2]
-
-        x_min = min(x_hull)
-        x_max = max(x_hull)
-        y_min = min(y_hull)
-        y_max = max(y_hull)
-        z_min = min(z_hull)
-        z_max = max(z_hull)
-    else:
-        x_min = min(x)
-        x_max = max(x)
-        y_min = min(y)
-        y_max = max(y)
-        z_min = min(z)
-        z_max = max(z)
-        x_hull = x
-        y_hull = y
-        z_hull = z
-
+    # Bounding box to place initial candidates in: reservoir volume or (scaled) concave hull of real perforations.
     if place_nodes_in_volume_reservoir:
         x_mins, x_maxs, y_mins, y_maxs, z_mins, z_maxs = np.hsplit(
             concave_hull_bounding_boxes, 6
@@ -103,15 +70,51 @@ def mitchell_best_candidate_modified_3d(
         y_max = max(y_maxs)[0]
         z_min = min(z_mins)[0]
         z_max = max(z_maxs)[0]
-
-    # Determine the convex hull of the original or linearly scaled perforations
-    if np.all(z == z[0]):
-        # 2D cases
-        hull = Delaunay(np.column_stack([x_hull, y_hull]))
     else:
-        # 3D cases
-        hull = Delaunay(np.column_stack([x_hull, y_hull, z_hull]))
-        # hull = ConvexHull(np.column_stack([x_hull, y_hull, z_hull]))
+        x_hull = np.zeros(num_points)
+        y_hull = np.zeros(num_points)
+        z_hull = np.zeros(num_points)
+
+        # Determine whether the complex hull needs to be scaled
+        if not np.isclose(hull_factor, 1.0):
+            # Calculate the centroid of all real perforations
+            centroid = (sum(x) / num_points, sum(y) / num_points, sum(z) / num_points)
+
+            # Loop through all real perforation locations
+            for count, point in enumerate(perforations):
+                # Linearly scale the well perforation's location relative to the centroid
+                moved_points = np.add(
+                    hull_factor * np.subtract(point, centroid), centroid
+                )
+                x_hull[count] = moved_points[0]
+                y_hull[count] = moved_points[1]
+                z_hull[count] = moved_points[2]
+
+            x_min = min(x_hull)
+            x_max = max(x_hull)
+            y_min = min(y_hull)
+            y_max = max(y_hull)
+            z_min = min(z_hull)
+            z_max = max(z_hull)
+        else:
+            x_min = min(x)
+            x_max = max(x)
+            y_min = min(y)
+            y_max = max(y)
+            z_min = min(z)
+            z_max = max(z)
+            x_hull = x
+            y_hull = y
+            z_hull = z
+
+        # Determine the convex hull of the original or linearly scaled perforations
+        if np.all(z == z[0]):
+            # 2D cases
+            perforation_hull = Delaunay(np.column_stack([x_hull, y_hull]))
+        else:
+            # 3D cases
+            perforation_hull = Delaunay(np.column_stack([x_hull, y_hull, z_hull]))
+
     # Generate all new flow nodes
     for i in range(num_points, num_points + num_added_flow_nodes):
         mid = time.time()
@@ -144,13 +147,15 @@ def mitchell_best_candidate_modified_3d(
             candidates = np.vstack([x_candidate, y_candidate, z_candidate]).T
 
             if concave_hull_bounding_boxes is not None:
+                # Test whether all points are inside the bounding boxes of the gridcells of the reservoir volume.
+                # This is the always the case when place_nodes_in_volume_reservoir is True.
                 in_hull = check_in_hull(concave_hull_bounding_boxes, candidates)
             else:
                 # Test whether all points are inside the convex hull of the perforations
                 if np.all(z == z[0]):
-                    in_hull = hull.find_simplex(candidates[:, (0, 1)]) >= 0
+                    in_hull = perforation_hull.find_simplex(candidates[:, (0, 1)]) >= 0
                 else:
-                    in_hull = hull.find_simplex(candidates) >= 0
+                    in_hull = perforation_hull.find_simplex(candidates) >= 0
 
         best_distance = 0
         best_candidate = 0

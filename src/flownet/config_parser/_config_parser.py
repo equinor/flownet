@@ -272,7 +272,13 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 "are supported,  e.g. weekly (W), monthly (M), quarterly (Q), "
                                 "yearly (A)",
                             },
-                            "concave_hull": {MK.Type: types.Bool, MK.AllowNone: True},
+                            "concave_hull": {
+                                MK.Type: types.Bool,
+                                MK.AllowNone: True,
+                                MK.Description: "When true, the bounding boxes of the gridcells of the "
+                                "original reservoir model are used check if the generated additional "
+                                "nodes are positioned within the reservoir volume.",
+                            },
                         },
                     },
                     "constraining": {
@@ -361,7 +367,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Type: types.List,
                         MK.Description: "List of additional flow nodes to add "
                         "for each layer or single integer which will be "
-                        "split over the layers, when they are defined.",
+                        "split over the layers, when layers are defined.",
                         MK.LayerTransformation: _integer_to_list,
                         MK.Content: {
                             MK.Item: {
@@ -379,14 +385,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     "place_nodes_in_volume_reservoir": {
                         MK.Type: types.Bool,
                         MK.AllowNone: True,
-                        MK.Description: "Use boundary of reservoir/layer volume as "
-                        "bounding cube to place additional well nodes",
+                        MK.Description: "When true use boundary of reservoir/layer volume as "
+                        "bounding cube to place initial candidates instead of concave hull of well perforations",
                     },
                     "hull_factor": {
                         MK.Type: types.Number,
                         MK.Default: 1.2,
-                        MK.Description: "Increase the bounding cube around the well "
-                        "perforations to place additional nodes.",
+                        MK.Description: "Increase the size of the bounding cube around the well "
+                        "perforations to place additional nodes in.",
                     },
                     "random_seed": {
                         MK.Type: types.Number,
@@ -1685,6 +1691,15 @@ def parse_config(
         raise ValueError(
             "You supplied multiple entries for the additional flow nodes but "
             "there is only a single layer."
+        )
+
+    if (
+        config.flownet.place_nodes_in_volume_reservoir
+        and not config.flownet.data_source.concave_hull
+    ):
+        raise ValueError(
+            "concave_hull needs to be true for flownet to be able to "
+            "place candidates within the reservoir volume"
         )
 
     req_relp_parameters: List[str] = []
