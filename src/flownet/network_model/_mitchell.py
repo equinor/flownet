@@ -13,7 +13,7 @@ def mitchell_best_candidate_modified_3d(
     num_added_flow_nodes: int,
     num_candidates: int = 1000,
     place_nodes_in_volume_reservoir: Optional[bool] = None,
-    hull_factor: Optional[float] = 1.0,
+    hull_factor: float = 1.2,
     concave_hull_bounding_boxes: Optional[np.ndarray] = None,
     random_seed: Optional[int] = None,
 ) -> List[Coordinate]:
