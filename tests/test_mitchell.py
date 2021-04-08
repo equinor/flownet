@@ -1,8 +1,13 @@
 from typing import List
 
 import numpy as np
+from scipy.spatial import Delaunay  # pylint: disable=no-name-in-module
 
-from flownet.network_model._mitchell import mitchell_best_candidate_modified_3d
+from flownet.network_model._mitchell import (
+    mitchell_best_candidate_modified_3d,
+    scale_concave_hull_perforations,
+)
+from flownet.network_model._hull import check_in_hull
 from src.flownet.utils.types import Coordinate
 
 
@@ -120,20 +125,9 @@ def test_hull_factor_mitchell() -> None:
         )
     ]
 
-    x, y, z = (np.asarray(t) for t in zip(*well_perforations_2d))
-    centroid = (sum(x) / len(x), sum(y) / len(y), sum(z) / len(z))
-
-    x_hull = np.zeros(len(x))
-    y_hull = np.zeros(len(y))
-    z_hull = np.zeros(len(z))
-
-    # Loop through all real perforation locations
-    for count, point in enumerate(well_perforations_2d):
-        # Linearly scale the well perforation's location relative to the centroid
-        moved_points = np.add(hull_factor * np.subtract(point, centroid), centroid)
-        x_hull[count] = moved_points[0]
-        y_hull[count] = moved_points[1]
-        z_hull[count] = moved_points[2]
+    x_hull, y_hull, z_hull = scale_concave_hull_perforations(
+        well_perforations_2d, hull_factor
+    )
 
     assert len(coordinates) == (len(well_perforations_2d) + num_added_flow_nodes)
     assert np.all([x[0] >= min(x_hull) for x in coordinates])
@@ -141,3 +135,45 @@ def test_hull_factor_mitchell() -> None:
     assert np.all([y[1] >= min(y_hull) for y in coordinates])
     assert np.all([y[1] <= max(y_hull) for y in coordinates])
     assert np.all([z[2] == z_hull[0] for z in coordinates])
+
+
+def test_nodes_in_reservoir_volume_mitchells() -> None:
+    well_perforations_3d = [
+        [0.5, 0.5, 1.0],
+        [0.5, 2.5, 0.5],
+        [1.5, 5.5, 1.5],
+        [3.5, 0.5, 1.0],
+    ]
+
+    concave_hull_bounding_boxes = np.array(
+        [
+            [0.0, 2.0, 0.0, 2.0, 0.0, 2.0],
+            [2.0, 3.0, 0.0, 2.0, 0.0, 2.0],
+            [3.0, 5.0, 0.0, 2.0, 0.0, 2.0],
+            [0.0, 2.0, 2.0, 4.0, 0.0, 2.0],
+            [0.0, 2.0, 4.0, 6.0, 0.0, 2.0],
+            [2.0, 5.0, 4.0, 6.0, 0.0, 2.0],
+            [5.0, 7.0, 4.0, 6.0, 0.0, 2.0],
+            [5.0, 20.0, 6.0, 20.0, 0.0, 2.0],
+        ]
+    )
+
+    coordinates: List[Coordinate] = [
+        tuple(elem)
+        for elem in mitchell_best_candidate_modified_3d(
+            well_perforations_3d,
+            num_added_flow_nodes=20,
+            num_candidates=500,
+            place_nodes_in_volume_reservoir=True,
+            hull_factor=1.0,
+            concave_hull_bounding_boxes=concave_hull_bounding_boxes,
+            random_seed=999,
+        )
+    ]
+
+    perforation_hull = Delaunay(np.array(well_perforations_3d))
+    in_hull_perforations = perforation_hull.find_simplex(np.array(coordinates))
+
+    in_hull_volume = check_in_hull(concave_hull_bounding_boxes, np.array(coordinates))
+    assert in_hull_volume.all()
+    assert any(x == -1 for x in in_hull_perforations)

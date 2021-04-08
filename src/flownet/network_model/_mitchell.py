@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 import time
 
 from scipy.spatial import Delaunay  # pylint: disable=no-name-in-module
@@ -71,25 +71,11 @@ def mitchell_best_candidate_modified_3d(
         z_min = min(z_mins)[0]
         z_max = max(z_maxs)[0]
     else:
-        x_hull = np.zeros(num_points)
-        y_hull = np.zeros(num_points)
-        z_hull = np.zeros(num_points)
-
         # Determine whether the complex hull needs to be scaled
         if not np.isclose(hull_factor, 1.0):
-            # Calculate the centroid of all real perforations
-            centroid = (sum(x) / num_points, sum(y) / num_points, sum(z) / num_points)
-
-            # Loop through all real perforation locations
-            for count, point in enumerate(perforations):
-                # Linearly scale the well perforation's location relative to the centroid
-                moved_points = np.add(
-                    hull_factor * np.subtract(point, centroid), centroid
-                )
-                x_hull[count] = moved_points[0]
-                y_hull[count] = moved_points[1]
-                z_hull[count] = moved_points[2]
-
+            x_hull, y_hull, z_hull = scale_concave_hull_perforations(
+                perforations, hull_factor
+            )
             x_min = min(x_hull)
             x_max = max(x_hull)
             y_min = min(y_hull)
@@ -197,3 +183,41 @@ def mitchell_best_candidate_modified_3d(
 
     # Return the real/original and added flow node coordinates as a list of tuples.
     return [(x[i], y[i], z[i]) for i in range(len(x))]
+
+
+def scale_concave_hull_perforations(
+    perforations: List[Coordinate], hull_factor: float
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+
+
+    Args:
+        perforations: Python list of real well coordinate tuples
+            [(xr_1, yr_1, zr_1), ..., (xr_N, yr_N, zr_N)]
+        hull_factor: Factor to linearly scale the convex hull with. Factor will
+            scale the distance of each point from the centroid of all the points.
+    Returns:
+        The tuple consisting of numpy arrays of x,y,z moved points based on the hull_factor,
+        which are used further on in the code to create a concave hull around the real wells.
+
+    """
+
+    x, y, z = (np.asarray(t) for t in zip(*perforations))
+    num_points = len(x)
+
+    x_hull = np.zeros(num_points)
+    y_hull = np.zeros(num_points)
+    z_hull = np.zeros(num_points)
+
+    # Calculate the centroid of all real perforations
+    centroid = (sum(x) / num_points, sum(y) / num_points, sum(z) / num_points)
+
+    # Loop through all real perforation locations
+    for count, point in enumerate(perforations):
+        # Linearly scale the well perforation's location relative to the centroid
+        moved_points = np.add(hull_factor * np.subtract(point, centroid), centroid)
+        x_hull[count] = moved_points[0]
+        y_hull[count] = moved_points[1]
+        z_hull[count] = moved_points[2]
+
+    return x_hull, y_hull, z_hull
