@@ -276,7 +276,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 MK.Type: types.Bool,
                                 MK.AllowNone: True,
                                 MK.Description: "When true, the bounding boxes of the gridcells of the "
-                                "original reservoir model are used check if the generated additional "
+                                "original reservoir model are used to check if the generated additional "
                                 "nodes are positioned within the reservoir volume.",
                             },
                         },
@@ -386,12 +386,12 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Type: types.Bool,
                         MK.AllowNone: True,
                         MK.Description: "When true use boundary of reservoir/layer volume as "
-                        "bounding cube to place initial candidates instead of concave hull of well perforations",
+                        "bounding volume to place initial candidates instead of concave hull of well perforations.",
                     },
                     "hull_factor": {
                         MK.Type: types.Number,
                         MK.Default: 1.2,
-                        MK.Description: "Increase the size of the bounding cube around the well "
+                        MK.Description: "Increase the size of the bounding volume around the well "
                         "perforations to place additional nodes in.",
                     },
                     "random_seed": {
@@ -1699,7 +1699,7 @@ def parse_config(
     ):
         raise ValueError(
             "concave_hull needs to be true for flownet to be able to "
-            "place candidates within the reservoir volume"
+            "place candidates within the reservoir volume."
         )
 
     req_relp_parameters: List[str] = []
