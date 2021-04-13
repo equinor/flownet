@@ -189,7 +189,9 @@ def scale_concave_hull_perforations(
     perforations: List[Coordinate], hull_factor: float
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
-
+    Linear scaling of the perforation points based on the hull_factor. Factor will
+    scale the distance of each point from the centroid of all the points.
+    These scaled points are used to create a concave hull in which additional flow nodes will be placed.
 
     Args:
         perforations: Python list of real well coordinate tuples
@@ -201,7 +203,6 @@ def scale_concave_hull_perforations(
         which are used further on in the code to create a concave hull around the real wells.
 
     """
-
     x, y, z = (np.asarray(t) for t in zip(*perforations))
     num_points = len(x)
 
