@@ -386,7 +386,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Type: types.Bool,
                         MK.AllowNone: True,
                         MK.Description: "When true use boundary of reservoir/layer volume as "
-                        "bounding volume to place initial candidates instead of concave hull of well perforations.",
+                        "bounding volume to place initial candidates instead of convex hull of well perforations.",
                     },
                     "hull_factor": {
                         MK.Type: types.Number,

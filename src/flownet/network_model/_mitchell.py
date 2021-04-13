@@ -11,9 +11,9 @@ from ._hull import check_in_hull
 def mitchell_best_candidate_modified_3d(
     perforations: List[Coordinate],
     num_added_flow_nodes: int,
-    num_candidates: int = 1000,
+    num_candidates: int,
+    hull_factor: float,
     place_nodes_in_volume_reservoir: Optional[bool] = None,
-    hull_factor: float = 1.2,
     concave_hull_bounding_boxes: Optional[np.ndarray] = None,
     random_seed: Optional[int] = None,
 ) -> List[Coordinate]:
@@ -38,7 +38,7 @@ def mitchell_best_candidate_modified_3d(
             the bounding box of the reservoir or layer instead of the bounding box of the well perforations.
         hull_factor: Factor to linearly scale the convex hull with. Factor will
             scale the distance of each point from the centroid of all the points.
-            When hull_factor is 1.0 a box-shape is used.
+            When hull_factor is 1.0 a box-shape is used. Default defined in config parser is 1.2.
         concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
         random_seed: Random seed to control the reproducibility of the FlowNet.
 
@@ -58,7 +58,7 @@ def mitchell_best_candidate_modified_3d(
     # Number of real wells
     num_points = len(x)
 
-    # Bounding box to place initial candidates in: reservoir volume or (scaled) concave hull of real perforations.
+    # Bounding box to place initial candidates in: reservoir volume or (scaled) convex hull of real perforations.
     if place_nodes_in_volume_reservoir:
         x_mins, x_maxs, y_mins, y_maxs, z_mins, z_maxs = np.hsplit(
             concave_hull_bounding_boxes, 6
@@ -71,9 +71,9 @@ def mitchell_best_candidate_modified_3d(
         z_min = min(z_mins)[0]
         z_max = max(z_maxs)[0]
     else:
-        # Determine whether the complex hull needs to be scaled
+        # Determine whether the convex hull needs to be scaled
         if not np.isclose(hull_factor, 1.0):
-            x_hull, y_hull, z_hull = scale_concave_hull_perforations(
+            x_hull, y_hull, z_hull = scale_convex_hull_perforations(
                 perforations, hull_factor
             )
             x_min = min(x_hull)
@@ -185,13 +185,13 @@ def mitchell_best_candidate_modified_3d(
     return [(x[i], y[i], z[i]) for i in range(len(x))]
 
 
-def scale_concave_hull_perforations(
+def scale_convex_hull_perforations(
     perforations: List[Coordinate], hull_factor: float
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Linear scaling of the perforation points based on the hull_factor. Factor will
     scale the distance of each point from the centroid of all the points.
-    These scaled points are used to create a concave hull in which additional flow nodes will be placed.
+    These scaled points are used to create a convex hull in which additional flow nodes will be placed.
 
     Args:
         perforations: Python list of real well coordinate tuples
@@ -200,7 +200,7 @@ def scale_concave_hull_perforations(
             scale the distance of each point from the centroid of all the points.
     Returns:
         The tuple consisting of numpy arrays of x,y,z moved points based on the hull_factor,
-        which are used further on in the code to create a concave hull around the real wells.
+        which are used further on in the code to create a convex hull around the real wells (perforations).
 
     """
     x, y, z = (np.asarray(t) for t in zip(*perforations))
