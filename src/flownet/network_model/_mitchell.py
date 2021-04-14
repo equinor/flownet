@@ -38,7 +38,7 @@ def mitchell_best_candidate_modified_3d(
             the bounding box of the reservoir or layer instead of the bounding box of the well perforations.
         hull_factor: Factor to linearly scale the convex hull with. Factor will
             scale the distance of each point from the centroid of all the points.
-            When hull_factor is 1.0 a box-shape is used. Default defined in config parser is 1.2.
+            Default defined in config parser is 1.2.
         concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
         random_seed: Random seed to control the reproducibility of the FlowNet.
 
