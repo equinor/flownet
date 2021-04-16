@@ -515,7 +515,8 @@ class NetworkModel:
 
     def bulk_volume_per_flownet_cell_based_on_tube_length(self) -> np.ndarray:
         """Generate bulk volume per flownet grid cell based on the total length
-        of each tube in the FlowNet and the convex hull on the FlowNet network.
+        of the active cells in each tube in the FlowNet and the convex hull on
+        the FlowNet network.
 
         Args:
             network: FlowNet network instance.
@@ -526,7 +527,7 @@ class NetworkModel:
         return (
             self.total_bulkvolume
             * self.grid["cell_length"].values
-            / self.grid["cell_length"].sum()
+            / self.grid.loc[self.grid["ACTNUM"] == 1, "cell_length"].sum()
         )
 
     @property
