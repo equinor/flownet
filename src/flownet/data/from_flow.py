@@ -404,7 +404,10 @@ class FlowData(FromSource):
             [cell.coordinate for cell in self._grid.cells()]
         )
         model_cell_active_state = [cell.active for cell in self._grid.cells()]
-        model_cell_volume = [cell.volume for cell in self._grid.cells()]
+        model_cell_volume = [
+            (cell.volume * self._init.iget_named_kw("NTG", 0)[cell.active_index])
+            for cell in self._grid.cells()
+        ]
 
         # Determine nearest flow tube for each cell in the original model
         tree = KDTree(flownet_tube_midpoints)
