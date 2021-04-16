@@ -6,8 +6,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 - [#356](https://github.com/equinor/flownet/pull/356) Added option to distribute the original volume over the FlowNet tubes in a Voronoi-diagram style. I.e., areas with a high density of FlowNet tubes get a lower volume per tube.
+- [#372](https://github.com/equinor/flownet/pull/372) Added option to let the additional flownodes initially be placed within the original volume rather than within the convex hull of the real wells. To do this set place_nodes_in_volume_reservoir to true.
 
 ### Fixes
+- [#372](https://github.com/equinor/flownet/pull/372) Fixes bug of hull_factor not actually being used for placing additional nodes outside the perforations.
 - [#374](https://github.com/equinor/flownet/pull/374) Fix for memory leak in result plotting script.
 
 ### Changes
