@@ -239,9 +239,9 @@ The input related to relative permeability modelling has its own section in the 
 
 scheme
   The scheme parameter decides how many sets of relative permeability curves to generate as
-  input to Flow. There are three options. With **shceme: global** only one set of relative 
+  input to Flow. There are three options. With **scheme: global** only one set of relative 
   permeability curves will be generated, and applied to all flow tubes in the model. With
-  **shceme: individual** all flow tubes in the model will have its own set of relative permeability
+  **scheme: individual** all flow tubes in the model will have its own set of relative permeability
   curves. With **scheme: regions_from_sim** FlowNet will extract the SATNUM regions from the 
   input model provided, and assign the same set of relative permeability curves to all flow tubes 
   that are (mostly) located within the same SATNUM region. The default value is global.
@@ -360,9 +360,9 @@ Equilibration
 
 scheme
   The scheme parameter decides how many equilibration regions to generate as
-  input to Flow. There are three options. With **shceme: global** the model will only have one  
+  input to Flow. There are three options. With **scheme: global** the model will only have one  
   equilibration region, and applied to all flow tubes in the model. With
-  **shceme: individual** all flow tubes in the model will act as its own equilibration region. 
+  **scheme: individual** all flow tubes in the model will act as its own equilibration region. 
   With **scheme: regions_from_sim** FlowNet will extract the EQLNUM regions from the 
   input model provided, and assign equilibraion regions to all flow tubes accordingly. 
   The default value is global.
