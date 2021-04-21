@@ -101,6 +101,7 @@ def test_generate_connections() -> None:
     config.flownet = collections.namedtuple("flownet", "additional_flow_nodes")
     config.flownet.additional_flow_nodes = 2
     config.flownet.additional_node_candidates = 2
+    config.flownet.place_nodes_in_volume_reservoir = None
     config.flownet.hull_factor = 1
     config.flownet.random_seed = 1
     config.flownet.angle_threshold = None
@@ -113,8 +114,8 @@ def test_generate_connections() -> None:
     )
 
     assert len(starts) == len(ends)
-    assert all([starts[i] == approx(STARTS_NONE[i]) for i in range(len(starts))])
-    assert all([ends[i] == approx(ENDS_NONE[i]) for i in range(len(ends))])
+    assert all(starts[i] == approx(STARTS_NONE[i]) for i in range(len(starts)))
+    assert all(ends[i] == approx(ENDS_NONE[i]) for i in range(len(ends)))
 
     starts, ends = _generate_connections(
         df_coordinates=DF_COORDINATES,

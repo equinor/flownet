@@ -131,7 +131,11 @@ def _split_additional_flow_nodes(
 
     fractions = [v / sum(volumes) for v in volumes]
     sep_add_flownodes = [round(frac * total_additional_nodes) for frac in fractions]
-
+    print(
+        f"The total {str(total_additional_nodes)} additional flow nodes "
+        "are split over the layers based on the volume of the bounding boxes, "
+        f"{str(sep_add_flownodes)}."
+    )
     return sep_add_flownodes
 
 
@@ -174,6 +178,7 @@ def _generate_connections(
             num_added_flow_nodes=additional_flow_nodes,
             num_candidates=configuration.flownet.additional_node_candidates,
             hull_factor=configuration.flownet.hull_factor,
+            place_nodes_in_volume_reservoir=configuration.flownet.place_nodes_in_volume_reservoir,
             concave_hull_bounding_boxes=concave_hull_bounding_boxes,
             random_seed=configuration.flownet.random_seed,
         )
@@ -412,10 +417,10 @@ def _create_entity_connection_matrix(
             ).T
 
             if not any(
-                [
+                (
                     all(check_in_hull(concave_hull, tube_coordinates))
                     for concave_hull in concave_hull_list
-                ]
+                )
             ):
                 continue
 
@@ -590,13 +595,17 @@ def create_connections(
         Desired restructuring of start-end coordinates into separate columns, as per Flow needs.
 
     """
-    if df_coordinates["LAYER_ID"].nunique() > 1 and concave_hull_list is not None:
+    if (
+        df_coordinates["LAYER_ID"].nunique() > 1
+        and concave_hull_list is not None
+        and len(configuration.flownet.additional_flow_nodes) == 1
+    ):
         additional_flow_nodes_list = _split_additional_flow_nodes(
-            total_additional_nodes=configuration.flownet.additional_flow_nodes,
+            total_additional_nodes=configuration.flownet.additional_flow_nodes[0],
             concave_hull_list=concave_hull_list,
         )
     else:
-        additional_flow_nodes_list = [configuration.flownet.additional_flow_nodes]
+        additional_flow_nodes_list = list(configuration.flownet.additional_flow_nodes)
 
     starts: List[Coordinate] = []
     ends: List[Coordinate] = []

@@ -179,7 +179,11 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     output_folder = pathlib.Path(args.output_folder)
     os.makedirs(output_folder, exist_ok=True)
 
-    if not prediction_setup:
+    if prediction_setup and config.ert.ref_sim:
+        path_ref_sim = pathlib.Path(config.ert.ref_sim).resolve()
+        mode = "pred"
+    elif not prediction_setup:
+        mode = "ahm"
         # Derive absolute path to reference simulation case
         if config.flownet.data_source.simulation.input_case:
             path_ref_sim = pathlib.Path(
@@ -206,13 +210,6 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     with open(output_folder / "parameters.pickled", "wb") as fh:
         pickle.dump(parameters, fh)
 
-    if hasattr(config.ert, "analysis"):
-        analysis_metric = "[" + ",".join(list(config.ert.analysis.metric)) + "]"
-        analysis_quantity = "[" + ",".join(list(config.ert.analysis.quantity)) + "]"
-    else:
-        analysis_metric = str(None)
-        analysis_quantity = str(None)
-
     configuration = {
         "pickled_network": output_folder.resolve() / "network.pickled",
         "pickled_schedule": output_folder.resolve() / "schedule.pickled",
@@ -221,8 +218,6 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         "random_seed": None,
         "debug": args.debug if hasattr(args, "debug") else False,
         "pred_schedule_file": getattr(config.ert, "pred_schedule_file", None),
-        "analysis_metric": analysis_metric,
-        "analysis_quantity": analysis_quantity,
     }
 
     if not prediction_setup:
@@ -264,14 +259,37 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     )
 
     shutil.copyfile(
-        _MODULE_FOLDER / ".." / "static" / "SAVE_ITERATION_ANALYTICS_WORKFLOW",
-        output_folder / "SAVE_ITERATION_ANALYTICS_WORKFLOW",
-    )
-
-    shutil.copyfile(
         _MODULE_FOLDER / ".." / "static" / "SAVE_ITERATION_ANALYTICS_WORKFLOW_JOB",
         output_folder / "SAVE_ITERATION_ANALYTICS_WORKFLOW_JOB",
     )
+
+    analytics_workflow_template = _TEMPLATE_ENVIRONMENT.get_template(
+        "SAVE_ITERATION_ANALYTICS_WORKFLOW.jinja2"
+    )
+    if hasattr(config.ert, "analysis"):
+        for i, analysis_item in enumerate(config.ert.analysis):
+            with open(
+                output_folder / f"SAVE_ITERATION_ANALYTICS_WORKFLOW_{i}", "w"
+            ) as fh:
+                fh.write(
+                    analytics_workflow_template.render(
+                        {
+                            "mode": mode,
+                            "reference_simulation": path_ref_sim,
+                            "run_path": config.ert.runpath,
+                            "ecl_base": config.ert.eclbase,
+                            "analysis_start": analysis_item.start,
+                            "analysis_end": analysis_item.end,
+                            "analysis_quantity": "["
+                            + ",".join(list(analysis_item.quantity))
+                            + "]",
+                            "analysis_metric": "["
+                            + ",".join(list(analysis_item.metric))
+                            + "]",
+                            "analysis_outfile": analysis_item.outfile,
+                        }
+                    )
+                )
 
     shutil.copyfile(args.config, output_folder / args.config.name)
     with open(os.path.join(output_folder, "pipfreeze.output"), "w") as fh:
@@ -285,6 +303,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         else:
             # Otherwise create an empty one.
             (output_folder / f"{section}.inc").touch()
+
     if not prediction_setup:
         if parameters is not None:
             create_observation_file(
