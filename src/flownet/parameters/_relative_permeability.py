@@ -217,6 +217,9 @@ class RelativePermeability(Parameter):
         self._independent_interpolation = (
             config.model_parameters.relative_permeability.independent_interpolation
         )
+        self._swcr_add_to_swl = (
+            config.model_parameters.relative_permeability.swcr_add_to_swl
+        )
 
     def _check_parameters(self) -> Tuple[bool, bool]:
         """
@@ -361,6 +364,8 @@ class RelativePermeability(Parameter):
         else:
             for param in parameters:
                 if self._swof:
+                    if self._swcr_add_to_swl:
+                        param["swcr"] = param["swl"] + param["swcr"]
                     str_swofs += swof_from_parameters(param) + "\n/\n"
                 if self._sgof:
                     str_sgofs += sgof_from_parameters(param) + "\n/\n"
