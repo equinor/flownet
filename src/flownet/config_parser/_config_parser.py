@@ -805,7 +805,9 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             "swcr_add_to_swl": {
                                 MK.Type: types.Bool,
                                 MK.Description: "Allows for calculating SWCR by adding a number to SWL. Especially useful "
-                                "to avoid non-physical values when defining prior distributions",
+                                "to avoid non-physical values when defining prior distributions. If this parameter is set "
+                                "to true, the numbers defined under swcr will be used to define a prior distribution for "
+                                "the delta value added to SWL, instead of defining the prior distribution for SWCR directly.",
                                 MK.Default: False,
                             },
                             "regions": {
