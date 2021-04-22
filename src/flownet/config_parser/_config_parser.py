@@ -443,6 +443,26 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Description: "Minimum allowed permeability in mD before a tube is removed "
                         "(i.e., its cells are made inactive).",
                     },
+                    "prior_volume_distribution": {
+                        MK.Type: types.String,
+                        MK.Default: "tube_length",
+                        MK.Description: "Volume distribution method of tubes (or cells in tube) to be "
+                        "applied on the prior volume distribution. Based on tube length by default. "
+                        "Valid options are: "
+                        "* tube_length: distrubutes the volume of the convex hull of the FlowNet model,"
+                        "    based on the length of a tube. I.e., if all tubes have equeal lenght, they"
+                        "    will have equal volume."
+                        "* voronoi_per_tube: distributes the input models bulk volume of active cells"
+                        "    to the nearest FlowNet tube of a cell. The total volume of the tube is then"
+                        "    devided equally over the cells of the tube. I.e., in areas with a higher"
+                        "    FlowNet tube density, the volume per cell is lower. Mind that if the FlowNet"
+                        "    model, i.e., the convex hull of the well connections, is much smaller than the"
+                        "    original model volume outside of the well connection convex hull might be"
+                        "    collapsed at the borders of the model. I.e., the borders of your model could"
+                        "    het unrealisticly large volumes. This can be mitigated by increasing the hull"
+                        "    factor of the FlowNet model generation process or by setting the "
+                        "    place_nodes_in_volume_reservoir to true.",
+                    },
                     "hyperopt": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
@@ -1978,6 +1998,22 @@ def parse_config(
                 "It should contain either two columns with headers 'depth' and 'rs', "
                 "or three columns with headers 'depth','rs' and 'eqlnum'."
             )
+
+    if not config.flownet.prior_volume_distribution in [
+        "voronoi_per_tube",
+        "tube_length",
+    ]:
+        raise ValueError(
+            f"'{config.flownet.prior_volume_distribution}' is not a valid prior volume "
+            "distribution method. You can either use 'voronoi_per_tube' or 'tube_length'."
+        )
+    if (config.flownet.prior_volume_distribution == "voronoi_per_tube") and (
+        config.flownet.data_source.simulation.input_case is None
+    ):
+        raise ValueError(
+            f"'The {config.flownet.prior_volume_distribution}' volume distribution "
+            "method can only be used when a simulation model is supplied as datasource."
+        )
 
     return config
 
