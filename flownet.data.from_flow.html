@@ -278,6 +278,23 @@ configured perforation strategy.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="flownet.data.from_flow.FlowData.bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model">
+<code class="sig-name descname"><span class="pre">bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="flownet.network_model._network_model.html#flownet.network_model._network_model.NetworkModel" title="flownet.network_model._network_model.NetworkModel"><span class="pre">flownet.network_model._network_model.NetworkModel</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#flownet.data.from_flow.FlowData.bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate bulk volume distribution per grid cell in the FlowNet model based on the geometrical
+distribution of the volume in the original (full field) simulation model. I.e., the original model’s
+volume will be distributed over the FlowNet’s tubes by assigning original model grid cell
+volumes to the nearest FlowNet tube midpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>network</strong> – FlowNet network instance.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array with volumes per flownetcell.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="flownet.data.from_flow.FlowData.faults">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">faults</span></code><a class="headerlink" href="#flownet.data.from_flow.FlowData.faults" title="Permalink to this definition">¶</a></dt>
 <dd><p>dataframe with all fault data</p>
