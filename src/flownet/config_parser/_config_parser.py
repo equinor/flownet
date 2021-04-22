@@ -460,7 +460,8 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         "    original model volume outside of the well connection convex hull might be"
                         "    collapsed at the borders of the model. I.e., the borders of your model could"
                         "    het unrealisticly large volumes. This can be mitigated by increasing the hull"
-                        "    factor of the FlowNet model generation process.",
+                        "    factor of the FlowNet model generation process or by setting the "
+                        "    place_nodes_in_volume_reservoir to true.",
                     },
                     "hyperopt": {
                         MK.Type: types.NamedDict,
@@ -819,6 +820,15 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 MK.Description: "The interpolation between low/base/high relative permeability curves "
                                 "is performed independently for oil/gas and oil/water "
                                 "per SATNUM region. Only available for three phase problems.",
+                                MK.Default: False,
+                            },
+                            "swcr_add_to_swl": {
+                                MK.Type: types.Bool,
+                                MK.Description: "Allows for calculating SWCR by adding a number to SWL. Especially "
+                                "useful to avoid non-physical values when defining prior distributions. If this "
+                                "parameter is set to true, the numbers defined under swcr will be used to define "
+                                "a prior distribution for the delta value added to SWL, instead of defining the "
+                                "prior distribution for SWCR directly.",
                                 MK.Default: False,
                             },
                             "regions": {
@@ -1653,6 +1663,14 @@ def parse_config(
         )
 
     config = suite.snapshot
+    if (
+        config.model_parameters.relative_permeability.interpolate
+        and config.model_parameters.relative_permeability.swcr_add_to_swl
+    ):
+        raise ValueError(
+            "SWCR_ADD_TO_SWL can not be used together with the "
+            "interpolation option for relative permeability."
+        )
 
     # If 'regions_from_sim' is defined, or a csv file with rsvd tables
     # is defined, we need to import the simulation case to check number
