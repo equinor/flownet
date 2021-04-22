@@ -396,7 +396,7 @@ class FlowData(FromSource):
             network: FlowNet network instance.
 
         Returns:
-            A list with multipliers for the total bulk volume for each flownet tube cell.
+            An array with volumes per flownetcell.
 
         """
         flownet_tube_midpoints = np.array(network.get_connection_midpoints())
@@ -418,7 +418,8 @@ class FlowData(FromSource):
         for cell_i, tube_id in enumerate(matched_indices):
             tube_volumes[tube_id[0]] += model_cell_volume[cell_i]
 
-        # Distribute tube volume over individual cells
+        # Distribute tube volume over the active cells of the flownet.
+        # The last cell of each each tube is inactive and thefore gets 0 volume assigned.
         properties_per_cell = pd.DataFrame(
             pd.DataFrame(data=network.grid.index, index=network.grid.model).index
         )
