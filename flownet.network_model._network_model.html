@@ -323,6 +323,22 @@ the one dimensional model in the network with index model_index.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="flownet.network_model._network_model.NetworkModel.bulk_volume_per_flownet_cell_based_on_tube_length">
+<code class="sig-name descname"><span class="pre">bulk_volume_per_flownet_cell_based_on_tube_length</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.bulk_volume_per_flownet_cell_based_on_tube_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate bulk volume per flownet grid cell based on the total length
+of the active cells in each tube in the FlowNet and the convex hull on
+the FlowNet network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>network</strong> – FlowNet network instance.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list with bulk volumes for each flownet tube cell.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.cell_length">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">cell_length</span></code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.cell_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Desired length of all cells</p>
@@ -331,8 +347,12 @@ the one dimensional model in the network with index model_index.</p>
 <dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.cell_midpoints">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">cell_midpoints</span></code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.cell_midpoints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a numpy array with the midpoint of each cell in the network
-:returns: Tuple with connection midpoint coordinates.</p>
+<dd><p>Returns a tuple with the midpoint of each cell in the network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tuple with connection midpoint coordinates.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -348,6 +368,17 @@ the one dimensional model in the network with index model_index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>(Nx3) np.ndarray with connection midpoint coordinates.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="flownet.network_model._network_model.NetworkModel.convexhull">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">convexhull</span></code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.convexhull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the FlowNet network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Convex hull of the network.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -387,6 +418,17 @@ of the i’th connection.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="flownet.network_model._network_model.NetworkModel.initial_cell_volumes">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">initial_cell_volumes</span></code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.initial_cell_volumes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial cell volume for each grid cell in the flownet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An np.ndarray with multiplier for each FlowNet grid cell’s volume.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.nncs">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">nncs</span></code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.nncs" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of tuples of NNC I-coordinates of connections</p>
@@ -395,7 +437,8 @@ of the i’th connection.</p>
 <dl class="py method">
 <dt id="flownet.network_model._network_model.NetworkModel.total_bulkvolume">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">total_bulkvolume</span></code><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.total_bulkvolume" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the bulk volume of the network. The calculation is done by finding
+<dd><p>Returns the bulk volume of the network, i.e. the volume of the convex hull of the
+FlowNet network. The calculation is done by finding
 the convex hull of the network (using the end points of the input tubes)
 and then calculating the volume of this hull.</p>
 <dl class="field-list simple">

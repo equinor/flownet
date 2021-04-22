@@ -660,6 +660,12 @@
 <p>Minimum allowed permeability in mD before a tube is removed (i.e., its cells are made inactive).</p>
 <div class="cs_children" id="cs_minimum_allowed_children">
 <p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_volume_distribu_container">
+<div class="cs_header">
+<h3>prior_volume_distribution</h3><br></div><br><div class="cs_content" id="cs_volume_distribu_content">
+<p>Volume distribution method of tubes (or cells in tube) to be applied on the prior volume distribution. Based on tube length by default. Valid options are: * tube_length: distrubutes the volume of the convex hull of the FlowNet model,    based on the length of a tube. I.e., if all tubes have equeal lenght, they    will have equal volume.* voronoi_per_tube: distributes the input models bulk volume of active cells    to the nearest FlowNet tube of a cell. The total volume of the tube is then    devided equally over the cells of the tube. I.e., in areas with a higher    FlowNet tube density, the volume per cell is lower. Mind that if the FlowNet    model, i.e., the convex hull of the well connections, is much smaller than the    original model volume outside of the well connection convex hull might be    collapsed at the borders of the model. I.e., the borders of your model could    het unrealisticly large volumes. This can be mitigated by increasing the hull    factor of the FlowNet model generation process or by setting the     place_nodes_in_volume_reservoir to true.</p>
+<div class="cs_children" id="cs_volume_distribu_children">
+<p>:type: string</p>
 </div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
 <div class="cs_header">
 <h3>hyperopt</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
