@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
+- [#379](https://github.com/equinor/flownet/pull/379) Added option to let SWCR be calculated as SWL + delta, instead of providing the prior distribution for SWCR directly. To do this, set swcr_add_to_swl to true, and then the prior distribution definition in the config yaml for swcr will be interpreted as a prior distribution for the delta value to be added to SWL to get the SWCR.
 - [#372](https://github.com/equinor/flownet/pull/372) Added option to let the additional flownodes initially be placed within the original volume rather than within the convex hull of the real wells. To do this set place_nodes_in_volume_reservoir to true.
 
 ### Fixes
