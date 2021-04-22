@@ -399,10 +399,11 @@ def run_flownet_history_matching(
     field_data = FlowData(
         config.flownet.data_source.simulation.input_case,
         layers=config.flownet.data_source.simulation.layers,
-        perforation_handling_strategy=config.flownet.perforation_handling_strategy,
     )
     df_production_data: pd.DataFrame = field_data.production
-    df_well_connections: pd.DataFrame = field_data.well_connections
+    df_well_connections: pd.DataFrame = field_data.get_well_connections(
+        config.flownet.perforation_handling_strategy
+    )
 
     # Load log data if required
     df_well_logs: Optional[pd.DataFrame] = (
@@ -440,6 +441,22 @@ def run_flownet_history_matching(
         fault_planes=df_fault_planes,
         fault_tolerance=config.flownet.fault_tolerance,
     )
+
+    if config.flownet.prior_volume_distribution == "voronoi_per_tube":
+        volumes_per_cell = (
+            field_data.bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model(
+                network,
+            )
+        )
+    elif config.flownet.prior_volume_distribution == "tube_length":
+        volumes_per_cell = network.bulk_volume_per_flownet_cell_based_on_tube_length()
+    else:
+        raise ValueError(
+            f"'{config.flownet.prior_volume_distribution}' is not a valid prior volume "
+            "distribution method."
+        )
+
+    network.initial_cell_volumes = volumes_per_cell
 
     schedule = Schedule(network, df_production_data, config)
 
@@ -735,7 +752,10 @@ def run_flownet_history_matching(
 
     parameters = [
         PorvPoroTrans(
-            porv_poro_trans_dist_values, ti2ci, network, config.flownet.min_permeability
+            porv_poro_trans_dist_values,
+            ti2ci,
+            network,
+            config.flownet.min_permeability,
         ),
         RelativePermeability(
             relperm_dist_values,

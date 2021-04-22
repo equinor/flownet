@@ -3,8 +3,8 @@ from itertools import combinations, repeat, compress
 
 import numpy as np
 import pandas as pd
-import scipy.spatial
 import pyvista as pv
+from scipy import spatial
 
 from ._one_dimensional_model import OneDimensionalModel
 from ..utils.types import Coordinate
@@ -26,17 +26,17 @@ class NetworkModel:
 
         Args:
             df_entity_connections: A dataframe containing information about the individual one
-                                   dimensional models. Columns required are xstart, ystart, zstart,
-                                   xend, yend, zend, start_entity and end_entity
+                dimensional models. Columns required are xstart, ystart, zstart,
+                xend, yend, zend, start_entity and end_entity
             df_well_connections: A dataframe containing information about the (individual) connections of a
-                                 well, and their open or closed state throughout time.
+                well, and their open or closed state throughout time.
             cell_length: Preferred length of each grid cell along the model.
             area: surface area of the flow path.
             fault_planes: DataFrame with fault plane coordinates
             fault_tolerance: minimum distance between corners of a triangle. This value should be set as low
-                             as possible to ensure a high resolution fault plane generation. However, this might lead
-                             to a very slow fault tracing process therefore one might want to increase the tolerance.
-                             Always check that the resulting lower resolution fault plane still is what you expected.
+                as possible to ensure a high resolution fault plane generation. However, this might lead
+                to a very slow fault tracing process therefore one might want to increase the tolerance.
+                Always check that the resulting lower resolution fault plane still is what you expected.
 
         Start and end coordinates in df and cell_length should have the same
         unit. The area should have the same unit (but squared) as the
@@ -49,6 +49,8 @@ class NetworkModel:
         self._area: float = area
         self._grid: pd.DataFrame = self._calculate_grid_corner_points()
         self._nncs: List[Tuple[int, int]] = self._calculate_nncs()
+
+        self._initial_cell_volumes = np.ones((len(self.connection_midpoints), 1))
 
         self._fault_planes: Optional[pd.DataFrame] = None
         self._faults: Optional[Dict] = None
@@ -98,6 +100,40 @@ class NetworkModel:
         return (coordinates_start + coordinates_end) / 2
 
     @property
+    def initial_cell_volumes(self) -> np.ndarray:
+        """Initial cell volume for each grid cell in the flownet.
+
+        Returns:
+            An np.ndarray with multiplier for each FlowNet grid cell's volume.
+        """
+        return self._initial_cell_volumes
+
+    @initial_cell_volumes.setter
+    def initial_cell_volumes(self, initial_cell_volumes: np.ndarray):
+        """Set the initial cell volume for each grid cell in the flownet.
+
+        Args:
+            initial_cell_volumes: Array with initial cell volumes
+                for each grid cell in the FlowNet.
+
+        Raises:
+            TypeError: When the supplied type is not np.ndarray
+            ValueError: When the shape not of (N_gridcells X 1).
+
+        Returns:
+            Nothing
+        """
+        if not isinstance(initial_cell_volumes, np.ndarray):
+            raise TypeError("The initial_cell_volumes should be of type np.ndarray.")
+        if initial_cell_volumes.shape[0] != len(self.cell_midpoints[0]):
+            raise ValueError(
+                "The shape of the initial_cell_volumes np.ndarray should "
+                f"be {len(self.cell_midpoints[0])} x 1."
+            )
+
+        self._initial_cell_volumes = initial_cell_volumes
+
+    @property
     def connection_midpoints(self) -> np.ndarray:
         """
         Returns a numpy array with the midpoint of each connection in the network
@@ -144,15 +180,11 @@ class NetworkModel:
         return self._get_aquifer_i()
 
     @property
-    def total_bulkvolume(self):
-        """
-        Returns the bulk volume of the network. The calculation is done by finding
-        the convex hull of the network (using the end points of the input tubes)
-        and then calculating the volume of this hull.
+    def convexhull(self) -> spatial.ConvexHull:  # pylint: disable=maybe-no-member
+        """Return the convex hull of the FlowNet network.
 
         Returns:
-            Bulk volume of the convex hull.
-
+            Convex hull of the network.
         """
         x = (
             self._df_entity_connections["xstart"].tolist()
@@ -169,7 +201,21 @@ class NetworkModel:
 
         points = np.array((x, y, z), dtype=float).transpose()
 
-        return scipy.spatial.ConvexHull(points).volume  # pylint: disable=no-member
+        return spatial.ConvexHull(points)  # pylint: disable=maybe-no-member
+
+    @property
+    def total_bulkvolume(self):
+        """
+        Returns the bulk volume of the network, i.e. the volume of the convex hull of the
+        FlowNet network. The calculation is done by finding
+        the convex hull of the network (using the end points of the input tubes)
+        and then calculating the volume of this hull.
+
+        Returns:
+            Bulk volume of the convex hull.
+
+        """
+        return self.convexhull.volume  # pylint: disable=no-member
 
     def _get_aquifer_i(self) -> List[List[int]]:
         """Helper function to get the aquifer i's with zero-offset.
@@ -467,6 +513,23 @@ class NetworkModel:
         """
         return (self._grid["model"] == model_index) & (self._grid["ACTNUM"] == 1)
 
+    def bulk_volume_per_flownet_cell_based_on_tube_length(self) -> np.ndarray:
+        """Generate bulk volume per flownet grid cell based on the total length
+        of the active cells in each tube in the FlowNet and the convex hull on
+        the FlowNet network.
+
+        Args:
+            network: FlowNet network instance.
+
+        Returns:
+            A list with bulk volumes for each flownet tube cell.
+        """
+        return (
+            self.total_bulkvolume
+            * self.grid["cell_length"].values
+            / self.grid.loc[self.grid["ACTNUM"] == 1, "cell_length"].sum()
+        )
+
     @property
     def faults(self) -> Optional[Dict[Any, Any]]:
         """Dictionary of fault names containing a list of integer zero-offset I-coordinates belonging to a fault"""
@@ -505,7 +568,8 @@ class NetworkModel:
     @property
     def cell_midpoints(self) -> Tuple[Any, Any, Any]:
         """
-        Returns a numpy array with the midpoint of each cell in the network
+        Returns a tuple with the midpoint of each cell in the network
+
         Returns:
             Tuple with connection midpoint coordinates.
         """

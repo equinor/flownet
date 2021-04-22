@@ -1,7 +1,7 @@
 import warnings
 import os
 import pathlib
-from typing import Dict, Optional, List, Union
+from typing import Dict, Optional, List
 
 import yaml
 import configsuite
@@ -9,6 +9,12 @@ from configsuite import types, MetaKeys as MK, ConfigSuite
 import pandas as pd
 
 from ._merge_configs import merge_configs
+from ._config_transformations import (
+    _integer_to_list,
+    _str_none_to_none,
+    _to_lower,
+    _to_upper,
+)
 from ..data.from_flow import FlowData
 
 
@@ -30,53 +36,6 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
         Dictionary to be used as configsuite type schema
 
     """
-
-    @configsuite.transformation_msg("Convert integer to list")
-    def _integer_to_list(input_data: Union[List, int]) -> List:
-        """
-        Converts integer to list with single item.
-
-        Args:
-            input_data (Union[List, int]):
-
-        Returns:
-            The input_data. If it wasn't a list yet is will be turned into a list.
-        """
-        if isinstance(input_data, int):
-            input_data = [input_data]
-        return input_data
-
-    @configsuite.transformation_msg("Convert 'None' to None")
-    def _str_none_to_none(
-        input_data: Union[str, int, float, None]
-    ) -> Union[str, int, float, None]:
-        """
-        Converts "None" to None
-        Args:
-            input_data (Union[str, int, float, None]):
-
-        Returns:
-            The input_data. If the input is "None" or "none" it is converted to None (str to None)
-        """
-        if isinstance(input_data, str):
-            if input_data.lower() == "none":
-                return None
-
-        return input_data
-
-    @configsuite.transformation_msg("Convert string to lower case")
-    def _to_lower(input_data: Union[List[str], str]) -> Union[List[str], str]:
-        if isinstance(input_data, str):
-            return input_data.lower()
-
-        return [x.lower() for x in input_data]
-
-    @configsuite.transformation_msg("Convert string to upper case")
-    def _to_upper(input_data: Union[List[str], str]) -> Union[List[str], str]:
-        if isinstance(input_data, str):
-            return input_data.upper()
-
-        return [x.upper() for x in input_data]
 
     @configsuite.transformation_msg("Convert input string to absolute path")
     def _to_abs_path(path: Optional[str]) -> str:
@@ -313,7 +272,13 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 "are supported,  e.g. weekly (W), monthly (M), quarterly (Q), "
                                 "yearly (A)",
                             },
-                            "concave_hull": {MK.Type: types.Bool, MK.AllowNone: True},
+                            "concave_hull": {
+                                MK.Type: types.Bool,
+                                MK.AllowNone: True,
+                                MK.Description: "When true, the bounding boxes of the gridcells of the "
+                                "original reservoir model are used to check if the generated additional "
+                                "nodes are positioned within the reservoir volume.",
+                            },
                         },
                     },
                     "constraining": {
@@ -402,7 +367,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Type: types.List,
                         MK.Description: "List of additional flow nodes to add "
                         "for each layer or single integer which will be "
-                        "split over the layers, when they are defined.",
+                        "split over the layers, when layers are defined.",
                         MK.LayerTransformation: _integer_to_list,
                         MK.Content: {
                             MK.Item: {
@@ -417,7 +382,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Description: "Number of additional nodes to create "
                         "(using Mitchell's best candidate algorithm)",
                     },
-                    "hull_factor": {MK.Type: types.Number, MK.Default: 1.2},
+                    "place_nodes_in_volume_reservoir": {
+                        MK.Type: types.Bool,
+                        MK.AllowNone: True,
+                        MK.Description: "When true use boundary of reservoir/layer volume as "
+                        "bounding volume to place initial candidates instead of convex hull of well perforations.",
+                    },
+                    "hull_factor": {
+                        MK.Type: types.Number,
+                        MK.Default: 1.2,
+                        MK.Description: "Increase the size of the bounding volume around the well "
+                        "perforations to place additional nodes in.",
+                    },
                     "random_seed": {
                         MK.Type: types.Number,
                         MK.AllowNone: True,
@@ -466,6 +442,25 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.AllowNone: True,
                         MK.Description: "Minimum allowed permeability in mD before a tube is removed "
                         "(i.e., its cells are made inactive).",
+                    },
+                    "prior_volume_distribution": {
+                        MK.Type: types.String,
+                        MK.Default: "tube_length",
+                        MK.Description: "Volume distribution method of tubes (or cells in tube) to be "
+                        "applied on the prior volume distribution. Based on tube length by default. "
+                        "Valid options are: "
+                        "* tube_length: distrubutes the volume of the convex hull of the FlowNet model,"
+                        "    based on the length of a tube. I.e., if all tubes have equeal lenght, they"
+                        "    will have equal volume."
+                        "* voronoi_per_tube: distributes the input models bulk volume of active cells"
+                        "    to the nearest FlowNet tube of a cell. The total volume of the tube is then"
+                        "    devided equally over the cells of the tube. I.e., in areas with a higher"
+                        "    FlowNet tube density, the volume per cell is lower. Mind that if the FlowNet"
+                        "    model, i.e., the convex hull of the well connections, is much smaller than the"
+                        "    original model volume outside of the well connection convex hull might be"
+                        "    collapsed at the borders of the model. I.e., the borders of your model could"
+                        "    het unrealisticly large volumes. This can be mitigated by increasing the hull"
+                        "    factor of the FlowNet model generation process.",
                     },
                     "hyperopt": {
                         MK.Type: types.NamedDict,
@@ -602,7 +597,8 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                         },
                                         MK.Transformation: _to_upper,
                                         MK.Description: "List of accuracy metrics to be computed "
-                                        "in FlowNet analysis workflow",
+                                        "in FlowNet analysis workflow. "
+                                        "Supported metrics: MSE, RMSE, NRMSE, MAE, NMAE, R2",
                                     },
                                     "quantity": {
                                         MK.Type: types.List,
@@ -1716,6 +1712,15 @@ def parse_config(
             "there is only a single layer."
         )
 
+    if (
+        config.flownet.place_nodes_in_volume_reservoir
+        and not config.flownet.data_source.concave_hull
+    ):
+        raise ValueError(
+            "concave_hull needs to be true for flownet to be able to "
+            "place candidates within the reservoir volume."
+        )
+
     req_relp_parameters: List[str] = []
     if (
         config.model_parameters.equil.scheme != "regions_from_sim"
@@ -1975,6 +1980,22 @@ def parse_config(
                 "It should contain either two columns with headers 'depth' and 'rs', "
                 "or three columns with headers 'depth','rs' and 'eqlnum'."
             )
+
+    if not config.flownet.prior_volume_distribution in [
+        "voronoi_per_tube",
+        "tube_length",
+    ]:
+        raise ValueError(
+            f"'{config.flownet.prior_volume_distribution}' is not a valid prior volume "
+            "distribution method. You can either use 'voronoi_per_tube' or 'tube_length'."
+        )
+    if (config.flownet.prior_volume_distribution == "voronoi_per_tube") and (
+        config.flownet.data_source.simulation.input_case is None
+    ):
+        raise ValueError(
+            f"'The {config.flownet.prior_volume_distribution}' volume distribution "
+            "method can only be used when a simulation model is supplied as datasource."
+        )
 
     return config
 
