@@ -833,11 +833,11 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             },
                             "krwmax_add_to_krwend": {
                                 MK.Type: types.Bool,
-                                MK.Description: "Allows for calculating KRWMAX by adding a number to KRWEND. Especially "
-                                "useful to avoid non-physical values when defining prior distributions. If this "
-                                "parameter is set to true, the numbers defined under KRWMAX will be used to define "
-                                "a prior distribution for the delta value added to KRWEND, instead of defining the "
-                                "prior distribution for KRWMAX directly.",
+                                MK.Description: "Allows for calculating KRWMAX by adding a number to KRWEND. "
+                                "Especially useful to avoid non-physical values when defining prior distributions. "
+                                "If this parameter is set to true, the numbers defined under KRWMAX will be used to "
+                                "define a prior distribution for the delta value added to KRWEND, instead of defining "
+                                "the prior distribution for KRWMAX directly.",
                                 MK.Default: False,
                             },
                             "regions": {
