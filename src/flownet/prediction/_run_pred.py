@@ -56,4 +56,5 @@ def run_flownet_prediction(config, args):
         "ert ensemble_experiment pred_config.ert",
         cwd=args.output_folder,
         runpath=config.ert.runpath,
+        timeout=config.flownet.timeout,
     )

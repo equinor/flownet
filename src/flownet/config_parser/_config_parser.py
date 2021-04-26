@@ -463,6 +463,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         "    factor of the FlowNet model generation process or by setting the "
                         "    place_nodes_in_volume_reservoir to true.",
                     },
+                    "timeout": {
+                        MK.Type: types.Number,
+                        MK.Default: 3600,
+                        MK.Description: "Maximum number of seconds of inactivity from ERT before a FlowNet "
+                        "run is killed. When running many realizations, with many parameters this timeout "
+                        "should be set to a high value. When you are running a hyperopt run you might want "
+                        "to lower this number as to not waste too much time in cases where ERT hangs.",
+                    },
                     "hyperopt": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
