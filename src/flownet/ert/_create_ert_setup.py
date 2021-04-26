@@ -295,6 +295,16 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     with open(os.path.join(output_folder, "pipfreeze.output"), "w") as fh:
         subprocess.call(["pip", "freeze"], stdout=fh)
 
+    shutil.copyfile(
+        _MODULE_FOLDER / ".." / "static" / "MISFIT_PREPROCESSOR_WORKFLOW",
+        output_folder / "MISFIT_PREPROCESSOR_WORKFLOW",
+    )
+
+    shutil.copyfile(
+        _MODULE_FOLDER / ".." / "static" / "misfit_preprocessor_config.yml",
+        output_folder / "misfit_preprocessor_config.yml",
+    )
+
     for section in ["RUNSPEC", "PROPS", "SOLUTION", "SCHEDULE"]:
         static_source_path = pathlib.Path(static_path) / f"{section}.inc"
         if static_source_path.is_file():
