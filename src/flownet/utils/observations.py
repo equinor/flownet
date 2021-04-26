@@ -49,6 +49,5 @@ def _read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
         dictionary that contains the information in a YAML observation file
     """
     assert os.path.exists(yaml_obs_file_name) == 1
-    a_yaml_file = open(yaml_obs_file_name, "r")
-
-    return yaml.load(a_yaml_file, Loader=yaml.FullLoader)
+    with open(yaml_obs_file_name, "r") as a_yaml_file:
+        return yaml.load(a_yaml_file, Loader=yaml.FullLoader)
