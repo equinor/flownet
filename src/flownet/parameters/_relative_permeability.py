@@ -241,7 +241,8 @@ class RelativePermeability(Parameter):
             check_parameters = self._parameters.copy()
 
         # krwmax will be defaulted to one if not defined, so removed from required parameters
-        check_parameters.remove("krwmax")
+        if "krwmax" in check_parameters:
+            check_parameters.remove("krwmax")
         if len(check_parameters) != 8 and len(check_parameters) != 13:
             raise AssertionError(
                 "Please specify the correct number of relative permeability "
