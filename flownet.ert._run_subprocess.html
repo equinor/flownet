@@ -172,7 +172,7 @@
 <span id="flownet-ert-run-subprocess-module"></span><h1>flownet.ert._run_subprocess module<a class="headerlink" href="#module-flownet.ert._run_subprocess" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="flownet.ert._run_subprocess.run_ert_subprocess">
-<code class="sig-prename descclassname"><span class="pre">flownet.ert._run_subprocess.</span></code><code class="sig-name descname"><span class="pre">run_ert_subprocess</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cwd</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runpath</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#flownet.ert._run_subprocess.run_ert_subprocess" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">flownet.ert._run_subprocess.</span></code><code class="sig-name descname"><span class="pre">run_ert_subprocess</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cwd</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runpath</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#flownet.ert._run_subprocess.run_ert_subprocess" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to run a ERT setup.</p>
 <p>Should revert here to use the much simpler subprocess.run when
 <a class="reference external" href="https://github.com/equinor/libres/issues/984">https://github.com/equinor/libres/issues/984</a> is closed. See
@@ -185,6 +185,7 @@ on possible changes to revert.</p>
 <li><p><strong>command</strong> – Command to run.</p></li>
 <li><p><strong>cwd</strong> – The folder to run the command from.</p></li>
 <li><p><strong>runpath</strong> – Runpath variable given to ERT.</p></li>
+<li><p><strong>timeout</strong> – inactivity time out for killing FlowNet.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
