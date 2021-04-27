@@ -239,7 +239,7 @@ class RelativePermeability(Parameter):
         if "krwmax" not in params.keys():
             params["krwmax"] = 1
         if self._krwmax_add_to_krwend:
-            params["krwmax"] = params["krwend"] + params["krwmax"]
+            params["krwmax"] = min(1, params["krwend"] + params["krwmax"])
 
     def _check_parameters(self) -> Tuple[bool, bool]:
         """
