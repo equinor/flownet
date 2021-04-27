@@ -5,10 +5,10 @@ import signal
 
 import psutil
 
-TIMEOUT = 900  # Kill ERT if no new output to stdout for 15 minutes.
 
-
-def run_ert_subprocess(command: str, cwd: pathlib.Path, runpath: str) -> None:
+def run_ert_subprocess(
+    command: str, cwd: pathlib.Path, runpath: str, timeout: int
+) -> None:
     """
     Helper function to run a ERT setup.
 
@@ -22,6 +22,7 @@ def run_ert_subprocess(command: str, cwd: pathlib.Path, runpath: str) -> None:
         command: Command to run.
         cwd: The folder to run the command from.
         runpath: Runpath variable given to ERT.
+        timeout: inactivity time out for killing FlowNet.
 
     Returns:
         Nothing
@@ -43,7 +44,7 @@ def run_ert_subprocess(command: str, cwd: pathlib.Path, runpath: str) -> None:
             main_proc.kill()
 
             raise subprocess.SubprocessError(
-                f"The ERT process has not returned any output for {TIMEOUT} seconds.\n"
+                f"The ERT process has not returned any output for {timeout} seconds.\n"
                 "FlowNet assumes that something fishy has happened and will kill\n"
                 "ERT and all suprocesses. Check the logs for details."
             )
@@ -51,7 +52,7 @@ def run_ert_subprocess(command: str, cwd: pathlib.Path, runpath: str) -> None:
         signal.signal(signal.SIGALRM, _handler)
 
         for line in process.stdout:  # type: ignore
-            signal.alarm(TIMEOUT)
+            signal.alarm(timeout)
 
             print(line, end="")
             if (
