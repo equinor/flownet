@@ -105,7 +105,7 @@ class AssistedHistoryMatching:
             f"ert es_mda --weights {','.join(map(str, weights))!r} ahm_config.ert",
             cwd=self.output_folder,
             runpath=self._config.ert.runpath,
-            timeout=self._config.flownet.timeout,
+            timeout=self._config.ert.timeout,
         )
 
     def report(self):
