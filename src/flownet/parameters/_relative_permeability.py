@@ -1,4 +1,5 @@
 from typing import Dict, List, Tuple, Union, Optional
+import warnings
 
 import pandas as pd
 import numpy as np
@@ -240,6 +241,13 @@ class RelativePermeability(Parameter):
             params["krwmax"] = 1
         if self._krwmax_add_to_krwend:
             params["krwmax"] = min(1, params["krwend"] + params["krwmax"])
+        if params["krwmax"] < params["krwend"]:
+            params["krwmax"] = params["krwend"]
+            warnings.warn(
+                "KRWMAX < KRWEND in one realization. KRWMAX set equal to KRWEND."
+                "Consider revising the prior distribution input for KRWMAX and/or KRWEND, "
+                "or use the krwmax_add_to_krwend option."
+            )
 
     def _check_parameters(self) -> Tuple[bool, bool]:
         """
