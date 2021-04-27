@@ -839,6 +839,15 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 "prior distribution for SWCR directly.",
                                 MK.Default: False,
                             },
+                            "krwmax_add_to_krwend": {
+                                MK.Type: types.Bool,
+                                MK.Description: "Allows for calculating KRWMAX by adding a number to KRWEND. "
+                                "Especially useful to avoid non-physical values when defining prior distributions. "
+                                "If this parameter is set to true, the numbers defined under KRWMAX will be used to "
+                                "define a prior distribution for the delta value added to KRWEND, instead of defining "
+                                "the prior distribution for KRWMAX directly.",
+                                MK.Default: False,
+                            },
                             "regions": {
                                 MK.Type: types.List,
                                 MK.Content: {
@@ -1013,6 +1022,45 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 },
                                             },
                                             "krwend": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                        MK.Transformation: _str_none_to_none,
+                                                    },
+                                                    "mean": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                        MK.Transformation: _str_none_to_none,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                        MK.Transformation: _str_none_to_none,
+                                                    },
+                                                    "base": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                        MK.Transformation: _str_none_to_none,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                        MK.Transformation: _str_none_to_none,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
+                                                    },
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: True,
+                                                    },
+                                                },
+                                            },
+                                            "krwmax": {
                                                 MK.Type: types.NamedDict,
                                                 MK.Content: {
                                                     "min": {
@@ -1835,6 +1883,8 @@ def parse_config(
             "krwend",
             "kroend",
         ]
+        if config.model_parameters.relative_permeability.krwmax_add_to_krwend:
+            req_relp_parameters = req_relp_parameters + ["krwmax"]
         for reg in config.model_parameters.equil.regions:
             _check_distribution(reg, "owc_depth")
 
@@ -1878,7 +1928,7 @@ def parse_config(
     for parameter in (
         set(config.model_parameters.relative_permeability.regions[0]._fields)
         - set(req_relp_parameters)
-        - {"id"}
+        - {"id", "krwmax"}
     ):
         for satreg in config.model_parameters.relative_permeability.regions:
             if len(_check_defined(satreg, parameter)) > 0:
