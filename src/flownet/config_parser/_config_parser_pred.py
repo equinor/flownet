@@ -65,6 +65,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         / ".."
                         / "static",
                     },
+                    "timeout": {
+                        MK.Type: types.Number,
+                        MK.Default: 3600,
+                        MK.Description: "Maximum number of seconds of inactivity from ERT before a FlowNet "
+                        "run is killed. When running many realizations, with many parameters this timeout "
+                        "should be set to a high value. When you are running a hyperopt run you might want "
+                        "to lower this number as to not waste too much time in cases where ERT hangs.",
+                    },
                     "enspath": {MK.Type: types.String, MK.Default: "output/storage"},
                     "eclbase": {
                         MK.Type: types.String,

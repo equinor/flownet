@@ -529,6 +529,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Type: types.String,
                         MK.Default: "./eclipse/model/FLOWNET_REALIZATION",
                     },
+                    "timeout": {
+                        MK.Type: types.Number,
+                        MK.Default: 3600,
+                        MK.Description: "Maximum number of seconds of inactivity from ERT before a FlowNet "
+                        "run is killed. When running many realizations, with many parameters this timeout "
+                        "should be set to a high value. When you are running a hyperopt run you might want "
+                        "to lower this number as to not waste too much time in cases where ERT hangs.",
+                    },
                     "static_include_files": {
                         MK.Type: types.String,
                         MK.Transformation: _to_abs_path,
