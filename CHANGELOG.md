@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
-- [#383](https://github.com/equinor/flownet/pull/383) Added option to define either define a prior distribution for KRWMAX directly by using krwmax in the config yaml, or to let KRWMAX be calculated as KRWEND + delta. To do the latter, set krwmax_add_to_krwend to true, and then the prior distribution definition in the config yaml for krwmax will be interpreted as a prior distribution for the delta value to be added to KRWEND to get the KRWMAX.
+- [#383](https://github.com/equinor/flownet/pull/383) Added option to either define a prior distribution for KRWMAX directly by using krwmax in the config yaml, or to let KRWMAX be calculated as KRWEND + delta. To do the latter, set krwmax_add_to_krwend to true, and then the prior distribution definition in the config yaml for krwmax will be interpreted as a prior distribution for the delta value to be added to KRWEND to get the KRWMAX.
 - [#386](https://github.com/equinor/flownet/pull/386) Expose FlowNet timeout to user.
 - [#356](https://github.com/equinor/flownet/pull/356) Added option to distribute the original volume over the FlowNet tubes in a Voronoi-diagram style. I.e., areas with a high density of FlowNet tubes get a lower volume per tube.
 - [#379](https://github.com/equinor/flownet/pull/379) Added option to let SWCR be calculated as SWL + delta, instead of providing the prior distribution for SWCR directly. To do this, set swcr_add_to_swl to true, and then the prior distribution definition in the config yaml for swcr will be interpreted as a prior distribution for the delta value to be added to SWL to get the SWCR.

@@ -244,7 +244,7 @@ class RelativePermeability(Parameter):
         if params["krwmax"] < params["krwend"]:
             params["krwmax"] = params["krwend"]
             warnings.warn(
-                "KRWMAX < KRWEND in one realization. KRWMAX set equal to KRWEND."
+                "KRWMAX < KRWEND in one or more realizations. KRWMAX set equal to KRWEND."
                 "Consider revising the prior distribution input for KRWMAX and/or KRWEND, "
                 "or use the krwmax_add_to_krwend option."
             )
