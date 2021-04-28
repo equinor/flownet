@@ -1,11 +1,14 @@
 import glob
 import operator
 from pathlib import Path
+import pandas as pd
+import numpy as np
 
 from numpy.testing import assert_almost_equal
 from ecl.grid import EclRegion
 
 from flownet.data.from_flow import FlowData
+from flownet.network_model import NetworkModel
 
 
 def _locate_test_case() -> Path:
@@ -50,11 +53,7 @@ def _locate_test_case() -> Path:
 # pylint: disable=protected-access
 def test_grid_cell_bounding_boxes() -> None:
     layers = ()
-    flowdata = FlowData(
-        _locate_test_case(),
-        layers,
-        "multiple_based_on_workovers",
-    )
+    flowdata = FlowData(_locate_test_case(), layers)
 
     # Test one layer for the whole field and no layers equal
     flowdata._layers = ((1, flowdata.grid.nz),)
@@ -85,3 +84,33 @@ def test_grid_cell_bounding_boxes() -> None:
     active_cells.select_active(intersect=True)
     assert result.shape[0] == active_cells.active_size()
     assert result.shape[1] == 6
+
+
+def test_bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model() -> None:
+    df_well_connections = pd.read_csv("./tests/data/df_well_connections.csv")
+    df_entity_connections = pd.read_csv("./tests/data/df_entity_connections.csv")
+
+    network = NetworkModel(
+        df_entity_connections=df_entity_connections,
+        df_well_connections=df_well_connections,
+        cell_length=100,
+        area=100,
+        fault_planes=None,
+        fault_tolerance=None,
+    )
+
+    layers = ()
+    flowdata = FlowData(_locate_test_case(), layers)
+
+    volumes_per_cell = (
+        flowdata.bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model(
+            network,
+        )
+    )
+
+    model_cell_volume = [
+        (cell.volume * flowdata._init.iget_named_kw("NTG", 0)[cell.active_index])
+        for cell in flowdata._grid.cells(active=True)
+    ]
+
+    assert np.isclose(sum(volumes_per_cell), sum(model_cell_volume))
