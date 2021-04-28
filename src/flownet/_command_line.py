@@ -87,7 +87,6 @@ def flownet_ahm(args: argparse.Namespace) -> None:
     else:
         run_flownet_history_matching(config, args)
 
-
     if not args.skip_postprocessing:
         create_webviz(args.output_folder, start_webviz=args.start_webviz)
 
