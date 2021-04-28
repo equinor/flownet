@@ -172,8 +172,6 @@ def mitchell_best_candidate_modified_3d(
         y = np.append(y, y_candidate.repeat(y.shape[0])[best_candidate])
         z = np.append(z, z_candidate.repeat(z.shape[0])[best_candidate])
 
-        # Replace single candidate that has been used by a new one?
-
     print("\rAdding flow nodes:  100%\ndone.")
 
     # Return the real/original and added flow node coordinates as a list of tuples.
