@@ -66,9 +66,7 @@ def flownet_ahm(args: argparse.Namespace) -> None:
             )
 
     config = parse_config(args.config, args.update_config)
-    if args.restart_folder is None:
-        run_flownet_history_matching(config, args)
-    else:
+    if hasattr(args, "restart_folder") and args.restart_folder is not None:
         if args.restart_folder.exists():
             # check for pickled files and zipped file
             if (
@@ -86,6 +84,9 @@ def flownet_ahm(args: argparse.Namespace) -> None:
                 )
         else:
             raise ValueError(f"{args.restart_folder} does not exist!")
+    else:
+        run_flownet_history_matching(config, args)
+
 
     if not args.skip_postprocessing:
         create_webviz(args.output_folder, start_webviz=args.start_webviz)
