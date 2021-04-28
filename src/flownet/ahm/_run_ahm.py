@@ -4,6 +4,7 @@ import json
 import pathlib
 from operator import add
 import warnings
+import pickle
 
 import numpy as np
 import pandas as pd
@@ -364,6 +365,47 @@ def update_distribution(
                     )
 
     return parameters
+
+
+def run_flownet_history_matching_from_restart(
+    config: ConfigSuite.snapshot, args: argparse.Namespace
+):
+    """
+    Creates and runs an ERT setup, given user configuration.
+
+    Args:
+        config: Configsuite parsed user provided configuration.
+        args: Argparse parsed command line arguments.
+    Returns:
+        Nothing
+
+    """
+    with open(args.restart_folder / "network.pickled", "rb") as fh:
+        network = pickle.load(fh)
+
+    with open(args.restart_folder / "schedule.pickled", "rb") as fh:
+        schedule = pickle.load(fh)
+
+    with open(args.restart_folder / "parameters.pickled", "rb") as fh:
+        parameters = pickle.load(fh)
+
+    parameters = update_distribution(parameters, args.restart_folder)
+
+    ahm = AssistedHistoryMatching(
+        network,
+        schedule,
+        parameters,
+        config,
+    )
+
+    ahm.create_ert_setup(
+        args=args,
+        training_set_fraction=_find_training_set_fraction(schedule, config),
+    )
+
+    ahm.report()
+
+    ahm.run_ert(weights=config.ert.ensemble_weights)
 
 
 # pylint: disable=too-many-branches,too-many-statements
