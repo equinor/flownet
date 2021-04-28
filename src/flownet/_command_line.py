@@ -80,6 +80,10 @@ def flownet_ahm(args: argparse.Namespace) -> None:
                 ).is_file()
             ):
                 run_flownet_history_matching_from_restart(config, args)
+            else:
+                raise ValueError(
+                    f"Case in {args.restart_folder} is not complete! Some files are missing!"
+                )
         else:
             raise ValueError(f"{args.restart_folder} does not exist!")
 
