@@ -5,11 +5,19 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
+- [#383](https://github.com/equinor/flownet/pull/383) Added option to either define a prior distribution for KRWMAX directly by using krwmax in the config yaml, or to let KRWMAX be calculated as KRWEND + delta. To do the latter, set krwmax_add_to_krwend to true, and then the prior distribution definition in the config yaml for krwmax will be interpreted as a prior distribution for the delta value to be added to KRWEND to get the KRWMAX.
+- [#386](https://github.com/equinor/flownet/pull/386) Expose FlowNet timeout to user.
+- [#356](https://github.com/equinor/flownet/pull/356) Added option to distribute the original volume over the FlowNet tubes in a Voronoi-diagram style. I.e., areas with a high density of FlowNet tubes get a lower volume per tube.
+- [#379](https://github.com/equinor/flownet/pull/379) Added option to let SWCR be calculated as SWL + delta, instead of providing the prior distribution for SWCR directly. To do this, set swcr_add_to_swl to true, and then the prior distribution definition in the config yaml for swcr will be interpreted as a prior distribution for the delta value to be added to SWL to get the SWCR.
+- [#372](https://github.com/equinor/flownet/pull/372) Added option to let the additional flownodes initially be placed within the original volume rather than within the convex hull of the real wells. To do this set place_nodes_in_volume_reservoir to true.
 
 ### Fixes
+- [#372](https://github.com/equinor/flownet/pull/372) Fixes bug of hull_factor not actually being used for placing additional nodes outside the perforations.
 - [#374](https://github.com/equinor/flownet/pull/374) Fix for memory leak in result plotting script.
 
 ### Changes
+- [#383](https://github.com/equinor/flownet/pull/383) KRWMAX now defaulted to 1, but exposed to used. Previously it was hard coded to 1.
+- [#386](https://github.com/equinor/flownet/pull/386) Increase default timeout from 900 s to 3600 s.
 - [#363](https://github.com/equinor/flownet/pull/363) Drop Python 3.6 support.
 - [#361](https://github.com/equinor/flownet/pull/361) Adding numpy code for SWOF/SGOF table generation, instead of using pyscal, to improve computational efficiency when running many realizations with many SATNUM regions. Keeping pyscal in the tests for comparison. 
 

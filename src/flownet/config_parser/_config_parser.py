@@ -272,7 +272,13 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 "are supported,  e.g. weekly (W), monthly (M), quarterly (Q), "
                                 "yearly (A)",
                             },
-                            "concave_hull": {MK.Type: types.Bool, MK.AllowNone: True},
+                            "concave_hull": {
+                                MK.Type: types.Bool,
+                                MK.AllowNone: True,
+                                MK.Description: "When true, the bounding boxes of the gridcells of the "
+                                "original reservoir model are used to check if the generated additional "
+                                "nodes are positioned within the reservoir volume.",
+                            },
                         },
                     },
                     "constraining": {
@@ -361,7 +367,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Type: types.List,
                         MK.Description: "List of additional flow nodes to add "
                         "for each layer or single integer which will be "
-                        "split over the layers, when they are defined.",
+                        "split over the layers, when layers are defined.",
                         MK.LayerTransformation: _integer_to_list,
                         MK.Content: {
                             MK.Item: {
@@ -376,7 +382,18 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Description: "Number of additional nodes to create "
                         "(using Mitchell's best candidate algorithm)",
                     },
-                    "hull_factor": {MK.Type: types.Number, MK.Default: 1.2},
+                    "place_nodes_in_volume_reservoir": {
+                        MK.Type: types.Bool,
+                        MK.AllowNone: True,
+                        MK.Description: "When true use boundary of reservoir/layer volume as "
+                        "bounding volume to place initial candidates instead of convex hull of well perforations.",
+                    },
+                    "hull_factor": {
+                        MK.Type: types.Number,
+                        MK.Default: 1.2,
+                        MK.Description: "Increase the size of the bounding volume around the well "
+                        "perforations to place additional nodes in.",
+                    },
                     "random_seed": {
                         MK.Type: types.Number,
                         MK.AllowNone: True,
@@ -425,6 +442,26 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.AllowNone: True,
                         MK.Description: "Minimum allowed permeability in mD before a tube is removed "
                         "(i.e., its cells are made inactive).",
+                    },
+                    "prior_volume_distribution": {
+                        MK.Type: types.String,
+                        MK.Default: "tube_length",
+                        MK.Description: "Volume distribution method of tubes (or cells in tube) to be "
+                        "applied on the prior volume distribution. Based on tube length by default. "
+                        "Valid options are: "
+                        "* tube_length: distrubutes the volume of the convex hull of the FlowNet model,"
+                        "    based on the length of a tube. I.e., if all tubes have equeal lenght, they"
+                        "    will have equal volume."
+                        "* voronoi_per_tube: distributes the input models bulk volume of active cells"
+                        "    to the nearest FlowNet tube of a cell. The total volume of the tube is then"
+                        "    devided equally over the cells of the tube. I.e., in areas with a higher"
+                        "    FlowNet tube density, the volume per cell is lower. Mind that if the FlowNet"
+                        "    model, i.e., the convex hull of the well connections, is much smaller than the"
+                        "    original model volume outside of the well connection convex hull might be"
+                        "    collapsed at the borders of the model. I.e., the borders of your model could"
+                        "    het unrealisticly large volumes. This can be mitigated by increasing the hull"
+                        "    factor of the FlowNet model generation process or by setting the "
+                        "    place_nodes_in_volume_reservoir to true.",
                     },
                     "hyperopt": {
                         MK.Type: types.NamedDict,
@@ -491,6 +528,14 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     "eclbase": {
                         MK.Type: types.String,
                         MK.Default: "./eclipse/model/FLOWNET_REALIZATION",
+                    },
+                    "timeout": {
+                        MK.Type: types.Number,
+                        MK.Default: 3600,
+                        MK.Description: "Maximum number of seconds of inactivity from ERT before a FlowNet "
+                        "run is killed. When running many realizations, with many parameters this timeout "
+                        "should be set to a high value. When you are running a hyperopt run you might want "
+                        "to lower this number as to not waste too much time in cases where ERT hangs.",
                     },
                     "static_include_files": {
                         MK.Type: types.String,
@@ -785,6 +830,24 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 "per SATNUM region. Only available for three phase problems.",
                                 MK.Default: False,
                             },
+                            "swcr_add_to_swl": {
+                                MK.Type: types.Bool,
+                                MK.Description: "Allows for calculating SWCR by adding a number to SWL. Especially "
+                                "useful to avoid non-physical values when defining prior distributions. If this "
+                                "parameter is set to true, the numbers defined under swcr will be used to define "
+                                "a prior distribution for the delta value added to SWL, instead of defining the "
+                                "prior distribution for SWCR directly.",
+                                MK.Default: False,
+                            },
+                            "krwmax_add_to_krwend": {
+                                MK.Type: types.Bool,
+                                MK.Description: "Allows for calculating KRWMAX by adding a number to KRWEND. "
+                                "Especially useful to avoid non-physical values when defining prior distributions. "
+                                "If this parameter is set to true, the numbers defined under KRWMAX will be used to "
+                                "define a prior distribution for the delta value added to KRWEND, instead of defining "
+                                "the prior distribution for KRWMAX directly.",
+                                MK.Default: False,
+                            },
                             "regions": {
                                 MK.Type: types.List,
                                 MK.Content: {
@@ -959,6 +1022,45 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 },
                                             },
                                             "krwend": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "min": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                        MK.Transformation: _str_none_to_none,
+                                                    },
+                                                    "mean": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                        MK.Transformation: _str_none_to_none,
+                                                    },
+                                                    "max": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                        MK.Transformation: _str_none_to_none,
+                                                    },
+                                                    "base": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                        MK.Transformation: _str_none_to_none,
+                                                    },
+                                                    "stddev": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                        MK.Transformation: _str_none_to_none,
+                                                    },
+                                                    "distribution": {
+                                                        MK.Type: types.String,
+                                                        MK.Default: "uniform",
+                                                        MK.Transformation: _to_lower,
+                                                    },
+                                                    "low_optimistic": {
+                                                        MK.Type: types.Bool,
+                                                        MK.Default: True,
+                                                    },
+                                                },
+                                            },
+                                            "krwmax": {
                                                 MK.Type: types.NamedDict,
                                                 MK.Content: {
                                                     "min": {
@@ -1617,6 +1719,14 @@ def parse_config(
         )
 
     config = suite.snapshot
+    if (
+        config.model_parameters.relative_permeability.interpolate
+        and config.model_parameters.relative_permeability.swcr_add_to_swl
+    ):
+        raise ValueError(
+            "SWCR_ADD_TO_SWL can not be used together with the "
+            "interpolation option for relative permeability."
+        )
 
     # If 'regions_from_sim' is defined, or a csv file with rsvd tables
     # is defined, we need to import the simulation case to check number
@@ -1674,6 +1784,15 @@ def parse_config(
         raise ValueError(
             "You supplied multiple entries for the additional flow nodes but "
             "there is only a single layer."
+        )
+
+    if (
+        config.flownet.place_nodes_in_volume_reservoir
+        and not config.flownet.data_source.concave_hull
+    ):
+        raise ValueError(
+            "concave_hull needs to be true for flownet to be able to "
+            "place candidates within the reservoir volume."
         )
 
     req_relp_parameters: List[str] = []
@@ -1764,6 +1883,8 @@ def parse_config(
             "krwend",
             "kroend",
         ]
+        if config.model_parameters.relative_permeability.krwmax_add_to_krwend:
+            req_relp_parameters = req_relp_parameters + ["krwmax"]
         for reg in config.model_parameters.equil.regions:
             _check_distribution(reg, "owc_depth")
 
@@ -1807,7 +1928,7 @@ def parse_config(
     for parameter in (
         set(config.model_parameters.relative_permeability.regions[0]._fields)
         - set(req_relp_parameters)
-        - {"id"}
+        - {"id", "krwmax"}
     ):
         for satreg in config.model_parameters.relative_permeability.regions:
             if len(_check_defined(satreg, parameter)) > 0:
@@ -1935,6 +2056,22 @@ def parse_config(
                 "It should contain either two columns with headers 'depth' and 'rs', "
                 "or three columns with headers 'depth','rs' and 'eqlnum'."
             )
+
+    if not config.flownet.prior_volume_distribution in [
+        "voronoi_per_tube",
+        "tube_length",
+    ]:
+        raise ValueError(
+            f"'{config.flownet.prior_volume_distribution}' is not a valid prior volume "
+            "distribution method. You can either use 'voronoi_per_tube' or 'tube_length'."
+        )
+    if (config.flownet.prior_volume_distribution == "voronoi_per_tube") and (
+        config.flownet.data_source.simulation.input_case is None
+    ):
+        raise ValueError(
+            f"'The {config.flownet.prior_volume_distribution}' volume distribution "
+            "method can only be used when a simulation model is supplied as datasource."
+        )
 
     return config
 

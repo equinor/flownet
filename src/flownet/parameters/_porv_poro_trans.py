@@ -92,6 +92,8 @@ class PorvPoroTrans(Parameter):
             (bulkvolume_mult, porosity and permeability).
         ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
         network: The FlowNet NetworkModel instance.
+        min_permeability: The minimum permeability threshold for which tube volumes are set to zero
+            and thus made inactive.
 
     """
 
@@ -121,7 +123,7 @@ class PorvPoroTrans(Parameter):
 
         self._network: NetworkModel = network
         self._number_tubes: int = len(self._ti2ci.index.unique())
-        self.min_permeability = min_permeability
+        self.min_permeability: Optional[float] = min_permeability
 
     def render_output(self) -> Dict:
         """
@@ -136,12 +138,7 @@ class PorvPoroTrans(Parameter):
         # Calculate PORO, PORV AND MULTX
 
         properties_per_cell = pd.DataFrame(index=self._ti2ci.index)
-
-        properties_per_cell["INITIAL_BULKVOLUME"] = (
-            self._network.total_bulkvolume
-            * self._network.grid["cell_length"].values
-            / self._network.grid["cell_length"].sum()
-        )
+        properties_per_cell["INITIAL_BULKVOLUME"] = self._network.initial_cell_volumes
 
         properties_per_cell["PORO"] = self._ti2ci.merge(
             pd.DataFrame(

@@ -20,6 +20,7 @@ def test_swof_generation() -> None:
     parameter_dict["swcr"] = 0.2
     parameter_dict["sorw"] = 0.25
     parameter_dict["krwend"] = 0.5
+    parameter_dict["krwmax"] = 0.6
     parameter_dict["kroend"] = 0.95
     parameter_dict["nw"] = 2.25
     parameter_dict["now"] = 2.25
@@ -33,7 +34,11 @@ def test_swof_generation() -> None:
     )
 
     wateroil.add_corey_oil(now=parameter_dict["now"], kroend=parameter_dict["kroend"])
-    wateroil.add_corey_water(nw=parameter_dict["nw"], krwend=parameter_dict["krwend"])
+    wateroil.add_corey_water(
+        nw=parameter_dict["nw"],
+        krwend=parameter_dict["krwend"],
+        krwmax=parameter_dict["krwmax"],
+    )
 
     pyscal_swof_string = wateroil.SWOF(
         header=False, dataincommentrow=False

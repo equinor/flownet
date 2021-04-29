@@ -5,6 +5,7 @@ from typing import Union, List, Tuple
 
 import numpy as np
 import pandas as pd
+from scipy.spatial import KDTree
 from ecl.grid import EclGrid
 from ecl.eclfile import EclFile, EclInitFile
 from ecl.summary import EclSum
@@ -13,6 +14,7 @@ from ecl2df.eclfiles import EclFiles
 
 from ..data import perforation_strategy
 from .from_source import FromSource
+from ..network_model import NetworkModel
 
 
 class FlowData(FromSource):
@@ -381,6 +383,59 @@ class FlowData(FromSource):
         return self._well_connections(
             perforation_handling_strategy=perforation_handling_strategy
         )
+
+    def bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model(
+        self, network: NetworkModel
+    ) -> np.ndarray:
+        """Generate bulk volume distribution per grid cell in the FlowNet model based on the geometrical
+        distribution of the volume in the original (full field) simulation model. I.e., the original model's
+        volume will be distributed over the FlowNet's tubes by assigning original model grid cell
+        volumes to the nearest FlowNet tube midpoint.
+
+        Args:
+            network: FlowNet network instance.
+
+        Returns:
+            An array with volumes per flownetcell.
+
+        """
+        flownet_tube_midpoints = np.array(network.get_connection_midpoints())
+        model_cell_mid_points = np.array(
+            [cell.coordinate for cell in self._grid.cells(active=True)]
+        )
+        model_cell_volume = [
+            (cell.volume * self._init.iget_named_kw("NTG", 0)[cell.active_index])
+            for cell in self._grid.cells(active=True)
+        ]
+
+        # Determine nearest flow tube for each cell in the original model
+        tree = KDTree(flownet_tube_midpoints)
+        _, matched_indices = tree.query(model_cell_mid_points, k=[1])
+
+        # Distribute the original model's volume per cell to flownet tubes that are nearest.
+        tube_volumes = np.zeros(len(flownet_tube_midpoints))
+
+        for cell_i, tube_id in enumerate(matched_indices):
+            tube_volumes[tube_id[0]] += model_cell_volume[cell_i]
+
+        # Distribute tube volume over the active cells of the flownet.
+        # The last cell of each each tube is inactive and thefore gets 0 volume assigned.
+        properties_per_cell = pd.DataFrame(
+            pd.DataFrame(data=network.grid.index, index=network.grid.model).index
+        )
+        active_cells_per_tube = (
+            properties_per_cell.reset_index().groupby(["model"]).size() - 1
+        )
+
+        cell_volumes = np.zeros(len(properties_per_cell["model"].values))
+        for i, tube in enumerate(properties_per_cell["model"].values[:-1]):
+            if (
+                properties_per_cell["model"].values[i]
+                == properties_per_cell["model"].values[i + 1]
+            ):
+                cell_volumes[i] = tube_volumes[tube] / active_cells_per_tube[tube]
+
+        return cell_volumes
 
     @property
     def faults(self) -> pd.DataFrame:
