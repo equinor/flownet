@@ -461,3 +461,8 @@ class FlowData(FromSource):
     def layers(self) -> Union[Tuple[Tuple[int, int]], Tuple]:
         """Get the list of top and bottom k-indeces of a the orignal model that represents a FlowNet layer"""
         return self._layers
+
+    @property
+    def init_headers(self) -> List:
+        """the names of the parameters in the INIT file"""
+        return [reg[0] for reg in self._init.headers]

@@ -816,6 +816,12 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 MK.Default: "global",
                                 MK.Transformation: _to_lower,
                             },
+                            "region_parameter_from_sim_model": {
+                                MK.Type: types.String,
+                                MK.Description: "The name of the regions parameter in the simulation model to "
+                                "base the relative permeability region parameter on.",
+                                MK.Default: "SATNUM",
+                            },
                             "interpolate": {
                                 MK.Type: types.Bool,
                                 MK.Description: "Uses the interpolation option between low/base/high "
@@ -1733,14 +1739,21 @@ def parse_config(
     # regions
     if (
         config.model_parameters.equil.scheme == "regions_from_sim"
+        or config.model_parameters.relative_permeability.scheme == "regions_from_sim"
         or config.flownet.pvt.rsvd
     ):
         if config.flownet.data_source.simulation.input_case is None:
-            raise ValueError(
-                "Input simulation case is not defined. "
-                "EQLNUM regions can not be extracted"
-            )
+            raise ValueError("Input simulation case is not defined. ")
         field_data = FlowData(config.flownet.data_source.simulation.input_case)
+        if config.model_parameters.relative_permeability.scheme == "regions_from_sim":
+            if (
+                config.model_parameters.relative_permeability.region_parameter_from_sim_model
+                not in field_data.init_headers
+            ):
+                raise ValueError(
+                    f"REGION parameter {config.model_parameters.relative_permeability.region_parameter_from_sim_model} "
+                    f"not found in input simulation model."
+                )
         unique_regions = field_data.get_unique_regions("EQLNUM")
 
     layers = config.flownet.data_source.simulation.layers
