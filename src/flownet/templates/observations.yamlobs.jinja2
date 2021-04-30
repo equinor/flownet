@@ -174,7 +174,7 @@ smry:
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WGIR.rel_error is not none) and (error_config.WGIR.min_error is not none) -%}
-   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", dates=dates[num_beginning_date:num_end_date]) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="rate", dates=dates[num_beginning_date:num_end_date]) if kw.inj_type == "GAS" -%}
    {% if loop.first and not loop.last: %}
  - key: WGIR:{{ well_name }}
    observations:
@@ -191,7 +191,7 @@ smry:
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WWIR.rel_error is not none) and (error_config.WWIR.min_error is not none) -%}
-   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", dates=dates[num_beginning_date:num_end_date]) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="rate", dates=dates[num_beginning_date:num_end_date]) if kw.inj_type == "WATER" -%}
    {% if loop.first and not loop.last: %}
  - key: WWIR:{{ well_name }}
    observations:
@@ -208,7 +208,7 @@ smry:
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WGIT.rel_error is not none) and (error_config.WGIT.min_error is not none) -%}
-   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", dates=dates[num_beginning_date:num_end_date]) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="total", dates=dates[num_beginning_date:num_end_date]) if kw.inj_type == "GAS" -%}
    {% if loop.first and not loop.last: %}
  - key: WGIT:{{ well_name }}
    observations:
@@ -225,7 +225,7 @@ smry:
    {%- endfor %}
    {%- endif -%}
    {%- if (error_config.WWIT.rel_error is not none) and (error_config.WWIT.min_error is not none) -%}
-   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="thp", dates=dates[num_beginning_date:num_end_date]) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="total", dates=dates[num_beginning_date:num_end_date]) if kw.inj_type == "WATER" -%}
    {% if loop.first and not loop.last: %}
  - key: WWIT:{{ well_name }}
    observations:
