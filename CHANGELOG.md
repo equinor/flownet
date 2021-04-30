@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - [#374](https://github.com/equinor/flownet/pull/374) Fix for memory leak in result plotting script.
 
 ### Changes
+- [#392](https://github.com/equinor/flownet/pull/392) When using scheme regions_from_sim for relative permeability, the user can supply with region to base the generation of FlowNet model's SATNUM parameter on. The default region is SATNUM, but other region parameters (such as FIPNUM or EQLNUM) can be used by setting region_parameter_from_sim_model to e.g. EQLNUM.
 - [#383](https://github.com/equinor/flownet/pull/383) KRWMAX now defaulted to 1, but exposed to used. Previously it was hard coded to 1.
 - [#386](https://github.com/equinor/flownet/pull/386) Increase default timeout from 900 s to 3600 s.
 - [#363](https://github.com/equinor/flownet/pull/363) Drop Python 3.6 support.
@@ -31,7 +32,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - [#365](https://github.com/equinor/flownet/pull/365) Fixes bug where the parquet parameters file would not be saved for iterations larger than 9. 
 
 ### Changes
-- [#392](https://github.com/equinor/flownet/pull/392) When using scheme 'regions_from_sim' for relative permeability, the user can supply with region to base the generation of the FlowNet SATNUM on. The default region is SATNUM, but other region parameters (such as FIPNUM or EQLNUM) can be used by setting 'region_parameter_from_sim_model' to e.g. EQLNUM.
 - [#365](https://github.com/equinor/flownet/pull/365) Structure change of the code. Moved all forward models called from ERT to a seperate folder ert/forward_models. Scripts moved: delete_simulation_output, save_iteration_parameters, iteration_analytics, render_realization and flow_job. 
 - [#347](https://github.com/equinor/flownet/pull/347) Additional flow nodes is now allowed to be either a list (equal length of number of layers) or a single integer (which will be split over the layers according to volume of concave hull).
 
