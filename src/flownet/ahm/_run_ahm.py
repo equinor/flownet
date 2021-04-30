@@ -29,22 +29,24 @@ from ..parameters import (
 from ..data import FlowData
 
 
-def _set_up_ahm_and_run_ERT(
+def _set_up_ahm_and_run_ert(
     network: NetworkModel,
     schedule: Schedule,
     parameters: List[Parameter],
-    config: ConfigSuite.snapshot
+    config: ConfigSuite.snapshot,
+    args: argparse.Namespace,
 ):
     """
-    This function creates the AssistedHistoryMatching class, 
+    This function creates the AssistedHistoryMatching class,
     creates the ERT setup, and runs ERT.
 
     Args:
         network: NetworkModel instance
         schedule: Schedule instance
         parameters: List of Parameter objects
-        config: Information from the FlowNet config YAML    
-        
+        config: Information from the FlowNet config YAML
+        args: Argparse parsed command line arguments.
+
     Returns:
         Nothing
     """
@@ -430,7 +432,7 @@ def run_flownet_history_matching_from_restart(
 
     parameters = update_distribution(parameters, args.restart_folder)
 
-    _set_up_ahm_and_run_ERT(network, schedule, parameters, config)
+    _set_up_ahm_and_run_ert(network, schedule, parameters, config, args)
 
 
 # pylint: disable=too-many-branches,too-many-statements
@@ -860,4 +862,4 @@ def run_flownet_history_matching(
     if isinstance(network.faults, dict):
         parameters.append(FaultTransmissibility(fault_mult_dist_values, network))
 
-    _set_up_ahm_and_run_ERT(network, schedule, parameters, config)
+    _set_up_ahm_and_run_ert(network, schedule, parameters, config, args)
