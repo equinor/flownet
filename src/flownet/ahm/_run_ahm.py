@@ -29,6 +29,43 @@ from ..parameters import (
 from ..data import FlowData
 
 
+def _set_up_ahm_and_run_ERT(
+    network: NetworkModel,
+    schedule: Schedule,
+    parameters: List[Parameter],
+    config: ConfigSuite.snapshot
+):
+    """
+    This function creates the AssistedHistoryMatching class, 
+    creates the ERT setup, and runs ERT.
+
+    Args:
+        network: NetworkModel instance
+        schedule: Schedule instance
+        parameters: List of Parameter objects
+        config: Information from the FlowNet config YAML    
+        
+    Returns:
+        Nothing
+    """
+
+    ahm = AssistedHistoryMatching(
+        network,
+        schedule,
+        parameters,
+        config,
+    )
+
+    ahm.create_ert_setup(
+        args=args,
+        training_set_fraction=_find_training_set_fraction(schedule, config),
+    )
+
+    ahm.report()
+
+    ahm.run_ert(weights=config.ert.ensemble_weights)
+
+
 def _from_regions_to_flow_tubes(
     network: NetworkModel,
     field_data: FlowData,
@@ -371,11 +408,13 @@ def run_flownet_history_matching_from_restart(
     config: ConfigSuite.snapshot, args: argparse.Namespace
 ):
     """
-    Creates and runs an ERT setup, given user configuration.
+    Creates and runs an ERT setup, based on a previously performed
+    ERT run, given user configuration.
 
     Args:
         config: Configsuite parsed user provided configuration.
         args: Argparse parsed command line arguments.
+
     Returns:
         Nothing
 
@@ -391,21 +430,7 @@ def run_flownet_history_matching_from_restart(
 
     parameters = update_distribution(parameters, args.restart_folder)
 
-    ahm = AssistedHistoryMatching(
-        network,
-        schedule,
-        parameters,
-        config,
-    )
-
-    ahm.create_ert_setup(
-        args=args,
-        training_set_fraction=_find_training_set_fraction(schedule, config),
-    )
-
-    ahm.report()
-
-    ahm.run_ert(weights=config.ert.ensemble_weights)
+    _set_up_ahm_and_run_ERT(network, schedule, parameters, config)
 
 
 # pylint: disable=too-many-branches,too-many-statements
@@ -835,18 +860,4 @@ def run_flownet_history_matching(
     if isinstance(network.faults, dict):
         parameters.append(FaultTransmissibility(fault_mult_dist_values, network))
 
-    ahm = AssistedHistoryMatching(
-        network,
-        schedule,
-        parameters,
-        config,
-    )
-
-    ahm.create_ert_setup(
-        args=args,
-        training_set_fraction=_find_training_set_fraction(schedule, config),
-    )
-
-    ahm.report()
-
-    ahm.run_ert(weights=config.ert.ensemble_weights)
+    _set_up_ahm_and_run_ERT(network, schedule, parameters, config)

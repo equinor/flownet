@@ -80,7 +80,9 @@ def flownet_ahm(args: argparse.Namespace) -> None:
                 run_flownet_history_matching_from_restart(config, args)
             else:
                 raise ValueError(
-                    f"Case in {args.restart_folder} is not complete! Some files are missing!"
+                    f"Case in {args.restart_folder} is not complete! The following files "
+                    "are needed: network.pickled, schedule.pickled, parameters.pickled "
+                    "and parameters_iteration-latest.parquet.gzip."
                 )
         else:
             raise ValueError(f"{args.restart_folder} does not exist!")
