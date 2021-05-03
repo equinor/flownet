@@ -1725,6 +1725,7 @@ def parse_config(
             + ", ".join([error.msg for error in suite.errors])
         )
 
+    available_region_schemes = ["global", "individual", "regions_from_sim"]
     config = suite.snapshot
     if (
         config.model_parameters.relative_permeability.interpolate
@@ -1735,26 +1736,15 @@ def parse_config(
             "interpolation option for relative permeability."
         )
 
-    if (
-        config.model_parameters.equil.scheme != "regions_from_sim"
-        and config.model_parameters.equil.scheme != "individual"
-        and config.model_parameters.equil.scheme != "global"
-    ):
-        raise ValueError(
-            f"The equil scheme "
-            f"'{config.model_parameters.equil.scheme}' is not valid.\n"
-            f"Valid options are 'global', 'regions_from_sim' or 'individual'."
-        )
-    if (
-        config.model_parameters.relative_permeability.scheme != "regions_from_sim"
-        and config.model_parameters.relative_permeability.scheme != "individual"
-        and config.model_parameters.relative_permeability.scheme != "global"
-    ):
-        raise ValueError(
-            f"The relative permeability scheme "
-            f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
-            f"Valid options are 'global', 'regions_from_sim' or 'individual'."
-        )
+    region_parameters = ["equil", "relative_permeability"]
+    for reg_param in region_parameters:
+        scheme = getattr(getattr(config.model_parameters, reg_param), "scheme")
+        if scheme not in available_region_schemes:
+            raise ValueError(
+                f"The {reg_param} scheme "
+                f"'{scheme}' is not valid.\n"
+                f"Valid options are {available_region_schemes}"
+            )
     # If 'regions_from_sim' is defined, or a csv file with rsvd tables
     # is defined, we need to import the simulation case to check number
     # regions
@@ -1785,8 +1775,8 @@ def parse_config(
     else:
         if config.model_parameters.relative_permeability.regions[0].id is not None:
             raise ValueError(
-                "Id for firstrelative permeability region parameter should not be set, or set to 'None'\n"
-                "when using the 'global' or 'individual' options"
+                "The region number for the first relative permeability region parameter should not be set, \n"
+                "or set to 'None' when using the 'global' or 'individual' options"
             )
 
     if config.model_parameters.equil.scheme == "regions_from_sim":
@@ -1797,7 +1787,7 @@ def parse_config(
     else:
         if config.model_parameters.equil.regions[0].id is not None:
             raise ValueError(
-                "Id for first equilibrium region parameter should not be set, or set to 'None'\n"
+                "The region number for the first equilibrium region parameter should not be set, or set to 'None'\n"
                 "when using the 'global' or 'individual' options"
             )
 
@@ -2084,7 +2074,11 @@ def _check_interpolate(path_in_config_dict: dict, parameter: str):
         parameter (str): a parameter/dictionary found at the given location
 
     Returns:
-       Nothing, raises ValueErrors if something is wrong
+       Nothing
+
+    Raises:
+        ValueError: If the relative permeability input does not contain information for min/base/max
+            when the interpolation option is selected
     """
     defined_parameters = _check_defined(path_in_config_dict, parameter)
     _check_for_negative_values(path_in_config_dict, parameter)
@@ -2107,7 +2101,10 @@ def _check_for_negative_values(path_in_config_dict: dict, parameter: str):
         parameter (str): a parameter/dictionary found at the given location
 
     Returns:
-        Nothing, raises ValueError if something is wrong
+        Nothing
+
+    Raises:
+        ValueError: If a parameter has negative input value defined for min/max/mean/base/stddev
     """
     defined_parameters = _check_defined(path_in_config_dict, parameter)
     # check for negative values
@@ -2133,7 +2130,10 @@ def _check_order_of_values(path_in_config_dict: dict, parameter: str):
         parameter (str): a parameter/dictionary found at the given location
 
     Returns:
-        Nothing, raises ValueError if something is wrong
+        Nothing
+
+    Raises:
+        ValueError: If the order of the defined min/base/mean/max values for a parameter is not correct
     """
     defined_parameters = _check_defined(path_in_config_dict, parameter)
     if {"min", "max"}.issubset(defined_parameters):
@@ -2188,7 +2188,12 @@ def _check_distribution(path_in_config_dict: dict, parameter: str):
         parameter (str): a parameter/dictionary found at the given location
 
     Returns:
-       Nothing, raises ValueErrors if something is wrong
+       Nothing
+
+    Raises:
+        ValueError: If the choice of input distribution is not valid
+        ValueError: If the combination of min/max/base/mean/stddev deinfed in the config is not right for the
+            chosen distribution
     """
     # pylint: disable=too-many-branches
     if not {getattr(path_in_config_dict, parameter).distribution}.issubset(
@@ -2324,6 +2329,11 @@ def _check_if_all_region_priors_defined(
     path_in_config_dict: dict, unique_regions: np.ndarray, parameter_name: str
 ):
     """
+    The function checks that prior distributions are defined for all regions is the simulation model
+    if the option 'regions_from_sim' is selected for equilibration or relative permeability.
+
+    If all regions do not have specific input for all regions in the simulation model,
+    a region with default values needs to be defined.
 
     Args:
         path_in_config_dict: a location in the config schema dictionary
@@ -2331,7 +2341,12 @@ def _check_if_all_region_priors_defined(
         parameter_name: the name of the output region parameter
 
     Returns:
-        Nothing, raises ValueErrors if something is wrong
+        Nothing
+
+    Raises:
+        ValueError: If there are multiple definitions of models parameters for the same region
+        ValueError: If there are model parameters defined for a region that does no exist in the simulation model
+        ValueError: If default values for model parameters are required but not defined
     """
 
     default_exists = False
