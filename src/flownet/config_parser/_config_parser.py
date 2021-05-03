@@ -1734,6 +1734,26 @@ def parse_config(
             "interpolation option for relative permeability."
         )
 
+    if (
+        config.model_parameters.equil.scheme != "regions_from_sim"
+        and config.model_parameters.equil.scheme != "individual"
+        and config.model_parameters.equil.scheme != "global"
+    ):
+        raise ValueError(
+            f"The equil scheme "
+            f"'{config.model_parameters.equil.scheme}' is not valid.\n"
+            f"Valid options are 'global', 'regions_from_sim' or 'individual'."
+        )
+    if (
+        config.model_parameters.relative_permeability.scheme != "regions_from_sim"
+        and config.model_parameters.relative_permeability.scheme != "individual"
+        and config.model_parameters.relative_permeability.scheme != "global"
+    ):
+        raise ValueError(
+            f"The relative permeability scheme "
+            f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
+            f"Valid options are 'global', 'regions_from_sim' or 'individual'."
+        )
     # If 'regions_from_sim' is defined, or a csv file with rsvd tables
     # is defined, we need to import the simulation case to check number
     # regions
@@ -1745,16 +1765,40 @@ def parse_config(
         if config.flownet.data_source.simulation.input_case is None:
             raise ValueError("Input simulation case is not defined. ")
         field_data = FlowData(config.flownet.data_source.simulation.input_case)
-        if config.model_parameters.relative_permeability.scheme == "regions_from_sim":
-            if (
+
+    if config.model_parameters.relative_permeability.scheme == "regions_from_sim":
+        try:
+            unique_satnum_regions = field_data.get_unique_regions(
                 config.model_parameters.relative_permeability.region_parameter_from_sim_model
-                not in field_data.init_headers
-            ):
-                raise ValueError(
-                    f"REGION parameter {config.model_parameters.relative_permeability.region_parameter_from_sim_model} "
-                    f"not found in input simulation model."
-                )
-        unique_regions = field_data.get_unique_regions("EQLNUM")
+            )
+        except:
+            raise ValueError(
+                f"REGION parameter {config.model_parameters.relative_permeability.region_parameter_from_sim_model} "
+                "not found in input simulation model."
+            )
+        _check_if_all_region_priors_defined(
+            config.model_parameters.relative_permeability,
+            unique_satnum_regions,
+            "SATNUM",
+        )
+    else:
+        if config.model_parameters.relative_permeability.regions[0].id is not None:
+            raise ValueError(
+                "Id for firstrelative permeability region parameter should not be set, or set to 'None'\n"
+                "when using the 'global' or 'individual' options"
+            )
+
+    if config.model_parameters.equil.scheme == "regions_from_sim":
+        unique_eqlnum_regions = field_data.get_unique_regions("EQLNUM")
+        _check_if_all_region_priors_defined(
+            config.model_parameters.equil, unique_eqlnum_regions, "EQLNUM"
+        )
+    else:
+        if config.model_parameters.equil.regions[0].id is not None:
+            raise ValueError(
+                "Id for first equilibrium region parameter should not be set, or set to 'None'\n"
+                "when using the 'global' or 'individual' options"
+            )
 
     layers = config.flownet.data_source.simulation.layers
     if len(layers) > 0:
@@ -1808,18 +1852,6 @@ def parse_config(
             "place candidates within the reservoir volume."
         )
 
-    req_relp_parameters: List[str] = []
-    if (
-        config.model_parameters.equil.scheme != "regions_from_sim"
-        and config.model_parameters.equil.scheme != "individual"
-        and config.model_parameters.equil.scheme != "global"
-    ):
-        raise ValueError(
-            f"The equil scheme "
-            f"'{config.model_parameters.equil.scheme}' is not valid.\n"
-            f"Valid options are 'global', 'regions_from_sim' or 'individual'."
-        )
-
     prod_control_modes = {"ORAT", "GRAT", "WRAT", "LRAT", "RESV", "BHP"}
     if config.flownet.prod_control_mode not in prod_control_modes:
         raise ValueError(
@@ -1833,38 +1865,6 @@ def parse_config(
             f"The injection control mode "
             f"'{config.flownet.inj_control_mode}' is not valid.\n"
             f"Valid options are {inj_control_modes}. "
-        )
-
-    if config.model_parameters.equil.scheme == "regions_from_sim":
-        default_exists = False
-        defined_regions = []
-        for reg in config.model_parameters.equil.regions:
-            if reg.id is None:
-                default_exists = True
-            else:
-                if reg.id in defined_regions:
-                    raise ValueError(f"EQLNUM region {reg.id} defined multiple times")
-                defined_regions.append(reg.id)
-
-            if reg.id not in unique_regions and reg.id is not None:
-                raise ValueError(
-                    f"EQLNUM regions {reg.id} is not found in the input simulation case"
-                )
-
-        if set(defined_regions) != set(unique_regions):
-            print(
-                "Values not defined for all EQLNUM regions. Default values will be used if defined."
-            )
-            if not default_exists:
-                raise ValueError("Default values for EQLNUM regions not defined")
-
-    if (
-        config.model_parameters.equil.scheme != "regions_from_sim"
-        and config.model_parameters.equil.regions[0].id is not None
-    ):
-        raise ValueError(
-            "Id for first equilibrium region parameter should not be set, or set to 'None'\n"
-            "when using the 'global' or 'individual' options"
         )
 
     for phase in config.flownet.phases:
@@ -1884,9 +1884,9 @@ def parse_config(
             "The phases 'vapoil' and 'disgas' can not be defined without the phases 'oil' and 'gas'"
         )
 
+    req_relp_parameters: List[str] = []
     if {"oil", "water"}.issubset(config.flownet.phases):
         req_relp_parameters = req_relp_parameters + [
-            "scheme",
             "swirr",
             "swl",
             "swcr",
@@ -1903,7 +1903,6 @@ def parse_config(
 
     if {"oil", "gas"}.issubset(config.flownet.phases):
         req_relp_parameters = req_relp_parameters + [
-            "scheme",
             "swirr",
             "swl",
             "sgcr",
@@ -1917,26 +1916,11 @@ def parse_config(
             _check_distribution(reg, "goc_depth")
 
     for parameter in set(req_relp_parameters):
-        if parameter == "scheme":
-            if (
-                getattr(config.model_parameters.relative_permeability, parameter)
-                != "global"
-                and getattr(config.model_parameters.relative_permeability, parameter)
-                != "individual"
-                and getattr(config.model_parameters.relative_permeability, parameter)
-                != "regions_from_sim"
-            ):
-                raise ValueError(
-                    f"The relative permeability scheme "
-                    f"'{config.model_parameters.relative_permeability.scheme}' is not valid.\n"
-                    f"Valid options are 'global', 'regions_from_sim' or 'individual'."
-                )
-        else:
-            for satreg in config.model_parameters.relative_permeability.regions:
-                if config.model_parameters.relative_permeability.interpolate:
-                    _check_interpolate(satreg, parameter)
-                else:
-                    _check_distribution(satreg, parameter)
+        for satreg in config.model_parameters.relative_permeability.regions:
+            if config.model_parameters.relative_permeability.interpolate:
+                _check_interpolate(satreg, parameter)
+            else:
+                _check_distribution(satreg, parameter)
 
     for parameter in (
         set(config.model_parameters.relative_permeability.regions[0]._fields)
@@ -2058,7 +2042,7 @@ def parse_config(
                     "Column names in csv file with rsvd values should be "
                     "'depth', 'rs' and 'eqlnum' (in any order)."
                 )
-            if not set(df_rsvd["eqlnum"]) == set(unique_regions):
+            if not set(df_rsvd["eqlnum"]) == set(unique_eqlnum_regions):
                 raise ValueError(
                     "Rsvd tables not defined for all EQLNUM regions. Must be defined as one "
                     "table used for all regions, or one table for each region."
@@ -2333,3 +2317,45 @@ def _check_defined(path_in_config_dict: dict, parameter: str):
     param_dict.pop("distribution")
     param_dict.pop("low_optimistic", None)
     return {key for key, value in param_dict.items() if value is not None}
+
+
+def _check_if_all_region_priors_defined(
+    path_in_config_dict: dict, unique_regions: List, parameter_name: str
+):
+    """
+
+    Args:
+        path_in_config_dict: a location in the config schema dictionary
+        unique_regions: a list of the unique region numers in the input simulation model
+        parameter_name: the name of the output region parameter
+
+    Returns:
+        Nothing, raises ValueErrors if something is wrong
+    """
+
+    if getattr(path_in_config_dict, "scheme") == "regions_from_sim":
+        default_exists = False
+        defined_regions = []
+        for reg in getattr(path_in_config_dict, "regions"):
+            if reg.id is None:
+                default_exists = True
+            else:
+                if reg.id in defined_regions:
+                    raise ValueError(
+                        f"{parameter_name} region {reg.id} defined multiple times"
+                    )
+                    defined_regions.append(reg.id)
+
+            if reg.id not in unique_regions and reg.id is not None:
+                raise ValueError(
+                    f"{parameter_name} regions {reg.id} is not found in the input simulation case"
+                )
+
+        if set(defined_regions) != set(unique_regions):
+            print(
+                f"Values not defined for all {parameter_name} regions. Default values will be used if defined."
+            )
+            if not default_exists:
+                raise ValueError(
+                    f"Default values for {parameter_name} regions not defined"
+                )
