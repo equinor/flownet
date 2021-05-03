@@ -3,6 +3,7 @@ import os
 import pathlib
 from typing import Dict, Optional, List
 
+import numpy as np
 import yaml
 import configsuite
 from configsuite import types, MetaKeys as MK, ConfigSuite
@@ -1771,11 +1772,11 @@ def parse_config(
             unique_satnum_regions = field_data.get_unique_regions(
                 config.model_parameters.relative_permeability.region_parameter_from_sim_model
             )
-        except:
+        except KeyError as err:
             raise ValueError(
                 f"REGION parameter {config.model_parameters.relative_permeability.region_parameter_from_sim_model} "
                 "not found in input simulation model."
-            )
+            ) from err
         _check_if_all_region_priors_defined(
             config.model_parameters.relative_permeability,
             unique_satnum_regions,
@@ -2320,7 +2321,7 @@ def _check_defined(path_in_config_dict: dict, parameter: str):
 
 
 def _check_if_all_region_priors_defined(
-    path_in_config_dict: dict, unique_regions: List, parameter_name: str
+    path_in_config_dict: dict, unique_regions: np.ndarray, parameter_name: str
 ):
     """
 
@@ -2333,29 +2334,26 @@ def _check_if_all_region_priors_defined(
         Nothing, raises ValueErrors if something is wrong
     """
 
-    if getattr(path_in_config_dict, "scheme") == "regions_from_sim":
-        default_exists = False
-        defined_regions = []
-        for reg in getattr(path_in_config_dict, "regions"):
-            if reg.id is None:
-                default_exists = True
-            else:
-                if reg.id in defined_regions:
-                    raise ValueError(
-                        f"{parameter_name} region {reg.id} defined multiple times"
-                    )
-                    defined_regions.append(reg.id)
-
-            if reg.id not in unique_regions and reg.id is not None:
+    default_exists = False
+    defined_regions: List[int] = []
+    for reg in getattr(path_in_config_dict, "regions"):
+        if reg.id is None:
+            default_exists = True
+        else:
+            if reg.id in defined_regions:
                 raise ValueError(
-                    f"{parameter_name} regions {reg.id} is not found in the input simulation case"
+                    f"{parameter_name} region {reg.id} defined multiple times"
                 )
+            defined_regions.append(reg.id)
 
-        if set(defined_regions) != set(unique_regions):
-            print(
-                f"Values not defined for all {parameter_name} regions. Default values will be used if defined."
+        if reg.id not in unique_regions and reg.id is not None:
+            raise ValueError(
+                f"{parameter_name} regions {reg.id} is not found in the input simulation case"
             )
-            if not default_exists:
-                raise ValueError(
-                    f"Default values for {parameter_name} regions not defined"
-                )
+
+    if set(defined_regions) != set(unique_regions):
+        print(
+            f"Values not defined for all {parameter_name} regions. Default values will be used if defined."
+        )
+        if not default_exists:
+            raise ValueError(f"Default values for {parameter_name} regions not defined")
