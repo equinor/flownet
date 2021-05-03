@@ -1754,7 +1754,7 @@ def parse_config(
         or config.flownet.pvt.rsvd
     ):
         if config.flownet.data_source.simulation.input_case is None:
-            raise ValueError("Input simulation case is not defined. ")
+            raise ValueError("Input simulation case is not defined.")
         field_data = FlowData(config.flownet.data_source.simulation.input_case)
 
     if config.model_parameters.relative_permeability.scheme == "regions_from_sim":
