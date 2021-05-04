@@ -199,7 +199,14 @@ for the parameter in question makes sense</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Nothing, raises ValueErrors if something is wrong</p>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the choice of input distribution is not valid</p></li>
+<li><p><strong>ValueError</strong> – If the combination of min/max/base/mean/stddev deinfed in the config is not right for the
+    chosen distribution</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -217,7 +224,38 @@ for a given parameter.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Nothing, raises ValueError if something is wrong</p>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If a parameter has negative input value defined for min/max/mean/base/stddev</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="flownet.config_parser._config_parser._check_if_all_region_priors_defined">
+<code class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser.</span></code><code class="sig-name descname"><span class="pre">_check_if_all_region_priors_defined</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_in_config_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_regions</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.config_parser._config_parser._check_if_all_region_priors_defined" title="Permalink to this definition">¶</a></dt>
+<dd><p>The function checks that prior distributions are defined for all regions is the simulation model
+if the option ‘regions_from_sim’ is selected for equilibration or relative permeability.</p>
+<p>If all regions do not have specific input for all regions in the simulation model,
+a region with default values needs to be defined.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path_in_config_dict</strong> – a location in the config schema dictionary</p></li>
+<li><p><strong>unique_regions</strong> – a list of the unique region numers in the input simulation model</p></li>
+<li><p><strong>parameter_name</strong> – the name of the output region parameter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> – If there are multiple definitions of models parameters for the same region</p></li>
+<li><p><strong>ValueError</strong> – If there are model parameters defined for a region that does no exist in the simulation model</p></li>
+<li><p><strong>ValueError</strong> – If default values for model parameters are required but not defined</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -235,7 +273,11 @@ interpolation between SCAL recommendation curves in pyscal</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Nothing, raises ValueErrors if something is wrong</p>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the relative permeability input does not contain information for min/base/max
+    when the interpolation option is selected</p>
 </dd>
 </dl>
 </dd></dl>
@@ -262,7 +304,10 @@ for a given parameter. If defined, the following should be true:</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Nothing, raises ValueError if something is wrong</p>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the order of the defined min/base/mean/max values for a parameter is not correct</p>
 </dd>
 </dl>
 </dd></dl>
@@ -289,7 +334,7 @@ with which values are optional and/or has default values.</p>
 
 <dl class="py function">
 <dt id="flownet.config_parser._config_parser.parse_config">
-<code class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser.</span></code><code class="sig-name descname"><span class="pre">parse_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fa7f25d4110&gt;</span><a class="headerlink" href="#flownet.config_parser._config_parser.parse_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser.</span></code><code class="sig-name descname"><span class="pre">parse_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f772769d710&gt;</span><a class="headerlink" href="#flownet.config_parser._config_parser.parse_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes in path to a yaml configuration file, parses it, populates with default values
 where that is defined and the has not provided his/her own value. Also error checks input
 arguments, and making sure they are of expected type.</p>
