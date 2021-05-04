@@ -574,7 +574,12 @@ def run_flownet_history_matching(
         )
     elif config.model_parameters.relative_permeability.scheme == "regions_from_sim":
         df_satnum = pd.DataFrame(
-            _from_regions_to_flow_tubes(network, field_data, ti2ci, "SATNUM"),
+            _from_regions_to_flow_tubes(
+                network,
+                field_data,
+                ti2ci,
+                config.model_parameters.relative_permeability.region_parameter_from_sim_model,
+            ),
             columns=["SATNUM"],
         )
     else:
