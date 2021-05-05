@@ -711,7 +711,12 @@ def run_flownet_history_matching(
         )
     elif config.model_parameters.equil.scheme == "regions_from_sim":
         df_eqlnum = pd.DataFrame(
-            _from_regions_to_flow_tubes(network, field_data, ti2ci, "EQLNUM"),
+            _from_regions_to_flow_tubes(
+                network,
+                field_data,
+                ti2ci,
+                config.model_parameters.equil.region_parameter_from_sim_model,
+            ),
             columns=["EQLNUM"],
         )
     elif config.model_parameters.equil.scheme == "global":
