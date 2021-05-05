@@ -1440,6 +1440,12 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                 MK.Default: "global",
                                 MK.Transformation: _to_lower,
                             },
+                            "region_parameter_from_sim_model": {
+                                MK.Type: types.String,
+                                MK.Description: "The name of the regions parameter in the simulation model to "
+                                "base the equilibrium parameter on.",
+                                MK.Default: "EQLNUM",
+                            },
                             "regions": {
                                 MK.Type: types.List,
                                 MK.Content: {
@@ -1736,15 +1742,6 @@ def parse_config(
             "interpolation option for relative permeability."
         )
 
-    region_parameters = ["equil", "relative_permeability"]
-    for reg_param in region_parameters:
-        scheme = getattr(getattr(config.model_parameters, reg_param), "scheme")
-        if scheme not in available_region_schemes:
-            raise ValueError(
-                f"The {reg_param} scheme "
-                f"'{scheme}' is not valid.\n"
-                f"Valid options are {available_region_schemes}"
-            )
     # If 'regions_from_sim' is defined, or a csv file with rsvd tables
     # is defined, we need to import the simulation case to check number
     # regions
@@ -1757,39 +1754,42 @@ def parse_config(
             raise ValueError("Input simulation case is not defined.")
         field_data = FlowData(config.flownet.data_source.simulation.input_case)
 
-    if config.model_parameters.relative_permeability.scheme == "regions_from_sim":
-        try:
-            unique_satnum_regions = field_data.get_unique_regions(
-                config.model_parameters.relative_permeability.region_parameter_from_sim_model
-            )
-        except KeyError as err:
+    region_parameters: dict = {"equil": "EQLNUM", "relative_permeability": "SATNUM"}
+    unique_regions: dict = {}
+    for reg_param, flow_region_name in region_parameters.items():
+        scheme = getattr(getattr(config.model_parameters, reg_param), "scheme")
+        if scheme not in available_region_schemes:
             raise ValueError(
-                f"REGION parameter {config.model_parameters.relative_permeability.region_parameter_from_sim_model} "
-                "not found in input simulation model."
-            ) from err
-        _check_if_all_region_priors_defined(
-            config.model_parameters.relative_permeability,
-            unique_satnum_regions,
-            "SATNUM",
-        )
-    else:
-        if config.model_parameters.relative_permeability.regions[0].id is not None:
-            raise ValueError(
-                "The region number for the first relative permeability region parameter should not be set, \n"
-                "or set to 'None' when using the 'global' or 'individual' options"
+                f"The {reg_param} scheme "
+                f"'{scheme}' is not valid.\n"
+                f"Valid options are {available_region_schemes}"
             )
-
-    if config.model_parameters.equil.scheme == "regions_from_sim":
-        unique_eqlnum_regions = field_data.get_unique_regions("EQLNUM")
-        _check_if_all_region_priors_defined(
-            config.model_parameters.equil, unique_eqlnum_regions, "EQLNUM"
-        )
-    else:
-        if config.model_parameters.equil.regions[0].id is not None:
-            raise ValueError(
-                "The region number for the first equilibrium region parameter should not be set, or set to 'None'\n"
-                "when using the 'global' or 'individual' options"
+        if scheme == "regions_from_sim":
+            reg_param_sim_model = getattr(
+                getattr(config.model_parameters, reg_param),
+                "region_parameter_from_sim_model",
             )
+            try:
+                unique_regions[reg_param] = field_data.get_unique_regions(
+                    reg_param_sim_model
+                )
+            except KeyError as err:
+                raise ValueError(
+                    f"REGION parameter {reg_param_sim_model} "
+                    "not found in input simulation model."
+                ) from err
+            _check_if_all_region_priors_defined(
+                getattr(config.model_parameters, reg_param),
+                unique_regions[reg_param],
+                flow_region_name,
+            )
+        else:
+            regions = getattr(getattr(config.model_parameters, reg_param), "regions")
+            if regions[0].id is not None:
+                raise ValueError(
+                    f"The region number for the first {reg_param} region parameter should not be set, \n"
+                    "or set to 'None' when using the 'global' or 'individual' options"
+                )
 
     layers = config.flownet.data_source.simulation.layers
     if len(layers) > 0:
@@ -2027,13 +2027,16 @@ def parse_config(
                     "With only one rsvd table as input the "
                     "column names should be 'depth' and 'rs'."
                 )
-        elif len(df_rsvd.columns) == 3:
+        elif (
+            len(df_rsvd.columns) == 3
+            and config.model_parameters.equil.scheme == "regions_from_sim"
+        ):
             if not set(df_rsvd.columns.str.lower()) == {"depth", "eqlnum", "rs"}:
                 raise ValueError(
                     "Column names in csv file with rsvd values should be "
                     "'depth', 'rs' and 'eqlnum' (in any order)."
                 )
-            if not set(df_rsvd["eqlnum"]) == set(unique_eqlnum_regions):
+            if not set(df_rsvd["eqlnum"]) == set(unique_regions["equil"]):
                 raise ValueError(
                     "Rsvd tables not defined for all EQLNUM regions. Must be defined as one "
                     "table used for all regions, or one table for each region."
@@ -2043,6 +2046,8 @@ def parse_config(
                 "Something is wrong with the csv file containing the rsvd tables."
                 "It should contain either two columns with headers 'depth' and 'rs', "
                 "or three columns with headers 'depth','rs' and 'eqlnum'."
+                "The option with three columns should only be used together with the "
+                "'regions_from_sim' scheme for equilibrium regions."
             )
 
     if not config.flownet.prior_volume_distribution in [
@@ -2337,7 +2342,7 @@ def _check_if_all_region_priors_defined(
 
     Args:
         path_in_config_dict: a location in the config schema dictionary
-        unique_regions: a list of the unique region numers in the input simulation model
+        unique_regions: a list of the unique region numbers in the input simulation model
         parameter_name: the name of the output region parameter
 
     Returns:
