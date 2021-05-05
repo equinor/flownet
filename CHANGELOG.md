@@ -12,10 +12,13 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - [#372](https://github.com/equinor/flownet/pull/372) Added option to let the additional flownodes initially be placed within the original volume rather than within the convex hull of the real wells. To do this set place_nodes_in_volume_reservoir to true.
 
 ### Fixes
+- [#391](https://github.com/equinor/flownet/pull/391) Fixes bug in generation of yaml files for visualization in Webviz.
 - [#372](https://github.com/equinor/flownet/pull/372) Fixes bug of hull_factor not actually being used for placing additional nodes outside the perforations.
 - [#374](https://github.com/equinor/flownet/pull/374) Fix for memory leak in result plotting script.
 
 ### Changes
+- [#396](https://github.com/equinor/flownet/pull/396) When using scheme regions_from_sim for equilibrium regions, the user can supply which region to base the generation of FlowNet model's EQLNUM parameter on. The default region is EQLNUM, but other region parameters (such as FIPNUM or SATNUM) can be used by setting region_parameter_from_sim_model for equil in the config yaml file.
+- [#392](https://github.com/equinor/flownet/pull/392) When using scheme regions_from_sim for relative permeability, the user can supply which region to base the generation of FlowNet model's SATNUM parameter on. The default region is SATNUM, but other region parameters (such as FIPNUM or EQLNUM) can be used by setting region_parameter_from_sim_model for relative permeability in the config yaml file to e.g. EQLNUM.
 - [#383](https://github.com/equinor/flownet/pull/383) KRWMAX now defaulted to 1, but exposed to used. Previously it was hard coded to 1.
 - [#386](https://github.com/equinor/flownet/pull/386) Increase default timeout from 900 s to 3600 s.
 - [#363](https://github.com/equinor/flownet/pull/363) Drop Python 3.6 support.
