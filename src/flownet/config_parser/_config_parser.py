@@ -395,6 +395,12 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Description: "Adding this makes sure two FlowNet "
                         "runs create the exact same output",
                     },
+                    "mitchells_algorithm": {
+                        MK.Type: types.String,
+                        MK.Default: "Normal",
+                        MK.Description: "Choose which mitchell's best candidate algorithm to run for the placement "
+                        "of additional nodes. Options: Normal or Fast.",
+                    },
                     "perforation_handling_strategy": {
                         MK.Type: types.String,
                         MK.Default: "bottom_point",

@@ -8,7 +8,7 @@ from ..utils.types import Coordinate
 from ._hull import check_in_hull
 
 # pylint: disable=too-many-branches,too-many-statements
-def mitchell_best_candidate(
+def mitchell_best_candidate_fast(
     perforations: List[Coordinate],
     num_added_flow_nodes: int,
     num_candidates: int,
@@ -24,9 +24,11 @@ def mitchell_best_candidate(
     """
     Python implementation of a modified Mitchell's Best-Candidate Algorithm to generate additional flow nodes in
     real field cases.
+
     The algorithm will generate locations for additional flow nodes where the distance to all existing flow nodes
     is maximized. The added flow nodes are located inside the (possibly scaled) convex hull of the
     supplied perforations.
+
     Args:
         perforations: Python list of real well coordinate tuples
             [(xr_1, yr_1, zr_1), ..., (xr_N, yr_N, zr_N)]
@@ -39,10 +41,12 @@ def mitchell_best_candidate(
             Default defined in config parser is 1.2.
         concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
         random_seed: Random seed to control the reproducibility of the FlowNet.
+
     Returns:
         Python list of real/original and added flow node coordinate tuples
             [(xr_1, yr_1, zr_1), ..., (xr_N, yr_N, zr_N), (xi_1, yi1, zi1)
             ... (xi_n_i, yi_n_i, zi_n_i)]
+
     """
     np.random.seed(random_seed)
     start = time.time()
@@ -97,6 +101,38 @@ def mitchell_best_candidate(
             # 3D cases
             perforation_hull = Delaunay(np.column_stack([x_hull, y_hull, z_hull]))
 
+    in_hull = np.asarray([False] * num_candidates)
+    x_candidate = np.zeros(num_candidates)
+    y_candidate = np.zeros(num_candidates)
+    z_candidate = np.zeros(num_candidates)
+
+    # Repeat while not all random points are inside the convex hull
+    while not all(in_hull):
+        # Generate a set of random candidates that will be the new
+        # flow nodes
+        x_candidate_tmp = x_min + np.random.rand(num_candidates) * (x_max - x_min)
+        y_candidate_tmp = y_min + np.random.rand(num_candidates) * (y_max - y_min)
+        z_candidate_tmp = z_min + np.random.rand(num_candidates) * (z_max - z_min)
+
+        # Update the list of flow node candidates. Only the points that previously
+        # were not inside the convex hull are updated.
+        np.putmask(x_candidate, np.invert(in_hull), x_candidate_tmp)
+        np.putmask(y_candidate, np.invert(in_hull), y_candidate_tmp)
+        np.putmask(z_candidate, np.invert(in_hull), z_candidate_tmp)
+
+        candidates = np.vstack([x_candidate, y_candidate, z_candidate]).T
+
+        if concave_hull_bounding_boxes is not None:
+            in_hull = check_in_hull(
+                concave_hull_bounding_boxes, candidates, in_hull_known=in_hull
+            )
+        else:
+            # Test whether all points are inside the convex hull of the perforations
+            if np.all(z == z[0]):
+                in_hull = perforation_hull.find_simplex(candidates[:, (0, 1)]) >= 0
+            else:
+                in_hull = perforation_hull.find_simplex(candidates) >= 0
+
     # Generate all new flow nodes
     for i in range(num_points, num_points + num_added_flow_nodes):
         mid = time.time()
@@ -107,75 +143,34 @@ def mitchell_best_candidate(
                 end="",
             )
 
-        in_hull = np.asarray([False] * num_candidates)
-        x_candidate = np.zeros(num_candidates)
-        y_candidate = np.zeros(num_candidates)
-        z_candidate = np.zeros(num_candidates)
-
-        # Repeat while not all random points are inside the convex hull
-        while not all(in_hull):
-            # Generate a set of random candidates that will be the new
-            # flow nodes
-            x_candidate_tmp = x_min + np.random.rand(num_candidates) * (x_max - x_min)
-            y_candidate_tmp = y_min + np.random.rand(num_candidates) * (y_max - y_min)
-            z_candidate_tmp = z_min + np.random.rand(num_candidates) * (z_max - z_min)
-
-            # Update the list of flow node candidates. Only the points that previously
-            # were not inside the convex hull are updated.
-            np.putmask(x_candidate, np.invert(in_hull), x_candidate_tmp)
-            np.putmask(y_candidate, np.invert(in_hull), y_candidate_tmp)
-            np.putmask(z_candidate, np.invert(in_hull), z_candidate_tmp)
-
-            candidates = np.vstack([x_candidate, y_candidate, z_candidate]).T
-
-            if concave_hull_bounding_boxes is not None:
-                # Test whether all points are inside the bounding boxes of the gridcells of the reservoir volume.
-                # This is the always the case when place_nodes_in_volume_reservoir is True.
-                in_hull = check_in_hull(
-                    concave_hull_bounding_boxes, candidates, in_hull_known=in_hull
-                )
-            else:
-                # Test whether all points are inside the convex hull of the perforations
-                if np.all(z == z[0]):
-                    in_hull = perforation_hull.find_simplex(candidates[:, (0, 1)]) >= 0
-                else:
-                    in_hull = perforation_hull.find_simplex(candidates) >= 0
-
-        best_distance = 0
-        best_candidate = 0
-        # Loop through all generated candidates
-        for j in range(0, num_candidates):
-            # Calculate the distance (in x,y,z direction, relative to the size of the convex hull) to all points
-            # already in the FlowNet
-            delta_x_relative = np.power(
-                ((x[0:i] - x_candidate[j]) / (x_max - x_min)), 2
+        delta_x_relative = np.power(
+            (x.repeat(num_candidates) - x_candidate.repeat(x.shape[0]))
+            / (x_max - x_min),
+            2,
+        )
+        delta_y_relative = np.power(
+            (y.repeat(num_candidates) - y_candidate.repeat(y.shape[0]))
+            / (y_max - y_min),
+            2,
+        )
+        if np.all(z == z[0]):
+            delta_z_relative = 0
+        else:
+            delta_z_relative = np.power(
+                (
+                    z.repeat(num_candidates)
+                    - z_candidate.repeat(z.shape[0]) / (z_max - z_min)
+                ),
+                2,
             )
-            delta_y_relative = np.power(
-                ((y[0:i] - y_candidate[j]) / (y_max - y_min)), 2
-            )
-            if np.all(z == z[0]):
-                delta_z_relative = 0
-            else:
-                delta_z_relative = np.power(
-                    ((z[0:i] - z_candidate[j]) / (z_max - z_min)), 2
-                )
-            dists = np.sqrt(delta_x_relative + delta_y_relative + delta_z_relative)
 
-            # Select the shortest distance
-            dist = np.min(dists)
-
-            # Check if the shortest is larger than any of the previously
-            # generated candidates.
-            if dist > best_distance:
-                # If the requirement is satisfied, set the current candidate as
-                # the best candidate
-                best_distance = dist
-                best_candidate = j
+        dists = np.sqrt(delta_x_relative + delta_y_relative + delta_z_relative)
+        best_candidate = np.argmax(dists)
 
         # Add the best candidate's coordinates; a new flow node is added
-        x = np.append(x, x_candidate[best_candidate])
-        y = np.append(y, y_candidate[best_candidate])
-        z = np.append(z, z_candidate[best_candidate])
+        x = np.append(x, x_candidate.repeat(x.shape[0])[best_candidate])
+        y = np.append(y, y_candidate.repeat(y.shape[0])[best_candidate])
+        z = np.append(z, z_candidate.repeat(z.shape[0])[best_candidate])
 
     print("\rAdding flow nodes:  100%\ndone.")
 
@@ -190,6 +185,7 @@ def scale_convex_hull_perforations(
     Linear scaling of the perforation points based on the hull_factor. Factor will
     scale the distance of each point from the centroid of all the points.
     These scaled points are used to create a convex hull in which additional flow nodes will be placed.
+
     Args:
         perforations: Python list of real well coordinate tuples
             [(xr_1, yr_1, zr_1), ..., (xr_N, yr_N, zr_N)]
@@ -198,6 +194,7 @@ def scale_convex_hull_perforations(
     Returns:
         The tuple consisting of numpy arrays of x,y,z moved points based on the hull_factor,
         which are used further on in the code to create a convex hull around the real wells (perforations).
+
     """
     x, y, z = (np.asarray(t) for t in zip(*perforations))
     num_points = len(x)

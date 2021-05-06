@@ -8,7 +8,8 @@ from numpy.core.function_base import linspace
 import pandas as pd
 from scipy.spatial import Delaunay, distance  # pylint: disable=no-name-in-module
 
-from ._mitchell import mitchell_best_candidate_modified_3d
+from ._mitchell import mitchell_best_candidate
+from ._mitchell_fast import mitchell_best_candidate_fast
 from ._hull import check_in_hull
 from ..utils.types import Coordinate
 
@@ -171,18 +172,36 @@ def _generate_connections(
     # Generating num_added_flow_nodes additional flow nodes, where each additional node is selected
     # as the one candidate (from num_candidates) with the longest shortest distance to any
     # other existing well (including already added flow nodes)
-    coordinates: List[Coordinate] = [
-        tuple(elem)
-        for elem in mitchell_best_candidate_modified_3d(
-            well_perforations,
-            num_added_flow_nodes=additional_flow_nodes,
-            num_candidates=configuration.flownet.additional_node_candidates,
-            hull_factor=configuration.flownet.hull_factor,
-            place_nodes_in_volume_reservoir=configuration.flownet.place_nodes_in_volume_reservoir,
-            concave_hull_bounding_boxes=concave_hull_bounding_boxes,
-            random_seed=configuration.flownet.random_seed,
+    if configuration.flownet.mitchells_algorithm == "Normal":
+        coordinates: List[Coordinate] = [
+            tuple(elem)
+            for elem in mitchell_best_candidate(
+                well_perforations,
+                num_added_flow_nodes=additional_flow_nodes,
+                num_candidates=configuration.flownet.additional_node_candidates,
+                hull_factor=configuration.flownet.hull_factor,
+                place_nodes_in_volume_reservoir=configuration.flownet.place_nodes_in_volume_reservoir,
+                concave_hull_bounding_boxes=concave_hull_bounding_boxes,
+                random_seed=configuration.flownet.random_seed,
+            )
+        ]
+    elif configuration.flownet.mitchells_algorithm == "Fast":
+        coordinates: List[Coordinate] = [
+            tuple(elem)
+            for elem in mitchell_best_candidate_fast(
+                well_perforations,
+                num_added_flow_nodes=additional_flow_nodes,
+                num_candidates=configuration.flownet.additional_node_candidates,
+                hull_factor=configuration.flownet.hull_factor,
+                place_nodes_in_volume_reservoir=configuration.flownet.place_nodes_in_volume_reservoir,
+                concave_hull_bounding_boxes=concave_hull_bounding_boxes,
+                random_seed=configuration.flownet.random_seed,
+            )
+        ]
+    else:
+        raise ValueError(
+            f"'{configuration.flownet.mitchells_algorithm}' is not a valid mitchells_algorithm."
         )
-    ]
 
     print("Generating Delaunay triangulation mesh...", end="")
     # Building a mesh consisting of tetrahedrons where the well

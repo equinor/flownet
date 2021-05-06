@@ -4,7 +4,7 @@ import numpy as np
 from scipy.spatial import Delaunay  # pylint: disable=no-name-in-module
 
 from flownet.network_model._mitchell import (
-    mitchell_best_candidate_modified_3d,
+    mitchell_best_candidate,
     scale_convex_hull_perforations,
 )
 from flownet.network_model._hull import check_in_hull
@@ -30,7 +30,7 @@ def test_mitchells_3d() -> None:
 
     coordinates: List[Coordinate] = [
         tuple(elem)
-        for elem in mitchell_best_candidate_modified_3d(
+        for elem in mitchell_best_candidate(
             well_perforations_3d,
             num_added_flow_nodes=num_added_flow_nodes,
             num_candidates=100,
@@ -72,7 +72,7 @@ def test_mitchells_2d() -> None:
 
     coordinates: List[Coordinate] = [
         tuple(elem)
-        for elem in mitchell_best_candidate_modified_3d(
+        for elem in mitchell_best_candidate(
             well_perforations_2d,
             num_added_flow_nodes=num_added_flow_nodes,
             num_candidates=100,
@@ -115,7 +115,7 @@ def test_hull_factor_mitchell() -> None:
 
     coordinates: List[Coordinate] = [
         tuple(elem)
-        for elem in mitchell_best_candidate_modified_3d(
+        for elem in mitchell_best_candidate(
             well_perforations_2d,
             num_added_flow_nodes=num_added_flow_nodes,
             hull_factor=hull_factor,
@@ -160,7 +160,7 @@ def test_nodes_in_reservoir_volume_mitchells() -> None:
 
     coordinates: List[Coordinate] = [
         tuple(elem)
-        for elem in mitchell_best_candidate_modified_3d(
+        for elem in mitchell_best_candidate(
             well_perforations_3d,
             num_added_flow_nodes=20,
             num_candidates=500,
