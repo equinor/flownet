@@ -117,12 +117,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Content: {
                                                     "rel_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                     "min_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                 },
@@ -132,12 +130,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Content: {
                                                     "rel_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                     "min_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                 },
@@ -147,12 +143,10 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                 MK.Content: {
                                                     "rel_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                     "min_error": {
                                                         MK.Type: types.Number,
-                                                        MK.Required: False,
                                                         MK.AllowNone: True,
                                                     },
                                                 },
