@@ -129,7 +129,7 @@ class Transmissibility(Parameter):
         )
         perm_per_tube["PERMY"] = perm_per_tube["PERMX"]
         perm_per_tube["PERMZ"] = perm_per_tube["PERMX"]
-
+        
         merged_df = self._ti2ci.merge(perm_per_tube, left_index=True, right_index=True)
 
         # Remove tubes if permeability is below a given threshold
@@ -169,5 +169,6 @@ class Transmissibility(Parameter):
 
         return {
             "GRID": write_grdecl_file(properties_per_cell, "MULTX")  # type: ignore[operator]
+            + write_grdecl_file(properties_per_cell, "PORO")  # type: ignore[operator]                            
             + output
         }
