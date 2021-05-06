@@ -163,6 +163,7 @@ def _generate_connections(
     """
     # pylint: disable=too-many-locals
     # There are currently 28 local variables
+    # pylint: disable=too-many-branches
 
     start = time.time()
     well_perforations: List[Coordinate] = df_coordinates[
@@ -172,8 +173,9 @@ def _generate_connections(
     # Generating num_added_flow_nodes additional flow nodes, where each additional node is selected
     # as the one candidate (from num_candidates) with the longest shortest distance to any
     # other existing well (including already added flow nodes)
+    coordinates: List[Coordinate]
     if configuration.flownet.mitchells_algorithm == "Normal":
-        coordinates: List[Coordinate] = [
+        coordinates = [
             tuple(elem)
             for elem in mitchell_best_candidate(
                 well_perforations,
@@ -186,7 +188,7 @@ def _generate_connections(
             )
         ]
     elif configuration.flownet.mitchells_algorithm == "Fast":
-        coordinates: List[Coordinate] = [
+        coordinates = [
             tuple(elem)
             for elem in mitchell_best_candidate_fast(
                 well_perforations,
