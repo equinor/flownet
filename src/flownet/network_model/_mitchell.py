@@ -123,7 +123,9 @@ def mitchell_best_candidate_modified_3d(
         candidates = np.vstack([x_candidate, y_candidate, z_candidate]).T
 
         if concave_hull_bounding_boxes is not None:
-            in_hull = check_in_hull(concave_hull_bounding_boxes, candidates)
+            in_hull = check_in_hull(
+                concave_hull_bounding_boxes, candidates, in_hull_known=in_hull
+            )
         else:
             # Test whether all points are inside the convex hull of the perforations
             if np.all(z == z[0]):
@@ -157,7 +159,7 @@ def mitchell_best_candidate_modified_3d(
             delta_z_relative = np.power(
                 (
                     z.repeat(num_candidates)
-                    - z_candidate.repeat(z.shape[0]) / (x_max - x_min)
+                    - z_candidate.repeat(z.shape[0]) / (z_max - z_min)
                 ),
                 2,
             )
@@ -169,8 +171,6 @@ def mitchell_best_candidate_modified_3d(
         x = np.append(x, x_candidate.repeat(x.shape[0])[best_candidate])
         y = np.append(y, y_candidate.repeat(y.shape[0])[best_candidate])
         z = np.append(z, z_candidate.repeat(z.shape[0])[best_candidate])
-
-        # Replace single candidate that has been used by a new one?
 
     print("\rAdding flow nodes:  100%\ndone.")
 

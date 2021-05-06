@@ -396,15 +396,17 @@ class FlowData(FromSource):
             network: FlowNet network instance.
 
         Returns:
-            A list with multipliers for the total bulk volume for each flownet tube cell.
+            An array with volumes per flownetcell.
 
         """
         flownet_tube_midpoints = np.array(network.get_connection_midpoints())
         model_cell_mid_points = np.array(
-            [cell.coordinate for cell in self._grid.cells()]
+            [cell.coordinate for cell in self._grid.cells(active=True)]
         )
-        model_cell_active_state = [cell.active for cell in self._grid.cells()]
-        model_cell_volume = [cell.volume for cell in self._grid.cells()]
+        model_cell_volume = [
+            (cell.volume * self._init.iget_named_kw("NTG", 0)[cell.active_index])
+            for cell in self._grid.cells(active=True)
+        ]
 
         # Determine nearest flow tube for each cell in the original model
         tree = KDTree(flownet_tube_midpoints)
@@ -414,22 +416,24 @@ class FlowData(FromSource):
         tube_volumes = np.zeros(len(flownet_tube_midpoints))
 
         for cell_i, tube_id in enumerate(matched_indices):
-            if model_cell_active_state[cell_i]:  # and model_cell_in_hull[cell_i]
-                tube_volumes[tube_id[0]] += model_cell_volume[cell_i]
+            tube_volumes[tube_id[0]] += model_cell_volume[cell_i]
 
-        # Distribute tube volume over individual cells
+        # Distribute tube volume over the active cells of the flownet.
+        # The last cell of each each tube is inactive and thefore gets 0 volume assigned.
         properties_per_cell = pd.DataFrame(
             pd.DataFrame(data=network.grid.index, index=network.grid.model).index
         )
         active_cells_per_tube = (
             properties_per_cell.reset_index().groupby(["model"]).size() - 1
         )
-        cell_volumes = np.array(
-            [
-                tube_volumes[i] / active_cells_per_tube[i]
-                for i in properties_per_cell["model"].values
-            ]
-        )
+
+        cell_volumes = np.zeros(len(properties_per_cell["model"].values))
+        for i, tube in enumerate(properties_per_cell["model"].values[:-1]):
+            if (
+                properties_per_cell["model"].values[i]
+                == properties_per_cell["model"].values[i + 1]
+            ):
+                cell_volumes[i] = tube_volumes[tube] / active_cells_per_tube[tube]
 
         return cell_volumes
 
