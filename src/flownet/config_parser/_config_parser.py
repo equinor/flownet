@@ -461,12 +461,8 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         "    original model volume outside of the well connection convex hull might be"
                         "    collapsed at the borders of the model. I.e., the borders of your model could"
                         "    het unrealisticly large volumes. This can be mitigated by increasing the hull"
-<<<<<<< HEAD
-                        "    factor of the FlowNet model generation process.",
-=======
                         "    factor of the FlowNet model generation process or by setting the "
                         "    place_nodes_in_volume_reservoir to true.",
->>>>>>> wouterjdb/mitchell-speed-up
                     },
                     "hyperopt": {
                         MK.Type: types.NamedDict,
