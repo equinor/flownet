@@ -36,6 +36,8 @@ class PoreVolume(Parameter):
                 for _, row in distribution_values.iterrows()
             ]
         )
+        self._number_tubes: int = len(self._ti2ci.index.unique())
+
 
     def render_output(self) -> Dict:
         """
@@ -83,6 +85,9 @@ class PoreVolume(Parameter):
 
 
         return {
+            "GRID": write_grdecl_file(  # type: ignore[operator]
+                properties_per_cell, "PORO"
+            ),
             "EDIT": write_grdecl_file(  # type: ignore[operator]
                 properties_per_cell, "PORV" 
             ),           
