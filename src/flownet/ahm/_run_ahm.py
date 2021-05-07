@@ -1,5 +1,5 @@
 import argparse
-from typing import Union, List, Optional, Dict
+from typing import Union, List, Optional, Dict, Tuple
 import json
 import pathlib
 from operator import add
@@ -177,6 +177,43 @@ def _get_distribution(
         parameters: which parameter(s) should be outputted in the dataframe
         parameters_config: the parameters definition from the configuration file
         index: listing used to determine how many times to repeat the distribution
+
+    Returns:
+        A dataframe with distributions for the requested parameter(s)
+
+    """
+    if not isinstance(parameters, list):
+        parameters = [parameters]
+
+    df = pd.DataFrame(index=index)
+
+    for parameter in parameters:
+        parameter_config = getattr(parameters_config, parameter)
+        df[f"minimum_{parameter}"] = parameter_config.min
+        df[f"maximum_{parameter}"] = parameter_config.max
+        df[f"mean_{parameter}"] = parameter_config.mean
+        df[f"base_{parameter}"] = parameter_config.base
+        df[f"stddev_{parameter}"] = parameter_config.stddev
+        df[f"distribution_{parameter}"] = parameter_config.distribution
+    return df
+
+
+def _get_regional_distribution(
+    parameters: Union[str, List[str]],
+    parameters_config: dict,
+    network: NetworkModel,
+    field_data: FlowData,
+    ti2ci: pd.DataFrame,
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Create the distribution min, mean, base, stddev, max for one or more parameters
+
+    Args:
+        parameters: which parameter(s) should be outputted in the dataframe
+        parameters_config: the parameters definition from the configuration file
+        network:
+        field_data:
+        ti2ci:
 
     Returns:
         A dataframe with distributions for the requested parameter(s)
@@ -772,6 +809,59 @@ def run_flownet_history_matching(
     equil_dist_values = equil_dist_values[equil_dist_values.isnull().sum(axis=1) < 5]
 
     #########################################
+    #  Region volume multipliers            #
+    #########################################
+
+    regional_porv_poro_trans_dist_values, df_regional = _get_regional_distribution(
+        ["bulkvolume_mult", "porosity", "permeability"],
+        config.model_parameters,
+        network,
+        field_data,
+        ti2ci,
+    )
+
+    # Create a Pandas dataframe with all region volume multipliers
+    # based on the chosen scheme
+    if config.model_parameters.bulkvolume_mult_scheme == "individual":
+        df_bulkvolume = None
+        regional_bulkvolume_dist_values = None
+        ri2ci = None
+    else:
+        if config.model_parameters.bulkvolume_mult_scheme == "regions_from_sim":
+            df_bulkvolume = pd.DataFrame(
+                _from_regions_to_flow_tubes(
+                    network,
+                    field_data,
+                    ti2ci,
+                    config.model_parameters.bulkvolume_parameter_from_sim_model,
+                ),
+                columns=["BV_MULT"],
+            )
+        elif config.model_parameters.bulkvolume_mult_scheme == "global":
+            df_bulkvolume = pd.DataFrame(
+                [1] * len(network.grid.model.unique()), columns=["BV_MULT"]
+            )
+
+        ri2ci_index = ti2ci.index.values.copy()
+        for idx in np.unique(ti2ci.index.values):
+            ri2ci_index[ti2ci.index.values == idx] = df_bulkvolume.loc[idx]
+        ri2ci = pd.DataFrame(data=network.grid.index, index=ri2ci_index)
+
+        # Create a pandas dataframe with all parameter definition for each individual tube
+        regional_bulkvolume_dist_values = pd.DataFrame(
+            columns=column_names_probdist + ["bv_mult"]
+        )
+
+        for i in np.sort(df_bulkvolume["BV_MULT"].unique()):
+            info = ["region_bulkvolume_mult"]
+            for keyword in ["min", "max", "mean", "base", "stddev", "distribution"]:
+                info.append(
+                    getattr(config.model_parameters.region_bulkvolume_mult, keyword)
+                )
+            info.append(i)
+            regional_bulkvolume_dist_values.loc[i] = info
+
+    #########################################
     # Fault transmissibility                #
     #########################################
 
@@ -832,7 +922,9 @@ def run_flownet_history_matching(
     parameters = [
         PorvPoroTrans(
             porv_poro_trans_dist_values,
+            regional_bulkvolume_dist_values,
             ti2ci,
+            ri2ci,
             network,
             config.flownet.min_permeability,
         ),

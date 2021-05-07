@@ -100,11 +100,14 @@ class PorvPoroTrans(Parameter):
     def __init__(
         self,
         distribution_values: pd.DataFrame,
+        regional_distribution_values: pd.DataFrame,
         ti2ci: pd.DataFrame,
+        ri2ci: pd.DataFrame,
         network: NetworkModel,
         min_permeability: Optional[float] = None,
     ):
         self._ti2ci: pd.DataFrame = ti2ci
+        self._ri2ci: pd.DataFrame = ri2ci
 
         self._random_variables: List[ProbabilityDistribution] = (
             [  # Add random variables for bulk volume multipliers
@@ -119,10 +122,15 @@ class PorvPoroTrans(Parameter):
                 parameter_probability_distribution_class(row, "permeability")
                 for _, row in distribution_values.iterrows()
             ]
+            + [
+                parameter_probability_distribution_class(row)
+                for _, row in regional_distribution_values.iterrows()
+            ]
         )
 
         self._network: NetworkModel = network
         self._number_tubes: int = len(self._ti2ci.index.unique())
+        self._number_regions: int = len(self._ri2ci.index.unique())
         self.min_permeability: Optional[float] = min_permeability
 
     def render_output(self) -> Dict:
