@@ -283,7 +283,8 @@ configured perforation strategy.</p>
 <dd><p>Generate bulk volume distribution per grid cell in the FlowNet model based on the geometrical
 distribution of the volume in the original (full field) simulation model. I.e., the original model’s
 volume will be distributed over the FlowNet’s tubes by assigning original model grid cell
-volumes to the nearest FlowNet tube midpoint.</p>
+volumes to the nearest FlowNet tube cell midpoint. Finally, the volume distributed to all cells in a tube
+will be summed and evenly redistributed over the tube.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>network</strong> – FlowNet network instance.</p>
