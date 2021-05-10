@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/configsuite_ext.css" type="text/css" />
 
   
@@ -30,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -173,8 +176,8 @@
   <div class="section" id="module-flownet.ert.forward_models._render_realization">
 <span id="flownet-ert-forward-models-render-realization-module"></span><h1>flownet.ert.forward_models._render_realization module<a class="headerlink" href="#module-flownet.ert.forward_models._render_realization" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="flownet.ert.forward_models._render_realization._dims2simulation_input">
-<code class="sig-prename descclassname"><span class="pre">flownet.ert.forward_models._render_realization.</span></code><code class="sig-name descname"><span class="pre">_dims2simulation_input</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><span class="pre">flownet.parameters._base_parameter.Parameter</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.ert.forward_models._render_realization._dims2simulation_input" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.ert.forward_models._render_realization._dims2simulation_input">
+<span class="sig-prename descclassname"><span class="pre">flownet.ert.forward_models._render_realization.</span></span><span class="sig-name descname"><span class="pre">_dims2simulation_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><span class="pre">flownet.parameters._base_parameter.Parameter</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.ert.forward_models._render_realization._dims2simulation_input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lists all dims required by all parameters and creates a dictionary that
 will be included in the simulation_input.</p>
 <dl class="field-list simple">
@@ -188,8 +191,8 @@ will be included in the simulation_input.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.ert.forward_models._render_realization._ert_samples2simulation_input">
-<code class="sig-prename descclassname"><span class="pre">flownet.ert.forward_models._render_realization.</span></code><code class="sig-name descname"><span class="pre">_ert_samples2simulation_input</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_samples</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><span class="pre">flownet.parameters._base_parameter.Parameter</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realization_index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.ert.forward_models._render_realization._ert_samples2simulation_input" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.ert.forward_models._render_realization._ert_samples2simulation_input">
+<span class="sig-prename descclassname"><span class="pre">flownet.ert.forward_models._render_realization.</span></span><span class="sig-name descname"><span class="pre">_ert_samples2simulation_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_samples</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><span class="pre">flownet.parameters._base_parameter.Parameter</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realization_index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.ert.forward_models._render_realization._ert_samples2simulation_input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads an ERT made json file with parameter values, or a previously stored parquet file
 for a whole ensemble. The parameter values are then plugged into the corresponding parameter,
 and finally the render method is called on the different parameters, returning the Flow
@@ -209,8 +212,8 @@ INCLUDEs to ad to the simulation model.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.ert.forward_models._render_realization.render_realization">
-<code class="sig-prename descclassname"><span class="pre">flownet.ert.forward_models._render_realization.</span></code><code class="sig-name descname"><span class="pre">render_realization</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert.forward_models._render_realization.render_realization" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.ert.forward_models._render_realization.render_realization">
+<span class="sig-prename descclassname"><span class="pre">flownet.ert.forward_models._render_realization.</span></span><span class="sig-name descname"><span class="pre">render_realization</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert.forward_models._render_realization.render_realization" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function is called by a forward model in ERT, creating a simulation
 realization from drawn parameter values, and a previously stored network
 grid.</p>

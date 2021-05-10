@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/configsuite_ext.css" type="text/css" />
 
   
@@ -30,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -171,8 +174,8 @@
   <div class="section" id="module-flownet.ert._create_ert_setup">
 <span id="flownet-ert-create-ert-setup-module"></span><h1>flownet.ert._create_ert_setup module<a class="headerlink" href="#module-flownet.ert._create_ert_setup" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="flownet.ert._create_ert_setup._create_ert_parameter_file">
-<code class="sig-prename descclassname"><span class="pre">flownet.ert._create_ert_setup.</span></code><code class="sig-name descname"><span class="pre">_create_ert_parameter_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><span class="pre">flownet.parameters._base_parameter.Parameter</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#flownet.ert._create_ert_setup._create_ert_parameter_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.ert._create_ert_setup._create_ert_parameter_file">
+<span class="sig-prename descclassname"><span class="pre">flownet.ert._create_ert_setup.</span></span><span class="sig-name descname"><span class="pre">_create_ert_parameter_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><span class="pre">flownet.parameters._base_parameter.Parameter</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#flownet.ert._create_ert_setup._create_ert_parameter_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes in the parameters prior distribution as a dataframe,
 and outputs them in an ert parameter definition file</p>
 <dl class="field-list simple">
@@ -189,8 +192,8 @@ and outputs them in an ert parameter definition file</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.ert._create_ert_setup.create_ert_setup">
-<code class="sig-prename descclassname"><span class="pre">flownet.ert._create_ert_setup.</span></code><code class="sig-name descname"><span class="pre">create_ert_setup</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">args:</span> <span class="pre">argparse.Namespace</span></em>, <em class="sig-param"><span class="pre">network</span></em>, <em class="sig-param"><span class="pre">schedule:</span> <span class="pre">flownet.realization._schedule.Schedule</span></em>, <em class="sig-param"><span class="pre">config:</span> <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f2480206710&gt;</span></em>, <em class="sig-param"><span class="pre">parameters=None</span></em>, <em class="sig-param"><span class="pre">training_set_fraction:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">prediction_setup:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup.create_ert_setup" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.ert._create_ert_setup.create_ert_setup">
+<span class="sig-prename descclassname"><span class="pre">flownet.ert._create_ert_setup.</span></span><span class="sig-name descname"><span class="pre">create_ert_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">args:</span> <span class="pre">argparse.Namespace</span></em>, <em class="sig-param"><span class="pre">network</span></em>, <em class="sig-param"><span class="pre">schedule:</span> <span class="pre">flownet.realization._schedule.Schedule</span></em>, <em class="sig-param"><span class="pre">config:</span> <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7ff406f194d0&gt;</span></em>, <em class="sig-param"><span class="pre">parameters=None</span></em>, <em class="sig-param"><span class="pre">training_set_fraction:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">prediction_setup:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup.create_ert_setup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a ready-to-go ERT setup in output_folder.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -211,8 +214,8 @@ and outputs them in an ert parameter definition file</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.ert._create_ert_setup.create_observation_file">
-<code class="sig-prename descclassname"><span class="pre">flownet.ert._create_ert_setup.</span></code><code class="sig-name descname"><span class="pre">create_observation_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">schedule:</span> <span class="pre">flownet.realization._schedule.Schedule</span></em>, <em class="sig-param"><span class="pre">obs_file:</span> <span class="pre">pathlib.Path</span></em>, <em class="sig-param"><span class="pre">config:</span> <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f2480206710&gt;</span></em>, <em class="sig-param"><span class="pre">training_set_fraction:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">yaml:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup.create_observation_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.ert._create_ert_setup.create_observation_file">
+<span class="sig-prename descclassname"><span class="pre">flownet.ert._create_ert_setup.</span></span><span class="sig-name descname"><span class="pre">create_observation_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">schedule:</span> <span class="pre">flownet.realization._schedule.Schedule</span></em>, <em class="sig-param"><span class="pre">obs_file:</span> <span class="pre">pathlib.Path</span></em>, <em class="sig-param"><span class="pre">config:</span> <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7ff406f194d0&gt;</span></em>, <em class="sig-param"><span class="pre">training_set_fraction:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">yaml:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.ert._create_ert_setup.create_observation_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an ERT observation file from a given schedule instance.
 It has not yet been decided if schedule is to be given at creation or should be part
 of self.</p>
@@ -233,8 +236,8 @@ of self.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.ert._create_ert_setup.resample_schedule_dates">
-<code class="sig-prename descclassname"><span class="pre">flownet.ert._create_ert_setup.</span></code><code class="sig-name descname"><span class="pre">resample_schedule_dates</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="flownet.realization._schedule.html#flownet.realization._schedule.Schedule" title="flownet.realization._schedule.Schedule"><span class="pre">flownet.realization._schedule.Schedule</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">resampling</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><a class="headerlink" href="#flownet.ert._create_ert_setup.resample_schedule_dates" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.ert._create_ert_setup.resample_schedule_dates">
+<span class="sig-prename descclassname"><span class="pre">flownet.ert._create_ert_setup.</span></span><span class="sig-name descname"><span class="pre">resample_schedule_dates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="flownet.realization._schedule.html#flownet.realization._schedule.Schedule" title="flownet.realization._schedule.Schedule"><span class="pre">flownet.realization._schedule.Schedule</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">resampling</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><a class="headerlink" href="#flownet.ert._create_ert_setup.resample_schedule_dates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resampling dates based on requested frequency without introducing interpolated dates,
 i.e., keeps nearest existing date</p>
 <dl class="field-list simple">
