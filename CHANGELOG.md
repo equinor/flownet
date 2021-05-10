@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - [#372](https://github.com/equinor/flownet/pull/372) Added option to let the additional flownodes initially be placed within the original volume rather than within the convex hull of the real wells. To do this set place_nodes_in_volume_reservoir to true.
 
 ### Fixes
+- [#402](https://github.com/equinor/flownet/pull/402) THPRESS is now calculated in both directions of the equil region boundary.
 - [#391](https://github.com/equinor/flownet/pull/391) Fixes bug in generation of yaml files for visualization in Webviz.
 - [#372](https://github.com/equinor/flownet/pull/372) Fixes bug of hull_factor not actually being used for placing additional nodes outside the perforations.
 - [#374](https://github.com/equinor/flownet/pull/374) Fix for memory leak in result plotting script.
