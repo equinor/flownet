@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/configsuite_ext.css" type="text/css" />
 
   
@@ -30,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -171,49 +174,49 @@
   <div class="section" id="module-flownet.network_model._one_dimensional_model">
 <span id="flownet-network-model-one-dimensional-model-module"></span><h1>flownet.network_model._one_dimensional_model module<a class="headerlink" href="#module-flownet.network_model._one_dimensional_model" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">flownet.network_model._one_dimensional_model.</span></code><code class="sig-name descname"><span class="pre">OneDimensionalModel</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append_inactive</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.network_model._one_dimensional_model.OneDimensionalModel">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">flownet.network_model._one_dimensional_model.</span></span><span class="sig-name descname"><span class="pre">OneDimensionalModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append_inactive</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.cell_length">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">cell_length</span></code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.cell_length" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="flownet.network_model._one_dimensional_model.OneDimensionalModel.cell_length">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">cell_length</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.cell_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Actual cell length of the grid cells.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.df_coord">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">df_coord</span></code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.df_coord" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="flownet.network_model._one_dimensional_model.OneDimensionalModel.df_coord">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">df_coord</span></span><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.frame.DataFrame</span></em><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.df_coord" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a dataframe of the grid cells with corresponding coordinates</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.end">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">end</span></code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.end" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="flownet.network_model._one_dimensional_model.OneDimensionalModel.end">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">end</span></span><em class="property"><span class="pre">:</span> <span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.end" title="Permalink to this definition">¶</a></dt>
 <dd><p>End position of model (x, y, z) returned as numpy array.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.length">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">length</span></code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.length" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="flownet.network_model._one_dimensional_model.OneDimensionalModel.length">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">length</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Length of one dimensional model, measured as distance between
 first and last grid cell mid point.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.n">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n</span></code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.n" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="flownet.network_model._one_dimensional_model.OneDimensionalModel.n">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">n</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.n" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of grid cells in model, counting both active and inactive.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.nactive">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">nactive</span></code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.nactive" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="flownet.network_model._one_dimensional_model.OneDimensionalModel.nactive">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">nactive</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.nactive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number active grid cells in model.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="flownet.network_model._one_dimensional_model.OneDimensionalModel.start">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">start</span></code><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.start" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="flownet.network_model._one_dimensional_model.OneDimensionalModel.start">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="pre">:</span> <span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#flownet.network_model._one_dimensional_model.OneDimensionalModel.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start position of model (x, y, z) returned as numpy array.</p>
 </dd></dl>
 
