@@ -114,6 +114,25 @@ class Equilibration(Parameter):
                 eqlnum_combinations.extend(list(combinations(connections_at_node, 2)))
 
             eqlnum_combinations = list(set(eqlnum_combinations))
+
+            # Go from tube index to region index
+            eqlnum_combinations = set(
+                [
+                    (
+                        self._eqlnum.loc[tube_a, "EQLNUM"],
+                        self._eqlnum.loc[tube_b, "EQLNUM"],
+                    )
+                    for _, [tube_a, tube_b] in enumerate(eqlnum_combinations)
+                ]
+            )
+
+            # Remove duplicates and within region occurences
+            eqlnum_combinations = [
+                (region_a, region_b)
+                for _, [region_a, region_b] in enumerate(eqlnum_combinations)
+                if region_b > region_a
+            ]
+
             eqlnum1 = list(list(zip(*eqlnum_combinations))[0])
             eqlnum2 = list(list(zip(*eqlnum_combinations))[1])
 

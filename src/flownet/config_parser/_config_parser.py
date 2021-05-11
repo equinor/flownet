@@ -703,7 +703,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         "base a regional permeability multiplier on.",
                         MK.Default: "EQLNUM",
                     },
-                    "permeability_regional_mult": {
+                    "permeability_regional": {
                         MK.Type: types.NamedDict,
                         MK.Description: "Description of the regional permeability multiplier prior "
                         "distribution.",
@@ -796,7 +796,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         "base a regional permeability multiplier on.",
                         MK.Default: "EQLNUM",
                     },
-                    "porosity_regional_mult": {
+                    "porosity_regional": {
                         MK.Type: types.NamedDict,
                         MK.Description: "Description of the regional porosity multiplier prior "
                         "distribution.",
@@ -833,7 +833,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             },
                         },
                     },
-                    "bulkvolume_regional_scheme": {
+                    "bulkvolume_mult_regional_scheme": {
                         MK.Type: types.String,
                         MK.Description: "The individual flow tubes will always have an individual bulk volume "
                         "multiplier attached (specified as bulkvolume_mult in the config file). Setting this "
@@ -841,7 +841,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         "bulk volume uncertainty. Using the 'global' option will add one additional multiplier "
                         "for the entire FlowNet model, and 'regions_from_sim' will add one multiplier for each "
                         "of the regions present in a region parameter from an input simulation model "
-                        "(parameter name specified in 'bulkvolume_parameter_from_sim_model').",
+                        "(parameter name specified in 'bulkvolume_mult_parameter_from_sim_model').",
                         MK.Default: "individual",
                         MK.Transformation: _to_lower,
                     },
@@ -886,13 +886,13 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             },
                         },
                     },
-                    "bulkvolume_parameter_from_sim_model": {
+                    "bulkvolume_mult_parameter_from_sim_model": {
                         MK.Type: types.String,
                         MK.Description: "The name of the region parameter in the simulation model to "
                         "base a regional bulk volume parameter on.",
                         MK.Default: "EQLNUM",
                     },
-                    "bulkvolume_regional_mult": {
+                    "bulkvolume_mult_regional": {
                         MK.Type: types.NamedDict,
                         MK.Description: "Description of bulk volume multiplier "
                         "prior distribution. You define either min and max, or one "
@@ -1921,7 +1921,7 @@ def parse_config(
             config.model_parameters.relative_permeability.scheme,
             config.model_parameters.porosity_regional_scheme,
             config.model_parameters.permeability_regional_scheme,
-            config.model_parameters.bulkvolume_regional_scheme,
+            config.model_parameters.bulkvolume_mult_regional_scheme,
         )
         or config.flownet.pvt.rsvd
     ):
@@ -1934,7 +1934,7 @@ def parse_config(
         "relative_permeability": "SATNUM",
         "permeability": None,
         "porosity": None,
-        "bulkvolume": None,
+        "bulkvolume_mult": None,
     }
     unique_regions: dict = {}
     for reg_param, flow_region_name in region_parameters.items():
@@ -1974,12 +1974,15 @@ def parse_config(
                     flow_region_name,
                 )
         else:
-            regions = getattr(getattr(config.model_parameters, reg_param), "regions")
-            if regions[0].id is not None:
-                raise ValueError(
-                    f"The region number for the first {reg_param} region parameter should not be set, \n"
-                    "or set to 'None' when using the 'global' or 'individual' options"
+            if flow_region_name is not None:
+                regions = getattr(
+                    getattr(config.model_parameters, reg_param), "regions"
                 )
+                if regions[0].id is not None:
+                    raise ValueError(
+                        f"The region number for the first {reg_param} region parameter should not be set, \n"
+                        "or set to 'None' when using the 'global' or 'individual' options"
+                    )
 
     layers = config.flownet.data_source.simulation.layers
     if len(layers) > 0:
@@ -2124,9 +2127,9 @@ def parse_config(
         "porosity",
         "permeability",
         "fault_mult",
-        "permeability_regional_mult",
-        "porosity_regional_mult",
-        "bulkvolume_regional_mult",
+        "permeability_regional",
+        "porosity_regional",
+        "bulkvolume_mult_regional",
     ]:
         if not len(_check_defined(config.model_parameters, parameter)) > 0:
             continue

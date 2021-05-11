@@ -222,17 +222,47 @@ def _get_regional_distribution(
     if not isinstance(parameters, list):
         parameters = [parameters]
 
-    df = pd.DataFrame(index=index)
+    df = pd.DataFrame(index=ti2ci.index.unique())
+    df_dist_values = pd.DataFrame(index=[0])
+    ci2ri = pd.DataFrame(index=network.grid.index)
 
     for parameter in parameters:
-        parameter_config = getattr(parameters_config, parameter)
-        df[f"minimum_{parameter}"] = parameter_config.min
-        df[f"maximum_{parameter}"] = parameter_config.max
-        df[f"mean_{parameter}"] = parameter_config.mean
-        df[f"base_{parameter}"] = parameter_config.base
-        df[f"stddev_{parameter}"] = parameter_config.stddev
-        df[f"distribution_{parameter}"] = parameter_config.distribution
-    return df
+        if (
+            getattr(parameters_config, parameter + "_regional_scheme")
+            == "regions_from_sim"
+        ):
+            df[parameter + "_regional"] = pd.DataFrame(
+                _from_regions_to_flow_tubes(
+                    network,
+                    field_data,
+                    ti2ci,
+                    getattr(parameters_config, parameter + "_parameter_from_sim_model"),
+                )
+            )
+        elif getattr(parameters_config, parameter + "_regional_scheme") == "global":
+            df[parameter + "_regional"] = pd.DataFrame(
+                [1] * len(network.grid.model.unique())
+            )
+
+        ci2ri_index = ti2ci.index.values.copy()
+        for idx in np.unique(ti2ci.index.values):
+            ci2ri_index[ti2ci.index.values == idx] = df.loc[
+                idx, parameter + "_regional"
+            ]
+        ci2ri[parameter + "_regional"] = ci2ri_index
+
+        parameter_config_regional = getattr(parameters_config, parameter + "_regional")
+        df_dist_values[f"minimum_{parameter}_regional"] = parameter_config_regional.min
+        df_dist_values[f"maximum_{parameter}_regional"] = parameter_config_regional.max
+        df_dist_values[f"mean_{parameter}_regional"] = parameter_config_regional.mean
+        df_dist_values[f"base_{parameter}_regional"] = parameter_config_regional.base
+        df_dist_values[
+            f"stddev_{parameter}_regional"
+        ] = parameter_config_regional.stddev
+        df_dist_values[
+            f"distribution_{parameter}_regional"
+        ] = parameter_config_regional.distribution
+    return ci2ri, df, df_dist_values
 
 
 def _constrain_using_well_logs(
@@ -812,54 +842,22 @@ def run_flownet_history_matching(
     #  Region volume multipliers            #
     #########################################
 
-    regional_porv_poro_trans_dist_values, df_regional = _get_regional_distribution(
-        ["bulkvolume_mult", "porosity", "permeability"],
+    regional_parameters = [
+        param
+        for param in {"bulkvolume_mult", "porosity", "permeability"}
+        if getattr(config.model_parameters, param + "_regional_scheme") != "individual"
+    ]
+    (
+        ci2ri,
+        df_regional,
+        regional_porv_poro_trans_dist_values,
+    ) = _get_regional_distribution(
+        regional_parameters,
         config.model_parameters,
         network,
         field_data,
         ti2ci,
     )
-
-    # Create a Pandas dataframe with all region volume multipliers
-    # based on the chosen scheme
-    if config.model_parameters.bulkvolume_mult_scheme == "individual":
-        df_bulkvolume = None
-        regional_bulkvolume_dist_values = None
-        ri2ci = None
-    else:
-        if config.model_parameters.bulkvolume_mult_scheme == "regions_from_sim":
-            df_bulkvolume = pd.DataFrame(
-                _from_regions_to_flow_tubes(
-                    network,
-                    field_data,
-                    ti2ci,
-                    config.model_parameters.bulkvolume_parameter_from_sim_model,
-                ),
-                columns=["BV_MULT"],
-            )
-        elif config.model_parameters.bulkvolume_mult_scheme == "global":
-            df_bulkvolume = pd.DataFrame(
-                [1] * len(network.grid.model.unique()), columns=["BV_MULT"]
-            )
-
-        ri2ci_index = ti2ci.index.values.copy()
-        for idx in np.unique(ti2ci.index.values):
-            ri2ci_index[ti2ci.index.values == idx] = df_bulkvolume.loc[idx]
-        ri2ci = pd.DataFrame(data=network.grid.index, index=ri2ci_index)
-
-        # Create a pandas dataframe with all parameter definition for each individual tube
-        regional_bulkvolume_dist_values = pd.DataFrame(
-            columns=column_names_probdist + ["bv_mult"]
-        )
-
-        for i in np.sort(df_bulkvolume["BV_MULT"].unique()):
-            info = ["region_bulkvolume_mult"]
-            for keyword in ["min", "max", "mean", "base", "stddev", "distribution"]:
-                info.append(
-                    getattr(config.model_parameters.region_bulkvolume_mult, keyword)
-                )
-            info.append(i)
-            regional_bulkvolume_dist_values.loc[i] = info
 
     #########################################
     # Fault transmissibility                #
@@ -922,9 +920,10 @@ def run_flownet_history_matching(
     parameters = [
         PorvPoroTrans(
             porv_poro_trans_dist_values,
-            regional_bulkvolume_dist_values,
+            regional_porv_poro_trans_dist_values,
+            df_regional,
             ti2ci,
-            ri2ci,
+            ci2ri,
             network,
             config.flownet.min_permeability,
         ),

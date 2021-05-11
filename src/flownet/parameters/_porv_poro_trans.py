@@ -101,13 +101,21 @@ class PorvPoroTrans(Parameter):
         self,
         distribution_values: pd.DataFrame,
         regional_distribution_values: pd.DataFrame,
+        df_regional: pd.DataFrame,
         ti2ci: pd.DataFrame,
-        ri2ci: pd.DataFrame,
+        ci2ri: pd.DataFrame,
         network: NetworkModel,
         min_permeability: Optional[float] = None,
     ):
         self._ti2ci: pd.DataFrame = ti2ci
-        self._ri2ci: pd.DataFrame = ri2ci
+        self._ci2ri: pd.DataFrame = ci2ri
+
+        self._network: NetworkModel = network
+        self._number_tubes: int = len(self._ti2ci.index.unique())
+        self._regions: dict[int] = {
+            key: df_regional[key].max() for key in df_regional.columns
+        }
+        self.min_permeability: Optional[float] = min_permeability
 
         self._random_variables: List[ProbabilityDistribution] = (
             [  # Add random variables for bulk volume multipliers
@@ -123,15 +131,15 @@ class PorvPoroTrans(Parameter):
                 for _, row in distribution_values.iterrows()
             ]
             + [
-                parameter_probability_distribution_class(row)
-                for _, row in regional_distribution_values.iterrows()
+                parameter_probability_distribution_class(row, param)
+                for param in df_regional.columns
+                for _, row in regional_distribution_values.loc[
+                    regional_distribution_values.index.repeat(df_regional[param].max())
+                ]
+                .reset_index(drop=True)
+                .iterrows()
             ]
         )
-
-        self._network: NetworkModel = network
-        self._number_tubes: int = len(self._ti2ci.index.unique())
-        self._number_regions: int = len(self._ri2ci.index.unique())
-        self.min_permeability: Optional[float] = min_permeability
 
     def render_output(self) -> Dict:
         """
@@ -142,6 +150,11 @@ class PorvPoroTrans(Parameter):
              PORO, PORV, PERMX, PERMY, PERMZ and NNC include content.
 
         """
+        regional_param_to_property: dict = {
+            "bulkvolume_mult_regional": "BULKVOLUME",
+            "porosity_regional": "PORO",
+            "permeability_regional": "PERMX",
+        }
 
         # Calculate PORO, PORV AND MULTX
 
@@ -173,6 +186,35 @@ class PorvPoroTrans(Parameter):
             * properties_per_cell["BULKVOLUME_MULT"]
         )
 
+        # Calculate updated base permeability (and NNC transmissibility)
+
+        perm_per_tube = pd.DataFrame(
+            self.random_samples[2 * self._number_tubes : 3 * self._number_tubes],
+            index=self._ti2ci.index.unique(),
+            columns=["PERMX"],
+        )
+
+        # Regional multipliers (if applicable)
+        start_index = 3 * self._number_tubes
+        for param in self._regions.keys():
+            end_index = start_index + self._regions[param]
+            mult_per_region = pd.DataFrame(
+                self.random_samples[start_index:end_index],
+                index=range(1, self._ci2ri[param].max() + 1),
+                columns=["REGIONAL_MULT"],
+            )
+            df_merge = pd.DataFrame(self._ci2ri[param]).merge(
+                mult_per_region, left_on=param, right_index=True
+            ).sort_index()
+
+            df_merge.index = properties_per_cell.index
+            properties_per_cell[regional_param_to_property[param]] = (
+                properties_per_cell[regional_param_to_property[param]]
+                * df_merge["REGIONAL_MULT"]
+            )
+            start_index = end_index
+
+        # All parmeters from ERT have been read/set, calculate what is needed
         properties_per_cell["MULTX"] = properties_per_cell["BULKVOLUME"].values / (
             self._network.area * self._network.grid["cell_length"].values
         )
@@ -181,13 +223,6 @@ class PorvPoroTrans(Parameter):
             properties_per_cell["BULKVOLUME"] * properties_per_cell["PORO"]
         )
 
-        # Calculate updated base permeability (and NNC transmissibility)
-
-        perm_per_tube = pd.DataFrame(
-            self.random_samples[2 * self._number_tubes :],
-            index=self._ti2ci.index.unique(),
-            columns=["PERMX"],
-        )
         perm_per_tube["PERMY"] = perm_per_tube["PERMX"]
         perm_per_tube["PERMZ"] = perm_per_tube["PERMX"]
 
