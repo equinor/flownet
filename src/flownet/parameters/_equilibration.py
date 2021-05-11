@@ -99,7 +99,7 @@ class Equilibration(Parameter):
                 zip(
                     self._parameters,
                     self.random_samples[
-                        i * samples_per_eqlnum : (i + 1) * samples_per_eqlnum
+                        i * samples_per_eqlnum: (i + 1) * samples_per_eqlnum
                     ],
                 )
             )
@@ -113,25 +113,21 @@ class Equilibration(Parameter):
             for connections_at_node in self._network.connection_at_nodes:
                 eqlnum_combinations.extend(list(combinations(connections_at_node, 2)))
 
-            eqlnum_combinations = list(set(eqlnum_combinations))
-
-            # Go from tube index to region index
-            eqlnum_combinations = set(
-                [
+            # Go from tube index to equilibrium region index (0-index to 1-index)
+            # remove duplicates, and only one way thpres needed
+            eqlnum_combinations = list(
+                {
                     (
                         self._eqlnum.loc[tube_a, "EQLNUM"],
                         self._eqlnum.loc[tube_b, "EQLNUM"],
                     )
                     for _, [tube_a, tube_b] in enumerate(eqlnum_combinations)
-                ]
+                    if self._eqlnum.loc[tube_b, "EQLNUM"]
+                    > self._eqlnum.loc[tube_a, "EQLNUM"]
+                }
             )
-
-            # Remove duplicates and within region occurences
-            eqlnum_combinations = [
-                (region_a, region_b)
-                for _, [region_a, region_b] in enumerate(eqlnum_combinations)
-                if region_b > region_a
-            ]
+            # sort for readability
+            eqlnum_combinations.sort()
 
             eqlnum1 = list(list(zip(*eqlnum_combinations))[0])
             eqlnum2 = list(list(zip(*eqlnum_combinations))[1])

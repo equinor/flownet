@@ -390,7 +390,8 @@ class FlowData(FromSource):
         """Generate bulk volume distribution per grid cell in the FlowNet model based on the geometrical
         distribution of the volume in the original (full field) simulation model. I.e., the original model's
         volume will be distributed over the FlowNet's tubes by assigning original model grid cell
-        volumes to the nearest FlowNet tube midpoint.
+        volumes to the nearest FlowNet tube cell midpoint. Finally, the volume distributed to all cells in a tube
+        will be summed and evenly redistributed over the tube.
 
         Args:
             network: FlowNet network instance.
@@ -399,7 +400,7 @@ class FlowData(FromSource):
             An array with volumes per flownetcell.
 
         """
-        flownet_tube_midpoints = np.array(network.get_connection_midpoints())
+        flownet_cell_midpoints = np.array(network.cell_midpoints).T
         model_cell_mid_points = np.array(
             [cell.coordinate for cell in self._grid.cells(active=True)]
         )
@@ -408,25 +409,33 @@ class FlowData(FromSource):
             for cell in self._grid.cells(active=True)
         ]
 
-        # Determine nearest flow tube for each cell in the original model
-        tree = KDTree(flownet_tube_midpoints)
+        # Determine nearest flow tube cell for each cell in the original model
+        tree = KDTree(flownet_cell_midpoints)
         _, matched_indices = tree.query(model_cell_mid_points, k=[1])
 
-        # Distribute the original model's volume per cell to flownet tubes that are nearest.
-        tube_volumes = np.zeros(len(flownet_tube_midpoints))
+        # Distribute the original model's volume per cell to flownet tubes cells that are nearest.
+        tube_cell_volumes = np.zeros(len(flownet_cell_midpoints))
 
-        for cell_i, tube_id in enumerate(matched_indices):
-            tube_volumes[tube_id[0]] += model_cell_volume[cell_i]
+        for cell_i, tube_cell_id in enumerate(matched_indices):
+            tube_cell_volumes[tube_cell_id[0]] += model_cell_volume[cell_i]
 
-        # Distribute tube volume over the active cells of the flownet.
-        # The last cell of each each tube is inactive and thefore gets 0 volume assigned.
+        # Get a mapping from tube cells to tubes
         properties_per_cell = pd.DataFrame(
             pd.DataFrame(data=network.grid.index, index=network.grid.model).index
         )
+
+        # Sum all tube cell volumes in a tube
+        properties_per_cell["distributed_volume"] = tube_cell_volumes
+        tube_volumes = properties_per_cell.groupby(by="model").sum().values
+
+        # Get the active cells per tube
         active_cells_per_tube = (
             properties_per_cell.reset_index().groupby(["model"]).size() - 1
         )
 
+        # Distribute tube volume over the active cells of the flownet.
+        # The last cell of each each tube is inactive and thefore gets 0 volume assigned.
+        # Evenly distribute the volume over cells of the tube
         cell_volumes = np.zeros(len(properties_per_cell["model"].values))
         for i, tube in enumerate(properties_per_cell["model"].values[:-1]):
             if (

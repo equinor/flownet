@@ -203,15 +203,23 @@ class PorvPoroTrans(Parameter):
                 index=range(1, self._ci2ri[param].max() + 1),
                 columns=["REGIONAL_MULT"],
             )
-            df_merge = pd.DataFrame(self._ci2ri[param]).merge(
-                mult_per_region, left_on=param, right_index=True
-            ).sort_index()
-
-            df_merge.index = properties_per_cell.index
-            properties_per_cell[regional_param_to_property[param]] = (
-                properties_per_cell[regional_param_to_property[param]]
-                * df_merge["REGIONAL_MULT"]
+            df_merge = (
+                pd.DataFrame(self._ci2ri[param])
+                .merge(mult_per_region, left_on=param, right_index=True)
+                .sort_index()
             )
+
+            if param == "permeability_regional":
+                df_merge = df_merge[~df_merge.index.duplicated(keep="first")]
+                perm_per_tube["PERMX"] = (
+                    perm_per_tube["PERMX"] * df_merge["REGIONAL_MULT"]
+                )
+            else:
+                df_merge.index = properties_per_cell.index
+                properties_per_cell[regional_param_to_property[param]] = (
+                    properties_per_cell[regional_param_to_property[param]]
+                    * df_merge["REGIONAL_MULT"]
+                )
             start_index = end_index
 
         # All parmeters from ERT have been read/set, calculate what is needed
