@@ -99,7 +99,7 @@ class Equilibration(Parameter):
                 zip(
                     self._parameters,
                     self.random_samples[
-                        i * samples_per_eqlnum: (i + 1) * samples_per_eqlnum
+                        i * samples_per_eqlnum : (i + 1) * samples_per_eqlnum
                     ],
                 )
             )

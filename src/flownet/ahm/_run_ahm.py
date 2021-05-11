@@ -204,7 +204,7 @@ def _get_regional_distribution(
     network: NetworkModel,
     field_data: FlowData,
     ti2ci: pd.DataFrame,
-) -> Tuple[pd.DataFrame, pd.DataFrame]:
+) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Create the distribution min, mean, base, stddev, max for one or more parameters
 

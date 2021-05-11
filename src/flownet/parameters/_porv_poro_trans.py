@@ -112,7 +112,7 @@ class PorvPoroTrans(Parameter):
 
         self._network: NetworkModel = network
         self._number_tubes: int = len(self._ti2ci.index.unique())
-        self._regions: dict[int] = {
+        self._regions: Dict[str, int] = {
             key: df_regional[key].max() for key in df_regional.columns
         }
         self.min_permeability: Optional[float] = min_permeability
