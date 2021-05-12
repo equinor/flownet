@@ -174,7 +174,7 @@ def _generate_connections(
     # as the one candidate (from num_candidates) with the longest shortest distance to any
     # other existing well (including already added flow nodes)
     coordinates: List[Coordinate]
-    if configuration.flownet.mitchells_algorithm == "Normal":
+    if configuration.flownet.mitchells_algorithm == "normal":
         coordinates = [
             tuple(elem)
             for elem in mitchell_best_candidate(
@@ -187,7 +187,7 @@ def _generate_connections(
                 random_seed=configuration.flownet.random_seed,
             )
         ]
-    elif configuration.flownet.mitchells_algorithm == "Fast":
+    elif configuration.flownet.mitchells_algorithm == "fast":
         coordinates = [
             tuple(elem)
             for elem in mitchell_best_candidate_fast(
@@ -200,10 +200,6 @@ def _generate_connections(
                 random_seed=configuration.flownet.random_seed,
             )
         ]
-    else:
-        raise ValueError(
-            f"'{configuration.flownet.mitchells_algorithm}' is not a valid mitchells_algorithm."
-        )
 
     print("Generating Delaunay triangulation mesh...", end="")
     # Building a mesh consisting of tetrahedrons where the well
