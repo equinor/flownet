@@ -9,7 +9,6 @@ import pandas as pd
 from scipy.spatial import Delaunay, distance  # pylint: disable=no-name-in-module
 
 from ._mitchell import mitchell_best_candidate
-from ._mitchell_fast import mitchell_best_candidate_fast
 from ._hull import check_in_hull
 from ..utils.types import Coordinate
 

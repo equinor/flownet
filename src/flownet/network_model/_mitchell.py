@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, string
+from typing import List, Optional, Tuple, Union
 import time
 
 from scipy.spatial import Delaunay  # pylint: disable=no-name-in-module
@@ -16,7 +16,7 @@ def mitchell_best_candidate(
     place_nodes_in_volume_reservoir: Optional[bool] = None,
     concave_hull_bounding_boxes: Optional[np.ndarray] = None,
     random_seed: Optional[int] = None,
-    mitchell_mode: Optional[string] = "normal",
+    mitchell_mode: Optional[str] = "normal",
 ) -> List[Coordinate]:
 
     # pylint: disable=too-many-locals,invalid-name
@@ -67,6 +67,8 @@ def mitchell_best_candidate(
         y_max = max(y_maxs)[0]
         z_min = min(z_mins)[0]
         z_max = max(z_maxs)[0]
+
+        perforation_hull = None
     else:
         # Determine whether the convex hull needs to be scaled
         if not np.isclose(hull_factor, 1.0):
@@ -91,7 +93,7 @@ def mitchell_best_candidate(
             z_hull = z
 
         # Determine the convex hull of the original or linearly scaled perforations
-        if z_min == z_max:
+        if np.isclose(z_min, z_max):
             # 2D cases
             perforation_hull = Delaunay(np.column_stack([x_hull, y_hull]))
         else:
@@ -135,28 +137,28 @@ def mitchell_best_candidate(
             )
 
         delta_x_relative = np.power(
-            (x.repeat(num_candidates) - x_candidate.repeat(x.shape[0]))
+            (np.tile(x, num_candidates) - x_candidate.repeat(x.shape[0]))
             / (x_max - x_min),
             2,
         )
         delta_y_relative = np.power(
-            (y.repeat(num_candidates) - y_candidate.repeat(y.shape[0]))
+            (np.tile(y, num_candidates) - y_candidate.repeat(y.shape[0]))
             / (y_max - y_min),
             2,
         )
-        if np.all(z == z[0]):
+        if np.isclose(z_min, z_max):
             delta_z_relative = 0
         else:
             delta_z_relative = np.power(
-                (
-                    z.repeat(num_candidates)
-                    - z_candidate.repeat(z.shape[0]) / (z_max - z_min)
-                ),
+                (np.tile(z, num_candidates) - z_candidate.repeat(z.shape[0]))
+                / (z_max - z_min),
                 2,
             )
 
         dists = np.sqrt(delta_x_relative + delta_y_relative + delta_z_relative)
-        best_candidate = np.argmax(dists)
+        best_candidate = np.where(
+            dists == np.max(np.min(np.reshape(dists, (num_candidates, len(x))), axis=1))
+        )
 
         # Add the best candidate's coordinates; a new flow node is added
         x = np.append(x, x_candidate.repeat(x.shape[0])[best_candidate])
@@ -177,13 +179,13 @@ def _generate_candidates(
     y_max: float,
     z_min: float,
     z_max: float,
-    perforation_hull: Delaunay,
+    perforation_hull: Union[Delaunay, None],
     concave_hull_bounding_boxes: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
 
     Args:
-        num_candidates: Number of candidates to consider per additional flow nodes,
+        num_candidates: Number of candidates to consider for per additional flow node,
         x_min: minimum x coordinate of (scaled) perforations,
         x_max: maximum x coordinate of (scaled) perforations,
         y_min: minimum y coordinate of (scaled) perforations,
@@ -226,7 +228,7 @@ def _generate_candidates(
             )
         else:
             # Test whether all points are inside the convex hull of the perforations
-            if z_min == z_max:
+            if np.isclose(z_min, z_max):
                 in_hull = perforation_hull.find_simplex(candidates[:, (0, 1)]) >= 0
             else:
                 in_hull = perforation_hull.find_simplex(candidates) >= 0

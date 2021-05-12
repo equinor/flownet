@@ -7,7 +7,6 @@ from flownet.network_model._mitchell import (
     mitchell_best_candidate,
     scale_convex_hull_perforations,
 )
-from flownet.network_model._mitchell_fast import mitchell_best_candidate_fast
 from flownet.network_model._hull import check_in_hull
 from src.flownet.utils.types import Coordinate
 
@@ -38,6 +37,7 @@ def test_mitchells_3d() -> None:
             hull_factor=1.0,
             concave_hull_bounding_boxes=None,
             random_seed=999,
+            mitchell_mode="normal",
         )
     ]
 
@@ -56,13 +56,14 @@ def test_mitchells_3d() -> None:
     # Also check for the fast mitchell algorithm
     coordinates_fast: List[Coordinate] = [
         tuple(elem)
-        for elem in mitchell_best_candidate_fast(
+        for elem in mitchell_best_candidate(
             well_perforations_3d,
             num_added_flow_nodes=num_added_flow_nodes,
             num_candidates=100,
             hull_factor=1.0,
             concave_hull_bounding_boxes=None,
             random_seed=999,
+            mitchell_mode="fast",
         )
     ]
 
@@ -101,6 +102,7 @@ def test_mitchells_2d() -> None:
             hull_factor=1.0,
             concave_hull_bounding_boxes=None,
             random_seed=999,
+            mitchell_mode="normal",
         )
     ]
 
@@ -118,13 +120,14 @@ def test_mitchells_2d() -> None:
     # Also check for the fast mitchell algorithm
     coordinates_fast: List[Coordinate] = [
         tuple(elem)
-        for elem in mitchell_best_candidate_fast(
+        for elem in mitchell_best_candidate(
             well_perforations_2d,
             num_added_flow_nodes=num_added_flow_nodes,
             num_candidates=100,
             hull_factor=1.0,
             concave_hull_bounding_boxes=None,
             random_seed=999,
+            mitchell_mode="fast",
         )
     ]
 
@@ -164,6 +167,7 @@ def test_hull_factor_mitchell() -> None:
             num_candidates=100,
             concave_hull_bounding_boxes=None,
             random_seed=999,
+            mitchell_mode="normal",
         )
     ]
 
@@ -181,13 +185,14 @@ def test_hull_factor_mitchell() -> None:
     # Also check for the fast mitchell algorithm
     coordinates_fast: List[Coordinate] = [
         tuple(elem)
-        for elem in mitchell_best_candidate_fast(
+        for elem in mitchell_best_candidate(
             well_perforations_2d,
             num_added_flow_nodes=num_added_flow_nodes,
             hull_factor=hull_factor,
             num_candidates=100,
             concave_hull_bounding_boxes=None,
             random_seed=999,
+            mitchell_mode="fast",
         )
     ]
 
@@ -230,6 +235,7 @@ def test_nodes_in_reservoir_volume_mitchells() -> None:
             place_nodes_in_volume_reservoir=True,
             concave_hull_bounding_boxes=concave_hull_bounding_boxes,
             random_seed=999,
+            mitchell_mode="normal",
         )
     ]
 
@@ -243,7 +249,7 @@ def test_nodes_in_reservoir_volume_mitchells() -> None:
     # Also check for the fast mitchell algorithm
     coordinates_fast: List[Coordinate] = [
         tuple(elem)
-        for elem in mitchell_best_candidate_fast(
+        for elem in mitchell_best_candidate(
             well_perforations_3d,
             num_added_flow_nodes=20,
             num_candidates=500,
@@ -251,6 +257,7 @@ def test_nodes_in_reservoir_volume_mitchells() -> None:
             place_nodes_in_volume_reservoir=True,
             concave_hull_bounding_boxes=concave_hull_bounding_boxes,
             random_seed=999,
+            mitchell_mode="fast",
         )
     ]
 
