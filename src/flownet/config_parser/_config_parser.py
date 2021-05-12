@@ -404,7 +404,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         "evenly acros the volume, but takes long. "
                         "The fast option is faster, but results in a less even spread of the nodes. "
                         "This can be improved by increasing the number of additional "
-                        "node candidates."
+                        "node candidates.",
                     },
                     "perforation_handling_strategy": {
                         MK.Type: types.String,
@@ -1848,7 +1848,9 @@ def parse_config(
             "place candidates within the reservoir volume."
         )
 
-    if (config.flownet.mitchells_algorithm != "normal") and (config.flownet.mitchells_algorithm != "fast"):
+    if (config.flownet.mitchells_algorithm != "normal") and (
+        config.flownet.mitchells_algorithm != "fast"
+    ):
         raise ValueError(
             f"'{config.flownet.mitchells_algorithm}' is not a valid mitchells_algorithm."
         )
