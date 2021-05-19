@@ -228,11 +228,16 @@ def _generate_candidates(
                 concave_hull_bounding_boxes, candidates, in_hull_known=in_hull
             )
         else:
-            # Test whether all points are inside the convex hull of the perforations
-            if np.isclose(z_min, z_max):
-                in_hull = perforation_hull.find_simplex(candidates[:, (0, 1)]) >= 0
+            if perforation_hull is not None:
+                # Test whether all points are inside the convex hull of the perforations
+                if np.isclose(z_min, z_max):
+                    in_hull = perforation_hull.find_simplex(candidates[:, (0, 1)]) >= 0
+                else:
+                    in_hull = perforation_hull.find_simplex(candidates) >= 0
             else:
-                in_hull = perforation_hull.find_simplex(candidates) >= 0
+                raise ValueError(
+                    "perforation_hull should never be None when concave_hull_bounding_boxes is also None"
+                )
 
     return x_candidate, y_candidate, z_candidate
 
