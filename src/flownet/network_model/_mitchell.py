@@ -171,6 +171,7 @@ def mitchell_best_candidate(
     return [(x[i], y[i], z[i]) for i in range(len(x))]
 
 
+# pylint: disable=too-many-arguments
 def _generate_candidates(
     num_candidates: int,
     x_min: float,
