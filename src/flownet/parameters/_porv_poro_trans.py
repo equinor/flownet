@@ -211,8 +211,8 @@ class PorvPoroTrans(Parameter):
 
             if param == "permeability_regional":
                 df_merge = df_merge[~df_merge.index.duplicated(keep="first")]
-                perm_per_tube["PERMX"] = (
-                    perm_per_tube["PERMX"] * df_merge["REGIONAL_MULT"]
+                perm_per_tube[regional_param_to_property[param]] = (
+                    perm_per_tube[regional_param_to_property[param]] * df_merge["REGIONAL_MULT"]
                 )
             else:
                 df_merge.index = properties_per_cell.index
