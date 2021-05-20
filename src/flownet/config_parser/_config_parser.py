@@ -395,6 +395,17 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.Description: "Adding this makes sure two FlowNet "
                         "runs create the exact same output",
                     },
+                    "mitchells_algorithm": {
+                        MK.Type: types.String,
+                        MK.Default: "normal",
+                        MK.Transformation: _to_lower,
+                        MK.Description: "Choose which mitchell's best candidate algorithm to run for the placement "
+                        "of additional nodes. Options: normal or fast. The normal algorithm will place the nodes more "
+                        "evenly acros the volume, but takes long. "
+                        "The fast option is faster, but results in a less even spread of the nodes. "
+                        "This can be improved by increasing the number of additional "
+                        "node candidates.",
+                    },
                     "perforation_handling_strategy": {
                         MK.Type: types.String,
                         MK.Default: "bottom_point",
@@ -1835,6 +1846,13 @@ def parse_config(
         raise ValueError(
             "concave_hull needs to be true for flownet to be able to "
             "place candidates within the reservoir volume."
+        )
+
+    if (config.flownet.mitchells_algorithm != "normal") and (
+        config.flownet.mitchells_algorithm != "fast"
+    ):
+        raise ValueError(
+            f"'{config.flownet.mitchells_algorithm}' is not a valid mitchells_algorithm."
         )
 
     prod_control_modes = {"ORAT", "GRAT", "WRAT", "LRAT", "RESV", "BHP"}
