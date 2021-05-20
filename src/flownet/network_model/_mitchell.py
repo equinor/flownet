@@ -40,6 +40,7 @@ def mitchell_best_candidate(
             Default defined in config parser is 1.2.
         concave_hull_bounding_boxes: Numpy array with x, y, z min/max boundingboxes for each grid block
         random_seed: Random seed to control the reproducibility of the FlowNet.
+        mitchell_mode: Normal or fast mode to run the mitchell's best candidate algorithm in.
     Returns:
         Python list of real/original and added flow node coordinate tuples
             [(xr_1, yr_1, zr_1), ..., (xr_N, yr_N, zr_N), (xi_1, yi1, zi1)
@@ -236,7 +237,7 @@ def _generate_candidates(
                     in_hull = perforation_hull.find_simplex(candidates) >= 0
             else:
                 raise ValueError(
-                    "perforation_hull should never be None when concave_hull_bounding_boxes is also None"
+                    "The perforation_hull should never be None when concave_hull_bounding_boxes is also None"
                 )
 
     return x_candidate, y_candidate, z_candidate
