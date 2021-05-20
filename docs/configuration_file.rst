@@ -21,6 +21,9 @@ with the following required parameters:
 * Saturation endpoints, relative permeability endpoints and Corey exponents
 * Datum pressures and contacts
 
+For permeability, porosity and bulk volume multipliers there is also an option to
+include a regional (based on an existing grid parameter) or global multiplier as well.
+
 In addition there are a few optional parameters that may be included:
 
 * Fault multipliers
@@ -106,21 +109,30 @@ should be defined, and it will be used for all flow tubes. The permeability valu
 different flow tubes are drawn independently.
 
 
-+----------------------------------+----------------------------------+----------------------------------+----------------------------------+
-| Available options in config yaml | Example of usage                 | Example of usage                 | Example of usage                 |
-+----------------------------------+----------------------------------+----------------------------------+----------------------------------+
-| .. code-block:: yaml             | .. code-block:: yaml             | .. code-block:: yaml             | .. code-block:: yaml             |
-|                                  |                                  |                                  |                                  |
-|    flownet:                      |    flownet:                      |    flownet:                      |    flownet:                      |
-|      model_parameters:           |      model_parameters:           |      model_parameters:           |      model_parameters:           |
-|        permeability:             |        permeability:             |        permeability:             |        permeability:             |
-|          min:                    |          min: 10                 |          min: 10                 |          min: 10                 |
-|          max:                    |          max: 1000               |          mean: 100               |          base: 50                |
-|          base:                   |          distribution: logunif   |          distribution: uniform   |          max: 200                |
-|          mean:                   |                                  |                                  |          distribution: triangular|
-|          stddev:                 |                                  |                                  |                                  | 
-|          distribution:           |                                  |                                  |                                  |
-+----------------------------------+----------------------------------+----------------------------------+----------------------------------+
++------------------------------------------------------+----------------------------------+--------------------------------------------------------+
+| Available options in config yaml                     | Example of usage                 | Example of usage                                       |
++------------------------------------------------------+----------------------------------+--------------------------------------------------------+
+| .. code-block:: yaml                                 | .. code-block:: yaml             | .. code-block:: yaml                                   |
+|                                                      |                                  |                                                        |
+|    flownet:                                          |    flownet:                      |    flownet:                                            |
+|      model_parameters:                               |      model_parameters:           |      model_parameters:                                 |
+|        permeability:                                 |        permeability:             |        permeability:                                   |
+|          min:                                        |          min: 10                 |          min: 10                                       |
+|          max:                                        |          max: 1000               |          mean: 100                                     |
+|          base:                                       |          distribution: logunif   |          distribution: uniform                         |
+|          mean:                                       |                                  |        permeability_regional_scheme: regions_from_sim  |
+|          stddev:                                     |                                  |        permeability_regional:                          |                                  | 
+|          distribution:                               |                                  |          min: 0.5                                      |                                  |
+|        permeability_regional_scheme:                 |                                  |          max: 1.5                                      |
+|        permeability_regional:                        |                                  |        permeability_parameter_from_sim_model: FIPNUM   |
+|          min:                                        |                                  |                                                        |
+|          max:                                        |                                  |                                                        |
+|          base:                                       |                                  |                                                        |
+|          mean:                                       |                                  |                                                        |
+|          stddev:                                     |                                  |                                                        |
+|          distribution:                               |                                  |                                                        |
+|        permeability_parameter_from_sim_model:        |                                  |                                                        |
++------------------------------------------------------+----------------------------------+----------------------------------+---------------------+
 
 
 Porosity
@@ -129,21 +141,30 @@ Defines the prior probability distribution for porosity. Only one distribution
 should be defined, and it will be used for all flow tubes. The porosity values for
 different flow tubes are drawn independently.
 
-+----------------------------------+----------------------------------+----------------------------------+----------------------------------+
-| Available options in config yaml | Example of usage                 | Example of usage                 | Example of usage                 |
-+----------------------------------+----------------------------------+----------------------------------+----------------------------------+
-| .. code-block:: yaml             | .. code-block:: yaml             | .. code-block:: yaml             | .. code-block:: yaml             |
-|                                  |                                  |                                  |                                  |
-|    flownet:                      |    flownet:                      |    flownet:                      |    flownet:                      |
-|      model_parameters:           |      model_parameters:           |      model_parameters:           |      model_parameters:           |
-|        porosity:                 |        porosity:                 |        porosity:                 |        porosity:                 |
-|          min:                    |          min: 0.15               |          mean: 0.25              |          min: 0.15               |
-|          max:                    |          max: 0.35               |          stddev: 0.03            |          mean: 0.22              |
-|          base:                   |          distribution: uniform   |          distribution: normal    |          max: 0.31               |
-|          mean:                   |                                  |                                  |          distribution: triangular|
-|          stddev:                 |                                  |                                  |                                  | 
-|          distribution:           |                                  |                                  |                                  |
-+----------------------------------+----------------------------------+----------------------------------+----------------------------------+
++------------------------------------------------------+----------------------------------+--------------------------------------------------------+
+| Available options in config yaml                     | Example of usage                 | Example of usage                                       |
++------------------------------------------------------+----------------------------------+--------------------------------------------------------+
+| .. code-block:: yaml                                 | .. code-block:: yaml             | .. code-block:: yaml                                   |
+|                                                      |                                  |                                                        |
+|    flownet:                                          |    flownet:                      |    flownet:                                            |
+|      model_parameters:                               |      model_parameters:           |      model_parameters:                                 |
+|        porosity:                                     |        porosity:                 |        porosity:                                       |
+|          min:                                        |          min: 0.15               |          min: 0.20                                     |
+|          max:                                        |          max: 0.35               |          max: 0.40                                     |
+|          base:                                       |          distribution: uniform   |          distribution: uniform                         |
+|          mean:                                       |                                  |        porosity_regional_scheme: regions_from_sim      |
+|          stddev:                                     |                                  |        porosity_regional:                              |                                  | 
+|          distribution:                               |                                  |          min: 0.5                                      |                                  |
+|        porosity_regional_scheme:                     |                                  |          mean: 1                                       |
+|        porosity_regional:                            |                                  |          max: 2                                        |
+|          min:                                        |                                  |          distribution: triangluar                      |
+|          max:                                        |                                  |        porosity_parameter_from_sim_model: FIPNUM       |
+|          base:                                       |                                  |                                                        |
+|          mean:                                       |                                  |                                                        |
+|          stddev:                                     |                                  |                                                        |
+|          distribution:                               |                                  |                                                        |
+|        porosity_parameter_from_sim_model:            |                                  |                                                        |
++------------------------------------------------------+----------------------------------+----------------------------------+---------------------+
 
 
 
@@ -156,7 +177,12 @@ should be adjusted up or down, hence there is a need to be able to tune the bulk
 for efficient history matching.
 
 FlowNet also has an options in the config yaml deciding how the bulk volume should be
-distributed initially. This multiplier will act on top of that initial distribution of 
+distributed initially. The two options are:
+
+* tube_length: Here the bulk volume covered by the convex hull of the FlowNet will be divided equally to all active cells
+* voronoi_per_tube: This is based on an input simulation model. The bulk volume of each cell in the input simulation model will be assigned to the nearest cell in any flow tube in the FlowNet model. After all cells have been assigned, the bulk volume assigned to each flow tube in the FlowNet model is found, and distributed evenly to all cells in that flow tube.
+
+This multiplier will act on top of that initial distribution of 
 bulk volume.
 
 This part of the config file defines the prior probability distribution 
