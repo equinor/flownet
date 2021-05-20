@@ -13,8 +13,6 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/configsuite_ext.css" type="text/css" />
 
   
@@ -32,7 +30,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -174,8 +171,8 @@
   <div class="section" id="module-flownet.parameters._relative_permeability">
 <span id="flownet-parameters-relative-permeability-module"></span><h1>flownet.parameters._relative_permeability module<a class="headerlink" href="#module-flownet.parameters._relative_permeability" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="flownet.parameters._relative_permeability.RelativePermeability">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">flownet.parameters._relative_permeability.</span></span><span class="sig-name descname"><span class="pre">RelativePermeability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">distribution_values:</span> <span class="pre">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="pre">ti2ci:</span> <span class="pre">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="pre">satnum:</span> <span class="pre">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="pre">config:</span> <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f142d5b24d0&gt;</span></em>, <em class="sig-param"><span class="pre">interpolation_values:</span> <span class="pre">Optional[pandas.core.frame.DataFrame]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.parameters._relative_permeability.RelativePermeability">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">flownet.parameters._relative_permeability.</span></code><code class="sig-name descname"><span class="pre">RelativePermeability</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">distribution_values:</span> <span class="pre">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="pre">ti2ci:</span> <span class="pre">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="pre">satnum:</span> <span class="pre">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="pre">config:</span> <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7ff29e91e3b0&gt;</span></em>, <em class="sig-param"><span class="pre">interpolation_values:</span> <span class="pre">Optional[pandas.core.frame.DataFrame]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.parameters._base_parameter.Parameter</span></code></a></p>
 <p>Parameter type which takes care of stochastically drawn Relative Permeability parameters.</p>
 <p>Required parameters for SWOF generation: “swirr”, “swl”, “swcr”, “sorw”, “nw”, “now”, “krwend”, “kroend”
@@ -209,13 +206,13 @@ set to “low”, “base” or “high”, and a column “SATNUM” defining w
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="flownet.parameters._relative_permeability.RelativePermeability._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;_abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.parameters._relative_permeability.RelativePermeability._abc_impl">
+<code class="sig-name descname"><span class="pre">_abc_impl</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;_abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability._abc_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.parameters._relative_permeability.RelativePermeability._check_krwmax">
-<span class="sig-name descname"><span class="pre">_check_krwmax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability._check_krwmax" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.parameters._relative_permeability.RelativePermeability._check_krwmax">
+<code class="sig-name descname"><span class="pre">_check_krwmax</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability._check_krwmax" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to check if krwmax is defined in config file or
 if it should be defaulted to 1.</p>
 <dl class="field-list simple">
@@ -230,8 +227,8 @@ parameter values for one realization in ERT</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.parameters._relative_permeability.RelativePermeability._check_parameters">
-<span class="sig-name descname"><span class="pre">_check_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability._check_parameters" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.parameters._relative_permeability.RelativePermeability._check_parameters">
+<code class="sig-name descname"><span class="pre">_check_parameters</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability._check_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to check the user-defined parameters and determination
 of what to generate: SWOF/SGOF.
 It will raise an error if something is wrong.</p>
@@ -243,8 +240,8 @@ It will raise an error if something is wrong.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.parameters._relative_permeability.RelativePermeability.get_dims">
-<span class="sig-name descname"><span class="pre">get_dims</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability.get_dims" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.parameters._relative_permeability.RelativePermeability.get_dims">
+<code class="sig-name descname"><span class="pre">get_dims</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability.get_dims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to export the table dimensions used for memory allocation in Flow.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -254,8 +251,8 @@ It will raise an error if something is wrong.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.parameters._relative_permeability.RelativePermeability.render_output">
-<span class="sig-name descname"><span class="pre">render_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability.render_output" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.parameters._relative_permeability.RelativePermeability.render_output">
+<code class="sig-name descname"><span class="pre">render_output</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.parameters._relative_permeability.RelativePermeability.render_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates SWOF/SGOF and SATNUM include content - which are given to the PROPS and GRID section.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -267,8 +264,8 @@ It will raise an error if something is wrong.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="flownet.parameters._relative_permeability.interpolate_go">
-<span class="sig-prename descclassname"><span class="pre">flownet.parameters._relative_permeability.</span></span><span class="sig-name descname"><span class="pre">interpolate_go</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalrec</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.parameters._relative_permeability.interpolate_go" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.parameters._relative_permeability.interpolate_go">
+<code class="sig-prename descclassname"><span class="pre">flownet.parameters._relative_permeability.</span></code><code class="sig-name descname"><span class="pre">interpolate_go</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalrec</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.parameters._relative_permeability.interpolate_go" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates interpolated saturation endpoints and relative
 permeability endpoints for gas/oil based on an interpolation parameter
 and three separate input cases (low/base/high).</p>
@@ -288,8 +285,8 @@ permeability endpoints</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="flownet.parameters._relative_permeability.interpolate_wo">
-<span class="sig-prename descclassname"><span class="pre">flownet.parameters._relative_permeability.</span></span><span class="sig-name descname"><span class="pre">interpolate_wo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalrec</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.parameters._relative_permeability.interpolate_wo" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.parameters._relative_permeability.interpolate_wo">
+<code class="sig-prename descclassname"><span class="pre">flownet.parameters._relative_permeability.</span></code><code class="sig-name descname"><span class="pre">interpolate_wo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalrec</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.parameters._relative_permeability.interpolate_wo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates interpolated saturation endpoints and relative
 permeability endpoints for water/oil based on an interpolation parameter
 and three separate input cases (low/base/high).</p>
@@ -309,8 +306,8 @@ permeability endpoints</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="flownet.parameters._relative_permeability.sgof_from_parameters">
-<span class="sig-prename descclassname"><span class="pre">flownet.parameters._relative_permeability.</span></span><span class="sig-name descname"><span class="pre">sgof_from_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#flownet.parameters._relative_permeability.sgof_from_parameters" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.parameters._relative_permeability.sgof_from_parameters">
+<code class="sig-prename descclassname"><span class="pre">flownet.parameters._relative_permeability.</span></code><code class="sig-name descname"><span class="pre">sgof_from_parameters</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#flownet.parameters._relative_permeability.sgof_from_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a SGOF table based on a dictionary of input parameters/values</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -323,8 +320,8 @@ permeability endpoints</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="flownet.parameters._relative_permeability.swof_from_parameters">
-<span class="sig-prename descclassname"><span class="pre">flownet.parameters._relative_permeability.</span></span><span class="sig-name descname"><span class="pre">swof_from_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#flownet.parameters._relative_permeability.swof_from_parameters" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.parameters._relative_permeability.swof_from_parameters">
+<code class="sig-prename descclassname"><span class="pre">flownet.parameters._relative_permeability.</span></code><code class="sig-name descname"><span class="pre">swof_from_parameters</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#flownet.parameters._relative_permeability.swof_from_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a SWOF table based on a dictionary of input parameters/values</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
