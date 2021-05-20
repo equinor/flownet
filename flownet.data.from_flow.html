@@ -13,8 +13,6 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/configsuite_ext.css" type="text/css" />
 
   
@@ -32,7 +30,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -174,8 +171,8 @@
   <div class="section" id="module-flownet.data.from_flow">
 <span id="flownet-data-from-flow-module"></span><h1>flownet.data.from_flow module<a class="headerlink" href="#module-flownet.data.from_flow" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">flownet.data.from_flow.</span></span><span class="sig-name descname"><span class="pre">FlowData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_flow.FlowData" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.data.from_flow.FlowData">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">flownet.data.from_flow.</span></code><code class="sig-name descname"><span class="pre">FlowData</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_flow.FlowData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flownet.data.from_source.html#flownet.data.from_source.FromSource" title="flownet.data.from_source.FromSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.data.from_source.FromSource</span></code></a></p>
 <p>Flow data source class</p>
 <dl class="field-list simple">
@@ -187,13 +184,13 @@
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;_abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#flownet.data.from_flow.FlowData._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.data.from_flow.FlowData._abc_impl">
+<code class="sig-name descname"><span class="pre">_abc_impl</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;_abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#flownet.data.from_flow.FlowData._abc_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData._faults">
-<span class="sig-name descname"><span class="pre">_faults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.from_flow.FlowData._faults" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.data.from_flow.FlowData._faults">
+<code class="sig-name descname"><span class="pre">_faults</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.from_flow.FlowData._faults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to read fault plane data using ecl2df.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -203,13 +200,13 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData._get_start_date">
-<span class="sig-name descname"><span class="pre">_get_start_date</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_flow.FlowData._get_start_date" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.data.from_flow.FlowData._get_start_date">
+<code class="sig-name descname"><span class="pre">_get_start_date</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_flow.FlowData._get_start_date" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData._production_data">
-<span class="sig-name descname"><span class="pre">_production_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.from_flow.FlowData._production_data" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.data.from_flow.FlowData._production_data">
+<code class="sig-name descname"><span class="pre">_production_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.from_flow.FlowData._production_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to read production data for all producers and injectors from an
 Flow simulation. The simulation is required to write out the
 following vectors to the summary file: WOPR, WGPR, WWPR, WBHP, WTHP, WGIR, WWIR</p>
@@ -241,8 +238,8 @@ following vectors to the summary file: WOPR, WGPR, WWPR, WBHP, WTHP, WGIR, WWIR<
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData._well_connections">
-<span class="sig-name descname"><span class="pre">_well_connections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">perforation_handling_strategy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.from_flow.FlowData._well_connections" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.data.from_flow.FlowData._well_connections">
+<code class="sig-name descname"><span class="pre">_well_connections</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">perforation_handling_strategy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.from_flow.FlowData._well_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to extract well connection coordinates from a Flow simulation including their
 opening and closure time. The output of this function will be filtered based on the
 configured perforation strategy.</p>
@@ -267,8 +264,8 @@ configured perforation strategy.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData._well_logs">
-<span class="sig-name descname"><span class="pre">_well_logs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.from_flow.FlowData._well_logs" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.data.from_flow.FlowData._well_logs">
+<code class="sig-name descname"><span class="pre">_well_logs</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.from_flow.FlowData._well_logs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to extract well log information from a Flow simulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -281,8 +278,8 @@ configured perforation strategy.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData.bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model">
-<span class="sig-name descname"><span class="pre">bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="flownet.network_model._network_model.html#flownet.network_model._network_model.NetworkModel" title="flownet.network_model._network_model.NetworkModel"><span class="pre">flownet.network_model._network_model.NetworkModel</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#flownet.data.from_flow.FlowData.bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.data.from_flow.FlowData.bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model">
+<code class="sig-name descname"><span class="pre">bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="flownet.network_model._network_model.html#flownet.network_model._network_model.NetworkModel" title="flownet.network_model._network_model.NetworkModel"><span class="pre">flownet.network_model._network_model.NetworkModel</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#flownet.data.from_flow.FlowData.bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate bulk volume distribution per grid cell in the FlowNet model based on the geometrical
 distribution of the volume in the original (full field) simulation model. I.e., the original model’s
 volume will be distributed over the FlowNet’s tubes by assigning original model grid cell
@@ -298,21 +295,21 @@ will be summed and evenly redistributed over the tube.</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData.faults">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">faults</span></span><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.frame.DataFrame</span></em><a class="headerlink" href="#flownet.data.from_flow.FlowData.faults" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="flownet.data.from_flow.FlowData.faults">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">faults</span></code><a class="headerlink" href="#flownet.data.from_flow.FlowData.faults" title="Permalink to this definition">¶</a></dt>
 <dd><p>dataframe with all fault data</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData.get_unique_regions">
-<span class="sig-name descname"><span class="pre">get_unique_regions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#flownet.data.from_flow.FlowData.get_unique_regions" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.data.from_flow.FlowData.get_unique_regions">
+<code class="sig-name descname"><span class="pre">get_unique_regions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#flownet.data.from_flow.FlowData.get_unique_regions" title="Permalink to this definition">¶</a></dt>
 <dd><p>array with unique ‘name’ regions</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData.get_well_connections">
-<span class="sig-name descname"><span class="pre">get_well_connections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">perforation_handling_strategy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.from_flow.FlowData.get_well_connections" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.data.from_flow.FlowData.get_well_connections">
+<code class="sig-name descname"><span class="pre">get_well_connections</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">perforation_handling_strategy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.data.from_flow.FlowData.get_well_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to get dataframe with all well connection coordinates,
 filtered based on the perforation_handling_strategy.</p>
 <dl class="field-list simple">
@@ -336,15 +333,15 @@ Columns: WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData.grid">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">grid</span></span><em class="property"><span class="pre">:</span> <span class="pre">ecl.grid.ecl_grid.EclGrid</span></em><a class="headerlink" href="#flownet.data.from_flow.FlowData.grid" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="flownet.data.from_flow.FlowData.grid">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">grid</span></code><a class="headerlink" href="#flownet.data.from_flow.FlowData.grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>the simulation grid with properties</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData.grid_cell_bounding_boxes">
-<span class="sig-name descname"><span class="pre">grid_cell_bounding_boxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#flownet.data.from_flow.FlowData.grid_cell_bounding_boxes" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.data.from_flow.FlowData.grid_cell_bounding_boxes">
+<code class="sig-name descname"><span class="pre">grid_cell_bounding_boxes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#flownet.data.from_flow.FlowData.grid_cell_bounding_boxes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to get the bounding box (x, y and z min + max) for all grid cells</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -358,26 +355,26 @@ filtered on layer_id if not None.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData.init">
-<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#flownet.data.from_flow.FlowData.init" title="Permalink to this definition">¶</a></dt>
+<dt id="flownet.data.from_flow.FlowData.init">
+<code class="sig-name descname"><span class="pre">init</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#flownet.data.from_flow.FlowData.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>array with ‘name’ regions</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData.layers">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">layers</span></span><em class="property"><span class="pre">:</span> <span class="pre">Union[Tuple[Tuple[int,</span> <span class="pre">int]],</span> <span class="pre">Tuple]</span></em><a class="headerlink" href="#flownet.data.from_flow.FlowData.layers" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="flownet.data.from_flow.FlowData.layers">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">layers</span></code><a class="headerlink" href="#flownet.data.from_flow.FlowData.layers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the list of top and bottom k-indeces of a the orignal model that represents a FlowNet layer</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData.production">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">production</span></span><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.frame.DataFrame</span></em><a class="headerlink" href="#flownet.data.from_flow.FlowData.production" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="flownet.data.from_flow.FlowData.production">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">production</span></code><a class="headerlink" href="#flownet.data.from_flow.FlowData.production" title="Permalink to this definition">¶</a></dt>
 <dd><p>dataframe with all production data</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="flownet.data.from_flow.FlowData.well_logs">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">well_logs</span></span><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.frame.DataFrame</span></em><a class="headerlink" href="#flownet.data.from_flow.FlowData.well_logs" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="flownet.data.from_flow.FlowData.well_logs">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">well_logs</span></code><a class="headerlink" href="#flownet.data.from_flow.FlowData.well_logs" title="Permalink to this definition">¶</a></dt>
 <dd><p>dataframe with all well log</p>
 </dd></dl>
 
