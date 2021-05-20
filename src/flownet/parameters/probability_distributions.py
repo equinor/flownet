@@ -227,7 +227,7 @@ class LogUniformDistribution(ProbabilityDistribution):
                 "It is not possible to update the mean of the loguniform distribution without "
                 "providing either a new minimum value or a new maximum value at the same time."
             )
-        elif mode is not None or stddev is not None:
+        elif mode is not None and stddev is not None:
             raise ValueError(
                 "It is currently not possible to update the uniform distribution "
                 "using the standard deviation or the mode"

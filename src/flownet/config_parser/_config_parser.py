@@ -5,8 +5,7 @@ from typing import Dict, Optional, List
 
 import numpy as np
 import yaml
-import configsuite
-from configsuite import types, MetaKeys as MK, ConfigSuite
+from configsuite import transformation_msg, types, MetaKeys as MK, ConfigSuite
 import pandas as pd
 
 from ._merge_configs import merge_configs
@@ -38,7 +37,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
 
     """
 
-    @configsuite.transformation_msg("Convert input string to absolute path")
+    @transformation_msg("Convert input string to absolute path")
     def _to_abs_path(path: Optional[str]) -> str:
         """
         Helper function for the configsuite. Takes in a path as a string and
@@ -1823,7 +1822,7 @@ def parse_config(
         )
     if (
         layers
-        and not len(layers) is len(config.flownet.additional_flow_nodes)
+        and not len(layers) == len(config.flownet.additional_flow_nodes)
         and len(config.flownet.additional_flow_nodes) != 1
     ):
         raise ValueError(
@@ -2021,7 +2020,7 @@ def parse_config(
             "quantity ({config.ert.analysis.metric})."
         )
 
-    if len(config.flownet.hyperopt.loss.keys) is not len(
+    if len(config.flownet.hyperopt.loss.keys) != len(
         config.flownet.hyperopt.loss.factors
     ):
         raise ValueError(
