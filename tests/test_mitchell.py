@@ -4,7 +4,7 @@ import numpy as np
 from scipy.spatial import Delaunay  # pylint: disable=no-name-in-module
 
 from flownet.network_model._mitchell import (
-    mitchell_best_candidate_modified_3d,
+    mitchell_best_candidate,
     scale_convex_hull_perforations,
 )
 from flownet.network_model._hull import check_in_hull
@@ -30,13 +30,14 @@ def test_mitchells_3d() -> None:
 
     coordinates: List[Coordinate] = [
         tuple(elem)
-        for elem in mitchell_best_candidate_modified_3d(
+        for elem in mitchell_best_candidate(
             well_perforations_3d,
             num_added_flow_nodes=num_added_flow_nodes,
             num_candidates=100,
             hull_factor=1.0,
             concave_hull_bounding_boxes=None,
             random_seed=999,
+            mitchell_mode="normal",
         )
     ]
 
@@ -51,6 +52,28 @@ def test_mitchells_3d() -> None:
     assert np.all([y[1] <= max(y_wells) for y in coordinates])
     assert np.all([z[2] >= min(z_wells) for z in coordinates])
     assert np.all([z[2] <= max(z_wells) for z in coordinates])
+
+    # Also check for the fast mitchell algorithm
+    coordinates_fast: List[Coordinate] = [
+        tuple(elem)
+        for elem in mitchell_best_candidate(
+            well_perforations_3d,
+            num_added_flow_nodes=num_added_flow_nodes,
+            num_candidates=100,
+            hull_factor=1.0,
+            concave_hull_bounding_boxes=None,
+            random_seed=999,
+            mitchell_mode="fast",
+        )
+    ]
+
+    assert len(coordinates_fast) == (len(well_perforations_3d) + num_added_flow_nodes)
+    assert np.all([x[0] >= min(x_wells) for x in coordinates_fast])
+    assert np.all([x[0] <= max(x_wells) for x in coordinates_fast])
+    assert np.all([y[1] >= min(y_wells) for y in coordinates_fast])
+    assert np.all([y[1] <= max(y_wells) for y in coordinates_fast])
+    assert np.all([z[2] >= min(z_wells) for z in coordinates_fast])
+    assert np.all([z[2] <= max(z_wells) for z in coordinates_fast])
 
 
 def test_mitchells_2d() -> None:
@@ -72,13 +95,14 @@ def test_mitchells_2d() -> None:
 
     coordinates: List[Coordinate] = [
         tuple(elem)
-        for elem in mitchell_best_candidate_modified_3d(
+        for elem in mitchell_best_candidate(
             well_perforations_2d,
             num_added_flow_nodes=num_added_flow_nodes,
             num_candidates=100,
             hull_factor=1.0,
             concave_hull_bounding_boxes=None,
             random_seed=999,
+            mitchell_mode="normal",
         )
     ]
 
@@ -92,6 +116,27 @@ def test_mitchells_2d() -> None:
     assert np.all([y[1] >= min(y_wells) for y in coordinates])
     assert np.all([y[1] <= max(y_wells) for y in coordinates])
     assert np.all([z[2] == z_wells[0] for z in coordinates])
+
+    # Also check for the fast mitchell algorithm
+    coordinates_fast: List[Coordinate] = [
+        tuple(elem)
+        for elem in mitchell_best_candidate(
+            well_perforations_2d,
+            num_added_flow_nodes=num_added_flow_nodes,
+            num_candidates=100,
+            hull_factor=1.0,
+            concave_hull_bounding_boxes=None,
+            random_seed=999,
+            mitchell_mode="fast",
+        )
+    ]
+
+    assert len(coordinates_fast) == (len(well_perforations_2d) + num_added_flow_nodes)
+    assert np.all([x[0] >= min(x_wells) for x in coordinates_fast])
+    assert np.all([x[0] <= max(x_wells) for x in coordinates_fast])
+    assert np.all([y[1] >= min(y_wells) for y in coordinates_fast])
+    assert np.all([y[1] <= max(y_wells) for y in coordinates_fast])
+    assert np.all([z[2] == z_wells[0] for z in coordinates_fast])
 
 
 def test_hull_factor_mitchell() -> None:
@@ -115,13 +160,14 @@ def test_hull_factor_mitchell() -> None:
 
     coordinates: List[Coordinate] = [
         tuple(elem)
-        for elem in mitchell_best_candidate_modified_3d(
+        for elem in mitchell_best_candidate(
             well_perforations_2d,
             num_added_flow_nodes=num_added_flow_nodes,
             hull_factor=hull_factor,
             num_candidates=100,
             concave_hull_bounding_boxes=None,
             random_seed=999,
+            mitchell_mode="normal",
         )
     ]
 
@@ -135,6 +181,27 @@ def test_hull_factor_mitchell() -> None:
     assert np.all([y[1] >= min(y_hull) for y in coordinates])
     assert np.all([y[1] <= max(y_hull) for y in coordinates])
     assert np.all([z[2] == z_hull[0] for z in coordinates])
+
+    # Also check for the fast mitchell algorithm
+    coordinates_fast: List[Coordinate] = [
+        tuple(elem)
+        for elem in mitchell_best_candidate(
+            well_perforations_2d,
+            num_added_flow_nodes=num_added_flow_nodes,
+            hull_factor=hull_factor,
+            num_candidates=100,
+            concave_hull_bounding_boxes=None,
+            random_seed=999,
+            mitchell_mode="fast",
+        )
+    ]
+
+    assert len(coordinates_fast) == (len(well_perforations_2d) + num_added_flow_nodes)
+    assert np.all([x[0] >= min(x_hull) for x in coordinates_fast])
+    assert np.all([x[0] <= max(x_hull) for x in coordinates_fast])
+    assert np.all([y[1] >= min(y_hull) for y in coordinates_fast])
+    assert np.all([y[1] <= max(y_hull) for y in coordinates_fast])
+    assert np.all([z[2] == z_hull[0] for z in coordinates_fast])
 
 
 def test_nodes_in_reservoir_volume_mitchells() -> None:
@@ -160,7 +227,7 @@ def test_nodes_in_reservoir_volume_mitchells() -> None:
 
     coordinates: List[Coordinate] = [
         tuple(elem)
-        for elem in mitchell_best_candidate_modified_3d(
+        for elem in mitchell_best_candidate(
             well_perforations_3d,
             num_added_flow_nodes=20,
             num_candidates=500,
@@ -168,6 +235,7 @@ def test_nodes_in_reservoir_volume_mitchells() -> None:
             place_nodes_in_volume_reservoir=True,
             concave_hull_bounding_boxes=concave_hull_bounding_boxes,
             random_seed=999,
+            mitchell_mode="normal",
         )
     ]
 
@@ -177,3 +245,28 @@ def test_nodes_in_reservoir_volume_mitchells() -> None:
     in_hull_volume = check_in_hull(concave_hull_bounding_boxes, np.array(coordinates))
     assert in_hull_volume.all()
     assert any(x == -1 for x in in_hull_perforations)
+
+    # Also check for the fast mitchell algorithm
+    coordinates_fast: List[Coordinate] = [
+        tuple(elem)
+        for elem in mitchell_best_candidate(
+            well_perforations_3d,
+            num_added_flow_nodes=20,
+            num_candidates=500,
+            hull_factor=1.0,
+            place_nodes_in_volume_reservoir=True,
+            concave_hull_bounding_boxes=concave_hull_bounding_boxes,
+            random_seed=999,
+            mitchell_mode="fast",
+        )
+    ]
+
+    in_hull_perforations_fast = perforation_hull.find_simplex(
+        np.array(coordinates_fast)
+    )
+
+    in_hull_volume = check_in_hull(
+        concave_hull_bounding_boxes, np.array(coordinates_fast)
+    )
+    assert in_hull_volume.all()
+    assert any(x == -1 for x in in_hull_perforations_fast)

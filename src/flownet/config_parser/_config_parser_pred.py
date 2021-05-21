@@ -3,8 +3,7 @@ import pathlib
 from typing import Dict, Optional
 
 import yaml
-import configsuite
-from configsuite import types, MetaKeys as MK, ConfigSuite
+from configsuite import transformation_msg, types, MetaKeys as MK, ConfigSuite
 
 from ._merge_configs import merge_configs
 from ._config_transformations import _to_upper
@@ -22,7 +21,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
 
     """
 
-    @configsuite.transformation_msg("Convert input string to absolute path")
+    @transformation_msg("Convert input string to absolute path")
     def _to_abs_path(path: Optional[str]) -> str:
         """
         Helper function for the configsuite. Takes in a path as a string and
