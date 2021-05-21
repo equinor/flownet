@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/configsuite_ext.css" type="text/css" />
 
   
@@ -30,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -171,8 +174,8 @@
   <div class="section" id="module-flownet.config_parser._config_parser_hyperparam">
 <span id="flownet-config-parser-config-parser-hyperparam-module"></span><h1>flownet.config_parser._config_parser_hyperparam module<a class="headerlink" href="#module-flownet.config_parser._config_parser_hyperparam" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="flownet.config_parser._config_parser_hyperparam.create_ahm_config">
-<code class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_hyperparam.</span></code><code class="sig-name descname"><span class="pre">create_ahm_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hyperparameter_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f30db7f53b0&gt;</span><a class="headerlink" href="#flownet.config_parser._config_parser_hyperparam.create_ahm_config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.config_parser._config_parser_hyperparam.create_ahm_config">
+<span class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_hyperparam.</span></span><span class="sig-name descname"><span class="pre">create_ahm_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hyperparameter_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f2d49a5ba70&gt;</span><a class="headerlink" href="#flownet.config_parser._config_parser_hyperparam.create_ahm_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a flownet ahm config file from a hyperparameter config file and
 the known drawn values for the hyperparameters.</p>
 <dl class="field-list simple">
@@ -194,8 +197,8 @@ run in flownet ahm.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.config_parser._config_parser_hyperparam.create_hyperopt_space">
-<code class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_hyperparam.</span></code><code class="sig-name descname"><span class="pre">create_hyperopt_space</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">hyperopt.pyll.base.Apply</span><a class="headerlink" href="#flownet.config_parser._config_parser_hyperparam.create_hyperopt_space" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.config_parser._config_parser_hyperparam.create_hyperopt_space">
+<span class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_hyperparam.</span></span><span class="sig-name descname"><span class="pre">create_hyperopt_space</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">hyperopt.pyll.base.Apply</span><a class="headerlink" href="#flownet.config_parser._config_parser_hyperparam.create_hyperopt_space" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to create a hyperopt search space for a single hyperparameter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -215,8 +218,8 @@ run in flownet ahm.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.config_parser._config_parser_hyperparam.list_hyperparameters">
-<code class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_hyperparam.</span></code><code class="sig-name descname"><span class="pre">list_hyperparameters</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hyperparameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#flownet.config_parser._config_parser_hyperparam.list_hyperparameters" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.config_parser._config_parser_hyperparam.list_hyperparameters">
+<span class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_hyperparam.</span></span><span class="sig-name descname"><span class="pre">list_hyperparameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hyperparameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#flownet.config_parser._config_parser_hyperparam.list_hyperparameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>List all hyperparameters defined in a yaml configuration file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -234,8 +237,8 @@ recursive calling of the function.)</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.config_parser._config_parser_hyperparam.list_hyperparameters_names">
-<code class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_hyperparam.</span></code><code class="sig-name descname"><span class="pre">list_hyperparameters_names</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hyperparameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.config_parser._config_parser_hyperparam.list_hyperparameters_names" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.config_parser._config_parser_hyperparam.list_hyperparameters_names">
+<span class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_hyperparam.</span></span><span class="sig-name descname"><span class="pre">list_hyperparameters_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hyperparameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.config_parser._config_parser_hyperparam.list_hyperparameters_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>List all hyperparameter names defined in a yaml configuration file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -253,8 +256,8 @@ recursive calling of the function.)</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.config_parser._config_parser_hyperparam.parse_hyperparam_config">
-<code class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_hyperparam.</span></code><code class="sig-name descname"><span class="pre">parse_hyperparam_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#flownet.config_parser._config_parser_hyperparam.parse_hyperparam_config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.config_parser._config_parser_hyperparam.parse_hyperparam_config">
+<span class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_hyperparam.</span></span><span class="sig-name descname"><span class="pre">parse_hyperparam_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#flownet.config_parser._config_parser_hyperparam.parse_hyperparam_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse a flownet configuration file for hyperparameter tuning. This function
 will not parse the entire file and check for errors. It will merely extract
 the hyperparameters.</p>
@@ -269,8 +272,8 @@ the hyperparameters.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="flownet.config_parser._config_parser_hyperparam.update_hyper_config">
-<code class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_hyperparam.</span></code><code class="sig-name descname"><span class="pre">update_hyper_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hyper_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hyperparameter_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.config_parser._config_parser_hyperparam.update_hyper_config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.config_parser._config_parser_hyperparam.update_hyper_config">
+<span class="sig-prename descclassname"><span class="pre">flownet.config_parser._config_parser_hyperparam.</span></span><span class="sig-name descname"><span class="pre">update_hyper_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hyper_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hyperparameter_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.config_parser._config_parser_hyperparam.update_hyper_config" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

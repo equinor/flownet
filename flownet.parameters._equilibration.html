@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/configsuite_ext.css" type="text/css" />
 
   
@@ -30,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -171,8 +174,8 @@
   <div class="section" id="module-flownet.parameters._equilibration">
 <span id="flownet-parameters-equilibration-module"></span><h1>flownet.parameters._equilibration module<a class="headerlink" href="#module-flownet.parameters._equilibration" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt id="flownet.parameters._equilibration.Equilibration">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">flownet.parameters._equilibration.</span></code><code class="sig-name descname"><span class="pre">Equilibration</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distribution_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="flownet.network_model._network_model.html#flownet.network_model._network_model.NetworkModel" title="flownet.network_model._network_model.NetworkModel"><span class="pre">flownet.network_model._network_model.NetworkModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ti2ci</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eqlnum</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datum_depth</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rsvd</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._equilibration.Equilibration" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.parameters._equilibration.Equilibration">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">flownet.parameters._equilibration.</span></span><span class="sig-name descname"><span class="pre">Equilibration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distribution_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="flownet.network_model._network_model.html#flownet.network_model._network_model.NetworkModel" title="flownet.network_model._network_model.NetworkModel"><span class="pre">flownet.network_model._network_model.NetworkModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ti2ci</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eqlnum</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datum_depth</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rsvd</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._equilibration.Equilibration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.parameters._base_parameter.Parameter</span></code></a></p>
 <p>Parameter type which takes care of stochastically drawn Equilibration parameters.</p>
 <dl>
@@ -201,13 +204,13 @@ rsvd: Pandas dataframe with a single rsvd table.</p>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="flownet.parameters._equilibration.Equilibration._abc_impl">
-<code class="sig-name descname"><span class="pre">_abc_impl</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;_abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#flownet.parameters._equilibration.Equilibration._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.parameters._equilibration.Equilibration._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;_abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#flownet.parameters._equilibration.Equilibration._abc_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="flownet.parameters._equilibration.Equilibration.get_dims">
-<code class="sig-name descname"><span class="pre">get_dims</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.parameters._equilibration.Equilibration.get_dims" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.parameters._equilibration.Equilibration.get_dims">
+<span class="sig-name descname"><span class="pre">get_dims</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.parameters._equilibration.Equilibration.get_dims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to export the table dimensions used for memory allocation in Flow.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -217,8 +220,8 @@ rsvd: Pandas dataframe with a single rsvd table.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="flownet.parameters._equilibration.Equilibration.render_output">
-<code class="sig-name descname"><span class="pre">render_output</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.parameters._equilibration.Equilibration.render_output" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="flownet.parameters._equilibration.Equilibration.render_output">
+<span class="sig-name descname"><span class="pre">render_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#flownet.parameters._equilibration.Equilibration.render_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates EQUIL and EQLNUM include content - which are given to the PROPS and GRID section.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
