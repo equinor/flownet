@@ -135,7 +135,7 @@ class PorvPoroTrans(Parameter):
                 parameter_probability_distribution_class(row, param)
                 for param in ci2ri.columns
                 for _, row in regional_distribution_values.loc[
-                    regional_distribution_values.index.repeat(ci2ri.max())
+                    regional_distribution_values.index.repeat(ci2ri[param].max())
                 ]
                 .reset_index(drop=True)
                 .iterrows()
