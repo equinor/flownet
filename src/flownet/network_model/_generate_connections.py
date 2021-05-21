@@ -8,7 +8,7 @@ from numpy.core.function_base import linspace
 import pandas as pd
 from scipy.spatial import Delaunay, distance  # pylint: disable=no-name-in-module
 
-from ._mitchell import mitchell_best_candidate_modified_3d
+from ._mitchell import mitchell_best_candidate
 from ._hull import check_in_hull
 from ..utils.types import Coordinate
 
@@ -162,6 +162,7 @@ def _generate_connections(
     """
     # pylint: disable=too-many-locals
     # There are currently 28 local variables
+    # pylint: disable=too-many-branches
 
     start = time.time()
     well_perforations: List[Coordinate] = df_coordinates[
@@ -173,7 +174,7 @@ def _generate_connections(
     # other existing well (including already added flow nodes)
     coordinates: List[Coordinate] = [
         tuple(elem)
-        for elem in mitchell_best_candidate_modified_3d(
+        for elem in mitchell_best_candidate(
             well_perforations,
             num_added_flow_nodes=additional_flow_nodes,
             num_candidates=configuration.flownet.additional_node_candidates,
@@ -181,6 +182,7 @@ def _generate_connections(
             place_nodes_in_volume_reservoir=configuration.flownet.place_nodes_in_volume_reservoir,
             concave_hull_bounding_boxes=concave_hull_bounding_boxes,
             random_seed=configuration.flownet.random_seed,
+            mitchell_mode=configuration.flownet.mitchells_algorithm,
         )
     ]
 

@@ -229,12 +229,8 @@ class LogUniformDistribution(ProbabilityDistribution):
             )
         elif mode is not None or stddev is not None:
             raise ValueError(
-                "It is currently not possible to update the uniform distribution "
+                "It is currently not possible to update the loguniform distribution "
                 "using the standard deviation or the mode"
-            )
-        elif stddev is not None:
-            raise ValueError(
-                "It is currently not possible to update the triangular distribution using the standard deviation"
             )
         else:
             raise ValueError(
