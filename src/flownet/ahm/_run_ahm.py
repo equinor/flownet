@@ -4,6 +4,7 @@ import json
 import pathlib
 from operator import add
 import warnings
+import pickle
 
 import numpy as np
 import pandas as pd
@@ -26,6 +27,45 @@ from ..parameters import (
     Parameter,
 )
 from ..data import FlowData
+
+
+def _set_up_ahm_and_run_ert(
+    network: NetworkModel,
+    schedule: Schedule,
+    parameters: List[Parameter],
+    config: ConfigSuite.snapshot,
+    args: argparse.Namespace,
+):
+    """
+    This function creates the AssistedHistoryMatching class,
+    creates the ERT setup, and runs ERT.
+
+    Args:
+        network: NetworkModel instance
+        schedule: Schedule instance
+        parameters: List of Parameter objects
+        config: Information from the FlowNet config YAML
+        args: Argparse parsed command line arguments.
+
+    Returns:
+        Nothing
+    """
+
+    ahm = AssistedHistoryMatching(
+        network,
+        schedule,
+        parameters,
+        config,
+    )
+
+    ahm.create_ert_setup(
+        args=args,
+        training_set_fraction=_find_training_set_fraction(schedule, config),
+    )
+
+    ahm.report()
+
+    ahm.run_ert(weights=config.ert.ensemble_weights)
 
 
 def _from_regions_to_flow_tubes(
@@ -366,6 +406,35 @@ def update_distribution(
     return parameters
 
 
+def run_flownet_history_matching_from_restart(
+    config: ConfigSuite.snapshot, args: argparse.Namespace
+):
+    """
+    Creates and runs an ERT setup, based on a previously performed
+    ERT run, given user configuration.
+
+    Args:
+        config: Configsuite parsed user provided configuration.
+        args: Argparse parsed command line arguments.
+
+    Returns:
+        Nothing
+
+    """
+    with open(args.restart_folder / "network.pickled", "rb") as fh:
+        network = pickle.load(fh)
+
+    with open(args.restart_folder / "schedule.pickled", "rb") as fh:
+        schedule = pickle.load(fh)
+
+    with open(args.restart_folder / "parameters.pickled", "rb") as fh:
+        parameters = pickle.load(fh)
+
+    parameters = update_distribution(parameters, args.restart_folder)
+
+    _set_up_ahm_and_run_ert(network, schedule, parameters, config, args)
+
+
 # pylint: disable=too-many-branches,too-many-statements
 def run_flownet_history_matching(
     config: ConfigSuite.snapshot, args: argparse.Namespace
@@ -399,10 +468,11 @@ def run_flownet_history_matching(
     field_data = FlowData(
         config.flownet.data_source.simulation.input_case,
         layers=config.flownet.data_source.simulation.layers,
-        perforation_handling_strategy=config.flownet.perforation_handling_strategy,
     )
     df_production_data: pd.DataFrame = field_data.production
-    df_well_connections: pd.DataFrame = field_data.well_connections
+    df_well_connections: pd.DataFrame = field_data.get_well_connections(
+        config.flownet.perforation_handling_strategy
+    )
 
     # Load log data if required
     df_well_logs: Optional[pd.DataFrame] = (
@@ -440,6 +510,22 @@ def run_flownet_history_matching(
         fault_planes=df_fault_planes,
         fault_tolerance=config.flownet.fault_tolerance,
     )
+
+    if config.flownet.prior_volume_distribution == "voronoi_per_tube":
+        volumes_per_cell = (
+            field_data.bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model(
+                network,
+            )
+        )
+    elif config.flownet.prior_volume_distribution == "tube_length":
+        volumes_per_cell = network.bulk_volume_per_flownet_cell_based_on_tube_length()
+    else:
+        raise ValueError(
+            f"'{config.flownet.prior_volume_distribution}' is not a valid prior volume "
+            "distribution method."
+        )
+
+    network.initial_cell_volumes = volumes_per_cell
 
     schedule = Schedule(network, df_production_data, config)
 
@@ -488,7 +574,12 @@ def run_flownet_history_matching(
         )
     elif config.model_parameters.relative_permeability.scheme == "regions_from_sim":
         df_satnum = pd.DataFrame(
-            _from_regions_to_flow_tubes(network, field_data, ti2ci, "SATNUM"),
+            _from_regions_to_flow_tubes(
+                network,
+                field_data,
+                ti2ci,
+                config.model_parameters.relative_permeability.region_parameter_from_sim_model,
+            ),
             columns=["SATNUM"],
         )
     else:
@@ -620,7 +711,12 @@ def run_flownet_history_matching(
         )
     elif config.model_parameters.equil.scheme == "regions_from_sim":
         df_eqlnum = pd.DataFrame(
-            _from_regions_to_flow_tubes(network, field_data, ti2ci, "EQLNUM"),
+            _from_regions_to_flow_tubes(
+                network,
+                field_data,
+                ti2ci,
+                config.model_parameters.equil.region_parameter_from_sim_model,
+            ),
             columns=["EQLNUM"],
         )
     elif config.model_parameters.equil.scheme == "global":
@@ -735,7 +831,10 @@ def run_flownet_history_matching(
 
     parameters = [
         PorvPoroTrans(
-            porv_poro_trans_dist_values, ti2ci, network, config.flownet.min_permeability
+            porv_poro_trans_dist_values,
+            ti2ci,
+            network,
+            config.flownet.min_permeability,
         ),
         RelativePermeability(
             relperm_dist_values,
@@ -773,21 +872,4 @@ def run_flownet_history_matching(
     if isinstance(network.faults, dict):
         parameters.append(FaultTransmissibility(fault_mult_dist_values, network))
 
-    if hasattr(args, "restart_folder") and args.restart_folder is not None:
-        parameters = update_distribution(parameters, args.restart_folder)
-
-    ahm = AssistedHistoryMatching(
-        network,
-        schedule,
-        parameters,
-        config,
-    )
-
-    ahm.create_ert_setup(
-        args=args,
-        training_set_fraction=_find_training_set_fraction(schedule, config),
-    )
-
-    ahm.report()
-
-    ahm.run_ert(weights=config.ert.ensemble_weights)
+    _set_up_ahm_and_run_ert(network, schedule, parameters, config, args)

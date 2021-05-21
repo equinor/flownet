@@ -13,6 +13,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from ecl.summary import EclSum
 
 from flownet.data import FlowData
+from flownet.ert.forward_models.utils import get_last_iteration
 
 
 def filter_dataframe(
@@ -209,8 +210,10 @@ def _load_simulations(runpath: str, ecl_base: str) -> Tuple[str, Optional[EclSum
         eclsum = EclSum(str(pathlib.Path(runpath) / pathlib.Path(ecl_base)))
     except KeyboardInterrupt:
         raise
-    except:  # pylint: disable=bare-except
+    except Exception:  # pylint: disable=broad-except
         eclsum = None
+    except BaseException:  # pylint: disable=broad-except
+        pass
 
     return runpath, eclsum
 
@@ -271,17 +274,21 @@ def compute_metric_ensemble(
 
 
 def make_dataframe_simulation_data(
-    path: str, eclbase_file: str, keys: List[str], end_date: datetime
-) -> Tuple[pd.DataFrame, int, int]:
+    mode: str, path: str, eclbase_file: str, keys: List[str], end_date: datetime
+) -> Tuple[pd.DataFrame, str, int]:
     """
     Internal helper function to generate dataframe containing
     data from ensemble of simulations from selected simulation keys
 
     Args:
+        mode: String with mode in which flownet is run: prediction (pred) or assisted hisotory matching (ahm)
         path: path to folder containing ensemble of simulations
         eclbase_file: name of simulation case file
         keys: list of prefix of quantities of interest to be loaded
         end_date: end date of time period for accuracy analysis
+
+    Raises:
+        ValueError: If mode is invalid (not pred or ahm).
 
     Returns:
         df_sim: Pandas dataframe contained data from ensemble of simulations
@@ -289,10 +296,16 @@ def make_dataframe_simulation_data(
         nb_real: number of realizations
 
     """
-    iteration = sorted(
-        [int(rel_iter.replace("/", "").split("-")[-1]) for rel_iter in glob.glob(path)]
-    )[-1]
-    runpath_list = glob.glob(path[::-1].replace("*", str(iteration)[::-1], 1)[::-1])
+    if mode == "pred":
+        runpath_list = glob.glob(path)
+        iteration = "latest"
+    elif mode == "ahm":
+        (i, runpath_list) = get_last_iteration(path)
+        iteration = str(i)
+    else:
+        raise ValueError(
+            f"{mode} is not a valid mode to run flownet with. Choose ahm or pred."
+        )
 
     partial_load_simulations = functools.partial(
         _load_simulations, ecl_base=eclbase_file
@@ -321,26 +334,11 @@ def make_dataframe_simulation_data(
     return df_sim, iteration, n_realization
 
 
-def save_iteration_analytics():
-    """
-    This function is called as a post-simulation workflow in ERT, saving all
-    accuracy metrics of all iterations to a file and plotting evolution of accuracy
-    metrics over iterations. The resulting accuracy metric values are stored in
-    a CSV file in the FlowNet output folder, along with the figures
-
-    Args:
-        None
-
-    Returns:
-        Nothing
-
-    """
+def parse_arguments():
     parser = argparse.ArgumentParser(prog=("Save iteration analytics to a file."))
+    parser.add_argument("mode", type=str, help="Mode: ahm or pred")
     parser.add_argument(
         "reference_simulation", type=str, help="Path to the reference simulation case"
-    )
-    parser.add_argument(
-        "perforation_strategy", type=str, help="Perforation handling strategy"
     )
     parser.add_argument("runpath", type=str, help="Path to the ERT runpath.")
     parser.add_argument(
@@ -370,24 +368,44 @@ def save_iteration_analytics():
     args = parser.parse_args()
     args.runpath = args.runpath.replace("%d", "*")
 
+    return args
+
+
+def save_iteration_analytics():
+    """
+    This function is called as a post-simulation workflow in ERT, saving all
+    accuracy metrics of all iterations to a file and plotting evolution of accuracy
+    metrics over iterations. The resulting accuracy metric values are stored in
+    a CSV file in the FlowNet output folder, along with the figures
+
+    Args:
+        None
+
+    Returns:
+        Nothing
+
+    """
+    args = parse_arguments()
+
     print("Saving iteration analytics...", end=" ", flush=True)
 
     # Fix list inputs
     metrics = list(args.metrics.replace("[", "").replace("]", "").split(","))
 
+    # Vector keys to analyze
+    vector_keys = list(args.quantity.replace("[", "").replace("]", "").split(","))
+
     # Load ensemble of FlowNet
     (df_sim, iteration, nb_real) = make_dataframe_simulation_data(
+        args.mode,
         args.runpath,
         args.eclbase,
-        list(args.quantity.replace("[", "").replace("]", "").split(",")),
+        vector_keys,
         args.end,
     )
 
     # Load reference simulation (OPM-Flow/Eclipse)
-    field_data = FlowData(
-        args.reference_simulation,
-        perforation_handling_strategy=args.perforation_strategy,
-    )
+    field_data = FlowData(args.reference_simulation)
     df_obs: pd.DataFrame = field_data.production
     df_obs["DATE"] = df_obs["date"]
 
@@ -400,9 +418,6 @@ def save_iteration_analytics():
 
     # Initiate dataframe with metrics
     df_metrics = load_csv_file(args.outfile, ["quantity", "iteration"] + metrics)
-
-    # Vector keys to analyze
-    vector_keys = list(args.quantity.replace("[", "").replace("]", "").split(","))
 
     # Prepare data from reference simulation
     df_obs_filtered = filter_dataframe(

@@ -5,11 +5,38 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
+- [#383](https://github.com/equinor/flownet/pull/383) Added option to either define a prior distribution for KRWMAX directly by using krwmax in the config yaml, or to let KRWMAX be calculated as KRWEND + delta. To do the latter, set krwmax_add_to_krwend to true, and then the prior distribution definition in the config yaml for krwmax will be interpreted as a prior distribution for the delta value to be added to KRWEND to get the KRWMAX.
+- [#386](https://github.com/equinor/flownet/pull/386) Expose FlowNet timeout to user.
+- [#356](https://github.com/equinor/flownet/pull/356) Added option to distribute the original volume over the FlowNet tubes in a Voronoi-diagram style. I.e., areas with a high density of FlowNet tubes get a lower volume per tube.
+- [#379](https://github.com/equinor/flownet/pull/379) Added option to let SWCR be calculated as SWL + delta, instead of providing the prior distribution for SWCR directly. To do this, set swcr_add_to_swl to true, and then the prior distribution definition in the config yaml for swcr will be interpreted as a prior distribution for the delta value to be added to SWL to get the SWCR.
+- [#372](https://github.com/equinor/flownet/pull/372) Added option to let the additional flownodes initially be placed within the original volume rather than within the convex hull of the real wells. To do this set place_nodes_in_volume_reservoir to true.
+
+### Fixes
+- [#403](https://github.com/equinor/flownet/pull/403) Fixes bug in generation of THPRES keyword for OPM Flow
+- [#391](https://github.com/equinor/flownet/pull/391) Fixes bug in generation of yaml files for visualization in Webviz.
+- [#372](https://github.com/equinor/flownet/pull/372) Fixes bug of hull_factor not actually being used for placing additional nodes outside the perforations.
+- [#374](https://github.com/equinor/flownet/pull/374) Fix for memory leak in result plotting script.
+
+### Changes
+- [#401](https://github.com/equinor/flownet/pull/401) When distributing volume from a simulation model to a FlowNet, the voronoi_per_tube distribution method now distributes first to tube cells, sums these values, and then redistributes the summed tube volume equally over the tube cells.
+- [#396](https://github.com/equinor/flownet/pull/396) When using scheme regions_from_sim for equilibrium regions, the user can supply which region to base the generation of FlowNet model's EQLNUM parameter on. The default region is EQLNUM, but other region parameters (such as FIPNUM or SATNUM) can be used by setting region_parameter_from_sim_model for equil in the config yaml file.
+- [#392](https://github.com/equinor/flownet/pull/392) When using scheme regions_from_sim for relative permeability, the user can supply which region to base the generation of FlowNet model's SATNUM parameter on. The default region is SATNUM, but other region parameters (such as FIPNUM or EQLNUM) can be used by setting region_parameter_from_sim_model for relative permeability in the config yaml file to e.g. EQLNUM.
+- [#383](https://github.com/equinor/flownet/pull/383) KRWMAX now defaulted to 1, but exposed to used. Previously it was hard coded to 1.
+- [#386](https://github.com/equinor/flownet/pull/386) Increase default timeout from 900 s to 3600 s.
+- [#363](https://github.com/equinor/flownet/pull/363) Drop Python 3.6 support.
+- [#361](https://github.com/equinor/flownet/pull/361) Adding numpy code for SWOF/SGOF table generation, instead of using pyscal, to improve computational efficiency when running many realizations with many SATNUM regions. Keeping pyscal in the tests for comparison. 
+
+## [0.5.2] - 2021-03-19
+
+### Added
+- [#365](https://github.com/equinor/flownet/pull/365) Analytics workflow now also available for prediction mode.
 - [#351](https://github.com/equinor/flownet/pull/351) Added simple plotting tool that allows for plotting of FlowNet ensembles and observations.
 
 ### Fixes
+- [#365](https://github.com/equinor/flownet/pull/365) Fixes bug where the parquet parameters file would not be saved for iterations larger than 9. 
 
 ### Changes
+- [#365](https://github.com/equinor/flownet/pull/365) Structure change of the code. Moved all forward models called from ERT to a seperate folder ert/forward_models. Scripts moved: delete_simulation_output, save_iteration_parameters, iteration_analytics, render_realization and flow_job. 
 - [#347](https://github.com/equinor/flownet/pull/347) Additional flow nodes is now allowed to be either a list (equal length of number of layers) or a single integer (which will be split over the layers according to volume of concave hull).
 
 ## [0.5.1] - 2021-03-03

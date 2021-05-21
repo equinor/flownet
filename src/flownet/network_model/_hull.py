@@ -2,13 +2,17 @@ import numpy as np
 
 
 def check_in_hull(
-    concave_hull_bounding_boxes: np.ndarray, coordinates: np.ndarray
+    concave_hull_bounding_boxes: np.ndarray,
+    coordinates: np.ndarray,
+    in_hull_known: np.ndarray = None,
 ) -> np.ndarray:
     """Checks if all coordinates are inside the concave hull bounding boxes.
 
     Args:
-        concave_hull_bounding_boxes (np.ndarray): Bounding boxes for the concave hull
-        connections (np.ndarray): All coordianates to check
+        concave_hull_bounding_boxes: Bounding boxes for the concave hull
+        connections: All coordianates to check
+        in_hull_known: List of booleans indicating whether to skip a coordinate
+            if it is already known to be inside the hull.
 
     Returns:
         np.ndarray with bools
@@ -21,7 +25,10 @@ def check_in_hull(
     zmin_grid_cells = concave_hull_bounding_boxes[:, 4]
     zmax_grid_cells = concave_hull_bounding_boxes[:, 5]
 
-    in_hull = np.asarray([False] * coordinates.shape[0])
+    if in_hull_known is not None:
+        in_hull = in_hull_known
+    else:
+        in_hull = np.asarray([False] * coordinates.shape[0])
 
     for c_index, coordinate in enumerate(coordinates):
         if not in_hull[c_index]:

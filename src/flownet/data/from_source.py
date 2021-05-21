@@ -16,11 +16,10 @@ class FromSource(ABC):
             "The production property is required to be implemented in a FromSource class."
         )
 
-    @property
     @abstractmethod
-    def well_connections(self) -> pd.DataFrame:
+    def get_well_connections(self, perforation_handling_strategy: str) -> pd.DataFrame:
         raise NotImplementedError(
-            "The  well_connections property is required to be implemented in a FromSource class."
+            "The  get_well_connections method is required to be implemented in a FromSource class."
         )
 
     @property

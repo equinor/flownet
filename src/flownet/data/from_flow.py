@@ -5,6 +5,7 @@ from typing import Union, List, Tuple
 
 import numpy as np
 import pandas as pd
+from scipy.spatial import KDTree
 from ecl.grid import EclGrid
 from ecl.eclfile import EclFile, EclInitFile
 from ecl.summary import EclSum
@@ -13,6 +14,7 @@ from ecl2df.eclfiles import EclFiles
 
 from ..data import perforation_strategy
 from .from_source import FromSource
+from ..network_model import NetworkModel
 
 
 class FlowData(FromSource):
@@ -22,8 +24,6 @@ class FlowData(FromSource):
     Args:
          input_case: Full path to eclipse case to load data from
          layers: List with definition of isolated layers, if present.
-         perforation_handling_strategy: How to deal with perforations per well.
-                                                 ('bottom_point', 'top_point', 'multiple')
 
     """
 
@@ -31,7 +31,6 @@ class FlowData(FromSource):
         self,
         input_case: Union[Path, str],
         layers: Tuple = (),
-        perforation_handling_strategy: str = "bottom_point",
     ):
         super().__init__()
 
@@ -44,14 +43,17 @@ class FlowData(FromSource):
         self._wells = compdat.df(EclFiles(str(self._input_case)))
         self._layers = layers
 
-        self._perforation_handling_strategy: str = perforation_handling_strategy
-
     # pylint: disable=too-many-branches
-    def _well_connections(self) -> pd.DataFrame:
+    def _well_connections(self, perforation_handling_strategy: str) -> pd.DataFrame:
         """
         Function to extract well connection coordinates from a Flow simulation including their
         opening and closure time. The output of this function will be filtered based on the
         configured perforation strategy.
+
+        Args:
+            perforation_handling_strategy: Strategy to be used when creating perforations.
+            Valid options are bottom_point, top_point, multiple, time_avg_open_location and
+            multiple_based_on_workovers.
 
         Returns:
             columns: WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID
@@ -100,11 +102,11 @@ class FlowData(FromSource):
 
         try:
             perforation_strategy_method = getattr(
-                perforation_strategy, self._perforation_handling_strategy
+                perforation_strategy, perforation_handling_strategy
             )
         except AttributeError as attribute_error:
             raise NotImplementedError(
-                f"The perforation handling strategy {self._perforation_handling_strategy} is unknown."
+                f"The perforation handling strategy {perforation_handling_strategy} is unknown."
             ) from attribute_error
 
         return perforation_strategy_method(df).sort_values(["DATE"])
@@ -362,6 +364,88 @@ class FlowData(FromSource):
         """array with unique 'name' regions"""
         return np.unique(self._init[name][0])
 
+    def get_well_connections(self, perforation_handling_strategy: str) -> pd.DataFrame:
+        """
+        Function to get dataframe with all well connection coordinates,
+        filtered based on the perforation_handling_strategy.
+
+        Args:
+            perforation_handling_strategy: Strategy to be used when creating perforations.
+            Valid options are bottom_point, top_point, multiple,
+            time_avg_open_location and multiple_based_on_workovers.
+
+        Returns:
+            Dataframe with all well connection coordinates,
+            filtered based on the perforation_handling_strategy.
+            Columns: WELL_NAME, X, Y, Z, DATE, OPEN, LAYER_ID
+        """
+
+        return self._well_connections(
+            perforation_handling_strategy=perforation_handling_strategy
+        )
+
+    def bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model(
+        self, network: NetworkModel
+    ) -> np.ndarray:
+        """Generate bulk volume distribution per grid cell in the FlowNet model based on the geometrical
+        distribution of the volume in the original (full field) simulation model. I.e., the original model's
+        volume will be distributed over the FlowNet's tubes by assigning original model grid cell
+        volumes to the nearest FlowNet tube cell midpoint. Finally, the volume distributed to all cells in a tube
+        will be summed and evenly redistributed over the tube.
+
+        Args:
+            network: FlowNet network instance.
+
+        Returns:
+            An array with volumes per flownetcell.
+
+        """
+        flownet_cell_midpoints = np.array(network.cell_midpoints).T
+        model_cell_mid_points = np.array(
+            [cell.coordinate for cell in self._grid.cells(active=True)]
+        )
+        model_cell_volume = [
+            (cell.volume * self._init.iget_named_kw("NTG", 0)[cell.active_index])
+            for cell in self._grid.cells(active=True)
+        ]
+
+        # Determine nearest flow tube cell for each cell in the original model
+        tree = KDTree(flownet_cell_midpoints)
+        _, matched_indices = tree.query(model_cell_mid_points, k=[1])
+
+        # Distribute the original model's volume per cell to flownet tubes cells that are nearest.
+        tube_cell_volumes = np.zeros(len(flownet_cell_midpoints))
+
+        for cell_i, tube_cell_id in enumerate(matched_indices):
+            tube_cell_volumes[tube_cell_id[0]] += model_cell_volume[cell_i]
+
+        # Get a mapping from tube cells to tubes
+        properties_per_cell = pd.DataFrame(
+            pd.DataFrame(data=network.grid.index, index=network.grid.model).index
+        )
+
+        # Sum all tube cell volumes in a tube
+        properties_per_cell["distributed_volume"] = tube_cell_volumes
+        tube_volumes = properties_per_cell.groupby(by="model").sum().values
+
+        # Get the active cells per tube
+        active_cells_per_tube = (
+            properties_per_cell.reset_index().groupby(["model"]).size() - 1
+        )
+
+        # Distribute tube volume over the active cells of the flownet.
+        # The last cell of each each tube is inactive and thefore gets 0 volume assigned.
+        # Evenly distribute the volume over cells of the tube
+        cell_volumes = np.zeros(len(properties_per_cell["model"].values))
+        for i, tube in enumerate(properties_per_cell["model"].values[:-1]):
+            if (
+                properties_per_cell["model"].values[i]
+                == properties_per_cell["model"].values[i + 1]
+            ):
+                cell_volumes[i] = tube_volumes[tube] / active_cells_per_tube[tube]
+
+        return cell_volumes
+
     @property
     def faults(self) -> pd.DataFrame:
         """dataframe with all fault data"""
@@ -371,11 +455,6 @@ class FlowData(FromSource):
     def production(self) -> pd.DataFrame:
         """dataframe with all production data"""
         return self._production_data()
-
-    @property
-    def well_connections(self) -> pd.DataFrame:
-        """dataframe with all well connection coordinates"""
-        return self._well_connections()
 
     @property
     def well_logs(self) -> pd.DataFrame:

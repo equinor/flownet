@@ -5,7 +5,7 @@ import pathlib
 import subprocess
 
 from .config_parser import parse_config, parse_pred_config, parse_hyperparam_config
-from .ahm import run_flownet_history_matching
+from .ahm import run_flownet_history_matching, run_flownet_history_matching_from_restart
 from .prediction import run_flownet_prediction
 from .hyperparameter import run_flownet_hyperparameter
 
@@ -66,7 +66,28 @@ def flownet_ahm(args: argparse.Namespace) -> None:
             )
 
     config = parse_config(args.config, args.update_config)
-    run_flownet_history_matching(config, args)
+    if hasattr(args, "restart_folder") and args.restart_folder is not None:
+        if args.restart_folder.exists():
+            # check for pickled files and zipped file
+            if (
+                pathlib.Path(args.restart_folder / "network.pickled").is_file()
+                and pathlib.Path(args.restart_folder / "schedule.pickled").is_file()
+                and pathlib.Path(args.restart_folder / "parameters.pickled").is_file()
+                and pathlib.Path(
+                    args.restart_folder / "parameters_iteration-latest.parquet.gzip"
+                ).is_file()
+            ):
+                run_flownet_history_matching_from_restart(config, args)
+            else:
+                raise ValueError(
+                    f"Case in {args.restart_folder} is not complete! The following files "
+                    "are needed: network.pickled, schedule.pickled, parameters.pickled "
+                    "and parameters_iteration-latest.parquet.gzip."
+                )
+        else:
+            raise ValueError(f"{args.restart_folder} does not exist!")
+    else:
+        run_flownet_history_matching(config, args)
 
     if not args.skip_postprocessing:
         create_webviz(args.output_folder, start_webviz=args.start_webviz)
