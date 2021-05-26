@@ -109,30 +109,30 @@ should be defined, and it will be used for all flow tubes. The permeability valu
 different flow tubes are drawn independently.
 
 
-+------------------------------------------------------+----------------------------------+--------------------------------------------------------+
-| Available options in config yaml                     | Example of usage                 | Example of usage                                       |
-+------------------------------------------------------+----------------------------------+--------------------------------------------------------+
-| .. code-block:: yaml                                 | .. code-block:: yaml             | .. code-block:: yaml                                   |
-|                                                      |                                  |                                                        |
-|    flownet:                                          |    flownet:                      |    flownet:                                            |
-|      model_parameters:                               |      model_parameters:           |      model_parameters:                                 |
-|        permeability:                                 |        permeability:             |        permeability:                                   |
-|          min:                                        |          min: 10                 |          min: 10                                       |
-|          max:                                        |          max: 1000               |          mean: 100                                     |
-|          base:                                       |          distribution: logunif   |          distribution: uniform                         |
-|          mean:                                       |                                  |        permeability_regional_scheme: regions_from_sim  |
-|          stddev:                                     |                                  |        permeability_regional:                          |                                  | 
-|          distribution:                               |                                  |          min: 0.5                                      |                                  |
-|        permeability_regional_scheme:                 |                                  |          max: 1.5                                      |
-|        permeability_regional:                        |                                  |        permeability_parameter_from_sim_model: FIPNUM   |
-|          min:                                        |                                  |                                                        |
-|          max:                                        |                                  |                                                        |
-|          base:                                       |                                  |                                                        |
-|          mean:                                       |                                  |                                                        |
-|          stddev:                                     |                                  |                                                        |
-|          distribution:                               |                                  |                                                        |
-|        permeability_parameter_from_sim_model:        |                                  |                                                        |
-+------------------------------------------------------+----------------------------------+----------------------------------+---------------------+
++------------------------------------------------------+----------------------------------+------------------------------------------------------+
+| Available options in config yaml                     | Example of usage                 | Example of usage                                     |
++------------------------------------------------------+----------------------------------+------------------------------------------------------+
+| .. code-block:: yaml                                 | .. code-block:: yaml             | .. code-block:: yaml                                 |
+|                                                      |                                  |                                                      |
+|    flownet:                                          |    flownet:                      |    flownet:                                          |
+|      model_parameters:                               |      model_parameters:           |      model_parameters:                               |
+|        permeability:                                 |        permeability:             |        permeability:                                 |
+|          min:                                        |          min: 10                 |          min: 10                                     |
+|          max:                                        |          max: 1000               |          mean: 100                                   |
+|          base:                                       |          distribution: logunif   |          distribution: uniform                       |
+|          mean:                                       |                                  |        permeability_regional_scheme: regions_from_sim|
+|          stddev:                                     |                                  |        permeability_regional:                        |                                  | 
+|          distribution:                               |                                  |          min: 0.5                                    |                                  |
+|        permeability_regional_scheme:                 |                                  |          max: 1.5                                    |
+|        permeability_regional:                        |                                  |        permeability_parameter_from_sim_model: FIPNUM |
+|          min:                                        |                                  |                                                      |
+|          max:                                        |                                  |                                                      |
+|          base:                                       |                                  |                                                      |
+|          mean:                                       |                                  |                                                      |
+|          stddev:                                     |                                  |                                                      |
+|          distribution:                               |                                  |                                                      |
+|        permeability_parameter_from_sim_model:        |                                  |                                                      |
++------------------------------------------------------+----------------------------------+------------------------------------------------------+
 
 
 Porosity
@@ -171,16 +171,18 @@ different flow tubes are drawn independently.
 Bulk volume multiplier
 ----------------------
 
-Each flow tube can be thought to represent the bulk volume in the region between the 
-two nodes it connects. There could be several reasons why the bulk volume in a flow tube 
-should be adjusted up or down, hence there is a need to be able to tune the bulk volume
-for efficient history matching.
+FlowNet has two options in the config yaml deciding how the bulk volume should be
+distributed initially. These options are:
 
-FlowNet also has an options in the config yaml deciding how the bulk volume should be
-distributed initially. The two options are:
+* **tube_length**: Here the bulk volume covered by the convex hull of the FlowNet will be divided equally to all active cells
+* **voronoi_per_tube**: This is based on an input simulation model. The bulk volume of each cell in the input simulation model 
+  will be assigned to the nearest cell in any flow tube in the FlowNet model. When all the bulk volume in the input simulation 
+  model have been assigned to cells in the FlowNet model, the total bulk volume assigned to each flow tube in the FlowNet model 
+  is distributed evenly to all cells in that flow tube.
 
-* tube_length: Here the bulk volume covered by the convex hull of the FlowNet will be divided equally to all active cells
-* voronoi_per_tube: This is based on an input simulation model. The bulk volume of each cell in the input simulation model will be assigned to the nearest cell in any flow tube in the FlowNet model. After all cells have been assigned, the bulk volume assigned to each flow tube in the FlowNet model is found, and distributed evenly to all cells in that flow tube.
+Each flow tube can be thought to represent the bulk volume in the region between the two nodes it connects. 
+There could be several reasons why the bulk volume in a flow tube should be adjusted up or down, hence there 
+is a need to be able to tune the bulk volume for efficient history matching.
 
 This multiplier will act on top of that initial distribution of 
 bulk volume.
@@ -189,6 +191,8 @@ This part of the config file defines the prior probability distribution
 for a bulk volume multiplier. Only one distribution
 should be defined, and it will be used for all flow tubes. The values for
 different flow tubes are drawn independently.
+
+
 
 +----------------------------------+----------------------------------+----------------------------------------+
 | Available options in config yaml | Example of usage                 | Example of usage                       |
