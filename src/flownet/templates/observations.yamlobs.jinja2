@@ -51,6 +51,23 @@ smry:
         {%- endif -%}      
    {%- endfor %}
    {%- endif -%}
+   {%- if (error_config.WSPR.rel_error is not none) and (error_config.WSPR.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="salt_rate", dates=dates[num_beginning_date:num_end_date]) -%}
+   {% if loop.first and not loop.last: %}
+ - key: WSPR:{{ well_name }}
+   observations:
+   {%- endif %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.salt_rate }}
+      error: {{ [error_config.WSPR.rel_error * kw.salt_rate, error_config.WSPR.min_error] | max }}
+      comment:
+        {%- if (kw.date > last_training_date) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}      
+   {%- endfor %}
+   {%- endif -%}
    {%- if (error_config.WOPT.rel_error is not none) and (error_config.WOPT.min_error is not none) -%}
    {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="oil_total", dates=dates[num_beginning_date:num_end_date]) -%}
    {% if loop.first and not loop.last: %}

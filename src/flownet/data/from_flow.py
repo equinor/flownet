@@ -169,6 +169,8 @@ class FlowData(FromSource):
                 - WTHP          Well Tubing Head Pressure
                 - WGIR          Well Gas Injection Rate
                 - WWIR          Well Water Injection Rate
+                - WSPR          Well Salt Production Rate
+                - WSIR          Well Salt Injection Rate
                 - WSTAT         Well status (OPEN, SHUT, STOP)
                 - TYPE          Well Type: "OP", "GP", "WI", "GI"
                 - PHASE         Main producing/injecting phase fluid: "OIL", "GAS", "WATER"
@@ -191,6 +193,8 @@ class FlowData(FromSource):
             "WWIR",
             "WGIT",
             "WWIT",
+            "WSPR",
+            "WSIR",
             "WSTAT",
         ]
 

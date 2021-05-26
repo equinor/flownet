@@ -107,6 +107,7 @@ class WCONHIST(Keyword):
         oil_rate: float = np.nan,
         water_rate: float = np.nan,
         gas_rate: float = np.nan,
+        salt_rate: float = np.nan,
         oil_total: float = np.nan,
         water_total: float = np.nan,
         gas_total: float = np.nan,
@@ -123,6 +124,7 @@ class WCONHIST(Keyword):
         self.oil_rate: float = oil_rate
         self.water_rate: float = water_rate
         self.gas_rate: float = gas_rate
+        self.salt_rate: float = salt_rate
         self.oil_total: float = oil_total
         self.water_total: float = water_total
         self.gas_total: float = gas_total
@@ -215,3 +217,25 @@ class WELSPECS(Keyword):
         self.pvt_table: str = pvt_table
         self.density_calc: str = density_calc
         self.fip: str = fip
+
+
+class WSALT(Keyword):
+    """
+    The WSALT keyword defines the salt concentration of the injected water.
+
+    See the OPM Flow manual for further details.
+
+    """
+
+    # pylint: disable=too-many-instance-attributes,too-many-arguments
+
+    def __init__(
+        self,
+        date: datetime.date,
+        well_name: str,
+        salt_concentration: float = np.nan,
+    ):
+        super().__init__(date)
+        self.name = "WSALT"
+        self.well_name: str = well_name
+        self.salt_concentration: float = salt_concentration
