@@ -5,8 +5,7 @@ from typing import Dict, Optional, List
 
 import numpy as np
 import yaml
-import configsuite
-from configsuite import types, MetaKeys as MK, ConfigSuite
+from configsuite import transformation_msg, types, MetaKeys as MK, ConfigSuite
 import pandas as pd
 
 from ._merge_configs import merge_configs
@@ -38,7 +37,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
 
     """
 
-    @configsuite.transformation_msg("Convert input string to absolute path")
+    @transformation_msg("Convert input string to absolute path")
     def _to_abs_path(path: Optional[str]) -> str:
         """
         Helper function for the configsuite. Takes in a path as a string and
@@ -394,6 +393,17 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         MK.AllowNone: True,
                         MK.Description: "Adding this makes sure two FlowNet "
                         "runs create the exact same output",
+                    },
+                    "mitchells_algorithm": {
+                        MK.Type: types.String,
+                        MK.Default: "normal",
+                        MK.Transformation: _to_lower,
+                        MK.Description: "Choose which mitchell's best candidate algorithm to run for the placement "
+                        "of additional nodes. Options: normal or fast. The normal algorithm will place the nodes more "
+                        "evenly acros the volume, but takes long. "
+                        "The fast option is faster, but results in a less even spread of the nodes. "
+                        "This can be improved by increasing the number of additional "
+                        "node candidates.",
                     },
                     "perforation_handling_strategy": {
                         MK.Type: types.String,
@@ -1812,7 +1822,7 @@ def parse_config(
         )
     if (
         layers
-        and not len(layers) is len(config.flownet.additional_flow_nodes)
+        and not len(layers) == len(config.flownet.additional_flow_nodes)
         and len(config.flownet.additional_flow_nodes) != 1
     ):
         raise ValueError(
@@ -1835,6 +1845,13 @@ def parse_config(
         raise ValueError(
             "concave_hull needs to be true for flownet to be able to "
             "place candidates within the reservoir volume."
+        )
+
+    if (config.flownet.mitchells_algorithm != "normal") and (
+        config.flownet.mitchells_algorithm != "fast"
+    ):
+        raise ValueError(
+            f"'{config.flownet.mitchells_algorithm}' is not a valid mitchells_algorithm."
         )
 
     prod_control_modes = {"ORAT", "GRAT", "WRAT", "LRAT", "RESV", "BHP"}
@@ -2003,7 +2020,7 @@ def parse_config(
             "quantity ({config.ert.analysis.metric})."
         )
 
-    if len(config.flownet.hyperopt.loss.keys) is not len(
+    if len(config.flownet.hyperopt.loss.keys) != len(
         config.flownet.hyperopt.loss.factors
     ):
         raise ValueError(
