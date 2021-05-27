@@ -188,7 +188,6 @@ class PorvPoroTrans(Parameter):
         )
 
         # Calculate updated base permeability (and NNC transmissibility)
-
         perm_per_tube = pd.DataFrame(
             self.random_samples[2 * self._number_tubes : 3 * self._number_tubes],
             index=self._ti2ci.index.unique(),
