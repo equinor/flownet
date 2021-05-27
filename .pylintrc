@@ -354,6 +354,7 @@ good-names=i,
 
 # Maximum number of characters on a single line.
 max-line-length=120
+
 # Include a hint for the correct naming format with invalid-name.
 include-naming-hint=no
 
@@ -587,4 +588,3 @@ min-public-methods=2
 # "BaseException, Exception".
 overgeneral-exceptions=BaseException,
                        Exception
-
