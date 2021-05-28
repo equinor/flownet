@@ -1,4 +1,0 @@
-name: SomeBadConfigurationFile
-
-flownet:
-  cell_length: 100

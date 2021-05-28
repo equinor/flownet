@@ -935,6 +935,66 @@
 <p>Convert string to lower case</p>
 <div class="cs_children" id="cs_default_title_children">
 <p>:type: string</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_the_individual__container">
+<div class="cs_header">
+<h3>permeability_regional_scheme</h3><br></div><br><div class="cs_content" id="cs_the_individual__content">
+<p>The individual flow tubes will always have an individual permeability prior distribution attached (specified as permeability in the config file). Setting this option to ‘individual’ makes the individual uncertainty for each flow tube the only permeability uncertainty. Using the ‘global’ option will add one additional multiplier for the entire FlowNet model, and ‘regions_from_sim’ will add one multiplier for each of the regions present in a region parameter from an input simulation model (parameter name specified in ‘permeability_parameter_from_sim_model’).</p>
+<p>Convert string to lower case</p>
+<div class="cs_children" id="cs_the_individual__children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_the_name_of_the_container">
+<div class="cs_header">
+<h3>permeability_parameter_from_sim_model</h3><br></div><br><div class="cs_content" id="cs_the_name_of_the_content">
+<p>The name of the region parameter in the simulation model to base a regional permeability multiplier on.</p>
+<div class="cs_children" id="cs_the_name_of_the_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_description_of__container">
+<div class="cs_header">
+<h3>permeability_regional</h3><br></div><br><div class="cs_content" id="cs_description_of__content">
+<p>Description of the regional permeability multiplier prior distribution.</p>
+<div class="cs_children" id="cs_description_of__children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>mean</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>base</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>stddev</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>distribution</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert string to lower case</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
 </div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_description_of__container">
 <div class="cs_header">
 <h3>porosity</h3><br></div><br><div class="cs_content" id="cs_description_of__content">
@@ -982,9 +1042,129 @@
 <p>Convert string to lower case</p>
 <div class="cs_children" id="cs_default_title_children">
 <p>:type: string</p>
-</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_description_of__container">
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_the_individual__container">
+<div class="cs_header">
+<h3>porosity_regional_scheme</h3><br></div><br><div class="cs_content" id="cs_the_individual__content">
+<p>The individual flow tubes will always have an individual porosity prior distribution attached (specified as porosity in the config file). Setting this option to ‘individual’ makes the individual uncertainty for each flow tube the only porosity uncertainty. Using the ‘global’ option will add one additional multiplier for the entire FlowNet model, and ‘regions_from_sim’ will add one multiplier for each of the regions present in a region parameter from an input simulation model (parameter name specified in ‘porosity_parameter_from_sim_model’).</p>
+<p>Convert string to lower case</p>
+<div class="cs_children" id="cs_the_individual__children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_the_name_of_the_container">
+<div class="cs_header">
+<h3>porosity_parameter_from_sim_model</h3><br></div><br><div class="cs_content" id="cs_the_name_of_the_content">
+<p>The name of the region parameter in the simulation model to base a regional permeability multiplier on.</p>
+<div class="cs_children" id="cs_the_name_of_the_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_description_of__container">
+<div class="cs_header">
+<h3>porosity_regional</h3><br></div><br><div class="cs_content" id="cs_description_of__content">
+<p>Description of the regional porosity multiplier prior distribution.</p>
+<div class="cs_children" id="cs_description_of__children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>mean</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>base</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>stddev</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>distribution</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert string to lower case</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_the_individual__container">
+<div class="cs_header">
+<h3>bulkvolume_mult_regional_scheme</h3><br></div><br><div class="cs_content" id="cs_the_individual__content">
+<p>The individual flow tubes will always have an individual bulk volume multiplier attached (specified as bulkvolume_mult in the config file). Setting this option to ‘individual’ makes the individual multipliers for each flow tube the only bulk volume uncertainty. Using the ‘global’ option will add one additional multiplier for the entire FlowNet model, and ‘regions_from_sim’ will add one multiplier for each of the regions present in a region parameter from an input simulation model (parameter name specified in ‘bulkvolume_mult_parameter_from_sim_model’).</p>
+<p>Convert string to lower case</p>
+<div class="cs_children" id="cs_the_individual__children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_description_of__container">
 <div class="cs_header">
 <h3>bulkvolume_mult</h3><br></div><br><div class="cs_content" id="cs_description_of__content">
+<p>Description of bulk volume multiplier prior distribution. You define either min and max, or one of the endpoints and mean. One multiplies is drawn per tube which decreases/increases the default tube bulk volume (which again is a proportional part of model convex hull bulk with respect to tube length compared to other tubes).</p>
+<div class="cs_children" id="cs_description_of__children">
+<div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>min</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>mean</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>max</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>base</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>stddev</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert ‘None’ to None</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: number</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_default_title_container">
+<div class="cs_header">
+<h3>distribution</h3><br></div><br><div class="cs_content" id="cs_default_title_content">
+<p></p>
+<p>Convert string to lower case</p>
+<div class="cs_children" id="cs_default_title_children">
+<p>:type: string</p>
+</div><br></div><br></div><br></div><br></div><br></div><br><div class="cs_container" id="cs_the_name_of_the_container">
+<div class="cs_header">
+<h3>bulkvolume_mult_parameter_from_sim_model</h3><br></div><br><div class="cs_content" id="cs_the_name_of_the_content">
+<p>The name of the region parameter in the simulation model to base a regional bulk volume parameter on.</p>
+<div class="cs_children" id="cs_the_name_of_the_children">
+<p>:type: string</p>
+</div><br></div><br></div><br><div class="cs_container" id="cs_description_of__container">
+<div class="cs_header">
+<h3>bulkvolume_mult_regional</h3><br></div><br><div class="cs_content" id="cs_description_of__content">
 <p>Description of bulk volume multiplier prior distribution. You define either min and max, or one of the endpoints and mean. One multiplies is drawn per tube which decreases/increases the default tube bulk volume (which again is a proportional part of model convex hull bulk with respect to tube length compared to other tubes).</p>
 <div class="cs_children" id="cs_description_of__children">
 <div class="cs_container" id="cs_default_title_container">
