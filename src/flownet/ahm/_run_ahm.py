@@ -1,5 +1,5 @@
 import argparse
-from typing import Union, List, Optional, Dict
+from typing import Union, List, Optional, Dict, Tuple
 import json
 import pathlib
 from operator import add
@@ -196,6 +196,78 @@ def _get_distribution(
         df[f"stddev_{parameter}"] = parameter_config.stddev
         df[f"distribution_{parameter}"] = parameter_config.distribution
     return df
+
+
+def _get_regional_distribution(
+    parameters: Union[str, List[str]],
+    parameters_config: dict,
+    network: NetworkModel,
+    field_data: FlowData,
+    ti2ci: pd.DataFrame,
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Create:
+        1) The distribution with min, mean, base, stddev, max for one or more regional parameter
+            multipliers
+        2) A dataframe linking region model index to cell model index for each regional multiplier
+
+    Args:
+        parameters: which parameter(s) should be outputted in the dataframe
+        parameters_config: the parameters definition from the configuration file
+        network: FlowNet network instance
+        field_data: FlowData class with information from simulation model data source
+        ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
+
+    Returns:
+        tuple: a tuple containing:
+            ci2ri (pd.DataFrame): A dataframe with index equal to cell model index, and one column containing
+                region index for each of the requested regional multiplier(s).
+            df_dist_values (pd.DataFrame): A dataframe with distributions for the requested regional multiplier(s)
+    """
+    if not isinstance(parameters, list):
+        parameters = [parameters]
+
+    df = pd.DataFrame(index=ti2ci.index.unique())
+    df_dist_values = pd.DataFrame(index=[0])
+    ci2ri = pd.DataFrame(index=network.grid.index)
+
+    for parameter in parameters:
+        if (
+            getattr(parameters_config, parameter + "_regional_scheme")
+            == "regions_from_sim"
+        ):
+            df[parameter + "_regional"] = pd.DataFrame(
+                _from_regions_to_flow_tubes(
+                    network,
+                    field_data,
+                    ti2ci,
+                    getattr(parameters_config, parameter + "_parameter_from_sim_model"),
+                )
+            )
+        elif getattr(parameters_config, parameter + "_regional_scheme") == "global":
+            df[parameter + "_regional"] = pd.DataFrame(
+                [1] * len(network.grid.model.unique())
+            )
+
+        ci2ri_index = ti2ci.index.values.copy()
+        for idx in np.unique(ti2ci.index.values):
+            ci2ri_index[ti2ci.index.values == idx] = df.loc[
+                idx, parameter + "_regional"
+            ]
+        ci2ri[parameter + "_regional"] = ci2ri_index
+
+        parameter_config_regional = getattr(parameters_config, parameter + "_regional")
+        df_dist_values[f"minimum_{parameter}_regional"] = parameter_config_regional.min
+        df_dist_values[f"maximum_{parameter}_regional"] = parameter_config_regional.max
+        df_dist_values[f"mean_{parameter}_regional"] = parameter_config_regional.mean
+        df_dist_values[f"base_{parameter}_regional"] = parameter_config_regional.base
+        df_dist_values[
+            f"stddev_{parameter}_regional"
+        ] = parameter_config_regional.stddev
+        df_dist_values[
+            f"distribution_{parameter}_regional"
+        ] = parameter_config_regional.distribution
+    return ci2ri, df_dist_values
 
 
 def _constrain_using_well_logs(
@@ -772,6 +844,23 @@ def run_flownet_history_matching(
     equil_dist_values = equil_dist_values[equil_dist_values.isnull().sum(axis=1) < 5]
 
     #########################################
+    #  Region volume multipliers            #
+    #########################################
+
+    regional_parameters = [
+        param
+        for param in {"bulkvolume_mult", "porosity", "permeability"}
+        if getattr(config.model_parameters, param + "_regional_scheme") != "individual"
+    ]
+    (ci2ri, regional_porv_poro_trans_dist_values,) = _get_regional_distribution(
+        regional_parameters,
+        config.model_parameters,
+        network,
+        field_data,
+        ti2ci,
+    )
+
+    #########################################
     # Fault transmissibility                #
     #########################################
 
@@ -832,7 +921,9 @@ def run_flownet_history_matching(
     parameters = [
         PorvPoroTrans(
             porv_poro_trans_dist_values,
+            regional_porv_poro_trans_dist_values,
             ti2ci,
+            ci2ri,
             network,
             config.flownet.min_permeability,
         ),
