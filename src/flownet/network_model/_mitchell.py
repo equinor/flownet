@@ -58,16 +58,12 @@ def mitchell_best_candidate(
 
     # Bounding box to place initial candidates in: reservoir volume or (scaled) convex hull of real perforations.
     if place_nodes_in_volume_reservoir:
-        x_mins, x_maxs, y_mins, y_maxs, z_mins, z_maxs = np.hsplit(
-            concave_hull_bounding_boxes, 6
+        (x_min, y_min, z_min) = np.ndarray.min(
+            concave_hull_bounding_boxes[:, [0, 2, 4]], axis=0
         )
-
-        x_min = min(x_mins)[0]
-        x_max = max(x_maxs)[0]
-        y_min = min(y_mins)[0]
-        y_max = max(y_maxs)[0]
-        z_min = min(z_mins)[0]
-        z_max = max(z_maxs)[0]
+        (x_max, y_max, z_max) = np.ndarray.max(
+            concave_hull_bounding_boxes[:, [1, 3, 5]], axis=0
+        )
 
         perforation_hull = None
     else:
