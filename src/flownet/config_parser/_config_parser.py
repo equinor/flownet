@@ -689,6 +689,61 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             },
                         },
                     },
+                    "permeability_regional_scheme": {
+                        MK.Type: types.String,
+                        MK.Description: "The individual flow tubes will always have an individual permeability "
+                        "prior distribution attached (specified as permeability in the config file). Setting this "
+                        "option to 'individual' makes the individual uncertainty for each flow tube the only "
+                        "permeability uncertainty. Using the 'global' option will add one additional multiplier "
+                        "for the entire FlowNet model, and 'regions_from_sim' will add one multiplier for each "
+                        "of the regions present in a region parameter from an input simulation model "
+                        "(parameter name specified in 'permeability_parameter_from_sim_model').",
+                        MK.Default: "individual",
+                        MK.Transformation: _to_lower,
+                    },
+                    "permeability_parameter_from_sim_model": {
+                        MK.Type: types.String,
+                        MK.Description: "The name of the region parameter in the simulation model to "
+                        "base a regional permeability multiplier on.",
+                        MK.Default: "EQLNUM",
+                    },
+                    "permeability_regional": {
+                        MK.Type: types.NamedDict,
+                        MK.Description: "Description of the regional permeability multiplier prior "
+                        "distribution.",
+                        MK.Content: {
+                            "min": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "mean": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "max": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "base": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "stddev": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "distribution": {
+                                MK.Type: types.String,
+                                MK.Default: "uniform",
+                                MK.Transformation: _to_lower,
+                            },
+                        },
+                    },
                     "porosity": {
                         MK.Type: types.NamedDict,
                         MK.Description: "Description of the porosity prior "
@@ -727,7 +782,121 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                             },
                         },
                     },
+                    "porosity_regional_scheme": {
+                        MK.Type: types.String,
+                        MK.Description: "The individual flow tubes will always have an individual porosity "
+                        "prior distribution attached (specified as porosity in the config file). Setting this "
+                        "option to 'individual' makes the individual uncertainty for each flow tube the only "
+                        "porosity uncertainty. Using the 'global' option will add one additional multiplier "
+                        "for the entire FlowNet model, and 'regions_from_sim' will add one multiplier for each "
+                        "of the regions present in a region parameter from an input simulation model "
+                        "(parameter name specified in 'porosity_parameter_from_sim_model').",
+                        MK.Default: "individual",
+                        MK.Transformation: _to_lower,
+                    },
+                    "porosity_parameter_from_sim_model": {
+                        MK.Type: types.String,
+                        MK.Description: "The name of the region parameter in the simulation model to "
+                        "base a regional permeability multiplier on.",
+                        MK.Default: "EQLNUM",
+                    },
+                    "porosity_regional": {
+                        MK.Type: types.NamedDict,
+                        MK.Description: "Description of the regional porosity multiplier prior "
+                        "distribution.",
+                        MK.Content: {
+                            "min": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "mean": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "max": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "base": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "stddev": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "distribution": {
+                                MK.Type: types.String,
+                                MK.Default: "uniform",
+                                MK.Transformation: _to_lower,
+                            },
+                        },
+                    },
+                    "bulkvolume_mult_regional_scheme": {
+                        MK.Type: types.String,
+                        MK.Description: "The individual flow tubes will always have an individual bulk volume "
+                        "multiplier attached (specified as bulkvolume_mult in the config file). Setting this "
+                        "option to 'individual' makes the individual multipliers for each flow tube the only "
+                        "bulk volume uncertainty. Using the 'global' option will add one additional multiplier "
+                        "for the entire FlowNet model, and 'regions_from_sim' will add one multiplier for each "
+                        "of the regions present in a region parameter from an input simulation model "
+                        "(parameter name specified in 'bulkvolume_mult_parameter_from_sim_model').",
+                        MK.Default: "individual",
+                        MK.Transformation: _to_lower,
+                    },
                     "bulkvolume_mult": {
+                        MK.Type: types.NamedDict,
+                        MK.Description: "Description of bulk volume multiplier "
+                        "prior distribution. You define either min and max, or one "
+                        "of the endpoints and mean. One multiplies is drawn per tube "
+                        "which decreases/increases the default tube bulk volume "
+                        "(which again is a proportional part of model convex hull bulk "
+                        "with respect to tube length compared to other tubes).",
+                        MK.Content: {
+                            "min": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "mean": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "max": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "base": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "stddev": {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                                MK.Transformation: _str_none_to_none,
+                            },
+                            "distribution": {
+                                MK.Type: types.String,
+                                MK.Default: "uniform",
+                                MK.Transformation: _to_lower,
+                            },
+                        },
+                    },
+                    "bulkvolume_mult_parameter_from_sim_model": {
+                        MK.Type: types.String,
+                        MK.Description: "The name of the region parameter in the simulation model to "
+                        "base a regional bulk volume parameter on.",
+                        MK.Default: "EQLNUM",
+                    },
+                    "bulkvolume_mult_regional": {
                         MK.Type: types.NamedDict,
                         MK.Description: "Description of bulk volume multiplier "
                         "prior distribution. You define either min and max, or one "
@@ -1746,22 +1915,37 @@ def parse_config(
             "interpolation option for relative permeability."
         )
 
-    # If 'regions_from_sim' is defined, or a csv file with rsvd tables
-    # is defined, we need to import the simulation case to check number
-    # regions
+    # If 'regions_from_sim' is defined for any parameter, or a csv file with
+    # rsvd tables is defined, we need to import the simulation case to check
+    # number of regions
     if (
-        config.model_parameters.equil.scheme == "regions_from_sim"
-        or config.model_parameters.relative_permeability.scheme == "regions_from_sim"
+        "regions_from_sim"
+        in (
+            config.model_parameters.equil.scheme,
+            config.model_parameters.relative_permeability.scheme,
+            config.model_parameters.porosity_regional_scheme,
+            config.model_parameters.permeability_regional_scheme,
+            config.model_parameters.bulkvolume_mult_regional_scheme,
+        )
         or config.flownet.pvt.rsvd
     ):
         if config.flownet.data_source.simulation.input_case is None:
             raise ValueError("Input simulation case is not defined.")
         field_data = FlowData(config.flownet.data_source.simulation.input_case)
 
-    region_parameters: dict = {"equil": "EQLNUM", "relative_permeability": "SATNUM"}
+    region_parameters: dict = {
+        "equil": "EQLNUM",
+        "relative_permeability": "SATNUM",
+        "permeability": None,
+        "porosity": None,
+        "bulkvolume_mult": None,
+    }
     unique_regions: dict = {}
     for reg_param, flow_region_name in region_parameters.items():
-        scheme = getattr(getattr(config.model_parameters, reg_param), "scheme")
+        if flow_region_name is not None:
+            scheme = getattr(getattr(config.model_parameters, reg_param), "scheme")
+        else:
+            scheme = getattr(config.model_parameters, reg_param + "_regional_scheme")
         if scheme not in available_region_schemes:
             raise ValueError(
                 f"The {reg_param} scheme "
@@ -1769,10 +1953,15 @@ def parse_config(
                 f"Valid options are {available_region_schemes}"
             )
         if scheme == "regions_from_sim":
-            reg_param_sim_model = getattr(
-                getattr(config.model_parameters, reg_param),
-                "region_parameter_from_sim_model",
-            )
+            if flow_region_name is not None:
+                reg_param_sim_model = getattr(
+                    getattr(config.model_parameters, reg_param),
+                    "region_parameter_from_sim_model",
+                )
+            else:
+                reg_param_sim_model = getattr(
+                    config.model_parameters, reg_param + "_parameter_from_sim_model"
+                )
             try:
                 unique_regions[reg_param] = field_data.get_unique_regions(
                     reg_param_sim_model
@@ -1782,18 +1971,22 @@ def parse_config(
                     f"REGION parameter {reg_param_sim_model} "
                     "not found in input simulation model."
                 ) from err
-            _check_if_all_region_priors_defined(
-                getattr(config.model_parameters, reg_param),
-                unique_regions[reg_param],
-                flow_region_name,
-            )
-        else:
-            regions = getattr(getattr(config.model_parameters, reg_param), "regions")
-            if regions[0].id is not None:
-                raise ValueError(
-                    f"The region number for the first {reg_param} region parameter should not be set, \n"
-                    "or set to 'None' when using the 'global' or 'individual' options"
+            if flow_region_name:
+                _check_if_all_region_priors_defined(
+                    getattr(config.model_parameters, reg_param),
+                    unique_regions[reg_param],
+                    flow_region_name,
                 )
+        else:
+            if flow_region_name is not None:
+                regions = getattr(
+                    getattr(config.model_parameters, reg_param), "regions"
+                )
+                if regions[0].id is not None:
+                    raise ValueError(
+                        f"The region number for the first {reg_param} region parameter should not be set, \n"
+                        "or set to 'None' when using the 'global' or 'individual' options"
+                    )
 
     layers = config.flownet.data_source.simulation.layers
     if len(layers) > 0:
@@ -1940,7 +2133,15 @@ def parse_config(
             "Queue name and server needs to be provided if system is not 'LOCAL'."
         )
 
-    for parameter in ["bulkvolume_mult", "porosity", "permeability", "fault_mult"]:
+    for parameter in [
+        "bulkvolume_mult",
+        "porosity",
+        "permeability",
+        "fault_mult",
+        "permeability_regional",
+        "porosity_regional",
+        "bulkvolume_mult_regional",
+    ]:
         if not len(_check_defined(config.model_parameters, parameter)) > 0:
             continue
         _check_distribution(config.model_parameters, parameter)
