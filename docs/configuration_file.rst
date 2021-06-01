@@ -767,55 +767,6 @@ relative_permeability
 FlowNet currently uses Corey correlations for generating relative permeability input curves for Flow. At a later 
 stage LET parametrization may also be implemented.
 
-The input related to relative permeability modelling has its own section in the config yaml file. 
-
-+----------------------------------+----------------------------------+
-| Available options in config yaml | Example of usage                 |
-+----------------------------------+----------------------------------+
-|                                  |                                  |
-| .. code-block:: yaml             | .. code-block:: yaml             |
-|                                  |                                  |
-|  flownet:                        |  flownet:                        |
-|    model_parameters:             |    model_parameters:             |
-|      relative_permeability:      |      relative_permeability:      |
-|        scheme:                   |        scheme: global            |
-|        interpolate:              |        interpolate: true         |
-|        independent_interpolation:|        regions:                  |
-|        regions:                  |          swirr:                  |
-|          id:                     |            min:  0.01            |
-|          swirr:                  |            max:  0.03            |
-|            min:                  |          swl:                    |
-|            max:                  |            min:  0.03            |
-|            mean:                 |            max:  0.05            |
-|            base:                 |          swcr:                   |
-|            stddev:               |            min:  0.09            |
-|            distribution:         |            max:  0.15            |
-|            low_optimistic:       |          sorw:                   |
-|          swl:                    |            min:                  |
-|            <same as for swirr>   |            max:                  |
-|          swcr:                   |          nw:                     |
-|            <same as for swirr>   |            min:                  |
-|          sorw:                   |            max:                  |
-|            <same as for swirr>   |          now:                    |
-|          krwend:                 |            min:                  |
-|            <same as for swirr>   |            max:                  |
-|          kroend:                 |          krwend:                 |
-|            <same as for swirr>   |            min:                  |
-|          no:                     |            max:                  |
-|            <same as for swirr>   |          kroend:                 |
-|          now:                    |            min:                  |
-|            <same as for swirr>   |            max:                  |
-|          sorg:                   |                                  |
-|            <same as for swirr>   |                                  |
-|          sgcr:                   |                                  |
-|            <same as for swirr>   |                                  |
-|          ng:                     |                                  |
-|            <same as for swirr>   |                                  |
-|          nog:                    |                                  |
-|            <same as for swirr>   |                                  |
-|          krgend:                 |                                  |                
-|            <same as for swirr>   |                                  |
-+----------------------------------+----------------------------------+
 
 scheme
 ~~~~~~
@@ -848,7 +799,29 @@ independent_interpolation
 If **interpolate** is set to **True** and the model has three active phases, this parameter will
 decide whether or not the interpolation for water/oil relative permeability and gas/oil relative 
 permeability will be performed independently. The default value is False.
- 
+
+
+region_parameter_from_sim_model
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The name of the regions grid parameter in the simulation model to base the relative permeability 
+region parameter in the FlowNet model on (the default parameter is SATNUM).
+
+swcr_add_to_swl
+~~~~~~~~~~~~~~~
+
+Allows for calculating SWCR by adding a number to SWL. Especially useful to avoid non-physical values 
+when defining prior distributions. If this parameter is set to true, the numbers defined under swcr 
+will be used to define a prior distribution for the delta value added to SWL, instead of defining the 
+prior distribution for SWCR directly (default value is False).
+
+krwmax_add_to_krwend
+~~~~~~~~~~~~~~~~~~~~
+
+Allows for calculating KRWMAX by adding a number to KRWEND. Especially useful to avoid non-physical 
+values when defining prior distributions. If this parameter is set to true, the numbers defined 
+under KRWMAX will be used to define a prior distribution for the delta value added to KRWEND, 
+instead of defining the prior distribution for KRWMAX directly (the default value is False).
   
 regions
 ~~~~~~~
@@ -899,6 +872,60 @@ For some parameters a low numerical value is favorable. This can be indicated by
 **low_optimistic** to **True** for that parameter (the default value of low_optimistic is False).
 
 
+
++----------------------------------------+----------------------------------+----------------------------------+
+| Available options in config yaml       | Example of usage                 | Example of usage                 |
++----------------------------------------+----------------------------------+----------------------------------+
+|                                        |                                  |                                  |
+| .. code-block:: yaml                   | .. code-block:: yaml             | .. code-block:: yaml             |
+|                                        |                                  |                                  |
+|  flownet:                              |  flownet:                        |  flownet:                        |
+|    model_parameters:                   |    model_parameters:             |    model_parameters:             |
+|      relative_permeability:            |      relative_permeability:      |      relative_permeability:      |
+|        scheme:                         |        scheme: global            |        scheme: regions_from_sim  |
+|        region_parameter_from_sim_model:|        regions:                  |        interpolate: true         |
+|        swcr_add_to_swl:                |          id: None                |        regions:                  |        
+|        krwmax_add_to_krwend:           |          swirr:                  |          id: None                |
+|        interpolate:                    |            min:  0.01            |          swirr:                  |
+|        independent_interpolation:      |            max:  0.03            |            min:  0.01            |
+|        regions:                        |          swl:                    |            base: 0.02            |
+|          id:                           |            min:  0.03            |            max:  0.03            |
+|          swirr:                        |            max:  0.05            |          swl:                    |
+|            min:                        |          swcr:                   |            min:  0.03            |
+|            max:                        |            min:  0.09            |            base: 0.04            |
+|            mean:                       |            max:  0.15            |            max:  0.05            |
+|            base:                       |          sorw:                   |          swcr:                   |
+|            stddev:                     |            min:  0.2             |            min:  0.09            |
+|            distribution:               |            max:  0.3             |            base: 0.12            |
+|            low_optimistic:             |          nw:                     |            max:  0.15            |
+|          swl:                          |            min:  1.5             |          sorw:                   |
+|            <same as for swirr>         |            max:  3.0             |            min:  0.2             |
+|          swcr:                         |          now:                    |            base: 0.25            |
+|            <same as for swirr>         |            min:  1.5             |            max:  0.3             |
+|          sorw:                         |            max:  3.0             |          nw:                     |
+|            <same as for swirr>         |          krwend:                 |            min:  1.5             |
+|          krwend:                       |            min:  0.4             |            base: 2.25            |
+|            <same as for swirr>         |            max:  0.6             |            max:  3.0             |
+|          kroend:                       |          kroend:                 |          now:                    |
+|            <same as for swirr>         |            min:  0.9             |            min:  1.5             |
+|          no:                           |            max:  1.0             |            base: 2.25            |
+|            <same as for swirr>         |                                  |            max:  3.0             |
+|          now:                          |                                  |          krwend:                 |
+|            <same as for swirr>         |                                  |            min:  0.4             |
+|          sorg:                         |                                  |            base: 0.5             |
+|            <same as for swirr>         |                                  |            max:  0.6             |
+|          sgcr:                         |                                  |          kroend:                 |
+|            <same as for swirr>         |                                  |            min:  0.9             |
+|          ng:                           |                                  |            base: 0.95            |
+|            <same as for swirr>         |                                  |            max:  1.0             |
+|          nog:                          |                                  |                                  |
+|            <same as for swirr>         |                                  |                                  |
+|          krgend:                       |                                  |                                  |
+|            <same as for swirr>         |                                  |                                  |
++----------------------------------------+----------------------------------+----------------------------------+
+									     
+									     
+									     
 Equilibration
 -------------
 
