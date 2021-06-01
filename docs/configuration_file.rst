@@ -929,72 +929,81 @@ For some parameters a low numerical value is favorable. This can be indicated by
 Equilibration
 -------------
 
-+----------------------------------+----------------------------------+
-| Available options in config yaml | Example of usage                 |
-+----------------------------------+----------------------------------+
-|                                  |                                  |
-| .. code-block:: yaml             | .. code-block:: yaml             |
-|                                  |                                  |
-|  flownet:                        |  flownet:                        |
-|    model_parameters:             |    model_parameters:             |
-|      equil:                      |      equil:                      |
-|        scheme:                   |        scheme: global            |
-|        regions:                  |         regions:                 |
-|          id:                     |           id: None               |
-|          datum_depth:            |           datum_depth: 2500      |
-|          datum_pressure:         |           datum_pressure:        |
-|            min:                  |             min: 250             |
-|            max:                  |             max: 270             |
-|            mean:                 |           owc_depth:             |
-|            base:                 |             min: 2565            |
-|            stddev:               |             max: 2605            |
-|            distribution:         |           goc_depth:             |
-|          owc_depth:              |             min: 2475            |
-|            min:                  |             max: 2525            |
-|            max:                  |           id: 1                  |
-|            mean:                 |           datum_depth: 2582      |
-|            base:                 |           datum_pressure:        |
-|            stddev:               |             min: 260             |
-|            distribution:         |             max: 280             |
-|          goc_depth:              |           owc_depth:             |
-|            same as for owc_depth |             min: 2670            |
-|          gwc_depth:              |             max: 2725            |
-|            same as for owc_depth |           goc_depth:             |
-|                                  |             min: 2560            |
-|                                  |             max: 2600            |
-|                                  |                                  |
-+----------------------------------+----------------------------------+
+This keyword contains information regarding the equilibration regions in the FlowNet model.
 
 scheme
-  The scheme parameter decides how many equilibration regions to generate as
-  input to Flow. There are three options. With **scheme: global** the model will only have one  
-  equilibration region, and applied to all flow tubes in the model. With
-  **scheme: individual** all flow tubes in the model will act as its own equilibration region. 
-  With **scheme: regions_from_sim** FlowNet will extract the EQLNUM regions from the 
-  input model provided, and assign equilibraion regions to all flow tubes accordingly. 
-  The default value is global.
+~~~~~~
+
+The scheme parameter decides how many equilibration regions to generate as
+input to Flow. There are three options. With **scheme: global** the model will only have one  
+equilibration region, and applied to all flow tubes in the model. With
+**scheme: individual** all flow tubes in the model will act as its own equilibration region. 
+With **scheme: regions_from_sim** FlowNet will extract the EQLNUM regions from the 
+input model provided, and assign equilibraion regions to all flow tubes accordingly. 
+The default value is global.
+
+
+region_parameter_from_sim_model
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The name of the regions grid parameter in the simulation model to base the equilibration
+region parameter in the FlowNet model on (the default parameter is SATNUM).
+
 
 regions
-  This is a list where each list element will contain information about the datum depth, datum pressure and 
-  fluid contacts within one equilibration region, in addition to a region identifier.
-  The number of list elements needs to be equal to the number of EQLNUM regions in the model,
-  unless one of the regions is defined with identifier *None*. 
-  
-  id
-    Region identifier. Default value is None.
-  datum_depth:
-    Datum or reference depth in the equilibrium region.
-  datum_pressure:
-    Datum or reference pressure in the equilibrium region.
-  owc_depth:
-    Depth of the oil/water contact in the equilibrium region.
-  goc_depth:
-    Depth of the gas/oil contact in the equilibrium region.
-  gwc_depth:
-    Depth of the gas/water contact in the equilibrium region.
+~~~~~~~
 
-  The *datum depth* is just a number. The *datum pressure* and the different contacts 
-  should be entered with a prior probability distribution.
+This is a list where each list element will contain information about the datum depth, datum pressure and 
+fluid contacts within one equilibration region, in addition to a region identifier.
+The number of list elements needs to be equal to the number of EQLNUM regions in the model,
+unless one of the regions is defined with identifier *None*. 
+ 
+* id: Region identifier. Default value is None.
+* datum_depth: Datum or reference depth in the equilibrium region.
+* datum_pressure: Datum or reference pressure in the equilibrium region.
+* owc_depth: Depth of the oil/water contact in the equilibrium region.
+* goc_depth: Depth of the gas/oil contact in the equilibrium region.
+* gwc_depth: Depth of the gas/water contact in the equilibrium region.
+
+The *datum depth* is just a number. The *datum pressure* and the different contacts 
+should be entered with a prior probability distribution according to the information in `prior`_.
+
+
++-----------------------------------------+----------------------------------+
+| Available options in config yaml        | Example of usage                 |
++-----------------------------------------+----------------------------------+
+|                                         |                                  |
+| .. code-block:: yaml                    | .. code-block:: yaml             |
+|                                         |                                  |
+|  flownet:                               |  flownet:                        |
+|    model_parameters:                    |    model_parameters:             |
+|      equil:                             |      equil:                      |
+|        scheme:                          |        scheme: global            |
+|        region_parameter_from_sim_model: |          regions:                |
+|        regions:                         |            id: None              |
+|          id:                            |            datum_depth: 2500     |
+|          datum_depth:                   |            datum_pressure:       |
+|          datum_pressure:                |              min: 250            |
+|            min:                         |              max: 270            |
+|            max:                         |            owc_depth:            |
+|            mean:                        |              min: 2565           |
+|            base:                        |              max: 2605           |
+|            stddev:                      |            goc_depth:            |
+|            distribution:                |              min: 2475           |
+|          owc_depth:                     |              max: 2525           |
+|            min:                         |            id: 1                 |
+|            max:                         |            datum_depth: 2582     |
+|            mean:                        |            datum_pressure:       |
+|            base:                        |              min: 260            |
+|            stddev:                      |              max: 280            |
+|            distribution:                |            owc_depth:            |
+|          goc_depth:                     |              min: 2670           |
+|            same as for owc_depth        |              max: 2725           |
+|          gwc_depth:                     |            goc_depth:            |
+|            same as for owc_depth        |              min: 2560           |
+|                                         |              max: 2600           |
+|                                         |                                  |
++-----------------------------------------+----------------------------------+
 
 
 Fault multiplier
