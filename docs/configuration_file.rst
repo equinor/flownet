@@ -1078,153 +1078,34 @@ aquifer
 |                                  |                                  |
 +----------------------------------+----------------------------------+
 
-scheme:
-  The **scheme** parameter decides the number of aquifers. Setting scheme 
-  to *individual* means that all aquifer connections goes to individual aquifers.
-  Setting scheme to *global* means that all aquifer connections goes to one single 
-  aquifer.
+scheme
+~~~~~~
 
-fraction:
-  Decides how many nodes the aquifer(s) should connect to. Currently the implementation
-  relies on depth only, selecting the *fraction* deepest nodes in the FlowNet.
+The **scheme** parameter decides the number of aquifers. Setting scheme 
+to *individual* means that all aquifer connections goes to individual aquifers.
+Setting scheme to *global* means that all aquifer connections goes to one single 
+aquifer.
 
-delta_depth:
-  Decides the depth of the aquifer node(s). When using the global option, a single aquifer node
-  will be placed *delta_depth* below the average position of all the nodes it should connect to.
-  When using the individual option, one aquifer node will be placed *delta_depth* below each of
-  the selected FlowNet nodes.
+fraction
+~~~~~~~~
 
-size_in_bulkvolumes:
-  The size of the aquifer, relative to the bulk volume of the FlowNet the aquifer nodes connect to.
+Decides how many nodes the aquifer(s) should connect to. Currently the implementation
+relies on depth only, selecting the *fraction* deepest nodes in the FlowNet.
+
+delta_depth
+~~~~~~~~~~~
+
+Decides the depth of the aquifer node(s). When using the global option, a single aquifer node
+will be placed *delta_depth* below the average position of all the nodes it should connect to.
+When using the individual option, one aquifer node will be placed *delta_depth* below each of
+the selected FlowNet nodes.
+
+size_in_bulkvolumes
+~~~~~~~~~~~~~~~~~~~
+
+The size of the aquifer, relative to the bulk volume of the FlowNet the aquifer nodes connect to.
+This should be defined as a prior probability distribution according to `prior`_.
   
 
 
 
-model_parameters:
-  permeability:
-    min: 1
-    max: 1000
-    distribution: logunif
-  porosity:
-    min: 0.05
-    max: 0.35
-  bulkvolume_mult:
-    mean: 1.0
-    max: 1.5
-  fault_mult:
-    min: 1.0e-5
-    max: 1
-    distribution: logunif
-  relative_permeability:
-    scheme: individual
-    interpolate: false
-    regions:
-      - id: None
-        swirr:
-          min: 0.01
-          base: 0.01
-          max: 0.01
-        swl:
-          min: 0.05
-          base: 0.05
-          max: 0.05
-        swcr:
-          min: 0.1
-          base: 0.2
-          max: 0.3
-        sorw:
-          min: 0.2
-          base: 0.25
-          max: 0.3
-        sorg:
-          min: 0.1
-          base: 0.15
-          max: 0.2
-        sgcr:
-          min: 0.03
-          base: 0.055
-          max: 0.08
-        krwend:
-          min: 0.4
-          base: 0.5
-          max: 0.6
-        kroend:
-          min: 0.9
-          base: 0.95
-          max: 1.0
-        krgend:
-          min: 0.9
-          base: 0.95
-          max: 1.0
-        nw:
-          min: 1.5
-          base: 2.25
-          max: 3.0
-        now:
-          min: 1.5
-          base: 2.25
-          max: 3.0
-        ng:
-          min: 1.5
-          base: 2.25
-          max: 3.0
-        nog:
-          min: 1.5
-          base: 2.25
-          max: 3.0
-  equil:
-    scheme: regions_from_sim
-    regions:
-      - id: None
-        datum_depth: 2582
-        datum_pressure:
-          min: 260
-          max: 280
-        goc_depth:
-          min: 2560
-          max: 2600
-        owc_depth:
-          min: 2670
-          max: 2725
-      - id: 2
-        datum_depth: 2500
-        datum_pressure:
-          min: 250
-          max: 270
-        goc_depth:
-          min: 2475
-          max: 2525
-        owc_depth:
-          min: 2565
-          max: 2605
-      - id: 3
-        datum_depth: 2582
-        datum_pressure:
-          min: 260
-          max: 280
-        goc_depth:
-          min: 2560
-          max: 2600
-        owc_depth:
-          min: 2601
-          max: 2640
-      - id: 4
-        datum_depth: 2200
-        datum_pressure:
-          min: 230
-          max: 250
-        goc_depth:
-          min: 2175
-          max: 2225
-        owc_depth:
-          min: 2375
-          max: 2425
-
-  aquifer:
-    scheme: individual
-    fraction: 0.25
-    delta_depth: 1000
-    size_in_bulkvolumes:
-      min: 1.0e-6
-      max: 2
-      distribution: logunif
