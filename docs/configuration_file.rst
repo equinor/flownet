@@ -149,8 +149,6 @@ be added to the FlowNet network. In the latter case, the total number of nodes w
 according to the volume inside the concave hull around the well/completion nodes in that particular layer.
 
 
-: [500, 100]
-
 additional_node_candidates
 --------------------------
 
@@ -301,6 +299,7 @@ Minimum allowed permeability in mD before a tube is removed (i.e., its cells are
 
 
 hyperopt
+--------
 
 A dictionary with parameters relater to hyper optimization of input.
 
@@ -383,37 +382,273 @@ ert
 ===
 
 
+runpath
+-------
+
+(the default runpath  is *output/runpath/realization-%d/iter-%d*)
+
+enspath
+-------
+
+(the default enspath is *output/storage*)
+
+eclbase
+-------
+
+(the default eclbase is *./eclipse/model/FLOWNET_REALIZATION*)
+
+static_include_files
+--------------------
+
+(the default is pathlib.Path(os.path.dirname(os.path.realpath(__file__)))/"static_include_files"/".."/ "static")
 
 
+realizations
+------------
+
+A dictionary with some key/value pairs that control the number of realizations to submit to ERT, and how these 
+should be treated as successes/failures.
+
+num_realizations
+~~~~~~~~~~~~~~~~
+
+Number of realizations to start with in the first iteration
+
+required_success_percent
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The percentage of completed realizations needed for an iteration to be deemed as successful. After a successful
+iteration, the algorithm will moved on to the next iteration (the default value is 20).
+
+
+max_runtime
+~~~~~~~~~~~
+
+The number of seconds allowed for a single realization. After the given amount of seconds, the realization in
+question will be deemed as unsuccessful (the default value is 300). This is to avoid having to wait a long time for realizations with numerical problems.
+
+queue
+-----
+
+Information about where to perform the reservoir simulations. Currently there are two possibilities, namely local or lsf.
+
+system
+~~~~~~
+
+Controls where the reservoir simulation jobs are executed. The keyword can take the values *lsf* or *local*. The lsf option
+will submit jobs to the lsf cluster at your location. This keyword has no default value, and needs to be defined.
+
+server
+~~~~~~
+
+The server the reservoir simulation jobs will be sent to. The jobs will be sent using shell commands (*bsub/bjobs/bkill*).
+
+
+name
+~~~~
+
+The name of the simulation queue on the server where the reservoir simulation jobs will be sent.
+
+
+max_running
+~~~~~~~~~~~
+
+The maximum number of simulation jobs executed simulataneously.
+
+
+ensemble_weights
+----------------
+
+A list with weights assigned to the iteration in the ES MDA algorithm.
+
+yamlobs
+-------
+
+Name of the observations file used by fmu ensemble and webviz (default value *./observations.yamlobs*).
+
+analysis
+--------
+
+A list of analysis workflows to run, to assess the quality of the history matching.
+
+metric
+~~~~~~
+
+List of accuracy metrics to be computed in FlowNet analysis workflow. Supported metrics: MSE, RMSE, NRMSE, MAE, NMAE, R2.
+
+
+quantity
+~~~~~~~~
+
+List of summary vectors for which accuracy is to be computed.
+
+start
+~~~~~
+
+Start date in YYYY-MM-DD format.
+
+end
+~~~
+
+End date in YYYY-MM-DD format.
+
+outfile
+~~~~~~~
+
+The filename of the output of the workflow. In case multiple analysis workflows are run this name should be unique.
 
 
 model_parameters
 ================
 
+The different parameters to be tuned are defined in the **model_parameters** 
+section of the FlowNet config yaml. At present, the model can be parameterized 
+with the following required parameters:
 
-flownet:
+* Permeability
+* Porosity
+* Bulk volume multipliers
+* Saturation endpoints, relative permeability endpoints and Corey exponents
+* Datum pressures and contacts
+
+For permeability, porosity and bulk volume multipliers there is also an option to
+include a regional (based on an existing grid parameter) or global multiplier as well.
+
+In addition there are a few optional parameters that may be included:
+
+* Fault multipliers
+* Aquifer size (relative to the bulk volume in the model)
+* Rock compressibility
+
+All parameters need an initial guess on what values they can take. This is referred to as the prior 
+probability distribution.
+
+.. _prior:
+
+The following keys are available for defining the different prior distributions: 
+
+distribution
+  The type of probability distribution. 
+
+min
+  The minimum value of the chosen prior probability distribution. 
+
+max
+  The maximum value of the chosen prior probability distribution. 
+
+base
+  The mode of the prior probability distribution
   
-  
-ert:
-  static_include_files: ./norne_static
-  realizations:
-    num_realizations: 250
-    required_success_percent: 20
-    max_runtime: 500
-  queue:
-    system: LOCAL
-    max_running: 20
-  ensemble_weights:
-    - 4
-    - 2
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
+mean
+  The mean or expected value of the prior probability distribution
+
+stddev
+  The standard deviation of the prior probability distributions
+
+Their usage will be the same for all the model parameters, except for when using 
+the interpolation option for relative permeability. In that case min, base, and max will 
+have a different meaning, which will be described in more detail later. There is also an 
+additional keyword *low_optimistic* which only is meaningful to define when using the 
+interpolation option for relative permeability.
+
+The table below describes the available prior probability distributions, and how they
+should be defined in the FlowNet config yaml. If one choice of probability distribution
+has several rows in the table, it means that there are more than one way to define that 
+specific probability distribution. The **uniform** distribution can for example be defined
+by providing the *min* and *max* values, but it can also be defined by providing the *min* 
+and *mean* values (where FlowNet will calculate the *max* value), or by providing the
+*mean* and *max* values.
+
++---------------------------+------------------+------+------+------+------+------+
+| Probability distributions | distribution     | min  | max  | mean | base |stddev|
++===========================+==================+======+======+======+======+======+
+| Normal                    | normal           |      |      |   x  |      |   x  |        
++---------------------------+------------------+------+------+------+------+------+
+| Truncated normal          | truncated_normal |  x   |  x   |   x  |      |   x  |        
++---------------------------+------------------+------+------+------+------+------+
+| Uniform                   | uniform          |  x   |  x   |      |      |      |        
++                           +                  +------+------+------+------+------+
+|                           |                  |  x   |      |   x  |      |      |        
++                           +                  +------+------+------+------+------+
+|                           |                  |      |  x   |   x  |      |      |        
++---------------------------+------------------+------+------+------+------+------+
+| Log-uniform               | logunif          |  x   |  x   |      |      |      |       
++                           +                  +------+------+------+------+------+
+|                           |                  |  x   |      |   x  |      |      |        
++                           +                  +------+------+------+------+------+
+|                           |                  |      |  x   |   x  |      |      |        
++---------------------------+------------------+------+------+------+------+------+
+| Triangular                | triangular       |  x   |  x   |      |  x   |      |        
++                           +                  +------+------+------+------+------+
+|                           |                  |  x   |  x   |   x  |      |      |        
++                           +                  +------+------+------+------+------+
+|                           |                  |      |  x   |   x  |  x   |      |        
++                           +                  +------+------+------+------+------+
+|                           |                  |  x   |      |   x  |  x   |      |        
++---------------------------+------------------+------+------+------+------+------+
+| Log-normal                | lognormal        |      |      |   x  |      |  x   |        
++---------------------------+------------------+------+------+------+------+------+
+| Constant (Dirac)          | const            |      |      |      |   x  |      |        
++---------------------------+------------------+------+------+------+------+------+
+
+
+permeability
+------------
+
+Defines the prior probability distribution for permeability as described in `prior`_. Only one distribution
+should be defined, and it will be used for all flow tubes. The permeability values for
+different flow tubes are drawn independently.
+
+permeability_regional_scheme
+----------------------------
+
+This keyword can take the values *individual*, *global* and *regions_from sim*. The default value is *individual*, meaning that
+no regional permeability multipliers will be applied. Setting the value to global means that there will be one global permeability 
+multiplier on top of the individual ones. The last option, *regions_from_sim*, gives the possibility of introducing regional
+permeability multipliers following the region definitions in a grid parameter inside an existing simulation model. When using 
+*regions_from_sim*, the name of the grid parameter should be given in the *permeability_parameter_from_sim_model* keyword.
+The prior distribution for the regional permeability multiplier needs to be defined with the *permeability_regional* keyword.
+
+
+permeability_regional
+---------------------
+
+Defines a prior probability distribution (as described in `prior`_) for a regional permeability multiplier. Only one distribution
+should be defined, and it will be used for all regions defined. 
+
+
+permeability_parameter_from_sim_model
+----------------------------------------
+
+The name of the grid parameter in an existing reservoir simulation model to extract regions from to generate regional permeability multipliers.
+
+
+
++------------------------------------------------------+----------------------------------+------------------------------------------------------+
+| Available options in config yaml                     | Example of usage                 | Example of usage                                     |
++------------------------------------------------------+----------------------------------+------------------------------------------------------+
+| .. code-block:: yaml                                 | .. code-block:: yaml             | .. code-block:: yaml                                 |
+|                                                      |                                  |                                                      |
+|    flownet:                                          |    flownet:                      |    flownet:                                          |
+|      model_parameters:                               |      model_parameters:           |      model_parameters:                               |
+|        permeability:                                 |        permeability:             |        permeability:                                 |
+|          min:                                        |          min: 10                 |          min: 10                                     |
+|          max:                                        |          max: 1000               |          mean: 100                                   |
+|          base:                                       |          distribution: logunif   |          distribution: uniform                       |
+|          mean:                                       |                                  |        permeability_regional_scheme: regions_from_sim|
+|          stddev:                                     |                                  |        permeability_regional:                        |
+|          distribution:                               |                                  |          min: 0.5                                    |
+|        permeability_regional_scheme:                 |                                  |          max: 1.5                                    |
+|        permeability_regional:                        |                                  |        permeability_parameter_from_sim_model: FIPNUM |
+|          min:                                        |                                  |                                                      |
+|          max:                                        |                                  |                                                      |
+|          base:                                       |                                  |                                                      |
+|          mean:                                       |                                  |                                                      |
+|          stddev:                                     |                                  |                                                      |
+|          distribution:                               |                                  |                                                      |
+|        permeability_parameter_from_sim_model:        |                                  |                                                      |
++------------------------------------------------------+----------------------------------+------------------------------------------------------+
+
 
 model_parameters:
   permeability:
