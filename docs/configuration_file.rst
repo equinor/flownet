@@ -926,7 +926,7 @@ For some parameters a low numerical value is favorable. This can be indicated by
 									     
 									     
 									     
-Equilibration
+equilibration
 -------------
 
 This keyword contains information regarding the equilibration regions in the FlowNet model.
@@ -1029,7 +1029,7 @@ faults are drawn independently.
 +----------------------------------+----------------------------------+----------------------------------------+
 
 
-Rock compressibility
+rock_compressibility
 --------------------
 
 Rock compressibility can be included by defining the *reference pressure* and the 
@@ -1053,7 +1053,7 @@ a value.
 +----------------------------------+----------------------------------+
 
 
-Aquifer
+aquifer
 -------
 
 +----------------------------------+----------------------------------+
