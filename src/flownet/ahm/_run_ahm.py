@@ -1,9 +1,10 @@
 import argparse
-from typing import Union, List, Optional, Dict
+from typing import Union, List, Optional, Dict, Tuple
 import json
 import pathlib
 from operator import add
 import warnings
+import pickle
 
 import numpy as np
 import pandas as pd
@@ -26,6 +27,45 @@ from ..parameters import (
     Parameter,
 )
 from ..data import FlowData
+
+
+def _set_up_ahm_and_run_ert(
+    network: NetworkModel,
+    schedule: Schedule,
+    parameters: List[Parameter],
+    config: ConfigSuite.snapshot,
+    args: argparse.Namespace,
+):
+    """
+    This function creates the AssistedHistoryMatching class,
+    creates the ERT setup, and runs ERT.
+
+    Args:
+        network: NetworkModel instance
+        schedule: Schedule instance
+        parameters: List of Parameter objects
+        config: Information from the FlowNet config YAML
+        args: Argparse parsed command line arguments.
+
+    Returns:
+        Nothing
+    """
+
+    ahm = AssistedHistoryMatching(
+        network,
+        schedule,
+        parameters,
+        config,
+    )
+
+    ahm.create_ert_setup(
+        args=args,
+        training_set_fraction=_find_training_set_fraction(schedule, config),
+    )
+
+    ahm.report()
+
+    ahm.run_ert(weights=config.ert.ensemble_weights)
 
 
 def _from_regions_to_flow_tubes(
@@ -156,6 +196,78 @@ def _get_distribution(
         df[f"stddev_{parameter}"] = parameter_config.stddev
         df[f"distribution_{parameter}"] = parameter_config.distribution
     return df
+
+
+def _get_regional_distribution(
+    parameters: Union[str, List[str]],
+    parameters_config: dict,
+    network: NetworkModel,
+    field_data: FlowData,
+    ti2ci: pd.DataFrame,
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Create:
+        1) The distribution with min, mean, base, stddev, max for one or more regional parameter
+            multipliers
+        2) A dataframe linking region model index to cell model index for each regional multiplier
+
+    Args:
+        parameters: which parameter(s) should be outputted in the dataframe
+        parameters_config: the parameters definition from the configuration file
+        network: FlowNet network instance
+        field_data: FlowData class with information from simulation model data source
+        ti2ci: A dataframe with index equal to tube model index, and one column which equals cell indices.
+
+    Returns:
+        tuple: a tuple containing:
+            ci2ri (pd.DataFrame): A dataframe with index equal to cell model index, and one column containing
+                region index for each of the requested regional multiplier(s).
+            df_dist_values (pd.DataFrame): A dataframe with distributions for the requested regional multiplier(s)
+    """
+    if not isinstance(parameters, list):
+        parameters = [parameters]
+
+    df = pd.DataFrame(index=ti2ci.index.unique())
+    df_dist_values = pd.DataFrame(index=[0])
+    ci2ri = pd.DataFrame(index=network.grid.index)
+
+    for parameter in parameters:
+        if (
+            getattr(parameters_config, parameter + "_regional_scheme")
+            == "regions_from_sim"
+        ):
+            df[parameter + "_regional"] = pd.DataFrame(
+                _from_regions_to_flow_tubes(
+                    network,
+                    field_data,
+                    ti2ci,
+                    getattr(parameters_config, parameter + "_parameter_from_sim_model"),
+                )
+            )
+        elif getattr(parameters_config, parameter + "_regional_scheme") == "global":
+            df[parameter + "_regional"] = pd.DataFrame(
+                [1] * len(network.grid.model.unique())
+            )
+
+        ci2ri_index = ti2ci.index.values.copy()
+        for idx in np.unique(ti2ci.index.values):
+            ci2ri_index[ti2ci.index.values == idx] = df.loc[
+                idx, parameter + "_regional"
+            ]
+        ci2ri[parameter + "_regional"] = ci2ri_index
+
+        parameter_config_regional = getattr(parameters_config, parameter + "_regional")
+        df_dist_values[f"minimum_{parameter}_regional"] = parameter_config_regional.min
+        df_dist_values[f"maximum_{parameter}_regional"] = parameter_config_regional.max
+        df_dist_values[f"mean_{parameter}_regional"] = parameter_config_regional.mean
+        df_dist_values[f"base_{parameter}_regional"] = parameter_config_regional.base
+        df_dist_values[
+            f"stddev_{parameter}_regional"
+        ] = parameter_config_regional.stddev
+        df_dist_values[
+            f"distribution_{parameter}_regional"
+        ] = parameter_config_regional.distribution
+    return ci2ri, df_dist_values
 
 
 def _constrain_using_well_logs(
@@ -366,6 +478,35 @@ def update_distribution(
     return parameters
 
 
+def run_flownet_history_matching_from_restart(
+    config: ConfigSuite.snapshot, args: argparse.Namespace
+):
+    """
+    Creates and runs an ERT setup, based on a previously performed
+    ERT run, given user configuration.
+
+    Args:
+        config: Configsuite parsed user provided configuration.
+        args: Argparse parsed command line arguments.
+
+    Returns:
+        Nothing
+
+    """
+    with open(args.restart_folder / "network.pickled", "rb") as fh:
+        network = pickle.load(fh)
+
+    with open(args.restart_folder / "schedule.pickled", "rb") as fh:
+        schedule = pickle.load(fh)
+
+    with open(args.restart_folder / "parameters.pickled", "rb") as fh:
+        parameters = pickle.load(fh)
+
+    parameters = update_distribution(parameters, args.restart_folder)
+
+    _set_up_ahm_and_run_ert(network, schedule, parameters, config, args)
+
+
 # pylint: disable=too-many-branches,too-many-statements
 def run_flownet_history_matching(
     config: ConfigSuite.snapshot, args: argparse.Namespace
@@ -442,6 +583,22 @@ def run_flownet_history_matching(
         fault_tolerance=config.flownet.fault_tolerance,
     )
 
+    if config.flownet.prior_volume_distribution == "voronoi_per_tube":
+        volumes_per_cell = (
+            field_data.bulk_volume_per_flownet_cell_based_on_voronoi_of_input_model(
+                network,
+            )
+        )
+    elif config.flownet.prior_volume_distribution == "tube_length":
+        volumes_per_cell = network.bulk_volume_per_flownet_cell_based_on_tube_length()
+    else:
+        raise ValueError(
+            f"'{config.flownet.prior_volume_distribution}' is not a valid prior volume "
+            "distribution method."
+        )
+
+    network.initial_cell_volumes = volumes_per_cell
+
     schedule = Schedule(network, df_production_data, config)
 
     #########################################
@@ -489,7 +646,12 @@ def run_flownet_history_matching(
         )
     elif config.model_parameters.relative_permeability.scheme == "regions_from_sim":
         df_satnum = pd.DataFrame(
-            _from_regions_to_flow_tubes(network, field_data, ti2ci, "SATNUM"),
+            _from_regions_to_flow_tubes(
+                network,
+                field_data,
+                ti2ci,
+                config.model_parameters.relative_permeability.region_parameter_from_sim_model,
+            ),
             columns=["SATNUM"],
         )
     else:
@@ -621,7 +783,12 @@ def run_flownet_history_matching(
         )
     elif config.model_parameters.equil.scheme == "regions_from_sim":
         df_eqlnum = pd.DataFrame(
-            _from_regions_to_flow_tubes(network, field_data, ti2ci, "EQLNUM"),
+            _from_regions_to_flow_tubes(
+                network,
+                field_data,
+                ti2ci,
+                config.model_parameters.equil.region_parameter_from_sim_model,
+            ),
             columns=["EQLNUM"],
         )
     elif config.model_parameters.equil.scheme == "global":
@@ -675,6 +842,23 @@ def run_flownet_history_matching(
         )
 
     equil_dist_values = equil_dist_values[equil_dist_values.isnull().sum(axis=1) < 5]
+
+    #########################################
+    #  Region volume multipliers            #
+    #########################################
+
+    regional_parameters = [
+        param
+        for param in {"bulkvolume_mult", "porosity", "permeability"}
+        if getattr(config.model_parameters, param + "_regional_scheme") != "individual"
+    ]
+    (ci2ri, regional_porv_poro_trans_dist_values,) = _get_regional_distribution(
+        regional_parameters,
+        config.model_parameters,
+        network,
+        field_data,
+        ti2ci,
+    )
 
     #########################################
     # Fault transmissibility                #
@@ -736,7 +920,12 @@ def run_flownet_history_matching(
 
     parameters = [
         PorvPoroTrans(
-            porv_poro_trans_dist_values, ti2ci, network, config.flownet.min_permeability
+            porv_poro_trans_dist_values,
+            regional_porv_poro_trans_dist_values,
+            ti2ci,
+            ci2ri,
+            network,
+            config.flownet.min_permeability,
         ),
         RelativePermeability(
             relperm_dist_values,
@@ -774,21 +963,4 @@ def run_flownet_history_matching(
     if isinstance(network.faults, dict):
         parameters.append(FaultTransmissibility(fault_mult_dist_values, network))
 
-    if hasattr(args, "restart_folder") and args.restart_folder is not None:
-        parameters = update_distribution(parameters, args.restart_folder)
-
-    ahm = AssistedHistoryMatching(
-        network,
-        schedule,
-        parameters,
-        config,
-    )
-
-    ahm.create_ert_setup(
-        args=args,
-        training_set_fraction=_find_training_set_fraction(schedule, config),
-    )
-
-    ahm.report()
-
-    ahm.run_ert(weights=config.ert.ensemble_weights)
+    _set_up_ahm_and_run_ert(network, schedule, parameters, config, args)
