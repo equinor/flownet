@@ -86,10 +86,10 @@ using kriging (refer to the pykrige documentation for more specific documentatio
 * **n_lags**: Number of averaging bins for the semivariogram (default is 6).
 * **anisotropy_scaling_z**: Scalar stretching value to take into account anisotropy (default is 10).
 * **variogram_model**: Specifies which variogram model to use. See PyKrige documentation for valid options (default is spherical).
-* **permeability_variogram_parameters**: Parameters that define the specified variogram model. Typically this will include things like 
+* **permeability_variogram_parameters**: Parameters that define the specified variogram model. Typically, this will include things like 
   *sill*, *range* and *nugget*. Permeability model sill and nugget are in log scale. See PyKrige documentation for a full list of valid options. 
 * **porosity_variogram_parameters**: Parameters that define the specified variogram model. See PyKrige documentation for valid options. 
-  Typically this will include things like *sill*, *range* and *nugget*.
+  Typically, this will include things like *sill*, *range* and *nugget*.
 
 
 .. code-block:: yaml 
@@ -164,8 +164,8 @@ mitchells_algorithm
 Choose how to come up with candidate nodes for the Mitchell's best candidate algorithm. 
 There are two options: normal or fast. The **normal** option will generate *additional_node_candidates* new
 node suggestions for each new node to place, while the **fast** option will only generate 
-*additional_node_candidates* nodes once, and use that set to place all new nodes.
-The fast option is faster, but may result in a less even spread of the nodes. This can be improved by 
+*additional_node_candidates* nodes once and use that set to place all new nodes.
+The fast option is faster but may result in a less even spread of the nodes. This can be improved by 
 increasing the number of additional node candidates.
 
 .. _prior_volume_distribution:
@@ -197,9 +197,9 @@ hull_factor
 -----------
 
 The size of the FlowNet model will be highly dependent on the areal spread of the well/completion nodes in the data from the data source.
-In some cases a field may only have wells placed in the centre of the field, the shallowest area. The additional nodes are placed inside the 
+In some cases, a field may only have wells placed in the centre of the field, the shallowest area. The additional nodes are placed inside the 
 convex hull covered by the initial well/completion nodes. In such cases it can be of interest to increase the size of this convex hull, to 
-be able to place additional nodes outside of the original convex hull. In other cases it may be of interest to make the volume to place 
+be able to place additional nodes outside of the original convex hull. In other cases, it may be of interest to make the volume to place 
 additional nodes inside smaller (if you have injection wells on the rim of the field but only want addional nodes in the centre). 
 The **hull_factor** will linearly scale the distance of each point from the centroid of all the points, to make a larger (or smaller) volume 
 to place additional nodes in.
@@ -238,17 +238,17 @@ time_avg_open_location
         1. Split connections into groups of connections per well, based on their open/closing history. That is,
            connections that have seen opening or closure at the same moment in time are considered a group. This is
            done by generating a hash value based on opening state booleans through time.
-        2. For each group a bounding box will be created and it will be verified that no foreign connections (i.e.,
+        2. For each group a bounding box will be created, and it will be verified that no foreign connections (i.e.,
            connections from other groups) are inside of the bounding box.
         3. If connections of other groups are found inside of the bounding box a line will be fitted through the
-           connections of the group being checked and a perpendicular splitting plane will be created at the center of
+           connections of the group being checked, and a perpendicular splitting plane will be created at the center of
            foreign connections. Two new groups now exist that both will be checked via step 2.
         4. When all groups have no foreign connections in their bounding boxes the average location of the groups 
            are returned, including their respective open/closing times.  
 
 multiple_based_on_workovers
-  This strategy bases the number of connection on historic plugs/straddles. This should allow us to model discrete steps in, 
-  for example water cut, when a connection is straddled/plugged with a minimal number of connections to a FlowNet. (ADD MORE)
+  This strategy bases the number of connections on historic plugs/straddles. This should allow us to model discrete steps in, 
+  for example, water cut, when a connection is straddled/plugged with a minimal number of connections to a FlowNet. (ADD MORE)
 
 fast_pyscal
 -----------
@@ -293,7 +293,7 @@ The fault definitions are calculated using the following approach:
   4) If an intersection is found, identify the grid blocks that are associated with the intersection.
 
 The **fault_tolerance** defines the minimum distance between corners of a triangle. This value 
-should be set as low as possible to ensure a high resolution fault plane generation. 
+should be set as low as possible to ensure a high-resolution fault plane generation. 
 However, this might lead to a very slow fault tracing process therefore one might want to increase the tolerance.
 Always check that the resulting lower resolution fault plane still is what you expected.
 
@@ -460,13 +460,13 @@ required_success_percent
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 The percentage of completed realizations needed for an iteration to be deemed as successful. After a successful
-iteration, the algorithm will moved on to the next iteration (the default value is 20).
+iteration, the algorithm will move on to the next iteration (the default value is 20).
 
 
 max_runtime
 ~~~~~~~~~~~
 
-The number of seconds allowed for a single realization. After the given amount of seconds, the realization in
+The number of seconds allowed for a single realization. After the given number of seconds, the realization in
 question will be deemed as unsuccessful (the default value is 300). This is to avoid having to wait a long time for realizations with numerical problems.
 
 queue
@@ -478,7 +478,7 @@ system
 ~~~~~~
 
 Controls where the reservoir simulation jobs are executed. The keyword can take the values *lsf* or *local*. The lsf option
-will submit jobs to the lsf cluster at your location. This keyword has no default value, and needs to be defined.
+will submit jobs to the lsf cluster at your location. This keyword has no default value and needs to be defined.
 
 server
 ~~~~~~
@@ -495,7 +495,7 @@ The name of the simulation queue on the server where the reservoir simulation jo
 max_running
 ~~~~~~~~~~~
 
-The maximum number of simulation jobs executed simulataneously.
+The maximum number of simulation jobs executed simultaneously.
 
 
 ensemble_weights
@@ -557,7 +557,7 @@ For permeability, porosity and bulk volume multipliers there is also an option t
 include a regional (based on an existing grid parameter) or global multiplier on top
 of the per tube one.
 
-In addition there are a few optional parameters that may be included:
+In addition, there are a few optional parameters that may be included:
 
 * Fault multipliers
 * Aquifer size (relative to the bulk volume in the model)
@@ -596,7 +596,7 @@ interpolation option for relative permeability.
 
 The table below describes the available prior probability distributions, and how they
 should be defined in the FlowNet config yaml. If one choice of probability distribution
-has several rows in the table, it means that there are more than one way to define that 
+has several rows in the table, it means that there is more than one way to define that 
 specific probability distribution. The **uniform** distribution can for example be defined
 by providing the *min* and *max* values, but it can also be defined by providing the *min* 
 and *mean* values (where FlowNet will calculate the *max* value), or by providing the
@@ -752,12 +752,12 @@ The name of the grid parameter in an existing reservoir simulation model to extr
 bulkvolume_mult
 ---------------
 
-This part of the config file defines the prior probability distribution for a bulk volume multiplier. Only one distribution
-should be defined, and it will be used for all flow tubes. The values for different flow tubes are drawn independently.
-
 Remember that FlowNet has different options for distibution a starting point for the bulk volume in the model 
 (see `prior_volume_distribution`_). Because of this, the prior uncertainty in bulk volume should be defined as
-multipliers on top of the intial bulkvolume.
+multipliers on top of the initial bulkvolume.
+
+This part of the config file defines the prior probability distribution for a bulk volume multiplier. Only one distribution
+should be defined, and it will be used for all flow tubes. The values for different flow tubes are drawn independently.
 
 
 bulkvolume_mult_regional_scheme
@@ -819,7 +819,7 @@ scheme
 
 The scheme parameter decides how many sets of relative permeability curves to generate as
 input to Flow. There are three options. With **scheme: global** only one set of relative 
-permeability curves will be generated, and applied to all flow tubes in the model. With
+permeability curves will be generated and applied to all flow tubes in the model. With
 **scheme: individual** all flow tubes in the model will have its own set of relative permeability
 curves. With **scheme: regions_from_sim** FlowNet will extract the SATNUM regions from the 
 input model provided, and assign the same set of relative permeability curves to all flow tubes 
@@ -842,7 +842,7 @@ There is also an additional keyword **low_optimistic** which only is meaningful 
 
 Each of the input parameters needs a low, base, and high value to be defined. This is done through
 the **min** (low), **base** and **max** (high) keywords. 
-For some parameters a low numerical value is favorable. For example a low value for *sorw* will provide
+For some parameters a low numerical value is favorable. For example, a low value for *sorw* will provide
 a more optimistic relative permeability curve. This can be indicated by setting 
 **low_optimistic** to **True** for that parameter.
 
@@ -857,7 +857,7 @@ independent_interpolation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If **interpolate** is set to **True** and the model has three active phases, this parameter will
-decide whether or not the interpolation for water/oil relative permeability and gas/oil relative 
+decide whether the interpolation for water/oil relative permeability and gas/oil relative 
 permeability will be performed independently. The default value is False.
 
 
@@ -897,18 +897,20 @@ unless one of the regions is defined with identifier *None*.
 * swl: Connate water saturation. 
 * swcr: Critical water saturation. 
 * sorw: Residual oil saturation (that cannot be displaced by water). 
-* krwend: Maximum relative permeability for water. 
+* krwend: Maximum relative permeability for water (at residual oil saturation). 
+* krwmax: Maximum relative permeability for water (at 100% water saturation). Defaulted to 1 if needed and not defined.
 * kroend: Maximum relative permeability for oil. 
 * nw, now, ng, nog: Exponents in Corey parametrization. 
 * sorg: Residual oil saturation (that cannot be displaced by gas). 
 * sgcr: Critical gas saturation. 
 * krgend: Maximum relative permeability for gas
+* krgmax: Defaulted to 1. Currently not implemented in the FlowNet config file.
   
 A water/oil model needs *swirr*, *swl*, *swcr*, *sorw*, *nw*, *now*, *krwend* and *kroend* to be defined.
 An oil/gas model needs *swirr*, *swl*, *sgcr*, *sorg*, *ng*, *nog*, *krgend* and *kroend* to be defined.
-A three phase model needs all 13 relative permeability parameters to be defined.
+A three-phase model needs all 13 relative permeability parameters to be defined.
 
-All of the relative permeability parameters above should have prior distributions defined according to `prior`_.
+All the relative permeability parameters above should have prior distributions defined according to `prior`_.
 
   
 .. figure:: https://equinor.github.io/pyscal/_images/gasoil-endpoints.png
@@ -988,10 +990,10 @@ scheme
 
 The scheme parameter decides how many equilibration regions to generate as
 input to Flow. There are three options. With **scheme: global** the model will only have one  
-equilibration region, and applied to all flow tubes in the model. With
+equilibration region and applied to all flow tubes in the model. With
 **scheme: individual** all flow tubes in the model will act as its own equilibration region. 
 With **scheme: regions_from_sim** FlowNet will extract the EQLNUM regions from the 
-input model provided, and assign equilibraion regions to all flow tubes accordingly. 
+input model provided and assign equilibraion regions to all flow tubes accordingly. 
 The default value is global.
 
 
