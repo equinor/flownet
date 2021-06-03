@@ -3,7 +3,7 @@
 Configuration file
 ==================
 
-
+The configuration file contains all information needed to build, run and analyse the results from the FlowNet network model.
 
 name
 ====
@@ -157,7 +157,42 @@ The Mitchell's best candidate algorithm is implemented with two options: 1) to g
 every time a new node is placed, or to generate *additional_node_candidates* number of candidates first, and iteratively select the 
 *additional_flow_nodes* number of candidates from this set. The latter option is faster.
 
-  
+
+mitchells_algorithm
+-------------------
+
+Choose how to come up with candidate nodes for the Mitchell's best candidate algorithm. 
+There are two options: normal or fast. The **normal** option will generate *additional_node_candidates* new
+node suggestions for each new node to place, while the **fast** option will only generate 
+*additional_node_candidates* nodes once, and use that set to place all new nodes.
+The fast option is faster, but may result in a less even spread of the nodes. This can be improved by 
+increasing the number of additional node candidates.
+
+.. _prior_volume_distribution:
+
+prior_volume_distribution
+-------------------------
+
+Volume distribution method of tubes (or cells in tube) to be applied on the prior volume distribution. 
+Based on tube length by default.
+
+Valid options are:
+
+* tube_length: distrubutes the volume of the convex hull of the FlowNet model,
+  based on the length of a tube. I.e., if all tubes have equeal lenght, they
+  will have equal volume.
+* voronoi_per_tube: distributes the input models bulk volume of active cells
+  to the nearest FlowNet tube of a cell. The total volume of the tube is then
+  devided equally over the cells of the tube. I.e., in areas with a higher
+  FlowNet tube density, the volume per cell is lower. Mind that if the FlowNet
+  model, i.e., the convex hull of the well connections, is much smaller than the
+  original model volume outside of the well connection convex hull might be
+  collapsed at the borders of the model. I.e., the borders of your model could
+  get unrealisticly large volumes. This can be mitigated by increasing the hull
+  factor of the FlowNet model generation process or by setting the
+  place_nodes_in_volume_reservoir to true.
+
+
 hull_factor
 -----------
 
@@ -238,6 +273,13 @@ the FlowNet network model. If there are 10 years of input obervations of e.g. WO
 of 0.6 will use 6 years of the input data for training (leaving 4 years of data for validation).
 
 Defining this at the same time as **training_set_end_date** will raise a ValueError.
+
+
+place_nodes_in_volume_reservoir
+-------------------------------
+
+When set to *true* the boundary of reservoir/layer volumes will be used as bounding volumes to place initial candidates 
+instead of using the convex hull of well perforations. Currently requires an input reservoir simulation model. 
 
 
 fault_tolerance
@@ -512,7 +554,8 @@ with the following required parameters:
 * Datum pressures and contacts
 
 For permeability, porosity and bulk volume multipliers there is also an option to
-include a regional (based on an existing grid parameter) or global multiplier as well.
+include a regional (based on an existing grid parameter) or global multiplier on top
+of the per tube one.
 
 In addition there are a few optional parameters that may be included:
 
@@ -660,14 +703,23 @@ different flow tubes are drawn independently.
 porosity_regional_scheme
 ------------------------
 
+This keyword can take the values *individual*, *global* and *regions_from sim*. The default value is *individual*, meaning that
+no regional porosity multipliers will be applied. Setting the value to global means that there will be one global porosity 
+multiplier on top of the individual ones. The last option, *regions_from_sim*, gives the possibility of introducing regional
+porosity multipliers following the region definitions in a grid parameter inside an existing simulation model. When using 
+*regions_from_sim*, the name of the grid parameter should be given in the *porosity_parameter_from_sim_model* keyword.
+The prior distribution for the regional porosity multiplier needs to be defined with the *porosity_regional* keyword.
 
 porosity_regional
 -----------------
 
+Defines a prior probability distribution (as described in `prior`_) for a regional porosity multiplier. Only one distribution
+should be defined, and it will be used for all regions defined. 
 
 porosity_parameter_from_sim_model
 ---------------------------------
 
+The name of the grid parameter in an existing reservoir simulation model to extract regions from to generate regional porosity multipliers.
 
 
 +------------------------------------------------------+----------------------------------+--------------------------------------------------------+
@@ -682,8 +734,8 @@ porosity_parameter_from_sim_model
 |          max:                                        |          max: 0.35               |          max: 0.40                                     |
 |          base:                                       |          distribution: uniform   |          distribution: uniform                         |
 |          mean:                                       |                                  |        porosity_regional_scheme: regions_from_sim      |
-|          stddev:                                     |                                  |        porosity_regional:                              |                                  | 
-|          distribution:                               |                                  |          min: 0.5                                      |                                  |
+|          stddev:                                     |                                  |        porosity_regional:                              | 
+|          distribution:                               |                                  |          min: 0.5                                      |
 |        porosity_regional_scheme:                     |                                  |          mean: 1                                       |
 |        porosity_regional:                            |                                  |          max: 2                                        |
 |          min:                                        |                                  |          distribution: triangluar                      |
@@ -693,47 +745,41 @@ porosity_parameter_from_sim_model
 |          stddev:                                     |                                  |                                                        |
 |          distribution:                               |                                  |                                                        |
 |        porosity_parameter_from_sim_model:            |                                  |                                                        |
-+------------------------------------------------------+----------------------------------+----------------------------------+---------------------+
++------------------------------------------------------+----------------------------------+--------------------------------------------------------+
 
 
 
 bulkvolume_mult
 ---------------
 
-FlowNet has two options in the config yaml deciding how the bulk volume should be
-distributed initially. These options are:
+This part of the config file defines the prior probability distribution for a bulk volume multiplier. Only one distribution
+should be defined, and it will be used for all flow tubes. The values for different flow tubes are drawn independently.
 
-* **tube_length**: Here the bulk volume covered by the convex hull of the FlowNet will be divided equally to all active cells
-* **voronoi_per_tube**: This is based on an input simulation model. The bulk volume of each cell in the input simulation model 
-  will be assigned to the nearest cell in any flow tube in the FlowNet model. When all the bulk volume in the input simulation 
-  model have been assigned to cells in the FlowNet model, the total bulk volume assigned to each flow tube in the FlowNet model 
-  is distributed evenly to all cells in that flow tube.
-
-Each flow tube can be thought to represent the bulk volume in the region between the two nodes it connects. 
-There could be several reasons why the bulk volume in a flow tube should be adjusted up or down, hence there 
-is a need to be able to tune the bulk volume for efficient history matching.
-
-This multiplier will act on top of that initial distribution of 
-bulk volume.
-
-This part of the config file defines the prior probability distribution 
-for a bulk volume multiplier. Only one distribution
-should be defined, and it will be used for all flow tubes. The values for
-different flow tubes are drawn independently.
+Remember that FlowNet has different options for distibution a starting point for the bulk volume in the model 
+(see `prior_volume_distribution`_). Because of this, the prior uncertainty in bulk volume should be defined as
+multipliers on top of the intial bulkvolume.
 
 
 bulkvolume_mult_regional_scheme
 -------------------------------
 
+This keyword can take the values *individual*, *global* and *regions_from sim*. The default value is *individual*, meaning that
+no regional bulkvolume multipliers will be applied. Setting the value to global means that there will be one global bulkvolume 
+multiplier on top of the individual ones. The last option, *regions_from_sim*, gives the possibility of introducing regional
+bulkvolume multipliers following the region definitions in a grid parameter inside an existing simulation model. When using 
+*regions_from_sim*, the name of the grid parameter should be given in the *bulkvolume_mult_parameter_from_sim_model* keyword.
+The prior distribution for the regional permeability multiplier needs to be defined with the *bulkvolume_mult_regional* keyword.
 
 bulkvolume_mult_regional
 ------------------------
 
+Defines a prior probability distribution (as described in `prior`_) for a regional bulkvolume multiplier. Only one distribution
+should be defined, and it will be used for all regions defined. 
 
 bulkvolume_mult_parameter_from_sim_model
 ----------------------------------------
 
-
+The name of the grid parameter in an existing reservoir simulation model to extract regions from to generate regional bulkvolume multipliers.
 
 +------------------------------------------------------+----------------------------------+----------------------------------------------------------+
 | Available options in config yaml                     | Example of usage                 | Example of usage                                         |
@@ -788,10 +834,24 @@ This introduces the option of generating new sets of relative permeability curve
 envelope created by the low/base/high sets of curves by using an interpolation parameter 
 (potentially two interpolation parameters in three phase models). This will limit the number of 
 history matching parameters, especially when the number of SATNUM regions is large. The default 
-value is False. A parameter value on the interval [-1,0) will interpolate all input parameters 
+value is False. 
+
+When using the interpolation option for relative permeability, some of the keywords related to choice 
+of `prior`_ distribution have a slightly different meaning. This applies to **min**, **base**, and **max**. 
+There is also an additional keyword **low_optimistic** which only is meaningful to define for relative permeability.
+
+Each of the input parameters needs a low, base, and high value to be defined. This is done through
+the **min** (low), **base** and **max** (high) keywords. 
+For some parameters a low numerical value is favorable. For example a low value for *sorw* will provide
+a more optimistic relative permeability curve. This can be indicated by setting 
+**low_optimistic** to **True** for that parameter.
+
+A parameter value on the interval [-1,0) will interpolate all input parameters 
 (Corey exponents, saturation endpoints and relative permeability endpoints) linearly between the 
 value in the low model and the base model. A parameter value on the interval [0,1] will interpolate
 between the base model and the high model. 
+
+
 
 independent_interpolation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -850,7 +910,6 @@ A three phase model needs all 13 relative permeability parameters to be defined.
 
 All of the relative permeability parameters above should have prior distributions defined according to `prior`_.
 
-
   
 .. figure:: https://equinor.github.io/pyscal/_images/gasoil-endpoints.png
   
@@ -862,14 +921,7 @@ All of the relative permeability parameters above should have prior distribution
 
 
 
-When using the interpolation option for relative permeability, some of the keywords related to choice 
-of prior distribution above have a different meaning. This applies to **min**, **base**, and **max**. 
-There is also an additional keyword **low_optimistic** which only is meaningful to define for relative permeability.
 
-Each of the input parameters needs a low, base, and high value to be defined. This is done through
-the **min** (low), **base** and **max** (high) keywords. 
-For some parameters a low numerical value is favorable. This can be indicated by setting 
-**low_optimistic** to **True** for that parameter (the default value of low_optimistic is False).
 
 
 
@@ -947,7 +999,7 @@ region_parameter_from_sim_model
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The name of the regions grid parameter in the simulation model to base the equilibration
-region parameter in the FlowNet model on (the default parameter is SATNUM).
+region parameter in the FlowNet model on (the default parameter is EQLNUM).
 
 
 regions
@@ -1105,7 +1157,8 @@ size_in_bulkvolumes
 
 The size of the aquifer, relative to the bulk volume of the FlowNet the aquifer nodes connect to.
 This should be defined as a prior probability distribution according to `prior`_.
-  
+
+
 
 
 
