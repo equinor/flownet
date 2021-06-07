@@ -31,8 +31,11 @@ def _is_angle_too_large(
     """
     calculate_angle = np.rad2deg(
         math.acos(
-            (math.pow(side_a, 2) + math.pow(side_b, 2) - math.pow(side_c, 2))
-            / (2 * side_a * side_b)
+            min(
+                1,
+                (math.pow(side_a, 2) + math.pow(side_b, 2) - math.pow(side_c, 2))
+                / (2 * side_a * side_b),
+            )
         )
     )
 
@@ -190,7 +193,17 @@ def _generate_connections(
     # Building a mesh consisting of tetrahedrons where the well
     # perforations and the added fow nodes are the
     # vertices of the tetrahedrons
-    triangulation = Delaunay(np.array(coordinates), qhull_options="QJ Pp")
+    triangulation = Delaunay(
+        np.array(
+            [tupl[0:2] for tupl in coordinates]
+            if np.isclose(
+                max(coordinates, key=lambda item: item[2])[2],
+                min(coordinates, key=lambda item: item[2])[2],
+            )
+            else coordinates
+        ),
+        qhull_options="QJ Pp",
+    )
     print("done.")
 
     def are_points_from_same_existing_entity(point1: Coordinate, point2: Coordinate):
@@ -221,8 +234,8 @@ def _generate_connections(
     well_pairs: np.ndarray = np.full((4, 4), pd.NaT)
     dist_matrix: np.ndarray = np.full((4, 4), np.nan)
     for tetrahedron in range(0, len(triangulation.simplices)):
-        for vertex_a in range(0, 3):
-            for vertex_b in range(vertex_a + 1, 4):
+        for vertex_a in range(0, triangulation.ndim):
+            for vertex_b in range(vertex_a + 1, triangulation.ndim + 1):
                 flow_node_a = triangulation.simplices[tetrahedron, vertex_a]
                 flow_node_b = triangulation.simplices[tetrahedron, vertex_b]
 
@@ -338,7 +351,11 @@ def __get_entity_str(df_coordinates: pd.DataFrame, coordinate: Coordinate) -> st
 
     """
     values = df_coordinates.values
-    x, y, z = coordinate
+    if len(coordinate) == 2:
+        x, y = coordinate[0], coordinate[1]
+        z = df_coordinates["Z"][0]
+    else:
+        x, y, z = coordinate
 
     xi = np.where(values[:, 1] == x)[0]
     yi = np.where(values[:, 2] == y)[0]
