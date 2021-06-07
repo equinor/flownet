@@ -16,7 +16,9 @@ Assisted history matching example
 
 Prediction example
 ==================
+git push --set-upstream origin fix-issues-related-to-2D
 
 .. literalinclude:: ../examples/norne_pred.yml
    :language: yaml
    :linenos:
+
