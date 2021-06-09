@@ -73,15 +73,14 @@ class Schedule:
 
         """
         for _, value in self._df_production_data.iterrows():
-            self.append(
-                WSALT(
-                    date=value["date"],
-                    well_name=value["WELL_NAME"],
-                    salt_concentration=0.0
-                    if not value["WWIR"]
-                    else value["WSIR"] / value["WWIR"],
+            if value["WWIR"] > 0 and value["WSIR"] > 0:
+                self.append(
+                    WSALT(
+                        date=value["date"],
+                        well_name=value["WELL_NAME"],
+                        salt_concentration=value["WSIR"] / value["WWIR"],
+                    )
                 )
-            )
 
     def _calculate_compdat(self):
         """
