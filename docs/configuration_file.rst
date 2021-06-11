@@ -14,6 +14,90 @@ name
 flownet
 =======
 
+A description of the usage of the various keywords available in relation to the construction of the FlowNet network model. 
+These keywords are mainly related to the geometry of the model, populating with model parameters will be described under 
+`model_parameters`_. For simplicity the keywords are listed alphabetically (by indentation), they can appear in any order 
+in the actual configuration file.
+
+
+.. _additional_flow_nodes:
+  
+additional_flow_nodes
+---------------------
+
+The number of additional flow nodes to add to the FlowNet network model (in addition to the well/completion nodes extracted from 
+a data source. For a single FlowNet model, this should be an integer. For a layered FlowNet model, this input could either be a list
+with number of items equal to the number of layers in the FlowNet model, or it could be an integer giving the total number of nodes to 
+be added to the FlowNet network. In the latter case, the total number of nodes will be assigned to each layer in the FlowNet model
+according to the volume inside the concave hull around the well/completion nodes in that particular layer.
+
+.. _additional_node_candidates:
+
+additional_node_candidates
+--------------------------
+
+The number of additional nodes to create as candidates for adding one additional node (using Mitchell's best candidate algorithm). 
+The Mitchell's best candidate algorithm is implemented with two options: 1) to generate *additional_node_candidates* number of candidates
+every time a new node is placed, or to generate *additional_node_candidates* number of candidates first, and iteratively select the 
+*additional_flow_nodes* number of candidates from this set. The latter option is faster.
+
+angle_threshold
+---------------
+
+Angle threshold used, after Delaunay triangulation to remove sides/tubes opposite angles larger than the supplied threshold.
+The idea being that for large angles, the pathway covered by the flow tube opposite a large angle will be very similar to the 
+pathway covered by the two flow tubes adjacent to the large antle.
+
+cell_length
+-----------
+
+The preferred cell length of the grid cells in the flow tubes of the FlowNet model. 
+To make start and end actually be the mid points of the first and last grid cell, 
+the cell_length will in general only be approximately fulfilled. 
+In addition, there will always be created at least two grid cells regardless of how large 
+cell_length is.
+
+
+constraining
+------------
+
+kriging
+~~~~~~~
+
+The permeability and porosity in the individual flow tubes in the FlowNet model can be constrained by the well logs 
+using kriging (refer to the pykrige documentation for more specific documentation). The model choices here are the following:
+
+* **enabled**: Switch to enable or disable kriging on well log data (default value is False).
+* **n**: Number of kriged values in each direction. E.g, n = 10 -> 10x10x10 = 1000 values (default is 20).
+* **n_lags**: Number of averaging bins for the semivariogram (default is 6).
+* **anisotropy_scaling_z**: Scalar stretching value to take into account anisotropy (default is 10).
+* **variogram_model**: Specifies which variogram model to use. See PyKrige documentation for valid options (default is spherical).
+* **permeability_variogram_parameters**: Parameters that define the specified variogram model. Typically, this will include things like 
+  *sill*, *range* and *nugget*. Permeability model sill and nugget are in log scale. See PyKrige documentation for a full list of valid options. 
+* **porosity_variogram_parameters**: Parameters that define the specified variogram model. See PyKrige documentation for valid options. 
+  Typically, this will include things like *sill*, *range* and *nugget*.
+
+
+.. code-block:: yaml 
+
+  flownet:
+    constraining:
+      kriging:
+        enabled: false
+        n: 20
+        n_lags: 6
+        anisotropy_scaling_z: 10
+        variogram_model: spherical
+        permeability_variogram_parameters:
+          sill: 0.75
+          range: 1000
+          nugget: 0
+        porosity_variogram_parameters:
+          sill: 0.05
+          range: 1000
+          nugget: 0
+
+
 data_source
 -----------
 
@@ -72,126 +156,25 @@ concave_hull
 
 ADD MORE HERE
 
-constraining
-------------
-
-kriging
-~~~~~~~
-
-The permeability and porosity in the individual flow tubes in the FlowNet model can be constrained by the well logs 
-using kriging (refer to the pykrige documentation for more specific documentation). The model choices here are the following:
-
-* **enabled**: Switch to enable or disable kriging on well log data (default value is False).
-* **n**: Number of kriged values in each direction. E.g, n = 10 -> 10x10x10 = 1000 values (default is 20).
-* **n_lags**: Number of averaging bins for the semivariogram (default is 6).
-* **anisotropy_scaling_z**: Scalar stretching value to take into account anisotropy (default is 10).
-* **variogram_model**: Specifies which variogram model to use. See PyKrige documentation for valid options (default is spherical).
-* **permeability_variogram_parameters**: Parameters that define the specified variogram model. Typically, this will include things like 
-  *sill*, *range* and *nugget*. Permeability model sill and nugget are in log scale. See PyKrige documentation for a full list of valid options. 
-* **porosity_variogram_parameters**: Parameters that define the specified variogram model. See PyKrige documentation for valid options. 
-  Typically, this will include things like *sill*, *range* and *nugget*.
-
-
-.. code-block:: yaml 
-
-  flownet:
-    constraining:
-      kriging:
-        enabled: false
-        n: 20
-        n_lags: 6
-        anisotropy_scaling_z: 10
-        variogram_model: spherical
-        permeability_variogram_parameters:
-          sill: 0.75
-          range: 1000
-          nugget: 0
-        porosity_variogram_parameters:
-          sill: 0.05
-          range: 1000
-          nugget: 0
-
-phases
-------
-
-A list of phases to be present in the FlowNet model. The available phases are *oil*, *gas*, *water*, *vapoil* and *disgas*.
-
-pvt
----
-
-rsvd
-~~~~
-
-The path to a csv  file with RSVD input. This file can now be done either as one table used for all EQLNUM regions, 
-or as one table for each EQLNUM region. The csv file needs a header with column names "depth", "rs" and "eqlnum" 
-(the latter only when multiple tables are defined).
-
-norne_static/rsvd_multiple.csv
-  
-
-cell_length
+fast_pyscal
 -----------
 
-The preferred cell length of the grid cells in the flow tubes of the FlowNet model. 
-To make start and end actually be the mid points of the first and last grid cell, 
-the cell_length will in general only be approximately fulfilled. 
-In addition, there will always be created at least two grid cells regardless of how large 
-cell_length is.
+maybe not relevant anymore?
 
-  
-additional_flow_nodes
----------------------
+fault_tolerance
+---------------
 
-The number of additional flow nodes to add to the FlowNet network model (in addition to the well/completion nodes extracted from 
-a data source. For a single FlowNet model, this should be an integer. For a layered FlowNet model, this input could either be a list
-with number of items equal to the number of layers in the FlowNet model, or it could be an integer giving the total number of nodes to 
-be added to the FlowNet network. In the latter case, the total number of nodes will be assigned to each layer in the FlowNet model
-according to the volume inside the concave hull around the well/completion nodes in that particular layer.
+The fault definitions are calculated using the following approach:
 
+  1) Loop through all faults
+  2) Perform a triangulation of all points belonging to a fault plane and store the triangles
+  3) For each connection, find all triangles in its bounding box, perform ray tracing using the Möller-Trumbore intersection algorithm.
+  4) If an intersection is found, identify the grid blocks that are associated with the intersection.
 
-additional_node_candidates
---------------------------
-
-The number of additional nodes to create as candidates for adding one additional node (using Mitchell's best candidate algorithm). 
-The Mitchell's best candidate algorithm is implemented with two options: 1) to generate *additional_node_candidates* number of candidates
-every time a new node is placed, or to generate *additional_node_candidates* number of candidates first, and iteratively select the 
-*additional_flow_nodes* number of candidates from this set. The latter option is faster.
-
-
-mitchells_algorithm
--------------------
-
-Choose how to come up with candidate nodes for the Mitchell's best candidate algorithm. 
-There are two options: normal or fast. The **normal** option will generate *additional_node_candidates* new
-node suggestions for each new node to place, while the **fast** option will only generate 
-*additional_node_candidates* nodes once and use that set to place all new nodes.
-The fast option is faster but may result in a less even spread of the nodes. This can be improved by 
-increasing the number of additional node candidates.
-
-.. _prior_volume_distribution:
-
-prior_volume_distribution
--------------------------
-
-Volume distribution method of tubes (or cells in tube) to be applied on the prior volume distribution. 
-Based on tube length by default.
-
-Valid options are:
-
-* tube_length: distrubutes the volume of the convex hull of the FlowNet model,
-  based on the length of a tube. I.e., if all tubes have equeal lenght, they
-  will have equal volume.
-* voronoi_per_tube: distributes the input models bulk volume of active cells
-  to the nearest FlowNet tube of a cell. The total volume of the tube is then
-  devided equally over the cells of the tube. I.e., in areas with a higher
-  FlowNet tube density, the volume per cell is lower. Mind that if the FlowNet
-  model, i.e., the convex hull of the well connections, is much smaller than the
-  original model volume outside of the well connection convex hull might be
-  collapsed at the borders of the model. I.e., the borders of your model could
-  get unrealisticly large volumes. This can be mitigated by increasing the hull
-  factor of the FlowNet model generation process or by setting the
-  place_nodes_in_volume_reservoir to true.
-
+The **fault_tolerance** defines the minimum distance between corners of a triangle. This value 
+should be set as low as possible to ensure a high-resolution fault plane generation. 
+However, this might lead to a very slow fault tracing process therefore one might want to increase the tolerance.
+Always check that the resulting lower resolution fault plane still is what you expected.
 
 hull_factor
 -----------
@@ -203,13 +186,63 @@ be able to place additional nodes outside of the original convex hull. In other 
 additional nodes inside smaller (if you have injection wells on the rim of the field but only want addional nodes in the centre). 
 The **hull_factor** will linearly scale the distance of each point from the centroid of all the points, to make a larger (or smaller) volume 
 to place additional nodes in.
-  
-random_seed
------------
 
-An integer. Set this to control the numpy random number generator, to make sure that your FlowNet models are possible to regenerate 
-(meaning that two FlowNet runs with the exact same input config file will produce the same FlowNet model).
+hyperopt
+--------
 
+A dictionary with parameters relater to hyper optimization of input.
+
+
+n_runs
+  Number of *flownet ahm* runs in one hyperopt run.
+
+mode
+  Hyperopt mode to run with. Valid options are *random*, *tpe* and *adaptive_tpe*
+
+loss
+  Dictionary with definition of the hyperopt loss function. The definitions refer to the first analysis workflow ONLY.
+
+  - keys: List of keys, as defined in the analysis section (ert)  
+  - factors: List of factors to scale the keys.
+  - metric: Metric to be used in Hyperopt.
+
+inj_control_mode
+----------------
+
+Defines how the injection wells are controlled in the historic period. Available modes are *RATE* and *BHP*.
+
+max_distance
+------------
+
+The longest distance between two nodes to be included in the FlowNet model. Nodes that are further apart than **max_distance**
+will not have a direct connection between them (default value is 1e12, i.e. very large).
+
+
+max_distance_fraction
+---------------------
+
+If defined, the **max_distance_fraction** longest connections between nodes in the FlowNet model will be removed (default value is 0).
+
+min_permeability
+----------------
+
+Minimum allowed permeability in mD before a tube is removed (i.e., its cells are made inactive).
+
+mitchells_algorithm
+-------------------
+
+Choose how to come up with candidate nodes for the Mitchell's best candidate algorithm. 
+There are two options: normal or fast. The **normal** option will generate *additional_node_candidates* new
+node suggestions for each new node to place, while the **fast** option will only generate 
+*additional_node_candidates* nodes once and use that set to place all new nodes.
+The fast option is faster but may result in a less even spread of the nodes. This can be improved by 
+increasing the number of additional node candidates.
+
+n_non_reservoir_evaluation
+--------------------------
+
+Number of points along a tube to check whether they are in non reservoir for removal purposes. ADD MORE (Something related to concave hull?)                    
+                    
 perforation_handling_strategy
 -----------------------------
 
@@ -250,11 +283,63 @@ multiple_based_on_workovers
   This strategy bases the number of connections on historic plugs/straddles. This should allow us to model discrete steps in, 
   for example, water cut, when a connection is straddled/plugged with a minimal number of connections to a FlowNet. (ADD MORE)
 
-fast_pyscal
+phases
+------
+
+A list of phases to be present in the FlowNet model. The available phases are *oil*, *gas*, *water*, *vapoil* and *disgas*.
+
+place_nodes_in_volume_reservoir
+-------------------------------
+
+When set to *true* the boundary of reservoir/layer volumes will be used as bounding volumes to place initial candidates 
+instead of using the convex hull of well perforations. Currently requires an input reservoir simulation model. 
+
+.. _prior_volume_distribution:
+
+prior_volume_distribution
+-------------------------
+
+Volume distribution method of tubes (or cells in tube) to be applied on the prior volume distribution. 
+Based on tube length by default.
+
+Valid options are:
+
+* tube_length: distrubutes the volume of the convex hull of the FlowNet model,
+  based on the length of a tube. I.e., if all tubes have equeal lenght, they
+  will have equal volume.
+* voronoi_per_tube: distributes the input models bulk volume of active cells
+  to the nearest FlowNet tube of a cell. The total volume of the tube is then
+  devided equally over the cells of the tube. I.e., in areas with a higher
+  FlowNet tube density, the volume per cell is lower. Mind that if the FlowNet
+  model, i.e., the convex hull of the well connections, is much smaller than the
+  original model volume outside of the well connection convex hull might be
+  collapsed at the borders of the model. I.e., the borders of your model could
+  get unrealisticly large volumes. This can be mitigated by increasing the hull
+  factor of the FlowNet model generation process or by setting the
+  place_nodes_in_volume_reservoir to true.
+
+prod_control_mode
+-----------------
+
+Defines how the production wells are controlled in the historic production period. Available modes are *ORAT*, *GRAT*, *WRAT*, *LRAT*, *RESV*, *BHP*.
+
+pvt
+---
+
+rsvd
+~~~~
+
+The path to a csv  file with RSVD input. This file can now be done either as one table used for all EQLNUM regions, 
+or as one table for each EQLNUM region. The csv file needs a header with column names "depth", "rs" and "eqlnum" 
+(the latter only when multiple tables are defined).
+
+norne_static/rsvd_multiple.csv
+
+random_seed
 -----------
 
-maybe not relevant anymore?
-
+An integer. Set this to control the numpy random number generator, to make sure that your FlowNet models are possible to regenerate 
+(meaning that two FlowNet runs with the exact same input config file will produce the same FlowNet model).
 
 training_set_end_date
 ---------------------
@@ -273,93 +358,7 @@ the FlowNet network model. If there are 10 years of input obervations of e.g. WO
 of 0.6 will use 6 years of the input data for training (leaving 4 years of data for validation).
 
 Defining this at the same time as **training_set_end_date** will raise a ValueError.
-
-
-place_nodes_in_volume_reservoir
--------------------------------
-
-When set to *true* the boundary of reservoir/layer volumes will be used as bounding volumes to place initial candidates 
-instead of using the convex hull of well perforations. Currently requires an input reservoir simulation model. 
-
-
-fault_tolerance
----------------
-
-The fault definitions are calculated using the following approach:
-
-  1) Loop through all faults
-  2) Perform a triangulation of all points belonging to a fault plane and store the triangles
-  3) For each connection, find all triangles in its bounding box, perform ray tracing using the Möller-Trumbore intersection algorithm.
-  4) If an intersection is found, identify the grid blocks that are associated with the intersection.
-
-The **fault_tolerance** defines the minimum distance between corners of a triangle. This value 
-should be set as low as possible to ensure a high-resolution fault plane generation. 
-However, this might lead to a very slow fault tracing process therefore one might want to increase the tolerance.
-Always check that the resulting lower resolution fault plane still is what you expected.
-
-
-max_distance
-------------
-
-The longest distance between two nodes to be included in the FlowNet model. Nodes that are further apart than **max_distance**
-will not have a direct connection between them (default value is 1e12, i.e. very large).
-
-
-max_distance_fraction
----------------------
-
-If defined, the **max_distance_fraction** longest connections between nodes in the FlowNet model will be removed (default value is 0).
-
-  
-prod_control_mode
------------------
-
-Defines how the production wells are controlled in the historic production period. Available modes are *ORAT*, *GRAT*, *WRAT*, *LRAT*, *RESV*, *BHP*.
-  
-inj_control_mode
-----------------
-
-Defines how the injection wells are controlled in the historic period. Available modes are *RATE* and *BHP*.
-
-
-angle_threshold
----------------
-
-Angle threshold used, after Delaunay triangulation to remove sides/tubes opposite angles larger than the supplied threshold.
-The idea being that for large angles, the pathway covered by the flow tube opposite a large angle will be very similar to the 
-pathway covered by the two flow tubes adjacent to the large antle.
-
-n_non_reservoir_evaluation
---------------------------
-
-Number of points along a tube to check whether they are in non reservoir for removal purposes. ADD MORE (Something related to concave hull?)                    
-                    
-min_permeability
-----------------
-
-Minimum allowed permeability in mD before a tube is removed (i.e., its cells are made inactive).
-
-
-hyperopt
---------
-
-A dictionary with parameters relater to hyper optimization of input.
-
-
-n_runs
-  Number of *flownet ahm* runs in one hyperopt run.
-
-mode
-  Hyperopt mode to run with. Valid options are *random*, *tpe* and *adaptive_tpe*
-
-loss
-  Dictionary with definition of the hyperopt loss function. The definitions refer to the first analysis workflow ONLY.
-
-  - keys: List of keys, as defined in the analysis section (ert)  
-  - factors: List of factors to scale the keys.
-  - metric: Metric to be used in Hyperopt.
-    
-
+      
 Example of the entire flownet part of the configuration yaml file:
 
 .. code-block:: yaml
@@ -539,6 +538,8 @@ outfile
 
 The filename of the output of the workflow. In case multiple analysis workflows are run this name should be unique.
 
+
+.. _model parameters:
 
 model_parameters
 ================
