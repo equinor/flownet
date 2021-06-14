@@ -8,7 +8,7 @@ The configuration file contains all information needed to build, run and analyse
 name
 ====
 
-
+The name of the FlowNet model
 
 
 flownet
@@ -17,7 +17,69 @@ flownet
 A description of the usage of the various keywords available in relation to the construction of the FlowNet network model. 
 These keywords are mainly related to the geometry of the model, populating with model parameters will be described under 
 `model_parameters`_. For simplicity the keywords are listed alphabetically (by indentation), they can appear in any order 
-in the actual configuration file.
+in the actual configuration file. The unit conversion used for the various parameters depend on the setting in the RUNSPEC 
+part of the template file *TEMPLATE_MODEL.DATA.jinja2*. This is by default set to *METRIC*, but can of course also be changed
+to *FIELD* or *LAB*.
+
+Example of the entire flownet part of the configuration yaml file:
+
+.. code-block:: yaml
+
+  flownet:
+    data_source:
+      simulation:
+        input_case: ../input_model/norne/NORNE_ATW2013
+        vectors:
+          WBHP:
+            rel_error: 0.05
+            min_error: 10
+          WOPR:
+            rel_error: 0.1
+            min_error: 100
+          WGPR:
+            rel_error: 0.1
+            min_error: 100000
+        well_logs: true
+        layers:
+          - [1, 3]
+          - [4, 22]
+      concave_hull: true
+    constraining:
+      kriging:
+        enabled: false
+        n: 20
+        n_lags: 6
+        anisotropy_scaling_z: 10
+        variogram_model: spherical
+        permeability_variogram_parameters:
+          sill: 0.75
+          range: 1000
+          nugget: 0
+        porosity_variogram_parameters:
+          sill: 0.05
+          range: 1000
+          nugget: 0
+    phases:
+      - oil
+      - gas
+      - vapoil
+      - disgas
+      - water
+    pvt:
+      rsvd: norne_static/rsvd_multiple.csv
+    cell_length: 100
+    additional_flow_nodes: [500, 100]
+    additional_node_candidates: 1000
+    hull_factor: 1.2
+    random_seed: 123456
+    perforation_handling_strategy: multiple_based_on_workovers
+    fast_pyscal: true
+    training_set_end_date: 2005-01-31
+    fault_tolerance: 0.0001
+    max_distance_fraction: 0.10
+    prod_control_mode: RESV
+    inj_control_mode: RATE
+
 
 
 .. _additional_flow_nodes:
@@ -154,12 +216,9 @@ quarterly (Q), yearly (A). If resampling is not defined, the original data will 
 concave_hull
 ~~~~~~~~~~~~
 
-ADD MORE HERE
+When true, the bounding boxes of the gridcells of the original reservoir model are used to check if the 
+generated additional nodes are positioned within the reservoir volume.
 
-fast_pyscal
------------
-
-maybe not relevant anymore?
 
 fault_tolerance
 ---------------
@@ -190,7 +249,7 @@ to place additional nodes in.
 hyperopt
 --------
 
-A dictionary with parameters relater to hyper optimization of input.
+A dictionary with parameters related to hyper optimization of input.
 
 
 n_runs
@@ -221,17 +280,19 @@ will not have a direct connection between them (default value is 1e12, i.e. very
 max_distance_fraction
 ---------------------
 
-If defined, the **max_distance_fraction** longest connections between nodes in the FlowNet model will be removed (default value is 0).
+This is a number between 0 and 1 (0 and 100%). If **max_distance_fraction** is set to 0.1, 10% of the connections bewteeen nodes in 
+the FlowNet model will be removed (default value is 0) based on their length.
 
 min_permeability
 ----------------
 
 Minimum allowed permeability in mD before a tube is removed (i.e., its cells are made inactive).
 
+
 mitchells_algorithm
 -------------------
 
-Choose how to come up with candidate nodes for the Mitchell's best candidate algorithm. 
+Method of choosing candidate nodes for Mitchell's best candidate algorithm.
 There are two options: normal or fast. The **normal** option will generate *additional_node_candidates* new
 node suggestions for each new node to place, while the **fast** option will only generate 
 *additional_node_candidates* nodes once and use that set to place all new nodes.
@@ -299,24 +360,25 @@ instead of using the convex hull of well perforations. Currently requires an inp
 prior_volume_distribution
 -------------------------
 
-Volume distribution method of tubes (or cells in tube) to be applied on the prior volume distribution. 
-Based on tube length by default.
+There are two methods for generating a starting point for the bulk volume in the 
+FlowNet network model: *tube_length* and *voronoi_per_tube*. 
 
-Valid options are:
+The *tube_length* option uses the volume of the convex hull defined by all the nodes 
+in the model as a starting point. This bulk volume is distributed among the flow tubes 
+in the FlowNet model based purely on the length of the different flow tubes (all cells 
+will have equal volume, a tube with more cells will have more volume).
 
-* tube_length: distrubutes the volume of the convex hull of the FlowNet model,
-  based on the length of a tube. I.e., if all tubes have equeal lenght, they
-  will have equal volume.
-* voronoi_per_tube: distributes the input models bulk volume of active cells
-  to the nearest FlowNet tube of a cell. The total volume of the tube is then
-  devided equally over the cells of the tube. I.e., in areas with a higher
-  FlowNet tube density, the volume per cell is lower. Mind that if the FlowNet
-  model, i.e., the convex hull of the well connections, is much smaller than the
-  original model volume outside of the well connection convex hull might be
-  collapsed at the borders of the model. I.e., the borders of your model could
-  get unrealisticly large volumes. This can be mitigated by increasing the hull
-  factor of the FlowNet model generation process or by setting the
-  place_nodes_in_volume_reservoir to true.
+The *voronoi_per_tube* options is only available when an input simulation model is supplied. 
+An intial starting point for the bulk volume in the FlowNet network model will be made based 
+on the bulk volume in the input simulation model. The bulk volume of each cell in the input 
+simulation model will be assigned to the closes cell in the FlowNet network model. Well all
+cell volumes have been assigned to a tube, the volume in each flow tube is summed, and divided
+equally over all cells in that flow tube. Mind that if the FlowNet model, i.e., the convex 
+hull of the well connections, is much smaller than the original model volume outside of the 
+well connection convex hull might be collapsed at the borders of the model. I.e., the borders
+of your model could get unrealisticly large volumes. This can be mitigated by increasing the hull
+factor of the FlowNet model generation process or by setting the place_nodes_in_volume_reservoir 
+to true.
 
 prod_control_mode
 -----------------
@@ -359,64 +421,6 @@ of 0.6 will use 6 years of the input data for training (leaving 4 years of data 
 
 Defining this at the same time as **training_set_end_date** will raise a ValueError.
       
-Example of the entire flownet part of the configuration yaml file:
-
-.. code-block:: yaml
-
-  flownet:
-    data_source:
-      simulation:
-        input_case: ../input_model/norne/NORNE_ATW2013
-        vectors:
-          WBHP:
-            rel_error: 0.05
-            min_error: 10
-          WOPR:
-            rel_error: 0.1
-            min_error: 100
-          WGPR:
-            rel_error: 0.1
-            min_error: 100000
-        well_logs: true
-        layers:
-          - [1, 3]
-          - [4, 22]
-      concave_hull: true
-    constraining:
-      kriging:
-        enabled: false
-        n: 20
-        n_lags: 6
-        anisotropy_scaling_z: 10
-        variogram_model: spherical
-        permeability_variogram_parameters:
-          sill: 0.75
-          range: 1000
-          nugget: 0
-        porosity_variogram_parameters:
-          sill: 0.05
-          range: 1000
-          nugget: 0
-    phases:
-      - oil
-      - gas
-      - vapoil
-      - disgas
-      - water
-    pvt:
-      rsvd: norne_static/rsvd_multiple.csv
-    cell_length: 100
-    additional_flow_nodes: [500, 100]
-    additional_node_candidates: 1000
-    hull_factor: 1.2
-    random_seed: 123456
-    perforation_handling_strategy: multiple_based_on_workovers
-    fast_pyscal: true
-    training_set_end_date: 2005-01-31
-    fault_tolerance: 0.0001
-    max_distance_fraction: 0.10
-    prod_control_mode: RESV
-    inj_control_mode: RATE
 
 
 ert
@@ -447,8 +451,8 @@ static_include_files
 realizations
 ------------
 
-A dictionary with some key/value pairs that control the number of realizations to submit to ERT, and how these 
-should be treated as successes/failures.
+This section contains parameters that control the number of realizations of the FlowNet newtork model should be made, 
+and how they should be treated as successes/failures.
 
 num_realizations
 ~~~~~~~~~~~~~~~~
@@ -646,7 +650,7 @@ different flow tubes are drawn independently.
 permeability_regional_scheme
 ----------------------------
 
-This keyword can take the values *individual*, *global* and *regions_from sim*. The default value is *individual*, meaning that
+This keyword can take the values *individual*, *global* and *regions_from_sim*. The default value is *individual*, meaning that
 no regional permeability multipliers will be applied. Setting the value to global means that there will be one global permeability 
 multiplier on top of the individual ones. The last option, *regions_from_sim*, gives the possibility of introducing regional
 permeability multipliers following the region definitions in a grid parameter inside an existing simulation model. When using 
@@ -753,7 +757,7 @@ The name of the grid parameter in an existing reservoir simulation model to extr
 bulkvolume_mult
 ---------------
 
-Remember that FlowNet has different options for distibution a starting point for the bulk volume in the model 
+Remember that FlowNet has different options for distibuting a starting point for the bulk volume in the model 
 (see `prior_volume_distribution`_). Because of this, the prior uncertainty in bulk volume should be defined as
 multipliers on top of the initial bulkvolume.
 
@@ -1101,9 +1105,9 @@ a value.
 |  flownet:                        |  flownet:                        |
 |    model_parameters:             |    model_parameters:             |
 |      rock_compressibility:       |      rock_compressibility:       |
-|        reference_pressure:       |        reference_pressure:       |
-|        min:                      |        min:                      |
-|        max:                      |        max:                      |
+|        reference_pressure:       |        reference_pressure: 170   |
+|        min:                      |        min: 6.0e-6               |
+|        max:                      |        max: 5.0e-5               |
 |                                  |                                  |
 +----------------------------------+----------------------------------+
 
