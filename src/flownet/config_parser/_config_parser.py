@@ -1,8 +1,9 @@
+#%%
 import warnings
 import os
 import pathlib
 from typing import Dict, Optional, List
-
+ 
 import numpy as np
 import yaml
 from configsuite import transformation_msg, types, MetaKeys as MK, ConfigSuite
@@ -2276,6 +2277,21 @@ def parse_config(
         raise ValueError(
             f"'The {config.flownet.prior_volume_distribution}' volume distribution "
             "method can only be used when a simulation model is supplied as datasource."
+        )
+
+    idx_list = []
+    for idx in range(len(config.flownet.data_source.simulation.vectors)):
+        obs = config.flownet.data_source.simulation.vectors[idx]
+        #if not ( isinstance(obs.min_error, (int, float)) and isinstance(obs.rel_error, (int, float))
+        #    or (obs.min_error is None and obs.rel_error is None) ):
+        if ( not (obs.min_error is not None and obs.rel_error is not None) ):
+            idx_list.append(idx)
+
+    for i in idx_list:
+        raise ValueError(
+            f"Both min_error and rel_error must be set. "
+            f"This requirement is not satisfied for "
+            f"'{config.flownet.data_source.simulation.vectors._fields[i]}' observations"
         )
 
     return config
