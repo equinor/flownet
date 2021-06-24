@@ -267,6 +267,8 @@ class NetworkModel:
         minx, miny, minz = df_concat[["x", "y", "z"]].min()
         maxx, maxy, maxz = df_concat[["x", "y", "z"]].max()
 
+        zdist = 1 if np.isclose(maxz, minz) else maxz - minz
+
         df_concat = (
             df_concat.apply(
                 lambda x: np.rint(
@@ -283,9 +285,7 @@ class NetworkModel:
                 else y
             )
             .apply(
-                lambda z: np.rint(
-                    np.array((z - minz) * 1000 / (maxz - minz), dtype=np.double)
-                )
+                lambda z: np.rint(np.array((z - minz) * 1000 / zdist, dtype=np.double))
                 if z.name in ["z"]
                 else z
             )
