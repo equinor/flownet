@@ -1,4 +1,3 @@
-#%%
 import warnings
 import os
 import pathlib
@@ -2279,19 +2278,19 @@ def parse_config(
             "method can only be used when a simulation model is supplied as datasource."
         )
 
-    idx_list = []
+
+    fld=[]
     for idx in range(len(config.flownet.data_source.simulation.vectors)):
         obs = config.flownet.data_source.simulation.vectors[idx]
-        #if not ( isinstance(obs.min_error, (int, float)) and isinstance(obs.rel_error, (int, float))
-        #    or (obs.min_error is None and obs.rel_error is None) ):
-        if ( not (obs.min_error is not None and obs.rel_error is not None) ):
-            idx_list.append(idx)
+        if (obs.min_error is not None and obs.rel_error is None or
+           obs.min_error is None and obs.rel_error is not None):
+            fld.append(config.flownet.data_source.simulation.vectors._fields[idx])
 
-    for i in idx_list:
+    if fld:
         raise ValueError(
             f"Both min_error and rel_error must be set. "
             f"This requirement is not satisfied for "
-            f"'{config.flownet.data_source.simulation.vectors._fields[i]}' observations"
+            f" {fld}  observations"
         )
 
     return config
