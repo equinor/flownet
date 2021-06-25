@@ -119,6 +119,23 @@ smry:
         {%- endif -%}
    {%- endfor %}
    {%- endif -%}
+   {%- if (error_config.WSPT.rel_error is not none) and (error_config.WSPT.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="salt_total", dates=dates[num_beginning_date:num_end_date]) -%}
+   {% if loop.first and not loop.last: %}
+ - key: WSPT:{{ well_name }}
+   observations:
+   {%- endif %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.salt_total }}
+      error: {{ [error_config.WSPT.rel_error * kw.salt_total, error_config.WSPT.min_error] | max }}
+      comment:
+        {%- if (kw.date > last_training_date) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}      
+   {%- endfor %}
+   {%- endif -%}
    {%- if (error_config.WBHP.rel_error is not none) and (error_config.WBHP.min_error is not none) -%}
    {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="bhp", dates=dates[num_beginning_date:num_end_date]) -%}
    {% if loop.first and not loop.last: %}
@@ -256,6 +273,40 @@ smry:
         {%- else -%}
         {{ " Training" }}
         {%- endif -%}
+   {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WSIR.rel_error is not none) and (error_config.WSIR.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONINJH", well_name=well_name, ignore_nan="rate", dates=dates[num_beginning_date:num_end_date]) if kw.inj_type == "WATER" -%}
+   {% if loop.first and not loop.last: %}
+ - key: WSIR:{{ well_name }}
+   observations:
+   {%- endif %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.rate }}
+      error: {{ [error_config.WSIR.rel_error * kw.rate, error_config.WSIR.min_error] | max }}
+      comment:
+        {%- if (kw.date > last_training_date) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}
+   {%- endfor %}
+   {%- endif -%}
+   {%- if (error_config.WSIT.rel_error is not none) and (error_config.WSIT.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="salt_total", dates=dates[num_beginning_date:num_end_date]) -%}
+   {% if loop.first and not loop.last: %}
+ - key: WSIT:{{ well_name }}
+   observations:
+   {%- endif %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.salt_total }}
+      error: {{ [error_config.WSIT.rel_error * kw.salt_total, error_config.WSIT.min_error] | max }}
+      comment:
+        {%- if (kw.date > last_training_date) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}      
    {%- endfor %}
    {%- endif -%}
  {%- endfor -%}

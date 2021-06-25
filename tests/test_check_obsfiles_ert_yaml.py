@@ -274,6 +274,24 @@ def test_check_obsfiles_ert_yaml() -> None:
     config.flownet.data_source.simulation.vectors.WSPR.min_error = _MIN_ERROR
     config.flownet.data_source.simulation.vectors.WSPR.rel_error = _REL_ERROR
 
+    config.flownet.data_source.simulation.vectors.WSPT = collections.namedtuple(
+        "WSPT", "min_error"
+    )
+    config.flownet.data_source.simulation.vectors.WSPT.min_error = _MIN_ERROR
+    config.flownet.data_source.simulation.vectors.WSPT.rel_error = _REL_ERROR
+
+    config.flownet.data_source.simulation.vectors.WSIR = collections.namedtuple(
+        "WSIR", "min_error"
+    )
+    config.flownet.data_source.simulation.vectors.WSIR.min_error = _MIN_ERROR
+    config.flownet.data_source.simulation.vectors.WSIR.rel_error = _REL_ERROR
+
+    config.flownet.data_source.simulation.vectors.WSIT = collections.namedtuple(
+        "WSIT", "min_error"
+    )
+    config.flownet.data_source.simulation.vectors.WSIT.min_error = _MIN_ERROR
+    config.flownet.data_source.simulation.vectors.WSIT.rel_error = _REL_ERROR
+
     config.flownet.data_source.resampling = _RESAMPLING
 
     # Load production

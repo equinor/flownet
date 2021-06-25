@@ -24,8 +24,14 @@ SUMMARY_OBSERVATION WGPR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.gas
 {%- if not isnan(kw.water_rate) and error_config.WWPR.rel_error is not none and error_config.WWPR.min_error is not none: %}
 SUMMARY_OBSERVATION WWPR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.water_rate }}; ERROR = {{ [error_config.WWPR.rel_error * kw.water_rate, error_config.WWPR.min_error] | max }}; DATE  = {{ date_formatted  }}; KEY = WWPR:{{ kw.well_name }}; };
 {%- endif %}
+{%- if not isnan(kw.salt_total) and error_config.WSPT.rel_error is not none and error_config.WSPT.min_error is not none: %}
+SUMMARY_OBSERVATION WSPT_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.salt_total }}; ERROR = {{ [error_config.WSPT.rel_error * kw.salt_total, error_config.WSPR.min_error] | max }}; DATE  = {{ date_formatted  }}; KEY = WSPR:{{ kw.well_name }}; };
+{%- endif %}
 {%- if not isnan(kw.salt_rate) and error_config.WSPR.rel_error is not none and error_config.WSPR.min_error is not none: %}
 SUMMARY_OBSERVATION WSPR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.salt_rate }}; ERROR = {{ [error_config.WSPR.rel_error * kw.salt_rate, error_config.WSPR.min_error] | max }}; DATE  = {{ date_formatted  }}; KEY = WSPR:{{ kw.well_name }}; };
+{%- endif %}
+{%- if not isnan(kw.salt_rate) and error_config.WSIR.rel_error is not none and error_config.WSIR.min_error is not none: %}
+SUMMARY_OBSERVATION WSIR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.salt_rate }}; ERROR = {{ [error_config.WSIR.rel_error * kw.salt_rate, error_config.WSIR.min_error] | max }}; DATE  = {{ date_formatted  }}; KEY = WSIR:{{ kw.well_name }}; };
 {%- endif %}
 {%- if not isnan(kw.bhp) and error_config.WBHP.rel_error is not none and error_config.WBHP.min_error is not none : %}
 SUMMARY_OBSERVATION WBHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.bhp }}; ERROR = {{ [error_config.WBHP.rel_error * kw.bhp, error_config.WBHP.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WBHP:{{ kw.well_name }}; };
@@ -60,6 +66,12 @@ SUMMARY_OBSERVATION WGIT_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.tot
 {%- endif %}
 {%- if not isnan(kw.total) and kw.inj_type == "WATER" and error_config.WWIT.rel_error is not none and error_config.WWIT.min_error is not none: %}
 SUMMARY_OBSERVATION WWIT_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.total }}; ERROR = {{ [error_config.WWIT.rel_error * kw.total, error_config.WWIT.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WWIT:{{ kw.well_name }}; };
+{%- endif %}
+{%- if not isnan(kw.total) and kw.inj_type == "WATER" and error_config.WSIR.rel_error is not none and error_config.WSIR.min_error is not none: %}
+SUMMARY_OBSERVATION WSIR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.rate }}; ERROR = {{ [error_config.WSIR.rel_error * kw.rate, error_config.WSIR.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WSIR:{{ kw.well_name }}; };
+{%- endif %}
+{%- if not isnan(kw.total) and kw.inj_type == "WATER" and error_config.WSIT.rel_error is not none and error_config.WSIT.min_error is not none: %}
+SUMMARY_OBSERVATION WSIT_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.total }}; ERROR = {{ [error_config.WSIT.rel_error * kw.total, error_config.WSIT.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WSIT:{{ kw.well_name }}; };
 {%- endif %}
 
 {% endfor %}

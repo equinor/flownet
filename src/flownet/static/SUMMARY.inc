@@ -152,8 +152,14 @@ WBHPH
 WTHPH
 /
 
--- Brine
+-- Salt rates
 WSPR
 /
 WSIR
+/
+
+-- Salt cumulatives
+WSPT
+/
+WSIT
 /

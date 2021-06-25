@@ -234,6 +234,7 @@ class Schedule:
                         water_total=value["WWPT"],
                         gas_total=value["WGPT"],
                         salt_rate=value["WSPR"],
+                        salt_total=value["WSPT"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
                     )

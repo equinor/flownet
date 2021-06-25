@@ -163,14 +163,16 @@ class FlowData(FromSource):
                 - WGPR          Well Gas Production Rate
                 - WWPR          Well Water Production Rate
                 - WOPT          Well Cumulative Oil Production
-                - WGPT          Well Cumulative Gas Production Rate
-                - WWPT          Well Cumulative Water Production Rate
+                - WGPT          Well Cumulative Gas Production
+                - WWPT          Well Cumulative Water Production
                 - WBHP          Well Bottom Hole Pressure
                 - WTHP          Well Tubing Head Pressure
                 - WGIR          Well Gas Injection Rate
                 - WWIR          Well Water Injection Rate
                 - WSPR          Well Salt Production Rate
                 - WSIR          Well Salt Injection Rate
+                - WSPT          Well Cumulative Salt Production
+                - WSIT          Well Cumulative Salt Injection
                 - WSTAT         Well status (OPEN, SHUT, STOP)
                 - TYPE          Well Type: "OP", "GP", "WI", "GI"
                 - PHASE         Main producing/injecting phase fluid: "OIL", "GAS", "WATER"
@@ -195,6 +197,8 @@ class FlowData(FromSource):
             "WWIT",
             "WSPR",
             "WSIR",
+            "WSPT",
+            "WSIT",
             "WSTAT",
         ]
 

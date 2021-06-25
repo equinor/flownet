@@ -108,6 +108,7 @@ class WCONHIST(Keyword):
         water_rate: float = np.nan,
         gas_rate: float = np.nan,
         salt_rate: float = np.nan,
+        salt_total: float = np.nan,
         oil_total: float = np.nan,
         water_total: float = np.nan,
         gas_total: float = np.nan,
@@ -125,6 +126,7 @@ class WCONHIST(Keyword):
         self.water_rate: float = water_rate
         self.gas_rate: float = gas_rate
         self.salt_rate: float = salt_rate
+        self.salt_total: float = salt_total
         self.oil_total: float = oil_total
         self.water_total: float = water_total
         self.gas_total: float = gas_total
