@@ -74,7 +74,7 @@ def sgof_from_parameters(parameters: Dict) -> str:
 
     # array of gas saturations to calculate krog and krg for
     sg = np.sort(
-        np.append(np.arange(sgcr, 1 - swl, H_CONSTANT), [1 - sorg - swl, 1 - swl, 0])
+        np.append(np.arange(sgcr, 1 - swl - sorg, H_CONSTANT), [1 - sorg - swl, 1 - swl, 0])
     )
     # remove potential duplicate values
     sg = sg[~(np.triu(np.abs(sg[:, None] - sg) <= 1e-5, 1)).any(0)]
