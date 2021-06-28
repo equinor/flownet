@@ -412,7 +412,7 @@ def update_distribution(
             if count_index == 1:
                 parameter.names = names
                 parameter.mean_values = random_samples
-                parameter.stddev_values = np.power(random_samples, 2)
+                parameter.stddev_values = np.power(random_samples, 2).tolist()
             else:
                 parameter.mean_values = list(
                     map(add, parameter.mean_values, random_samples)
@@ -431,7 +431,7 @@ def update_distribution(
                 value / float(df.shape[0]) - np.power(parameter.mean_values, 2)[i]
                 for i, value in enumerate(parameter.stddev_values)
             ]
-        )
+        ).tolist()
 
     # update the distributions
     for parameter in parameters:
