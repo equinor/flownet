@@ -6,7 +6,7 @@ disable = bad-continuation, missing-docstring, duplicate-code
 
 max-args = 8
 max-branches = 14
-max-attributes = 15
+max-attributes = 16
 min-public-methods = 1
 
 [BASIC]
