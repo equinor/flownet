@@ -2281,11 +2281,8 @@ def parse_config(
     fld = []
     for idx in range(len(config.flownet.data_source.simulation.vectors)):
         obs = config.flownet.data_source.simulation.vectors[idx]
-        if (
-            (obs.min_error is not None
-            and obs.rel_error is None)
-            or (obs.min_error is None
-            and obs.rel_error is not None)
+        if (obs.min_error is not None and obs.rel_error is None) or (
+            obs.min_error is None and obs.rel_error is not None
         ):
             fld.append(config.flownet.data_source.simulation.vectors._fields[idx])
 
