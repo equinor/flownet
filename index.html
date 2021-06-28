@@ -94,7 +94,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration_file.html">Configuration file example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_file.html">Configuration file</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">FlowNet Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html#flownet-package">flownet package</a></li>
@@ -178,21 +178,191 @@
 <li class="toctree-l2"><a class="reference internal" href="introduction.html#publications">Publications</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="configuration_file.html">Configuration file example</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="configuration_file.html#assisted-history-matching-example">Assisted history matching example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration_file.html#prediction-example">Prediction example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_file.html">Configuration file</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration_file.html#name">name</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration_file.html#flownet">flownet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#additional-flow-nodes">additional_flow_nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#additional-node-candidates">additional_node_candidates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#angle-threshold">angle_threshold</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#cell-length">cell_length</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#constraining">constraining</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#kriging">kriging</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#data-source">data_source</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#simulation">simulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#resampling">resampling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#concave-hull">concave_hull</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#fault-tolerance">fault_tolerance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#hull-factor">hull_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#hyperopt">hyperopt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#inj-control-mode">inj_control_mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#max-distance">max_distance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#max-distance-fraction">max_distance_fraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#min-permeability">min_permeability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#mitchells-algorithm">mitchells_algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#n-non-reservoir-evaluation">n_non_reservoir_evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#perforation-handling-strategy">perforation_handling_strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#phases">phases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#place-nodes-in-volume-reservoir">place_nodes_in_volume_reservoir</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#prior-volume-distribution">prior_volume_distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#prod-control-mode">prod_control_mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#pvt">pvt</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#rsvd">rsvd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#random-seed">random_seed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#training-set-end-date">training_set_end_date</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#training-set-fraction">training_set_fraction</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration_file.html#ert">ert</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#runpath">runpath</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#enspath">enspath</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#eclbase">eclbase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#static-include-files">static_include_files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#realizations">realizations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#num-realizations">num_realizations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#required-success-percent">required_success_percent</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#max-runtime">max_runtime</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#queue">queue</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#system">system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#server">server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#id4">name</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#max-running">max_running</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#ensemble-weights">ensemble_weights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#yamlobs">yamlobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#analysis">analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#metric">metric</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#quantity">quantity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#start">start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#end">end</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#outfile">outfile</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration_file.html#model-parameters">model_parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#permeability">permeability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#permeability-regional-scheme">permeability_regional_scheme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#permeability-regional">permeability_regional</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#permeability-parameter-from-sim-model">permeability_parameter_from_sim_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#porosity">porosity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#porosity-regional-scheme">porosity_regional_scheme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#porosity-regional">porosity_regional</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#porosity-parameter-from-sim-model">porosity_parameter_from_sim_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#bulkvolume-mult">bulkvolume_mult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#bulkvolume-mult-regional-scheme">bulkvolume_mult_regional_scheme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#bulkvolume-mult-regional">bulkvolume_mult_regional</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#bulkvolume-mult-parameter-from-sim-model">bulkvolume_mult_parameter_from_sim_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#relative-permeability">relative_permeability</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#scheme">scheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#interpolate">interpolate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#independent-interpolation">independent_interpolation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#region-parameter-from-sim-model">region_parameter_from_sim_model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#swcr-add-to-swl">swcr_add_to_swl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#krwmax-add-to-krwend">krwmax_add_to_krwend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#regions">regions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#equilibration">equilibration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#id6">scheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#id7">region_parameter_from_sim_model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#id8">regions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#fault-multiplier">Fault multiplier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#rock-compressibility">rock_compressibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration_file.html#aquifer">aquifer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#id9">scheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#fraction">fraction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#delta-depth">delta_depth</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration_file.html#size-in-bulkvolumes">size_in_bulkvolumes</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#norne-model-case">Norne model case</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#brugge-model-case">Brugge model case</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#the-egg-model-case">The Egg model case</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#the-egg-model-case">The Egg model case</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples.html#data-files">Data files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples.html#modifications-to-the-simulations-setup">Modifications to the simulations setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples.html#assisted-history-matching-example">Assisted history matching example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples.html#webiz-visualization">Webiz visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples.html#references">References</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">FlowNet Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html#flownet-package">flownet package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flownet.ahm.html">flownet.ahm package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="flownet.ahm.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.ahm.html#module-flownet.ahm">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.config_parser.html">flownet.config_parser package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="flownet.config_parser.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.config_parser.html#module-flownet.config_parser">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.data.html">flownet.data package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="flownet.data.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.data.html#module-flownet.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.ert.html">flownet.ert package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="flownet.ert.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.ert.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.ert.html#module-flownet.ert">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.hyperparameter.html">flownet.hyperparameter package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="flownet.hyperparameter.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.hyperparameter.html#module-flownet.hyperparameter">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.network_model.html">flownet.network_model package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="flownet.network_model.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.network_model.html#module-flownet.network_model">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.parameters.html">flownet.parameters package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="flownet.parameters.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.parameters.html#module-flownet.parameters">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.prediction.html">flownet.prediction package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="flownet.prediction.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.prediction.html#module-flownet.prediction">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.realization.html">flownet.realization package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="flownet.realization.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.realization.html#module-flownet.realization">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="flownet.utils.html">flownet.utils package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="flownet.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flownet.utils.html#module-flownet.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flownet._command_line.html">flownet._command_line module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#module-flownet">Module contents</a></li>
 </ul>
 </li>

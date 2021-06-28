@@ -5,7 +5,7 @@ FlowNet documentation
 =====================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
    introduction
    configuration_file
