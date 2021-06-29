@@ -175,7 +175,7 @@
 <span id="flownet-realization-schedule-module"></span><h1>flownet.realization._schedule module<a class="headerlink" href="#module-flownet.realization._schedule" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="flownet.realization._schedule.Schedule">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">flownet.realization._schedule.</span></span><span class="sig-name descname"><span class="pre">Schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">network:</span> <span class="pre">flownet.network_model._network_model.NetworkModel</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">df_production_data:</span> <span class="pre">Optional[pandas.core.frame.DataFrame]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">config:</span> <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fa693ac3d70&gt;</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">flownet.realization._schedule.</span></span><span class="sig-name descname"><span class="pre">Schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">network:</span> <span class="pre">flownet.network_model._network_model.NetworkModel</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">df_production_data:</span> <span class="pre">Optional[pandas.core.frame.DataFrame]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">config:</span> <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f32b212fd10&gt;</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Python class to to store all schedule items for the Flownet run.</p>
 <dl class="field-list simple">
@@ -231,6 +231,17 @@ the schedule is created.</p>
 <dt class="sig sig-object py" id="flownet.realization._schedule.Schedule._calculate_welspecs">
 <span class="sig-name descname"><span class="pre">_calculate_welspecs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._calculate_welspecs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function that generates the WELSPECS keywords based which wells there are in the production data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flownet.realization._schedule.Schedule._calculate_wsalt">
+<span class="sig-name descname"><span class="pre">_calculate_wsalt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flownet.realization._schedule.Schedule._calculate_wsalt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper Function that generates the WSALT keywords based on salt measurements.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Nothing</p>
@@ -381,6 +392,17 @@ in the Schedule or associated to a particular kw_class.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>List of strings of unique well names</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flownet.realization._schedule.Schedule.has_brine">
+<span class="sig-name descname"><span class="pre">has_brine</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="headerlink" href="#flownet.realization._schedule.Schedule.has_brine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to determine whether the schedule has brine data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if non zero brine data found, otherwise False</p>
 </dd>
 </dl>
 </dd></dl>
