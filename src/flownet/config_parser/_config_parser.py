@@ -241,6 +241,58 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                     },
                                                 },
                                             },
+                                            "WSPR": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WSPT": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WSIR": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WSIT": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
                                         },
                                     },
                                     "layers": {
@@ -2276,6 +2328,21 @@ def parse_config(
         raise ValueError(
             f"'The {config.flownet.prior_volume_distribution}' volume distribution "
             "method can only be used when a simulation model is supplied as datasource."
+        )
+
+    fld = []
+    for idx in range(len(config.flownet.data_source.simulation.vectors)):
+        obs = config.flownet.data_source.simulation.vectors[idx]
+        if (obs.min_error is not None and obs.rel_error is None) or (
+            obs.min_error is None and obs.rel_error is not None
+        ):
+            fld.append(config.flownet.data_source.simulation.vectors._fields[idx])
+
+    if fld:
+        raise ValueError(
+            f"Both min_error and rel_error must be set. "
+            f"This requirement is not satisfied for "
+            f" {fld}  observations"
         )
 
     return config
