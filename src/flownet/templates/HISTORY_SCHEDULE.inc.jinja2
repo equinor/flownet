@@ -40,6 +40,16 @@ WCONINJH
 /
 {%- endif %}
 
+{%- if schedule.get_keywords(dates=date, kw_class="WSALT"): %}
+WSALT
+-- WELL SALT
+-- NAME SALTCON
+{%- for kw in schedule.get_keywords(dates=date, kw_class="WSALT"): %}
+ '{{ kw.well_name }}' {{ kw.salt_concentration }} /
+{%- endfor %}
+/
+{%- endif %}
+
 {%- if date > startdate: %}
 DATES
  {{ date.strftime('%d %b %Y').upper() }} /

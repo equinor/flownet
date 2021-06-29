@@ -40,6 +40,10 @@ INCLUDE
 INCLUDE
  './include/RUNSPEC.inc' /
 
+{% if schedule.has_brine() -%}
+BRINE
+{%- endif %}
+
 ----
 GRID
 ----

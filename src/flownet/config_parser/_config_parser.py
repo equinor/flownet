@@ -241,6 +241,58 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                     },
                                                 },
                                             },
+                                            "WSPR": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WSPT": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WSIR": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
+                                            "WSIT": {
+                                                MK.Type: types.NamedDict,
+                                                MK.Content: {
+                                                    "rel_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                    "min_error": {
+                                                        MK.Type: types.Number,
+                                                        MK.AllowNone: True,
+                                                    },
+                                                },
+                                            },
                                         },
                                     },
                                     "layers": {
