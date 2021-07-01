@@ -103,10 +103,10 @@ def test_scalrec_extremes_wo() -> None:
     interpolated_parameter_dict_low = interpolate_wo(-1, parameter_dict)
     interpolated_parameter_dict_base = interpolate_wo(0, parameter_dict)
     interpolated_parameter_dict_high = interpolate_wo(1, parameter_dict)
-    for key in parameter_dict.items():
-        assert parameter_dict[key][0] == interpolated_parameter_dict_low[key]
-        assert parameter_dict[key][1] == interpolated_parameter_dict_base[key]
-        assert parameter_dict[key][2] == interpolated_parameter_dict_high[key]
+    for key, value in parameter_dict.items():
+        assert value[0] == interpolated_parameter_dict_low[key]
+        assert value[1] == interpolated_parameter_dict_base[key]
+        assert value[2] == interpolated_parameter_dict_high[key]
 
 
 def test_scalrec_extremes_go() -> None:
@@ -124,7 +124,7 @@ def test_scalrec_extremes_go() -> None:
     interpolated_parameter_dict_low = interpolate_go(-1, parameter_dict)
     interpolated_parameter_dict_base = interpolate_go(0, parameter_dict)
     interpolated_parameter_dict_high = interpolate_go(1, parameter_dict)
-    for key in parameter_dict.items():
-        assert parameter_dict[key][0] == interpolated_parameter_dict_low[key]
-        assert parameter_dict[key][1] == interpolated_parameter_dict_base[key]
-        assert parameter_dict[key][2] == interpolated_parameter_dict_high[key]
+    for key, value in parameter_dict.items():
+        assert value[0] == interpolated_parameter_dict_low[key]
+        assert value[1] == interpolated_parameter_dict_base[key]
+        assert value[2] == interpolated_parameter_dict_high[key]
