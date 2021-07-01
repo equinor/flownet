@@ -57,3 +57,6 @@ max-locals=20
 
 # Maximum number of statements in function / method body.
 max-statements=60
+
+[TYPECHECK]
+generated-members=df_rsvd.*, DF
