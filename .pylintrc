@@ -59,4 +59,4 @@ max-locals=20
 max-statements=60
 
 [TYPECHECK]
-generated-members=df_rsvd.*
+generated-members=df_rsvd.*, DF
