@@ -146,7 +146,8 @@ def _create_ert_parameter_file(
 
     # This is an ERT workaround. ERT parameter configuration needs a template file
     # which we don't use. Call the template file "EMPTYFILE" and let be it empty.
-    open(output_folder / "EMPTYFILE", "a").close()
+    with open(output_folder / "EMPTYFILE", "a") as fh:
+        fh.close()
 
 
 def create_ert_setup(  # pylint: disable=too-many-arguments
