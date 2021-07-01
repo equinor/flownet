@@ -675,7 +675,7 @@ def run_flownet_history_matching(
         if not all(value is None for _, value in values.items()):
             relperm_dict[key] = values
 
-    relperm_parameters = {key: relperm_dict[key] for key in relperm_dict.items()}
+    relperm_parameters = relperm_dict
 
     relperm_interp_values: Optional[pd.DataFrame] = (
         pd.DataFrame(columns=list(relperm_parameters.keys()) + ["CASE", "SATNUM"])
