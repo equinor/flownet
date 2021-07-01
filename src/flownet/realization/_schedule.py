@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from configsuite import ConfigSuite
-from ._simulation_keywords import Keyword, COMPDAT, WCONHIST, WCONINJH, WELSPECS
+from ._simulation_keywords import Keyword, COMPDAT, WCONHIST, WCONINJH, WELSPECS, WSALT
 from ..network_model import NetworkModel
 
 
@@ -61,7 +61,26 @@ class Schedule:
         self._calculate_welspecs()
         self._calculate_wconhist()
         self._calculate_wconinjh()
+        self._calculate_wsalt()
         print("done.", flush=True)
+
+    def _calculate_wsalt(self):
+        """
+        Helper Function that generates the WSALT keywords based on salt measurements.
+
+        Returns:
+            Nothing
+
+        """
+        for _, value in self._df_production_data.iterrows():
+            if value["WWIR"] > 0 and value["WSIR"] > 0:
+                self.append(
+                    WSALT(
+                        date=value["date"],
+                        well_name=value["WELL_NAME"],
+                        salt_concentration=value["WSIR"] / value["WWIR"],
+                    )
+                )
 
     def _calculate_compdat(self):
         """
@@ -214,6 +233,8 @@ class Schedule:
                         oil_total=value["WOPT"],
                         water_total=value["WWPT"],
                         gas_total=value["WGPT"],
+                        salt_rate=value["WSPR"],
+                        salt_total=value["WSPT"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
                     )
@@ -532,6 +553,23 @@ class Schedule:
                 vfp_tables[well] = "1*"
 
         return vfp_tables
+
+    def has_brine(self) -> bool:
+        """Helper function to determine whether the schedule has brine data.
+
+        Returns:
+            True if non zero brine data found, otherwise False
+        """
+        return (
+            sum(
+                [
+                    kw.salt_concentration
+                    for kw in self._schedule_items
+                    if kw.name == "WSALT"
+                ]
+            )
+            > 0
+        )
 
     def get_nr_observations(self, training_set_fraction: float) -> int:
         """

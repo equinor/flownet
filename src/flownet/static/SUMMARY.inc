@@ -151,3 +151,15 @@ WBHPH
 /
 WTHPH
 /
+
+-- Salt rates
+WSPR
+/
+WSIR
+/
+
+-- Salt cumulatives
+WSPT
+/
+WSIT
+/

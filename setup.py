@@ -39,6 +39,8 @@ TEST_REQUIRES = [
     "pytest-cov>=2.8",
     "sphinx",
     "sphinx-rtd-theme",
+    "types-pkg_resources",
+    "types-PyYAML",
 ]
 
 setup(
