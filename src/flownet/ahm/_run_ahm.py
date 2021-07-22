@@ -543,9 +543,7 @@ def run_flownet_history_matching(
     )
     df_production_data: pd.DataFrame = field_data.production
     if config.flownet.data_source.database.input_data:
-        csv_data = CSVData(
-            config.flownet.data_source.database.input_data
-        )
+        csv_data = CSVData(config.flownet.data_source.database.input_data)
         df_production_data = csv_data.production
     df_well_connections: pd.DataFrame = field_data.get_well_connections(
         config.flownet.perforation_handling_strategy

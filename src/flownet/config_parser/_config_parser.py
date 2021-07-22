@@ -69,6 +69,17 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     "data_source": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
+                            "database": {
+                                MK.Type: types.NamedDict,
+                                MK.Content: {
+                                    "input_data": {
+                                        MK.Type: types.String,
+                                        MK.Transformation: _to_abs_path,
+                                        MK.AllowNone: True,
+                                        MK.Description: "CSV to be used as data source for FlowNet",
+                                    },
+                                },
+                            },
                             "simulation": {
                                 MK.Type: types.NamedDict,
                                 MK.Content: {

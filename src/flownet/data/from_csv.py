@@ -4,7 +4,7 @@ from typing import Union, List, Tuple
 import pandas as pd
 
 
-class CSVData():
+class CSVData:
     """
     CSV data source class
 
@@ -14,8 +14,8 @@ class CSVData():
     """
 
     def __init__(
-            self,
-            input_data: Union[Path, str],
+        self,
+        input_data: Union[Path, str],
     ):
         super().__init__()
 
