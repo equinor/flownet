@@ -5,7 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
-- [#417] (https://github.com/equinor/flownet/pull/417) Added functionality to history match dissolved salts (TDS) in produced water.
+- [#425](https://github.com/equinor/flownet/pull/425) Added functionality to load production data from CSV file.
+- [#417](https://github.com/equinor/flownet/pull/417) Added functionality to history match dissolved salts (TDS) in produced water.
 - [#404](https://github.com/equinor/flownet/pull/404) Added possibility for regional multipliers for permeability, porosity and bulkvolume multiplier. Current implementation allows for defining either one global multiplier, or a regional multipliers based on a region parameter extracted from an existing simulation model (typically FIPNUM, EQLNUM, SATNUM etc). The regional multiplier will be in addition to the per tube multipliers. New keys in config yaml are: porosity_regional_scheme (global, individual or regions_from_sim), porosity_regional (define prior same way as for other model parameters) and porosity_parameter_from_sim_model (name of region parameter in simulation model). The same three keys exists for permeability and bulkvolume_mult.
 - [#383](https://github.com/equinor/flownet/pull/383) Added option to either define a prior distribution for KRWMAX directly by using krwmax in the config yaml, or to let KRWMAX be calculated as KRWEND + delta. To do the latter, set krwmax_add_to_krwend to true, and then the prior distribution definition in the config yaml for krwmax will be interpreted as a prior distribution for the delta value to be added to KRWEND to get the KRWMAX.
 - [#386](https://github.com/equinor/flownet/pull/386) Expose FlowNet timeout to user.
