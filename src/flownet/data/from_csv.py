@@ -9,7 +9,7 @@ class CSVData:
     CSV data source class
 
     Args:
-         input_data: Full path to eclipse case to load data from
+         input_data: Full path to CSV file to load production data from
 
     """
 
