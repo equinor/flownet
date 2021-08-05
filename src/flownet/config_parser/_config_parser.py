@@ -92,220 +92,6 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                         MK.Type: types.Bool,
                                         MK.AllowNone: True,
                                     },
-                                    "vectors": {
-                                        MK.Type: types.NamedDict,
-                                        MK.Description: "Which vectors to use as observation data sources",
-                                        MK.Content: {
-                                            "WTHP": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WBHP": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WOPT": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WGPT": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WWPT": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WOPR": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WGPR": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WWPR": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WWIR": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WGIR": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WWIT": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WGIT": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WSPR": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WSPT": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WSIR": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                            "WSIT": {
-                                                MK.Type: types.NamedDict,
-                                                MK.Content: {
-                                                    "rel_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                    "min_error": {
-                                                        MK.Type: types.Number,
-                                                        MK.AllowNone: True,
-                                                    },
-                                                },
-                                            },
-                                        },
-                                    },
                                     "layers": {
                                         MK.Type: types.List,
                                         MK.Content: {
@@ -317,6 +103,220 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                                         MK.AllowNone: True,
                                                     }
                                                 },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            "vectors": {
+                                MK.Type: types.NamedDict,
+                                MK.Description: "Which vectors to use as observation data sources",
+                                MK.Content: {
+                                    "WTHP": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WBHP": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WOPT": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WGPT": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WWPT": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WOPR": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WGPR": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WWPR": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WWIR": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WGIR": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WWIT": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WGIT": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WSPR": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WSPT": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WSIR": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
+                                    "WSIT": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
                                             },
                                         },
                                     },
@@ -2342,12 +2342,12 @@ def parse_config(
         )
 
     fld = []
-    for idx, _ in enumerate(config.flownet.data_source.simulation.vectors):
-        obs = config.flownet.data_source.simulation.vectors[idx]
+    for idx, _ in enumerate(config.flownet.data_source.vectors):
+        obs = config.flownet.data_source.vectors[idx]
         if (obs.min_error is not None and obs.rel_error is None) or (
             obs.min_error is None and obs.rel_error is not None
         ):
-            fld.append(config.flownet.data_source.simulation.vectors._fields[idx])
+            fld.append(config.flownet.data_source.vectors._fields[idx])
 
     if fld:
         raise ValueError(
