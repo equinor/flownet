@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>flownet.parameters._rock_compressibility module &mdash; FlowNet  documentation</title>
+  <title>flownet.data.from_csv module &mdash; FlowNet  documentation</title>
   
 
   
@@ -44,8 +44,8 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="flownet.parameters.probability_distributions module" href="flownet.parameters.probability_distributions.html" />
-    <link rel="prev" title="flownet.parameters._relative_permeability module" href="flownet.parameters._relative_permeability.html" /> 
+    <link rel="next" title="flownet.data.from_flow module" href="flownet.data.from_flow.html" />
+    <link rel="prev" title="flownet.data package" href="flownet.data.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -150,15 +150,15 @@
         
           <li><a href="api.html">FlowNet Python API</a> &raquo;</li>
         
-          <li><a href="flownet.parameters.html">flownet.parameters package</a> &raquo;</li>
+          <li><a href="flownet.data.html">flownet.data package</a> &raquo;</li>
         
-      <li>flownet.parameters._rock_compressibility module</li>
+      <li>flownet.data.from_csv module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/flownet.parameters._rock_compressibility.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/flownet.data.from_csv.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -171,38 +171,57 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-flownet.parameters._rock_compressibility">
-<span id="flownet-parameters-rock-compressibility-module"></span><h1>flownet.parameters._rock_compressibility module<a class="headerlink" href="#module-flownet.parameters._rock_compressibility" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-flownet.data.from_csv">
+<span id="flownet-data-from-csv-module"></span><h1>flownet.data.from_csv module<a class="headerlink" href="#module-flownet.data.from_csv" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="flownet.parameters._rock_compressibility.RockCompressibility">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">flownet.parameters._rock_compressibility.</span></span><span class="sig-name descname"><span class="pre">RockCompressibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_pressure</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_compressibility</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_compressibility</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.parameters._rock_compressibility.RockCompressibility" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="flownet.parameters._base_parameter.html#flownet.parameters._base_parameter.Parameter" title="flownet.parameters._base_parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">flownet.parameters._base_parameter.Parameter</span></code></a></p>
-<p>Parameter type which takes care of stochastically drawn rock compressibility parameters.
-The rock compressibility will always have a Uniform Distribution between the min and
-max values.</p>
+<dt class="sig sig-object py" id="flownet.data.from_csv.CSVData">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">flownet.data.from_csv.</span></span><span class="sig-name descname"><span class="pre">CSVData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flownet.data.from_csv.CSVData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>CSV data source class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>reference_pressure</strong> – reference pressure for rock compressibility definition</p></li>
-<li><p><strong>min_compressibility</strong> – minimum rock compressibility</p></li>
-<li><p><strong>max_compressibility</strong> – maxmimum rock compressibility</p></li>
-</ul>
+<dd class="field-odd"><p><strong>input_data</strong> – Full path to CSV file to load production data from</p>
 </dd>
 </dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="flownet.parameters._rock_compressibility.RockCompressibility._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;_abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#flownet.parameters._rock_compressibility.RockCompressibility._abc_impl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="py method">
-<dt class="sig sig-object py" id="flownet.parameters._rock_compressibility.RockCompressibility.render_output">
-<span class="sig-name descname"><span class="pre">render_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#flownet.parameters._rock_compressibility.RockCompressibility.render_output" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates ROCK include content - which are given to the PROPS section.</p>
+<dt class="sig sig-object py" id="flownet.data.from_csv.CSVData._production_data">
+<span class="sig-name descname"><span class="pre">_production_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#flownet.data.from_csv.CSVData._production_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to read production data for all producers and injectors from a CSV file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>ROCK include content</p>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>date          equal to index</p></li>
+<li><p>WELL_NAME     Well name as used in Flow</p></li>
+<li><p>WOPR          Well Oil Production Rate</p></li>
+<li><p>WGPR          Well Gas Production Rate</p></li>
+<li><p>WWPR          Well Water Production Rate</p></li>
+<li><p>WOPT          Well Cumulative Oil Production</p></li>
+<li><p>WGPT          Well Cumulative Gas Production</p></li>
+<li><p>WWPT          Well Cumulative Water Production</p></li>
+<li><p>WBHP          Well Bottom Hole Pressure</p></li>
+<li><p>WTHP          Well Tubing Head Pressure</p></li>
+<li><p>WGIR          Well Gas Injection Rate</p></li>
+<li><p>WWIR          Well Water Injection Rate</p></li>
+<li><p>WSPR          Well Salt Production Rate</p></li>
+<li><p>WSIR          Well Salt Injection Rate</p></li>
+<li><p>WSPT          Well Cumulative Salt Production</p></li>
+<li><p>WSIT          Well Cumulative Salt Injection</p></li>
+<li><p>WSTAT         Well status (OPEN, SHUT, STOP)</p></li>
+<li><p>TYPE          Well Type: “OP”, “GP”, “WI”, “GI”</p></li>
+<li><p>PHASE         Main producing/injecting phase fluid: “OIL”, “GAS”, “WATER”</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>A DataFrame with a DateTimeIndex and the following columns</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="flownet.data.from_csv.CSVData.production">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">production</span></span><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.frame.DataFrame</span></em><a class="headerlink" href="#flownet.data.from_csv.CSVData.production" title="Permalink to this definition">¶</a></dt>
+<dd><p>dataframe with all production data</p>
 </dd></dl>
 
 </dd></dl>
@@ -215,8 +234,8 @@ max values.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="flownet.parameters.probability_distributions.html" class="btn btn-neutral float-right" title="flownet.parameters.probability_distributions module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="flownet.parameters._relative_permeability.html" class="btn btn-neutral float-left" title="flownet.parameters._relative_permeability module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="flownet.data.from_flow.html" class="btn btn-neutral float-right" title="flownet.data.from_flow module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="flownet.data.html" class="btn btn-neutral float-left" title="flownet.data package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

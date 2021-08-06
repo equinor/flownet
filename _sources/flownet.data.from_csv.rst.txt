@@ -1,0 +1,8 @@
+flownet.data.from\_csv module
+=============================
+
+.. automodule:: flownet.data.from_csv
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

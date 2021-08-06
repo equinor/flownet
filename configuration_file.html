@@ -108,6 +108,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#data-source">data_source</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#simulation">simulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#database">database</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#resampling">resampling</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#concave-hull">concave_hull</a></li>
 </ul>
@@ -296,6 +297,8 @@ to <em>FIELD</em> or <em>LAB</em>.</p>
 <p>Example of the entire flownet part of the configuration yaml file:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
   <span class="nt">data_source</span><span class="p">:</span>
+    <span class="nt">database</span><span class="p">:</span>
+      <span class="nt">input_data</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">../input_data/norne_production_data.csv</span>
     <span class="nt">simulation</span><span class="p">:</span>
       <span class="nt">input_case</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">../input_model/norne/NORNE_ATW2013</span>
       <span class="nt">vectors</span><span class="p">:</span>
@@ -435,9 +438,18 @@ lowest possible observation error) defined.</p></li>
 FlowNet has an option to generate separate FlowNet models for each layer. To initiate this, supply a list of lists containing the
 start and end layer in the input simulation model for each distinct layer</p></li>
 </ul>
+</div>
+<div class="section" id="database">
+<h4>database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h4>
+<p>FlowNet will extract the production data used to history match the model from a CSV file.</p>
+<ul class="simple">
+<li><p><strong>input_data</strong>: Path to the production data CSV file.</p></li>
+</ul>
 <p>Example yaml section:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
   <span class="nt">data_source</span><span class="p">:</span>
+    <span class="nt">database</span><span class="p">:</span>
+      <span class="nt">input_data</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/path/to/production_data.csv</span>
     <span class="nt">simulation</span><span class="p">:</span>
       <span class="nt">input_case</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/path/to/simulation_model.DATA</span>
       <span class="nt">vectors</span><span class="p">:</span>
@@ -455,7 +467,9 @@ start and end layer in the input simulation model for each distinct layer</p></l
 <p>In this example, the input simulation model (which has been simulated with Flow or Eclipse or similar) will be found in
 <em>/path/to/simulation_model.DATA</em>, the vectors to use in the conditioning of the FlowNet model are <em>WOPR</em> and <em>WGPR</em>, each
 with a relative error of 10% and minimum error of 50 (Sm3). Two FlowNet models will be created, one based on layers 1 to 5
-in the input simulation model, and one based on layers 6 to 10 in the input simulation model.</p>
+in the input simulation model, and one based on layers 6 to 10 in the input simulation model. If no input database CSV file
+containing production data is provided, FlowNet will use the simulated production data from the input simulation model.
+If a CSV file is specified, the production data from the CSV file will be used.</p>
 </div>
 <div class="section" id="resampling">
 <h4>resampling<a class="headerlink" href="#resampling" title="Permalink to this headline">¶</a></h4>

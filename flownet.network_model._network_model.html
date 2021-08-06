@@ -179,7 +179,7 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="flownet.network_model._network_model.NetworkModel._calculate_connections_at_nodes">
-<span class="sig-name descname"><span class="pre">_calculate_connections_at_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_connections_at_nodes" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_calculate_connections_at_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_connections_at_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates None-Neighbouring-connections (NNCs) using the following approach:</p>
 <blockquote>
 <div><ol class="arabic simple">
@@ -196,7 +196,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="flownet.network_model._network_model.NetworkModel._calculate_faults">
-<span class="sig-name descname"><span class="pre">_calculate_faults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fault_tolerance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1e-05</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_faults" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_calculate_faults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fault_tolerance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1e-05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_faults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates fault definitions using the following approach:</p>
 <blockquote>
 <div><ol class="arabic simple">
@@ -223,7 +223,7 @@ Always check that the resulting lower resolution fault plane still is what you e
 
 <dl class="py method">
 <dt class="sig sig-object py" id="flownet.network_model._network_model.NetworkModel._calculate_grid_corner_points">
-<span class="sig-name descname"><span class="pre">_calculate_grid_corner_points</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_grid_corner_points" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_calculate_grid_corner_points</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_grid_corner_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the FlowNet connections, generates the 1D-models and returns
 a DataFrame with grid corner points.</p>
 <dl class="field-list simple">
@@ -235,7 +235,7 @@ a DataFrame with grid corner points.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="flownet.network_model._network_model.NetworkModel._calculate_nncs">
-<span class="sig-name descname"><span class="pre">_calculate_nncs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_nncs" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_calculate_nncs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._calculate_nncs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates None-Neighbouring-connections (NNCs) using the following approach:</p>
 <blockquote>
 <div><ol class="arabic simple">
@@ -255,7 +255,7 @@ identified NNCs correspond to.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="flownet.network_model._network_model.NetworkModel._create_connection_groups">
-<span class="sig-name descname"><span class="pre">_create_connection_groups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">pandas.core.frame.DataFrame</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._create_connection_groups" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_create_connection_groups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._create_connection_groups" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create groups of connections at a node.</p>
 <blockquote>
 <div><ol class="arabic simple">
@@ -273,7 +273,7 @@ it is a start or end point is saved in an extra column called
 
 <dl class="py method">
 <dt class="sig sig-object py" id="flownet.network_model._network_model.NetworkModel._get_aquifer_i">
-<span class="sig-name descname"><span class="pre">_get_aquifer_i</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._get_aquifer_i" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_get_aquifer_i</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel._get_aquifer_i" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to get the aquifer i’s with zero-offset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -284,7 +284,7 @@ it is a start or end point is saved in an extra column called
 
 <dl class="py method">
 <dt class="sig sig-object py" id="flownet.network_model._network_model.NetworkModel.active_mask">
-<span class="sig-name descname"><span class="pre">active_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_index</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.active_mask" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">active_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.active_mask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to get out active grid cell indices of
 the one dimensional model in the network with index model_index.</p>
 <dl class="field-list simple">
@@ -327,7 +327,7 @@ the one dimensional model in the network with index model_index.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="flownet.network_model._network_model.NetworkModel.bulk_volume_per_flownet_cell_based_on_tube_length">
-<span class="sig-name descname"><span class="pre">bulk_volume_per_flownet_cell_based_on_tube_length</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.bulk_volume_per_flownet_cell_based_on_tube_length" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">bulk_volume_per_flownet_cell_based_on_tube_length</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.bulk_volume_per_flownet_cell_based_on_tube_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate bulk volume per flownet grid cell based on the total length
 of the active cells in each tube in the FlowNet and the convex hull on
 the FlowNet network.</p>
@@ -400,7 +400,7 @@ the FlowNet network.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="flownet.network_model._network_model.NetworkModel.get_connection_midpoints">
-<span class="sig-name descname"><span class="pre">get_connection_midpoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.get_connection_midpoints" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_connection_midpoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#flownet.network_model._network_model.NetworkModel.get_connection_midpoints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a numpy array with the midpoint of each connection in the network or,
 in case the optional i parameter is specified, the midpoint
 of the i’th connection.</p>
