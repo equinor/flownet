@@ -27,6 +27,8 @@ Example of the entire flownet part of the configuration yaml file:
 
   flownet:
     data_source:
+      database:
+        input_data: ../input_data/norne_production_data.csv
       simulation:
         input_case: ../input_model/norne/NORNE_ATW2013
         vectors:
@@ -182,12 +184,21 @@ FlowNet will extract the data used to construct and condition the model from an 
   FlowNet has an option to generate separate FlowNet models for each layer. To initiate this, supply a list of lists containing the 
   start and end layer in the input simulation model for each distinct layer
 
+database
+~~~~~~~~~~
+
+FlowNet will extract the production data used to history match the model from a CSV file.
+
+* **input_data**: Path to the production data CSV file.
+
 Example yaml section:
 
 .. code-block:: yaml 
 
   flownet:
     data_source:
+      database:
+        input_data: /path/to/production_data.csv
       simulation:
         input_case: /path/to/simulation_model.DATA
         vectors:
@@ -204,7 +215,9 @@ Example yaml section:
 In this example, the input simulation model (which has been simulated with Flow or Eclipse or similar) will be found in 
 */path/to/simulation_model.DATA*, the vectors to use in the conditioning of the FlowNet model are *WOPR* and *WGPR*, each
 with a relative error of 10% and minimum error of 50 (Sm3). Two FlowNet models will be created, one based on layers 1 to 5 
-in the input simulation model, and one based on layers 6 to 10 in the input simulation model.
+in the input simulation model, and one based on layers 6 to 10 in the input simulation model. If no input database CSV file
+containing production data is provided, FlowNet will use the simulated production data from the input simulation model.
+If a CSV file is specified, the production data from the CSV file will be used.
 
 resampling
 ~~~~~~~~~~
