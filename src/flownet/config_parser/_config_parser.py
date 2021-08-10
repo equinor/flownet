@@ -2342,13 +2342,8 @@ def parse_config(
         )
 
     fld = []
-<<<<<<< HEAD
-    for idx, _ in enumerate(config.flownet.data_source.simulation.vectors):
-        obs = config.flownet.data_source.simulation.vectors[idx]
-=======
     for idx, _ in enumerate(config.flownet.data_source.vectors):
         obs = config.flownet.data_source.vectors[idx]
->>>>>>> master
         if (obs.min_error is not None and obs.rel_error is None) or (
             obs.min_error is None and obs.rel_error is not None
         ):
