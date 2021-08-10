@@ -189,108 +189,103 @@ def test_check_obsfiles_ert_yaml() -> None:
     # pylint: disable=maybe-no-member
     config = collections.namedtuple("configuration", "flownet")
     config.flownet = collections.namedtuple("flownet", "data_source")
-    config.flownet.data_source = collections.namedtuple("data_source", "simulation")
-    config.flownet.data_source.simulation = collections.namedtuple(
-        "simulation", "vectors"
-    )
-    config.flownet.data_source.simulation.vectors = collections.namedtuple(
-        "vectors", "WTHP"
-    )
-    config.flownet.data_source.simulation.vectors.WOPR = collections.namedtuple(
+    config.flownet.data_source = collections.namedtuple("data_source", "vectors")
+    config.flownet.data_source.vectors = collections.namedtuple("vectors", "WTHP")
+    config.flownet.data_source.vectors.WOPR = collections.namedtuple(
         "WOPR", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WOPR.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WOPR.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WOPR.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WOPR.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WGPR = collections.namedtuple(
+    config.flownet.data_source.vectors.WGPR = collections.namedtuple(
         "WGPR", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WGPR.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WGPR.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WGPR.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WGPR.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WWPR = collections.namedtuple(
+    config.flownet.data_source.vectors.WWPR = collections.namedtuple(
         "WWPR", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WWPR.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WWPR.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WWPR.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WWPR.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WOPT = collections.namedtuple(
+    config.flownet.data_source.vectors.WOPT = collections.namedtuple(
         "WOPT", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WOPT.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WOPT.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WOPT.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WOPT.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WGPT = collections.namedtuple(
+    config.flownet.data_source.vectors.WGPT = collections.namedtuple(
         "WGPT", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WGPT.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WGPT.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WGPT.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WGPT.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WWPT = collections.namedtuple(
+    config.flownet.data_source.vectors.WWPT = collections.namedtuple(
         "WWPT", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WWPT.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WWPT.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WWPT.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WWPT.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WBHP = collections.namedtuple(
+    config.flownet.data_source.vectors.WBHP = collections.namedtuple(
         "WBHP", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WBHP.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WBHP.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WBHP.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WBHP.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WTHP = collections.namedtuple(
+    config.flownet.data_source.vectors.WTHP = collections.namedtuple(
         "WTHP", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WTHP.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WTHP.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WTHP.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WTHP.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WGIR = collections.namedtuple(
+    config.flownet.data_source.vectors.WGIR = collections.namedtuple(
         "WGIR", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WGIR.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WGIR.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WGIR.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WGIR.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WWIR = collections.namedtuple(
+    config.flownet.data_source.vectors.WWIR = collections.namedtuple(
         "WWIR", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WWIR.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WWIR.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WWIR.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WWIR.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WGIT = collections.namedtuple(
+    config.flownet.data_source.vectors.WGIT = collections.namedtuple(
         "WGIT", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WGIT.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WGIT.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WGIT.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WGIT.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WWIT = collections.namedtuple(
+    config.flownet.data_source.vectors.WWIT = collections.namedtuple(
         "WWIT", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WWIT.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WWIT.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WWIT.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WWIT.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WSPR = collections.namedtuple(
+    config.flownet.data_source.vectors.WSPR = collections.namedtuple(
         "WSPR", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WSPR.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WSPR.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WSPR.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WSPR.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WSPT = collections.namedtuple(
+    config.flownet.data_source.vectors.WSPT = collections.namedtuple(
         "WSPT", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WSPT.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WSPT.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WSPT.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WSPT.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WSIR = collections.namedtuple(
+    config.flownet.data_source.vectors.WSIR = collections.namedtuple(
         "WSIR", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WSIR.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WSIR.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WSIR.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WSIR.rel_error = _REL_ERROR
 
-    config.flownet.data_source.simulation.vectors.WSIT = collections.namedtuple(
+    config.flownet.data_source.vectors.WSIT = collections.namedtuple(
         "WSIT", "min_error"
     )
-    config.flownet.data_source.simulation.vectors.WSIT.min_error = _MIN_ERROR
-    config.flownet.data_source.simulation.vectors.WSIT.rel_error = _REL_ERROR
+    config.flownet.data_source.vectors.WSIT.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WSIT.rel_error = _REL_ERROR
 
     config.flownet.data_source.resampling = _RESAMPLING
 
