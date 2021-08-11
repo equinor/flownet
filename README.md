@@ -7,7 +7,7 @@
 <p align="center">
 <a href="https://badge.fury.io/py/flownet"><img src="https://badge.fury.io/py/flownet.svg"></a>
 <a href="https://github.com/equinor/flownet/actions?query=workflow%3ACI"><img src="https://img.shields.io/github/workflow/status/equinor/flownet/CI"></a>
-<a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.7%20|%203.8-blue.svg"></a>
+<a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.7%20|%203.8%20|%203.9-blue.svg"></a>
 <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 <a href="https://lgtm.com/projects/g/equinor/flownet/alerts/"><img alt="Total alerts" src="https://img.shields.io/lgtm/alerts/g/equinor/flownet.svg?logo=lgtm&logoWidth=18"/></a>
 <a href="https://lgtm.com/projects/g/equinor/flownet/context:python"><img src="https://img.shields.io/lgtm/grade/python/g/equinor/flownet.svg?logo=lgtm&logoWidth=18"></a>
