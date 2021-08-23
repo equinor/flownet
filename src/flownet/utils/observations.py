@@ -16,7 +16,7 @@ def _read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
     assert os.path.exists(ert_obs_file_name) == 1
     ert_obs: dict = {}
     text = ""
-    with open(ert_obs_file_name, "r") as a_ert_file:
+    with open(ert_obs_file_name, "r", encoding="utf8") as a_ert_file:
         for line in a_ert_file:
             text = text + line
 
@@ -49,5 +49,5 @@ def _read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:
         dictionary that contains the information in a YAML observation file
     """
     assert os.path.exists(yaml_obs_file_name) == 1
-    with open(yaml_obs_file_name, "r") as a_yaml_file:
+    with open(yaml_obs_file_name, "r", encoding="utf8") as a_yaml_file:
         return yaml.load(a_yaml_file, Loader=yaml.FullLoader)

@@ -30,7 +30,7 @@ def _ert_samples2simulation_input(
 
     """
     if random_samples.suffix == ".json":
-        with open(random_samples, "r") as json_file:
+        with open(random_samples, "r", encoding="utf8") as json_file:
             unsorted_random_samples = json.load(json_file)["FLOWNET_PARAMETERS"]
     elif random_samples.suffix == ".parquet":
         df = pd.read_parquet(random_samples)

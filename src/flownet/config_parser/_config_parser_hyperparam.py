@@ -104,7 +104,7 @@ def parse_hyperparam_config(base_config: pathlib.Path) -> list:
         List of hyperparameters.
 
     """
-    with open(base_config) as file:
+    with open(base_config, encoding="utf8") as file:
         hyper_config = yaml.load(file, Loader=yaml.FullLoader)
 
     return list_hyperparameters(hyper_config, hyperparameters=[])

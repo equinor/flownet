@@ -852,7 +852,7 @@ def run_flownet_history_matching(
 
     regional_parameters = [
         param
-        for param in {"bulkvolume_mult", "porosity", "permeability"}
+        for param in ["bulkvolume_mult", "porosity", "permeability"]
         if getattr(config.model_parameters, param + "_regional_scheme") != "individual"
     ]
     (ci2ri, regional_porv_poro_trans_dist_values,) = _get_regional_distribution(
