@@ -122,7 +122,7 @@ def interpolate_wo(parameter: float, scalrec: Dict) -> Dict:
     parameter = abs(parameter)
 
     parameter_dict = {}
-    for elem in {"swirr", "swl", "swcr", "sorw", "nw", "now", "krwend", "kroend"}:
+    for elem in ["swirr", "swl", "swcr", "sorw", "nw", "now", "krwend", "kroend"]:
         parameter_dict[elem] = (
             scalrec[elem][i] * (1 - parameter) + scalrec[elem][j] * parameter
         )
@@ -153,7 +153,7 @@ def interpolate_go(parameter: float, scalrec: Dict) -> Dict:
     parameter = abs(parameter)
 
     parameter_dict = {}
-    for elem in {"swirr", "swl", "sgcr", "sorg", "ng", "nog", "krgend", "kroend"}:
+    for elem in ["swirr", "swl", "sgcr", "sorg", "ng", "nog", "krgend", "kroend"]:
         parameter_dict[elem] = (
             scalrec[elem][i] * (1 - parameter) + scalrec[elem][j] * parameter
         )

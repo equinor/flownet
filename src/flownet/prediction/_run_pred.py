@@ -45,7 +45,7 @@ def run_flownet_prediction(config, args):
         args.output_folder / "parameters.parquet",
     )
 
-    with open(args.output_folder / "webviz_config.yml", "w") as fh:
+    with open(args.output_folder / "webviz_config.yml", "w", encoding="utf8") as fh:
         fh.write(
             _TEMPLATE_ENVIRONMENT.get_template("webviz_pred_config.yml.jinja2").render(
                 {"runpath": config.ert.runpath}

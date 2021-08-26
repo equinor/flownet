@@ -114,7 +114,9 @@ class SimulationRealization:
             # Render SCHEDULE include file
             template = template_environment.get_template("HISTORY_SCHEDULE.inc.jinja2")
             with open(
-                output_folder_path / "include" / "HISTORY_SCHEDULE.inc", "w"
+                output_folder_path / "include" / "HISTORY_SCHEDULE.inc",
+                "w",
+                encoding="utf8",
             ) as fh:
                 fh.write(
                     template.render(
@@ -124,7 +126,9 @@ class SimulationRealization:
 
         for section in self._includes:
             with open(
-                output_folder_path / "include" / f"{section}_PARAMETERS.inc", "w"
+                output_folder_path / "include" / f"{section}_PARAMETERS.inc",
+                "w",
+                encoding="utf8",
             ) as fh:
                 fh.write(self._includes[section])
 
@@ -143,7 +147,9 @@ class SimulationRealization:
 
         # Render main Flow .DATA file
         template = template_environment.get_template("TEMPLATE_MODEL.DATA.jinja2")
-        with open(output_folder_path / "FLOWNET_REALIZATION.DATA", "w") as fh:
+        with open(
+            output_folder_path / "FLOWNET_REALIZATION.DATA", "w", encoding="utf8"
+        ) as fh:
             fh.write(template.render(configuration))
 
         # Copy static files

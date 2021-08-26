@@ -88,7 +88,7 @@ class AssistedHistoryMatching:
             Nothing
 
         """
-        with open(self.output_folder / "webviz_config.yml", "w") as fh:
+        with open(self.output_folder / "webviz_config.yml", "w", encoding="utf8") as fh:
             fh.write(
                 _TEMPLATE_ENVIRONMENT.get_template(
                     "webviz_ahm_config.yml.jinja2"
