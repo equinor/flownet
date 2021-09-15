@@ -421,22 +421,12 @@ class FlowData(FromSource):
         properties_per_cell = pd.DataFrame(
             pd.DataFrame(data=network.grid.index, index=network.grid.model).index
         )
+        number_of_tubes = properties_per_cell.groupby(["model"]).ngroups
 
-        # Get the active cells per tube
-        #active_cells_per_tube = (
-        #        properties_per_cell.reset_index().groupby(["model"]).size() - 1
-        #)
-
-        # Distribute tube volume over the active cells of the flownet.
-        # The last cell of each each tube is inactive and therefore gets 0 volume assigned.
-        # Evenly distribute the volume over cells of the tube
-        #cell_volumes = np.zeros(len(properties_per_cell["model"].values))
-        #for i, tube in enumerate(properties_per_cell["model"].values[:-1]):
-        #    if (
-        #            properties_per_cell["model"].values[i]
-        #            == properties_per_cell["model"].values[i + 1]
-        #    ):
-        #        cell_volumes[i] = tube_volumes[tube] / active_cells_per_tube[tube]
+        # Identify the index of the last (inactive) cell of each tube which will have 0 volume
+        inactive_cells = np.zeros(number_of_tubes)
+        for i in range(number_of_tubes):
+            inactive_cells[i] = properties_per_cell.reset_index().groupby(["model"]).groups[i][-1]
 
         # START NEW CODE - Get a mapping from tube cells to tubes
         properties_per_cell = pd.DataFrame(
@@ -478,11 +468,9 @@ class FlowData(FromSource):
             tube_volumes = properties_per_cell.groupby(by="model").sum().values
 
             # Evenly distribute tube volumes over the tube cells between the current depth levels
-            for tube in range(len(tube_volumes)):
+            for tube in range(number_of_tubes):
                 indices = [i for i, x in enumerate(network.grid.model.iloc[flownet_indices].values.tolist()) if
-                           x == tube]
-                #  to do: remove indices corresponding to the last (inactive) cell in a flow tube
-
+                           x == tube and flownet_indices[i] not in inactive_cells]
                 for i in range(len(indices)):
                     cell_volumes[flownet_indices[indices[i]]] += tube_volumes[tube] / len(indices)
 
