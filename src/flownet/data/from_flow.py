@@ -435,7 +435,7 @@ class FlowData(FromSource):
         cell_volumes = np.zeros(len(properties_per_cell["model"].values))
 
         # depths should be a list of depths provided by the user. it may also be empty
-        depths = [2570]
+        depths = network._volume_layering
 
         # Add 0 depth level and arrange from deep to shallow)
         depths.append(0)

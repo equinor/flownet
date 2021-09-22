@@ -531,6 +531,15 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                         "    factor of the FlowNet model generation process or by setting the "
                         "    place_nodes_in_volume_reservoir to true.",
                     },
+                    "prior_volume_layering": {
+                        MK.Type: types.List,
+                        MK.Content: {
+                            MK.Item: {
+                                MK.Type: types.Number,
+                                MK.AllowNone: True,
+                            }
+                        },
+                    },
                     "hyperopt": {
                         MK.Type: types.NamedDict,
                         MK.Content: {
