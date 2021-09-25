@@ -180,9 +180,10 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     output_folder = pathlib.Path(args.output_folder)
     os.makedirs(output_folder, exist_ok=True)
 
-    if prediction_setup and config.ert.ref_sim:
-        path_ref_sim = pathlib.Path(config.ert.ref_sim).resolve()
+    if prediction_setup:
         mode = "pred"
+        if config.ert.ref_sim:
+            path_ref_sim = pathlib.Path(config.ert.ref_sim).resolve()
     elif not prediction_setup:
         mode = "ahm"
         # Derive absolute path to reference simulation case
@@ -293,6 +294,35 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                         }
                     )
                 )
+
+    shutil.copyfile(
+        _MODULE_FOLDER / ".." / "static" / "SAVE_PREDICTIONS_WORKFLOW_JOB",
+        output_folder / "SAVE_PREDICTIONS_WORKFLOW_JOB",
+    )
+
+    export_workflow_template = _TEMPLATE_ENVIRONMENT.get_template(
+        "SAVE_PREDICTIONS_WORKFLOW.jinja2"
+    )
+    if hasattr(config, "export"):
+        with open(
+                output_folder / f"SAVE_PREDICTIONS_WORKFLOW",
+                "w",
+                encoding="utf8",
+        ) as fh:
+            fh.write(
+                export_workflow_template.render(
+                    {
+                        "mode": mode,
+                        "run_path": config.ert.runpath,
+                        "ecl_base": config.ert.eclbase,
+                        "prediction_end": config.export.end_date,
+                        "export_quantity": "["
+                                             + ",".join(list(config.export.quantity))
+                                             + "]",
+                        "export_outfile": config.export.csv_outfile,
+                    }
+                )
+            )
 
     shutil.copyfile(args.config, output_folder / args.config.name)
     with open(

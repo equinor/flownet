@@ -1,0 +1,10 @@
+INTERNAL      FALSE
+EXECUTABLE    flownet_save_predictions
+MIN_ARG       6
+MAX_ARG       6
+ARG_TYPE      0 STRING
+ARG_TYPE      1 STRING
+ARG_TYPE      2 STRING
+ARG_TYPE      3 STRING
+ARG_TYPE      4 STRING
+ARG_TYPE      5 STRING
