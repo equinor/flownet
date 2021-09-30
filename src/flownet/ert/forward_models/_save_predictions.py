@@ -10,30 +10,7 @@ import pandas as pd
 from ecl.summary import EclSum
 
 from flownet.ert.forward_models.utils import get_last_iteration
-
-
-def _load_simulations(runpath: str, ecl_base: str) -> Tuple[str, Optional[EclSum]]:
-    """
-    Internal helper function to load simulation results in parallel.
-
-    Args:
-        runpath: Path to where the realization is run.
-        ecl_base: Path to where the realization is run.
-
-    Returns:
-        (runpath, EclSum), or (runpath, None) in case of failed simulation (inexistent .UNSMRY file)
-
-    """
-    try:
-        eclsum = EclSum(str(pathlib.Path(runpath) / pathlib.Path(ecl_base)))
-    except KeyboardInterrupt:
-        raise
-    except Exception:  # pylint: disable=broad-except
-        eclsum = None
-    except BaseException:  # pylint: disable=broad-except
-        pass
-
-    return runpath, eclsum
+from flownet.ert.forward_models._iteration_analytics import _load_simulations
 
 
 def make_dataframe_simulation_data(
