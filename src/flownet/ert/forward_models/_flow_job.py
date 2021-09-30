@@ -45,4 +45,4 @@ def run_flow():
 
     subprocess.run([flow_path, args.data_file], check=True)
 
-    Path("FLOW_SIMULATION.OK").write_text("")
+    Path("FLOW_SIMULATION.OK").write_text("", encoding="utf8")
