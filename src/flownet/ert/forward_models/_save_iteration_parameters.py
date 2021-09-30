@@ -23,7 +23,9 @@ def _load_parameters(runpath: str) -> Tuple[int, Dict]:
 
     """
     realization = int(re.findall(r"[0-9]+", runpath)[-2])
-    parameters = json.loads((pathlib.Path(runpath) / "parameters.json").read_text())
+    parameters = json.loads(
+        (pathlib.Path(runpath) / "parameters.json").read_text(encoding="utf8")
+    )
 
     return realization, parameters["FLOWNET_PARAMETERS"]
 

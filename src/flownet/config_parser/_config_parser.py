@@ -2103,9 +2103,7 @@ def parse_config(
             "place candidates within the reservoir volume."
         )
 
-    if (config.flownet.mitchells_algorithm != "normal") and (
-        config.flownet.mitchells_algorithm != "fast"
-    ):
+    if config.flownet.mitchells_algorithm not in ("normal", "fast"):
         raise ValueError(
             f"'{config.flownet.mitchells_algorithm}' is not a valid mitchells_algorithm."
         )
@@ -2239,10 +2237,7 @@ def parse_config(
                 "'scheme', 'fraction', and 'delta_depth'."
                 "Currently one or more parameters are missing."
             )
-        if (
-            config.model_parameters.aquifer.scheme != "global"
-            and config.model_parameters.aquifer.scheme != "individual"
-        ):
+        if config.model_parameters.aquifer.scheme not in ("global", "individual"):
             raise ValueError(
                 f"The aquifer scheme "
                 f"'{config.model_parameters.aquifer.scheme}' is not valid.\n"
@@ -2511,10 +2506,7 @@ def _check_distribution(path_in_config_dict: dict, parameter: str):
     _check_for_negative_values(path_in_config_dict, parameter)
     _check_order_of_values(path_in_config_dict, parameter)
     # uniform can be defined by either min/max, min/mean or mean/max
-    if (
-        getattr(path_in_config_dict, parameter).distribution == "uniform"
-        or getattr(path_in_config_dict, parameter).distribution == "logunif"
-    ):
+    if getattr(path_in_config_dict, parameter).distribution in ("uniform", "logunif"):
         if {"min", "max", "mean"}.issubset(defined_parameters):
             raise ValueError(
                 f"The {parameter} has values defined for 'min', 'mean' and 'max'. Only two of them should be defined"
@@ -2555,10 +2547,10 @@ def _check_distribution(path_in_config_dict: dict, parameter: str):
             )
 
     # check that mean and stddev is defined for the distributions that need it
-    if (
-        getattr(path_in_config_dict, parameter).distribution == "normal"
-        or getattr(path_in_config_dict, parameter).distribution == "lognormal"
-        or getattr(path_in_config_dict, parameter).distribution == "truncated_normal"
+    if getattr(path_in_config_dict, parameter).distribution in (
+        "normal",
+        "lognormal",
+        "truncated_normal",
     ):
         if not {"mean", "stddev"}.issubset(
             _check_defined(path_in_config_dict, parameter)
