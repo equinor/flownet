@@ -33,8 +33,9 @@ class Schedule:
         self._prod_control_mode: str
         self._inj_control_mode: str
         self._case_name: str
+        self._start_dates: Dict
         if network and isinstance(df_production_data, pd.DataFrame) and config:
-            # All info is given, make a netork
+            # All info is given, make a network
             self._network: NetworkModel = network
             self._df_production_data: pd.DataFrame = df_production_data
             self._prod_control_mode = config.flownet.prod_control_mode
@@ -59,6 +60,7 @@ class Schedule:
         print("Creating simulation schedule file...", flush=True, end=" ")
         self._calculate_compdat()
         self._calculate_welspecs()
+        self._get_start_dates()
         self._calculate_wconhist()
         self._calculate_wconinjh()
         self._calculate_wsalt()
@@ -217,7 +219,7 @@ class Schedule:
         vfp_tables = self.get_vfp()
 
         for _, value in self._df_production_data.iterrows():
-            start_date = self.get_well_start_date(value["WELL_NAME"])
+            start_date = self._start_dates[value["WELL_NAME"]]
 
             if value["TYPE"] == "OP" and start_date and value["date"] >= start_date:
                 self.append(
@@ -254,7 +256,7 @@ class Schedule:
 
         """
         for _, value in self._df_production_data.iterrows():
-            start_date = self.get_well_start_date(value["WELL_NAME"])
+            start_date = self._start_dates[value["WELL_NAME"]]
             if value["TYPE"] == "WI" and start_date and value["date"] >= start_date:
                 self.append(
                     WCONINJH(
@@ -510,6 +512,21 @@ class Schedule:
             for kw in self._schedule_items
             if kw.name == "COMPDAT" and kw.well_name == well_name
         ]
+
+    def _get_start_dates(self):
+        """
+        Function to retrieve the start date of all wells.
+
+        Args:
+
+        Returns:
+            Nothing
+
+        """
+        start_dates = {}
+        for well_name in self._df_production_data["WELL_NAME"].unique():
+            start_dates[well_name] = self.get_well_start_date(well_name)
+        self._start_dates = start_dates
 
     def get_well_start_date(
         self, well_name: Optional[str] = None
