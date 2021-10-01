@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 with open("README.md", "r", encoding="utf8") as fh:
     LONG_DESCRIPTION = fh.read()
@@ -41,6 +41,7 @@ TEST_REQUIRES = [
     "sphinx-rtd-theme",
     "types-pkg_resources",
     "types-PyYAML",
+    "pre-commit~=2.9.3",
 ]
 
 setup(
