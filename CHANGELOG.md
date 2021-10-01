@@ -5,6 +5,17 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
+
+
+### Fixes
+
+
+### Changes
+
+
+## [0.5.3] - 2021-09-23
+
+### Added
 - [#425](https://github.com/equinor/flownet/pull/425) Added functionality to load production data from CSV file. Changed position of observation `vectors` entry in configuration file (now one level higher, same level as `simulation` and `database` in `data_source` entry).
 - [#417](https://github.com/equinor/flownet/pull/417) Added functionality to history match dissolved salts (TDS) in produced water.
 - [#404](https://github.com/equinor/flownet/pull/404) Added possibility for regional multipliers for permeability, porosity and bulkvolume multiplier. Current implementation allows for defining either one global multiplier, or a regional multipliers based on a region parameter extracted from an existing simulation model (typically FIPNUM, EQLNUM, SATNUM etc). The regional multiplier will be in addition to the per tube multipliers. New keys in config yaml are: porosity_regional_scheme (global, individual or regions_from_sim), porosity_regional (define prior same way as for other model parameters) and porosity_parameter_from_sim_model (name of region parameter in simulation model). The same three keys exists for permeability and bulkvolume_mult.
