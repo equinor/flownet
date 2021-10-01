@@ -3,11 +3,9 @@ from datetime import datetime
 from multiprocessing.pool import ThreadPool
 import functools
 import glob
-import pathlib
-from typing import Any, Dict, Optional, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 import pandas as pd
-from ecl.summary import EclSum
 
 from flownet.ert.forward_models.utils import get_last_iteration
 from flownet.ert.forward_models._iteration_analytics import _load_simulations
@@ -15,7 +13,7 @@ from flownet.ert.forward_models._iteration_analytics import _load_simulations
 
 def make_dataframe_simulation_data(
     mode: str, path: str, eclbase_file: str, keys: List[str], end_date: datetime
-) -> Tuple[pd.DataFrame, str, int]:
+) -> Tuple[pd.DataFrame, str]:
     """
     Internal helper function to generate dataframe containing
     data from ensemble of simulations from selected simulation keys
@@ -33,7 +31,6 @@ def make_dataframe_simulation_data(
     Returns:
         df_sim: Pandas dataframe contained data from ensemble of simulations
         iteration: current AHM iteration number
-        nb_real: number of realizations
 
     """
     if mode == "pred":
@@ -72,7 +69,7 @@ def make_dataframe_simulation_data(
             df_sim = df_sim.append(df_realization)
             n_realization += 1
 
-    return df_sim, iteration, n_realization
+    return df_sim, iteration
 
 
 def parse_arguments():
@@ -123,7 +120,7 @@ def save_predictions():
     vector_keys = list(args.quantity.replace("[", "").replace("]", "").split(","))
 
     # Load ensemble of FlowNet
-    (df_sim, iteration, nb_real) = make_dataframe_simulation_data(
+    (df_sim, iteration) = make_dataframe_simulation_data(
         args.mode,
         args.runpath,
         args.eclbase,

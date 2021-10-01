@@ -175,6 +175,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         Nothing
 
     """
+    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-branches
 
     # Create output folders if they don't exist
     output_folder = pathlib.Path(args.output_folder)
@@ -305,7 +307,7 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     )
     if hasattr(config, "export"):
         with open(
-            output_folder / f"SAVE_PREDICTIONS_WORKFLOW",
+            output_folder / "SAVE_PREDICTIONS_WORKFLOW",
             "w",
             encoding="utf8",
         ) as fh:
