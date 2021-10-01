@@ -47,7 +47,7 @@ def write_grdecl_file(
 
     if filename is None:
         outputfile = pathlib.Path(outputfilename)
-        content = outputfile.read_text()
+        content = outputfile.read_text(encoding="utf8")
         outputfile.unlink()
         return content
     return None
