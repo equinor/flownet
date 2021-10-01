@@ -305,9 +305,9 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     )
     if hasattr(config, "export"):
         with open(
-                output_folder / f"SAVE_PREDICTIONS_WORKFLOW",
-                "w",
-                encoding="utf8",
+            output_folder / f"SAVE_PREDICTIONS_WORKFLOW",
+            "w",
+            encoding="utf8",
         ) as fh:
             fh.write(
                 export_workflow_template.render(
@@ -317,8 +317,8 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
                         "ecl_base": config.ert.eclbase,
                         "prediction_end": config.export.end_date,
                         "export_quantity": "["
-                                             + ",".join(list(config.export.quantity))
-                                             + "]",
+                        + ",".join(list(config.export.quantity))
+                        + "]",
                         "export_outfile": config.export.csv_outfile,
                     }
                 )
