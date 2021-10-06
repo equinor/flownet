@@ -48,7 +48,7 @@ def swof_from_parameters(parameters: Dict) -> str:
     pc = np.zeros(len(sw))
 
     swof = np.transpose(np.stack((sw, krw, krow, pc)))
-    swof_string = np.array2string(swof, formatter={"float_kind": lambda x: "%.7f" % x})
+    swof_string = np.array2string(swof, formatter={"float_kind": lambda x: f"{x:.7f}"})
     swof_string = swof_string.replace(" [", "").replace("[", "").replace("]", "")
 
     return swof_string
@@ -93,7 +93,7 @@ def sgof_from_parameters(parameters: Dict) -> str:
     pc = np.zeros(len(sg))
 
     sgof = np.transpose(np.stack((sg, krg, krog, pc)))
-    sgof_string = np.array2string(sgof, formatter={"float_kind": lambda x: "%.7f" % x})
+    sgof_string = np.array2string(sgof, formatter={"float_kind": lambda x: f"{x:.7f}"})
     sgof_string = sgof_string.replace(" [", "").replace("[", "").replace("]", "")
 
     return sgof_string

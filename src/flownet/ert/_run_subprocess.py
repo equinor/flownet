@@ -63,7 +63,7 @@ def run_ert_subprocess(
                 process.terminate()
                 error_files = glob.glob(str(cwd / runpath.replace("%d", "*") / "ERROR"))
                 raise subprocess.SubprocessError(
-                    pathlib.Path(error_files[0]).read_text()
+                    pathlib.Path(error_files[0]).read_text(encoding="utf8")
                 )
 
     if process.returncode != 0:
