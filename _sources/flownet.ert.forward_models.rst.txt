@@ -12,6 +12,7 @@ Submodules
    flownet.ert.forward_models._iteration_analytics
    flownet.ert.forward_models._render_realization
    flownet.ert.forward_models._save_iteration_parameters
+   flownet.ert.forward_models._save_predictions
    flownet.ert.forward_models.utils
 
 Module contents
