@@ -441,6 +441,7 @@ class FlowData(FromSource):
 
         # Add 0 depth level and arrange from deep to shallow)
         depths.append(0)
+        depths = list(set(depths))
         depths.sort(reverse=True)
 
         # Perform mapping of volumes between two depth levels

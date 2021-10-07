@@ -20,7 +20,7 @@ class NetworkModel:
         area: float,
         fault_planes: Optional[pd.DataFrame] = None,
         fault_tolerance: float = 1.0e-5,
-        volume_layering: List = [],
+        volume_layering: List = None,
     ):
         """
         Creates a network of one dimensional models.
@@ -52,7 +52,10 @@ class NetworkModel:
         self._nncs: List[Tuple[int, int]] = self._calculate_nncs()
 
         self._initial_cell_volumes = np.ones((len(self.connection_midpoints), 1))
-        self._volume_layering = list(volume_layering)
+        if volume_layering is None:
+            self._volume_layering = list()
+        else:
+            self._volume_layering = list(volume_layering)
 
         self._fault_planes: Optional[pd.DataFrame] = None
         self._faults: Optional[Dict] = None
