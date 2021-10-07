@@ -71,6 +71,7 @@ setup(
             "flownet_run_flow=flownet.ert.forward_models:run_flow",
             "flownet_save_iteration_parameters=flownet.ert.forward_models:save_iteration_parameters",
             "flownet_save_iteration_analytics=flownet.ert.forward_models:save_iteration_analytics",
+            "flownet_save_predictions=flownet.ert.forward_models:save_predictions",
             "flownet_plot_results=flownet.utils.plot_results:main",
         ],
     },
