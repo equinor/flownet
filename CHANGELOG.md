@@ -12,7 +12,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 
 ### Changes
-
+- [#440](https://github.com/equinor/flownet/pull/440) Speeds up workflow by removing search for well starting date from inside for-loop when processing historical production data in `_schedule.py`.
 
 ## [0.5.3] - 2021-09-23
 
