@@ -10,6 +10,13 @@ The following is a set of guidelines for contributing to FlowNet.
 1. We document our code
 1. We use type annotations
 
+## Pre-commit hook
+
+    ```bash
+    # optional
+    pre-commit install
+    ```
+
 ## Pull Request Process
 
 1. Work on your own fork of the main repo
