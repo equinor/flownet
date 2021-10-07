@@ -426,7 +426,9 @@ class FlowData(FromSource):
         # Identify the index of the last (inactive) cell of each tube which will have 0 volume
         inactive_cells = np.zeros(number_of_tubes)
         for i in range(number_of_tubes):
-            inactive_cells[i] = properties_per_cell.reset_index().groupby(["model"]).groups[i][-1]
+            inactive_cells[i] = (
+                properties_per_cell.reset_index().groupby(["model"]).groups[i][-1]
+            )
 
         # START NEW CODE - Get a mapping from tube cells to tubes
         properties_per_cell = pd.DataFrame(
@@ -445,15 +447,23 @@ class FlowData(FromSource):
         for ic in range(len(depths)):
             if ic == 0:
                 # Add a very deep dummy level
-                dr = [1.e10, depths[ic]]
+                dr = [1.0e10, depths[ic]]
             else:
-                dr = [depths[ic-1], depths[ic]]
+                dr = [depths[ic - 1], depths[ic]]
 
             tube_cell_volumes = np.zeros(len(flownet_cell_midpoints))
 
             # Identify cells located between the current lower and upper depths levels
-            flownet_indices = [idx for idx, val in enumerate(network.cell_midpoints[2]) if (dr[0] >= val > dr[1])]
-            model_indices = [idx for idx, val in enumerate(model_cell_mid_points[:, 2]) if (dr[0] >= val > dr[1])]
+            flownet_indices = [
+                idx
+                for idx, val in enumerate(network.cell_midpoints[2])
+                if (dr[0] >= val > dr[1])
+            ]
+            model_indices = [
+                idx
+                for idx, val in enumerate(model_cell_mid_points[:, 2])
+                if (dr[0] >= val > dr[1])
+            ]
 
             # Determine nearest flow tube cell for each cell in the original model
             tree = KDTree(flownet_cell_midpoints[flownet_indices, :])
@@ -461,7 +471,9 @@ class FlowData(FromSource):
 
             # Assign each reservoir model volume to a flow tube
             for cell_i, tube_cell_id in enumerate(matched_indices):
-                tube_cell_volumes[flownet_indices[tube_cell_id[0]]] += model_cell_volume[model_indices[cell_i]]
+                tube_cell_volumes[
+                    flownet_indices[tube_cell_id[0]]
+                ] += model_cell_volume[model_indices[cell_i]]
 
             # Compute the total volumes per tube section between the current depth levels
             properties_per_cell["distributed_volume"] = tube_cell_volumes
@@ -469,10 +481,17 @@ class FlowData(FromSource):
 
             # Evenly distribute tube volumes over the tube cells between the current depth levels
             for tube in range(number_of_tubes):
-                indices = [i for i, x in enumerate(network.grid.model.iloc[flownet_indices].values.tolist()) if
-                           x == tube and flownet_indices[i] not in inactive_cells]
+                indices = [
+                    i
+                    for i, x in enumerate(
+                        network.grid.model.iloc[flownet_indices].values.tolist()
+                    )
+                    if x == tube and flownet_indices[i] not in inactive_cells
+                ]
                 for i in range(len(indices)):
-                    cell_volumes[flownet_indices[indices[i]]] += tube_volumes[tube] / len(indices)
+                    cell_volumes[flownet_indices[indices[i]]] += tube_volumes[
+                        tube
+                    ] / len(indices)
 
         return cell_volumes
 
