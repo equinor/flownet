@@ -431,9 +431,9 @@ class FlowData(FromSource):
             )
 
         # Get a mapping from tube cells to tubes
-        #properties_per_cell = pd.DataFrame(
+        # properties_per_cell = pd.DataFrame(
         #    pd.DataFrame(data=network.grid.index, index=network.grid.model).index
-        #)
+        # )
         cell_volumes = np.zeros(len(properties_per_cell["model"].values))
 
         # depths should be a list of depths provided by the user. it may also be empty
