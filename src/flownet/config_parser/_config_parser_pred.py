@@ -158,6 +158,32 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     },
                 },
             },
+            "export": {
+                MK.Type: types.NamedDict,
+                MK.Content: {
+                    "csv_outfile": {
+                        MK.Type: types.String,
+                        MK.AllowNone: True,
+                        MK.Description: "Name of CSV file containing the prediction output of the FlowNet ensemble. ",
+                    },
+                    "quantity": {
+                        MK.Type: types.List,
+                        MK.Content: {
+                            MK.Item: {
+                                MK.Type: types.String,
+                                MK.AllowNone: True,
+                            }
+                        },
+                        MK.Transformation: _to_upper,
+                        MK.Description: "List of summary vectors to be exported. ",
+                    },
+                    "end_date": {
+                        MK.Type: types.Date,
+                        MK.AllowNone: True,
+                        MK.Description: "End date in YYYY-MM-DD format.",
+                    },
+                },
+            },
         },
     }
 
