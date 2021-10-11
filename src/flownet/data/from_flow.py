@@ -440,12 +440,12 @@ class FlowData(FromSource):
         depths.sort(reverse=True)
 
         # Perform mapping of volumes between two depth levels
-        for idx, val in enumerate(depths):
-            if idx == 0:
+        for index, depth in enumerate(depths):
+            if index == 0:
                 # Add a very deep dummy level
-                depth_range = [1.0e10, val]
+                depth_range = [1.0e10, depth]
             else:
-                depth_range = [depths[idx - 1], val]
+                depth_range = [depths[index - 1], depth]
 
             tube_cell_volumes = np.zeros(len(flownet_cell_midpoints))
 
