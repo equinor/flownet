@@ -417,11 +417,12 @@ class FlowData(FromSource):
             for cell in self._grid.cells(active=True)
         ]
 
-        # Get a mapping from tube cells to tubes
+        # Number of tubes and tube cells
         properties_per_cell = pd.DataFrame(
             pd.DataFrame(data=network.grid.index, index=network.grid.model).index
         )
         number_of_tubes = properties_per_cell.groupby(["model"]).ngroups
+        cell_volumes = np.zeros(len(properties_per_cell["model"].values))
 
         # Identify the index of the last (inactive) cell of each tube which will have 0 volume
         inactive_cells = np.zeros(number_of_tubes)
@@ -430,14 +431,8 @@ class FlowData(FromSource):
                 properties_per_cell.reset_index().groupby(["model"]).groups[i][-1]
             )
 
-        # Get a mapping from tube cells to tubes
-        # properties_per_cell = pd.DataFrame(
-        #    pd.DataFrame(data=network.grid.index, index=network.grid.model).index
-        # )
-        cell_volumes = np.zeros(len(properties_per_cell["model"].values))
-
         # depths should be a list of depths provided by the user. it may also be empty
-        depths = network._volume_layering
+        depths = network._volume_layering.copy()
 
         # Add 0 depth level and arrange from deep to shallow)
         depths.append(0)
@@ -471,9 +466,8 @@ class FlowData(FromSource):
             _, matched_indices = tree.query(model_cell_mid_points[model_indices], k=[1])
 
             # Assign each reservoir model volume to a flow tube
-            for i in range(len(matched_indices)):
-                tube_cell_id = flownet_indices[matched_indices[i][0]]
-                tube_cell_volumes[tube_cell_id] += model_cell_volume[model_indices[i]]
+            for idx, val in enumerate(matched_indices):
+                tube_cell_volumes[flownet_indices[val[0]]] += model_cell_volume[model_indices[idx]]
 
             # Compute the total volumes per tube section between the current depth levels
             properties_per_cell["distributed_volume"] = tube_cell_volumes
@@ -488,10 +482,10 @@ class FlowData(FromSource):
                     )
                     if x == tube and flownet_indices[i] not in inactive_cells
                 ]
-                for i in range(len(indices)):
-                    cell_volumes[flownet_indices[indices[i]]] += tube_volumes[
-                        tube
-                    ] / len(indices)
+                for _, idx in enumerate(indices):
+                    cell_volumes[flownet_indices[idx]] += tube_volumes[tube] / len(
+                        indices
+                    )
 
         return cell_volumes
 

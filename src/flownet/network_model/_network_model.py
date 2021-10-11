@@ -53,7 +53,7 @@ class NetworkModel:
 
         self._initial_cell_volumes = np.ones((len(self.connection_midpoints), 1))
         if volume_layering is None:
-            self._volume_layering = list()
+            self._volume_layering = []
         else:
             self._volume_layering = list(volume_layering)
 
