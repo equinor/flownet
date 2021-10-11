@@ -467,7 +467,9 @@ class FlowData(FromSource):
 
             # Assign each reservoir model volume to a flow tube
             for idx, val in enumerate(matched_indices):
-                tube_cell_volumes[flownet_indices[val[0]]] += model_cell_volume[model_indices[idx]]
+                tube_cell_volumes[flownet_indices[val[0]]] += model_cell_volume[
+                    model_indices[idx]
+                ]
 
             # Compute the total volumes per tube section between the current depth levels
             properties_per_cell["distributed_volume"] = tube_cell_volumes
