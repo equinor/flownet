@@ -408,6 +408,8 @@ class FlowData(FromSource):
             An array with volumes per flownetcell.
 
         """
+        # pylint: disable=too-many-locals
+
         flownet_cell_midpoints = np.array(network.cell_midpoints).T
         model_cell_mid_points = np.array(
             [cell.coordinate for cell in self._grid.cells(active=True)]
