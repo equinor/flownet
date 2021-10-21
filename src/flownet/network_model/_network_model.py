@@ -94,13 +94,9 @@ class NetworkModel:
         coordinates_start = self._df_entity_connections[
             ["xstart", "ystart", "zstart"]
         ].values[selector]
-        coordinates_end = self._df_entity_connections[
-            [
-                "xend",
-                "yend",
-                "zend",
-            ]
-        ].values[selector]
+        coordinates_end = self._df_entity_connections[["xend", "yend", "zend"]].values[
+            selector
+        ]
 
         return (coordinates_start + coordinates_end) / 2
 
@@ -150,13 +146,7 @@ class NetworkModel:
         coordinates_start = self._df_entity_connections[
             ["xstart", "ystart", "zstart"]
         ].values
-        coordinates_end = self._df_entity_connections[
-            [
-                "xend",
-                "yend",
-                "zend",
-            ]
-        ].values
+        coordinates_end = self._df_entity_connections[["xend", "yend", "zend"]].values
 
         return (coordinates_start + coordinates_end) / 2
 
