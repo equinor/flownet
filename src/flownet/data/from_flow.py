@@ -434,7 +434,7 @@ class FlowData(FromSource):
             )
 
         # depths should be a list of depths provided by the user. it may also be empty
-        depths = network._volume_layering.copy()
+        depths = network.volume_layering.copy()
 
         # Add 0 depth level and arrange from deep to shallow)
         depths.append(0)
