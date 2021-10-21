@@ -550,7 +550,7 @@ class NetworkModel:
     def volume_layering(self) -> List[float]:
         """Depths defining volume layering"""
         return self._volume_layering
-    
+
     @property
     def area(self) -> float:
         """surface area between to grid cells"""
