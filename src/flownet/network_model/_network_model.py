@@ -20,7 +20,7 @@ class NetworkModel:
         area: float,
         fault_planes: Optional[pd.DataFrame] = None,
         fault_tolerance: float = 1.0e-5,
-        volume_layering: List = None,
+        volume_layering: List[float] = None,
     ):
         """
         Creates a network of one dimensional models.
@@ -556,6 +556,11 @@ class NetworkModel:
         """Desired length of all cells"""
         return self._cell_length
 
+    @property
+    def volume_layering(self) -> List[float]:
+        """Depths defining volume layering"""
+        return self._volume_layering
+    
     @property
     def area(self) -> float:
         """surface area between to grid cells"""
