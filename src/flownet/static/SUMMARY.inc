@@ -163,3 +163,9 @@ WSPT
 /
 WSIT
 /
+
+-- Temperature
+WTPCHEA 
+/
+WTICHEA 
+/

@@ -173,6 +173,7 @@ class FlowData(FromSource):
                 - WSIR          Well Salt Injection Rate
                 - WSPT          Well Cumulative Salt Production
                 - WSIT          Well Cumulative Salt Injection
+                - WTPCHEA       Well Production Temperature
                 - WSTAT         Well status (OPEN, SHUT, STOP)
                 - TYPE          Well Type: "OP", "GP", "WI", "GI"
                 - PHASE         Main producing/injecting phase fluid: "OIL", "GAS", "WATER"
@@ -199,6 +200,7 @@ class FlowData(FromSource):
             "WSIR",
             "WSPT",
             "WSIT",
+            "WTPCHEA",
             "WSTAT",
         ]
 
@@ -248,7 +250,8 @@ class FlowData(FromSource):
             )
             wstat_default = "OPEN"
         else:
-            wstat_default = "STOP"
+            wstat_default = "OPEN" # hack
+            #wstat_default = "STOP" 
 
         df_production_data["WSTAT"] = df_production_data["WSTAT"].map(
             {

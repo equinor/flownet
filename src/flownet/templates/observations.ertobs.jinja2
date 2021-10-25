@@ -36,6 +36,9 @@ SUMMARY_OBSERVATION WBHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.bhp
 {%- if not isnan(kw.thp) and error_config.WTHP.rel_error is not none and error_config.WTHP.min_error is not none: %}
 SUMMARY_OBSERVATION WTHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.thp }}; ERROR = {{ [error_config.WTHP.rel_error * kw.thp, error_config.WTHP.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WTHP:{{ kw.well_name }}; };
 {%- endif %}
+{%- if not isnan(kw.temperature) and error_config.WTPCHEA.rel_error is not none and error_config.WTPCHEA.min_error is not none: %}
+SUMMARY_OBSERVATION WTPCHEA_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.temperature }}; ERROR = {{ [error_config.WTPCHEA.rel_error * kw.temperature, error_config.WTPCHEA.min_error] | max }}; DATE  = {{ date_formatted  }}; KEY = WTPCHEA:{{ kw.well_name }}; };
+{%- endif %}
 
 {% endfor %}
 {%- endif %}
