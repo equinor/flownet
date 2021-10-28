@@ -20,7 +20,7 @@ START
    {{ startdate.strftime('%d %b %Y').upper() }} /
 
 WELLDIMS
-   {{ welldims.number_wells }} {{ welldims.max_connections }} 1 100 /
+   {{ welldims.number_wells }} {{ welldims.max_connections }} 1 {{ welldims.number_wells }} /
 
 UNIFOUT
 

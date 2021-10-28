@@ -119,7 +119,9 @@ class Schedule:
             Nothing
 
         """
+        # loop over all network connections (flow tubes)
         for index, row in self._network.df_entity_connections.iterrows():
+            # loop over the connection end points
             for e_index, entity in enumerate(["start_entity", "end_entity"]):
                 if row[[entity]].values[0] and row[[entity]].values[0] != "aquifer":
 
@@ -127,15 +129,12 @@ class Schedule:
                     grid_mask = self._network.active_mask(model_index=index)
                     i = self._network.grid[grid_mask].index[entity_index]
 
+                    # if the end point corresponds to a well node location, add a COMPDAT entry
                     for (
                         _,
                         well_connection_state,
                     ) in self._network.df_well_connections.loc[
                         (
-                            self._network.df_well_connections["WELL_NAME"]
-                            == row[[entity]].values[0]
-                        )
-                        & (
                             (
                                 (
                                     np.isclose(
@@ -154,6 +153,9 @@ class Schedule:
                                         self._network.df_well_connections["Z"],
                                         row["zstart"],
                                     )
+                                )
+                                & (
+                                    entity == 'start_entity'
                                 )
                             )
                             | (
@@ -175,13 +177,16 @@ class Schedule:
                                         row["zend"],
                                     )
                                 )
+                                & (
+                                    entity == 'end_entity'
+                                )
                             )
                         )
                     ].iterrows():
                         self.append(
                             COMPDAT(
                                 date=well_connection_state["DATE"],
-                                well_name=row[[entity]][0],
+                                well_name=well_connection_state["WELL_NAME"],
                                 i=i,
                                 j=0,
                                 k1=0,
@@ -248,7 +253,7 @@ class Schedule:
         for _, value in self._df_production_data.iterrows():
             start_date = self._start_dates[value["WELL_NAME"]]
 
-            if value["TYPE"] == "OP" and start_date and value["date"] >= start_date:
+            if (value["TYPE"] == "OP" or value["TYPE"] == "WP") and start_date and value["date"] >= start_date:
                 self.append(
                     WCONHIST(
                         date=value["date"],

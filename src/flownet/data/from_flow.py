@@ -9,10 +9,11 @@ from scipy.spatial import KDTree
 from ecl.grid import EclGrid
 from ecl.eclfile import EclFile, EclInitFile
 from ecl.summary import EclSum
-from ecl2df import compdat, faults
+from ecl2df import faults
 from ecl2df.eclfiles import EclFiles
 
-from ..data import perforation_strategy
+from ..data import perforation_strategy, compdat
+
 from .from_source import FromSource
 from ..network_model import NetworkModel
 
@@ -109,7 +110,7 @@ class FlowData(FromSource):
                 f"The perforation handling strategy {perforation_handling_strategy} is unknown."
             ) from attribute_error
 
-        return perforation_strategy_method(df).sort_values(["DATE"])
+        return perforation_strategy_method(df).sort_values(["DATE"]) 
 
     def _well_logs(self) -> pd.DataFrame:
         """
@@ -233,11 +234,13 @@ class FlowData(FromSource):
                 df["WELL_NAME"] = well_name
 
                 df["PHASE"] = None
-                df.loc[df["WOPR"] > 0, "PHASE"] = "OIL"
+                df.loc[df["WOPR"] > 0, "PHASE"] = "OIL"   
+                df.loc[(df["WOPR"] == 0) & (df["WWPR"] > 0), "PHASE"] = "WATER"
                 df.loc[df["WWIR"] > 0, "PHASE"] = "WATER"
                 df.loc[df["WGIR"] > 0, "PHASE"] = "GAS"
                 df["TYPE"] = None
                 df.loc[df["WOPR"] > 0, "TYPE"] = "OP"
+                df.loc[(df["WOPR"] == 0) & (df["WWPR"] > 0), "TYPE"] = "WP"
                 df.loc[df["WWIR"] > 0, "TYPE"] = "WI"
                 df.loc[df["WGIR"] > 0, "TYPE"] = "GI"
                 # make sure the correct well type is set also when the well is shut in
@@ -300,17 +303,17 @@ class FlowData(FromSource):
 
             points.append((row["NAME"], i, j, k))
 
-            if row["FACE"] == "X" or row["FACE"] == "X+":
+            if row["FACE"] == "X" or row["FACE"] == "X+" or row["FACE"] == "I" or row["FACE"] == "I+":
                 points.append((row["NAME"], i + 1, j, k))
-            elif row["FACE"] == "Y" or row["FACE"] == "Y+":
+            elif row["FACE"] == "Y" or row["FACE"] == "Y+" or row["FACE"] == "J" or row["FACE"] == "J+":
                 points.append((row["NAME"], i, j + 1, k))
-            elif row["FACE"] == "Z" or row["FACE"] == "Z+":
+            elif row["FACE"] == "Z" or row["FACE"] == "Z+" or row["FACE"] == "K" or row["FACE"] == "K+":
                 points.append((row["NAME"], i, j, k + 1))
-            elif row["FACE"] == "X-":
+            elif row["FACE"] == "X-" or row["FACE"] == "I-":
                 points.append((row["NAME"], i - 1, j, k))
-            elif row["FACE"] == "Y-":
+            elif row["FACE"] == "Y-" or row["FACE"] == "J-":
                 points.append((row["NAME"], i, j - 1, k))
-            elif row["FACE"] == "Z-":
+            elif row["FACE"] == "Z-" or row["FACE"] == "K-":
                 points.append((row["NAME"], i, j, k - 1))
             else:
                 raise ValueError(
