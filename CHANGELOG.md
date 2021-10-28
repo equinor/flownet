@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Unreleased
 
 ### Added
+- [#434](https://github.com/equinor/flownet/pull/434) Added functionality to to export FlowNet predictions to CSV file. New `export` entry in prediction configuration file.
 
 
 ### Fixes
