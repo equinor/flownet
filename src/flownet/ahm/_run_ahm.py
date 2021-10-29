@@ -584,6 +584,7 @@ def run_flownet_history_matching(
         area=area,
         fault_planes=df_fault_planes,
         fault_tolerance=config.flownet.fault_tolerance,
+        volume_layering=config.flownet.prior_volume_layering,
     )
 
     if config.flownet.prior_volume_distribution == "voronoi_per_tube":
