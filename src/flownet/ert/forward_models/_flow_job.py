@@ -30,6 +30,7 @@ def run_flow():
     flow_path = shutil.which("flow")
     if "FLOW_PATH" in os.environ:
         flow_path = os.environ.get("FLOW_PATH")
+        print(flow_path)
         if not os.path.isfile(flow_path):
             raise FileNotFoundError(
                 r"$FLOW_PATH does not point at a file that exists.\n \
