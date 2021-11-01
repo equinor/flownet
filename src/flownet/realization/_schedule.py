@@ -8,7 +8,15 @@ import numpy as np
 import pandas as pd
 
 from configsuite import ConfigSuite
-from ._simulation_keywords import Keyword, COMPDAT, WCONHIST, WCONINJH, WELSPECS, WSALT, WTEMP
+from ._simulation_keywords import (
+    Keyword,
+    COMPDAT,
+    WCONHIST,
+    WCONINJH,
+    WELSPECS,
+    WSALT,
+    WTEMP,
+)
 from ..network_model import NetworkModel
 
 
@@ -76,7 +84,7 @@ class Schedule:
 
         """
         for _, value in self._df_production_data.iterrows():
-            if value["WWIR"] > 0: #PJPE check
+            if value["WWIR"] > 0:  # PJPE check
                 self.append(
                     WTEMP(
                         date=value["date"],

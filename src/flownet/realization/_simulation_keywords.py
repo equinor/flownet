@@ -244,6 +244,7 @@ class WSALT(Keyword):
         self.well_name: str = well_name
         self.salt_concentration: float = salt_concentration
 
+
 class WTEMP(Keyword):
     """
     The WTEMP keyword defines the temperature of the injected water.
