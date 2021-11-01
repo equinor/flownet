@@ -96,7 +96,7 @@ class WCONHIST(Keyword):
 
     """
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-instance-attributes,too-many-arguments
 
     def __init__(
         self,
@@ -149,7 +149,7 @@ class WCONINJH(Keyword):
 
     """
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-instance-attributes,too-many-arguments
 
     def __init__(
         self,
