@@ -2144,7 +2144,7 @@ def parse_config(
             f"'{config.flownet.inj_control_mode}' is not valid.\n"
             f"Valid options are {inj_control_modes}. "
         )
-
+    # pylint: disable=fixme
     # TODO: the phase keyword in config is now generalised and the term phase is not so appropriate anymore
     for phase in config.flownet.phases:
         if phase not in ["oil", "gas", "water", "disgas", "vapoil", "brine", "temp"]:
