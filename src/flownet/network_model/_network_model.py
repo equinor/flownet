@@ -63,6 +63,12 @@ class NetworkModel:
             self._fault_planes = fault_planes
             self._faults = self._calculate_faults(fault_tolerance)
 
+        from ._create_egrid import create_egrid
+        create_egrid(self._grid, "sfdaasdf")
+
+        import ipdb; ipdb.set_trace()
+
+
     def get_connection_midpoints(self, i: Optional[int] = None) -> np.ndarray:
         """
         Returns a numpy array with the midpoint of each connection in the network or,
