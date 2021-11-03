@@ -20,6 +20,7 @@ class NetworkModel:
         area: float,
         fault_planes: Optional[pd.DataFrame] = None,
         fault_tolerance: float = 1.0e-5,
+        volume_layering: List[float] = None,
     ):
         """
         Creates a network of one dimensional models.
@@ -51,6 +52,10 @@ class NetworkModel:
         self._nncs: List[Tuple[int, int]] = self._calculate_nncs()
 
         self._initial_cell_volumes = np.ones((len(self.connection_midpoints), 1))
+        if volume_layering is None:
+            self._volume_layering = []
+        else:
+            self._volume_layering = list(volume_layering)
 
         self._fault_planes: Optional[pd.DataFrame] = None
         self._faults: Optional[Dict] = None
@@ -89,13 +94,9 @@ class NetworkModel:
         coordinates_start = self._df_entity_connections[
             ["xstart", "ystart", "zstart"]
         ].values[selector]
-        coordinates_end = self._df_entity_connections[
-            [
-                "xend",
-                "yend",
-                "zend",
-            ]
-        ].values[selector]
+        coordinates_end = self._df_entity_connections[["xend", "yend", "zend"]].values[
+            selector
+        ]
 
         return (coordinates_start + coordinates_end) / 2
 
@@ -145,13 +146,7 @@ class NetworkModel:
         coordinates_start = self._df_entity_connections[
             ["xstart", "ystart", "zstart"]
         ].values
-        coordinates_end = self._df_entity_connections[
-            [
-                "xend",
-                "yend",
-                "zend",
-            ]
-        ].values
+        coordinates_end = self._df_entity_connections[["xend", "yend", "zend"]].values
 
         return (coordinates_start + coordinates_end) / 2
 
@@ -550,6 +545,11 @@ class NetworkModel:
     def cell_length(self) -> float:
         """Desired length of all cells"""
         return self._cell_length
+
+    @property
+    def volume_layering(self) -> List[float]:
+        """Depths defining volume layering"""
+        return self._volume_layering
 
     @property
     def area(self) -> float:

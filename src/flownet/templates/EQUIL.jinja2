@@ -5,8 +5,8 @@
 EQUIL
 {% for i in range(nr_eqlnum) -%}
 {% if parameters[i].get("goc_depth", False) -%}
-{{ parameters[i].get("goc_depth", "1*") }} {{ parameters[i].get("datum_pressure") }} {{ parameters[i].get("owc_depth") }} 1* {{ parameters[i].get("goc_depth", "1*") }} 1* 1* 1* /
+{{ parameters[i].get("goc_depth", "1*") }} {{ parameters[i].get("datum_pressure") }} {{ parameters[i].get("owc_depth") }} 1* {{ parameters[i].get("goc_depth", "1*") }} 1* 1* 1* 0 /
 {% else %}
-{{ datum_depth[i] }} {{ parameters[i].get("datum_pressure") }} {{ parameters[i].get("owc_depth") }} 1* {{ parameters[i].get("goc_depth", "1*") }} 1* 1* 1* /
+{{ datum_depth[i] }} {{ parameters[i].get("datum_pressure") }} {{ parameters[i].get("owc_depth") }} 1* {{ parameters[i].get("goc_depth", "1*") }} 1* 1* 1* 0 /
 {%- endif -%}
 {% endfor -%}
