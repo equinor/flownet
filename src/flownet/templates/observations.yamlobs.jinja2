@@ -170,6 +170,23 @@ smry:
         {%- endif -%}      
    {%- endfor %}
    {%- endif -%}
+   {%- if (error_config.WTPCHEA.rel_error is not none) and (error_config.WTPCHEA.min_error is not none) -%}
+   {%- for kw in schedule.get_keywords(kw_class="WCONHIST", well_name=well_name, ignore_nan="temperature", dates=dates[num_beginning_date:num_end_date]) -%}
+   {% if loop.first and not loop.last: %}
+ - key: WTPCHEA:{{ well_name }}
+   observations:
+   {%- endif %}
+    - date: {{ kw.date.strftime('%Y-%m-%d') }}
+      value: {{ kw.temperature }}
+      error: {{ [error_config.WTPCHEA.rel_error * kw.temperature, error_config.WTPCHEA.min_error] | max }}
+      comment:
+        {%- if (kw.date > last_training_date) -%}
+        {{ " Test" }}
+        {%- else -%}
+        {{ " Training" }}
+        {%- endif -%}      
+   {%- endfor %}
+   {%- endif -%}
 {%- endfor -%}
 
 {% for well_name in schedule.get_wells(kw_class="WCONINJH") %}

@@ -8,7 +8,15 @@ import numpy as np
 import pandas as pd
 
 from configsuite import ConfigSuite
-from ._simulation_keywords import Keyword, COMPDAT, WCONHIST, WCONINJH, WELSPECS, WSALT
+from ._simulation_keywords import (
+    Keyword,
+    COMPDAT,
+    WCONHIST,
+    WCONINJH,
+    WELSPECS,
+    WSALT,
+    WTEMP,
+)
 from ..network_model import NetworkModel
 
 
@@ -64,7 +72,26 @@ class Schedule:
         self._calculate_wconhist()
         self._calculate_wconinjh()
         self._calculate_wsalt()
+        self._calculate_wtemp()
         print("done.", flush=True)
+
+    def _calculate_wtemp(self):
+        """
+        Helper Function that generates the WTEMP keywords based on temperature measurements.
+
+        Returns:
+            Nothing
+
+        """
+        for _, value in self._df_production_data.iterrows():
+            if value["WWIR"] > 0:  # PJPE check
+                self.append(
+                    WTEMP(
+                        date=value["date"],
+                        well_name=value["WELL_NAME"],
+                        temperature=value["WTICHEA"],
+                    )
+                )
 
     def _calculate_wsalt(self):
         """
@@ -235,8 +262,6 @@ class Schedule:
                         oil_total=value["WOPT"],
                         water_total=value["WWPT"],
                         gas_total=value["WGPT"],
-                        salt_rate=value["WSPR"],
-                        salt_total=value["WSPT"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
                     )
@@ -571,22 +596,22 @@ class Schedule:
 
         return vfp_tables
 
-    def has_brine(self) -> bool:
-        """Helper function to determine whether the schedule has brine data.
+    # def has_brine(self) -> bool:
+    #     """Helper function to determine whether the schedule has brine data.
 
-        Returns:
-            True if non zero brine data found, otherwise False
-        """
-        return (
-            sum(
-                [
-                    kw.salt_concentration
-                    for kw in self._schedule_items
-                    if kw.name == "WSALT"
-                ]
-            )
-            > 0
-        )
+    #     Returns:
+    #         True if non zero brine data found, otherwise False
+    #     """
+    #     return (
+    #         sum(
+    #             [
+    #                 kw.salt_concentration
+    #                 for kw in self._schedule_items
+    #                 if kw.name == "WSALT"
+    #             ]
+    #         )
+    #         > 0
+    #     )
 
     def get_nr_observations(self, training_set_fraction: float) -> int:
         """

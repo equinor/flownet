@@ -96,7 +96,7 @@ class WCONHIST(Keyword):
 
     """
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-instance-attributes,too-many-arguments
 
     def __init__(
         self,
@@ -116,6 +116,7 @@ class WCONHIST(Keyword):
         artificial_lift: str = "1*",
         thp: float = np.nan,
         bhp: float = np.nan,
+        temperature: float = np.nan,
     ):
         super().__init__(date)
         self.name = "WCONHIST"
@@ -134,6 +135,7 @@ class WCONHIST(Keyword):
         self.artificial_lift: str = artificial_lift
         self.thp: float = thp
         self.bhp: float = bhp
+        self.temperature: float = temperature
 
 
 class WCONINJH(Keyword):
@@ -147,7 +149,7 @@ class WCONINJH(Keyword):
 
     """
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-instance-attributes,too-many-arguments
 
     def __init__(
         self,
@@ -241,3 +243,25 @@ class WSALT(Keyword):
         self.name = "WSALT"
         self.well_name: str = well_name
         self.salt_concentration: float = salt_concentration
+
+
+class WTEMP(Keyword):
+    """
+    The WTEMP keyword defines the temperature of the injected water.
+
+    See the OPM Flow manual for further details.
+
+    """
+
+    # pylint: disable=too-many-instance-attributes,too-many-arguments
+
+    def __init__(
+        self,
+        date: datetime.date,
+        well_name: str,
+        temperature: float = np.nan,
+    ):
+        super().__init__(date)
+        self.name = "WTEMP"
+        self.well_name: str = well_name
+        self.temperature: float = temperature

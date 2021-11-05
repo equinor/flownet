@@ -287,6 +287,12 @@ def test_check_obsfiles_ert_yaml() -> None:
     config.flownet.data_source.vectors.WSIT.min_error = _MIN_ERROR
     config.flownet.data_source.vectors.WSIT.rel_error = _REL_ERROR
 
+    config.flownet.data_source.vectors.WTPCHEA = collections.namedtuple(
+        "WTPCHEA", "min_error"
+    )
+    config.flownet.data_source.vectors.WTPCHEA.min_error = _MIN_ERROR
+    config.flownet.data_source.vectors.WTPCHEA.rel_error = _REL_ERROR
+
     config.flownet.data_source.resampling = _RESAMPLING
 
     # Load production

@@ -320,6 +320,19 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                                             },
                                         },
                                     },
+                                    "WTPCHEA": {
+                                        MK.Type: types.NamedDict,
+                                        MK.Content: {
+                                            "rel_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                            "min_error": {
+                                                MK.Type: types.Number,
+                                                MK.AllowNone: True,
+                                            },
+                                        },
+                                    },
                                 },
                             },
                             "resampling": {
@@ -2131,12 +2144,13 @@ def parse_config(
             f"'{config.flownet.inj_control_mode}' is not valid.\n"
             f"Valid options are {inj_control_modes}. "
         )
-
+    # pylint: disable=fixme
+    # TODO: the phase keyword in config is now generalised and the term phase is not so appropriate anymore
     for phase in config.flownet.phases:
-        if phase not in ["oil", "gas", "water", "disgas", "vapoil"]:
+        if phase not in ["oil", "gas", "water", "disgas", "vapoil", "brine", "temp"]:
             raise ValueError(
                 f"The {phase} phase is not a valid phase\n"
-                f"The valid phases are 'oil', 'gas', 'water', 'disgas' and 'vapoil'"
+                f"The valid phases are 'oil', 'gas', 'water', 'disgas', 'vapoil', 'brine' and 'temp'"
             )
     if (
         not {"vapoil", "disgas"}.isdisjoint(config.flownet.phases)
