@@ -288,7 +288,10 @@ class CoarseModel:
         return tree2
 
     def _in_ecl_grid(self, x) -> bool:
-        return True
+        for _, k in enumerate(self._ecl_grid.cells(active=True)):
+            if self._ecl_grid.cell_contains(x[0], x[1], x[2], active_index=k):
+                return True
+        return False
 
     def _remove_cells_outside(self, tree) -> np.array:
 
