@@ -174,6 +174,8 @@ class FlowData(FromSource):
                 - WSIR          Well Salt Injection Rate
                 - WSPT          Well Cumulative Salt Production
                 - WSIT          Well Cumulative Salt Injection
+                - WTICHEA       Well Injection Temperature
+                - WTPCHEA       Well Production Temperature
                 - WSTAT         Well status (OPEN, SHUT, STOP)
                 - TYPE          Well Type: "OP", "GP", "WI", "GI"
                 - PHASE         Main producing/injecting phase fluid: "OIL", "GAS", "WATER"
@@ -200,6 +202,8 @@ class FlowData(FromSource):
             "WSIR",
             "WSPT",
             "WSIT",
+            "WTPCHEA",
+            "WTICHEA",
             "WSTAT",
         ]
 

@@ -50,6 +50,16 @@ WSALT
 /
 {%- endif %}
 
+{%- if schedule.get_keywords(dates=date, kw_class="WTEMP"): %}
+WTEMP
+-- WELL FLUID
+-- NAME TEMPERATURE
+{%- for kw in schedule.get_keywords(dates=date, kw_class="WTEMP"): %}
+ '{{ kw.well_name }}' {{ kw.temperature }} /
+{%- endfor %}
+/
+{%- endif %}
+
 {%- if date > startdate: %}
 DATES
  {{ date.strftime('%d %b %Y').upper() }} /
