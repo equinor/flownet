@@ -571,7 +571,7 @@ def run_flownet_history_matching(
 
     df_entity_connections: pd.DataFrame = create_connections(
         df_well_connections[["WELL_NAME", "X", "Y", "Z", "LAYER_ID"]].drop_duplicates(
-        subset=["X", "Y", "Z"], keep="first"
+            subset=["X", "Y", "Z"], keep="first"
         ),
         config,
         concave_hull_list=concave_hull_list,

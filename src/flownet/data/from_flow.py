@@ -110,7 +110,7 @@ class FlowData(FromSource):
                 f"The perforation handling strategy {perforation_handling_strategy} is unknown."
             ) from attribute_error
 
-        return perforation_strategy_method(df).sort_values(["DATE"]) 
+        return perforation_strategy_method(df).sort_values(["DATE"])
 
     def _well_logs(self) -> pd.DataFrame:
         """
@@ -234,7 +234,7 @@ class FlowData(FromSource):
                 df["WELL_NAME"] = well_name
 
                 df["PHASE"] = None
-                df.loc[df["WOPR"] > 0, "PHASE"] = "OIL"   
+                df.loc[df["WOPR"] > 0, "PHASE"] = "OIL"
                 df.loc[(df["WOPR"] == 0) & (df["WWPR"] > 0), "PHASE"] = "WATER"
                 df.loc[df["WWIR"] > 0, "PHASE"] = "WATER"
                 df.loc[df["WGIR"] > 0, "PHASE"] = "GAS"
@@ -303,11 +303,26 @@ class FlowData(FromSource):
 
             points.append((row["NAME"], i, j, k))
 
-            if row["FACE"] == "X" or row["FACE"] == "X+" or row["FACE"] == "I" or row["FACE"] == "I+":
+            if (
+                row["FACE"] == "X"
+                or row["FACE"] == "X+"
+                or row["FACE"] == "I"
+                or row["FACE"] == "I+"
+            ):
                 points.append((row["NAME"], i + 1, j, k))
-            elif row["FACE"] == "Y" or row["FACE"] == "Y+" or row["FACE"] == "J" or row["FACE"] == "J+":
+            elif (
+                row["FACE"] == "Y"
+                or row["FACE"] == "Y+"
+                or row["FACE"] == "J"
+                or row["FACE"] == "J+"
+            ):
                 points.append((row["NAME"], i, j + 1, k))
-            elif row["FACE"] == "Z" or row["FACE"] == "Z+" or row["FACE"] == "K" or row["FACE"] == "K+":
+            elif (
+                row["FACE"] == "Z"
+                or row["FACE"] == "Z+"
+                or row["FACE"] == "K"
+                or row["FACE"] == "K+"
+            ):
                 points.append((row["NAME"], i, j, k + 1))
             elif row["FACE"] == "X-" or row["FACE"] == "I-":
                 points.append((row["NAME"], i - 1, j, k))
