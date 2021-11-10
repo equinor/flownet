@@ -9,7 +9,7 @@ MAX_RUNTIME {{ config.ert.realizations.max_runtime }}
 
 QUEUE_SYSTEM {{ config.ert.queue.system }}
 {%- if config.ert.queue.system == "LSF" %}
-{% if config.ert.simulator.version is not none: -%} LSF_SERVER {{ config.ert.queue.server }} {%- endif %}
+{% if config.ert.queue.server is not none: -%} LSF_SERVER {{ config.ert.queue.server }} {%- endif %}
 QUEUE_OPTION {{ config.ert.queue.system }} LSF_QUEUE {{ config.ert.queue.name }}
 {%- endif %}
 QUEUE_OPTION {{ config.ert.queue.system }} MAX_RUNNING {{ config.ert.queue.max_running }}
