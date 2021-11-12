@@ -1,3 +1,4 @@
+#pylint: skip-file
 """
 Extract COMPDAT, WELSEGS and COMPSEGS from an Eclipse deck
 
@@ -57,7 +58,7 @@ WSEG_RENAMER: Dict[str, str] = {
     "SEG2": "SEGMENT2",
 }
 
-
+    
 def deck2dfs(
     deck: "opm.io.Deck",
     start_date: Optional[Union[str, datetime.date]] = None,
