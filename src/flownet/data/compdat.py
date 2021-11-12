@@ -1,4 +1,4 @@
-#pylint: skip-file
+# pylint: skip-file
 """
 Extract COMPDAT, WELSEGS and COMPSEGS from an Eclipse deck
 
