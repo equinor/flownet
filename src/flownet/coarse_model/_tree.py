@@ -134,14 +134,14 @@ class Tree:
     def locate(self, x: List[float], node: Node = None) -> Node:
         if node is None:
             return self.locate(x, self.root)
-        else:
-            if node.is_leaf():
-                return node.inside(x)
 
-            if node.left is not None:
-                left = self.locate(x, node.left)
-            if node.right is not None:
-                right = self.locate(x, node.right)
+        if node.is_leaf():
+            return node.inside(x)
+
+        if node.left is not None:
+            left = self.locate(x, node.left)
+        if node.right is not None:
+            right = self.locate(x, node.right)
 
         for n in [left, right]:
             if n is not None and n.is_leaf() and n.inside(x):
