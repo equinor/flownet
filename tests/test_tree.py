@@ -26,7 +26,6 @@ def single_tree() -> (Tree, List):
 def get_permutated_trees() -> List[Tree]:
     xmin = [0, 0, 0]
     xmax = [10, 10, 10]
-    root = Node(xmin, xmax)
     xplane = [5, 0, 0]
     yplane = [0, 3, 0]
     zplane = [0, 0, 4]
