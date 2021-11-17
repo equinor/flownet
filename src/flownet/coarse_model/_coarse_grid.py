@@ -1,20 +1,18 @@
 from typing import List
 
 import numpy as np
-import pandas as pd
 
-import ecl
+from ecl.grid import EclGrid
 
 from ._tree import Tree
+from ._create_egrid import create_egrid
+
 
 class CoarseGrid:
     def __init__(
-            self,
-            ecl_grid: ecl.grid, 
-            well_coords: np.ndarray, 
-            partition: List[int] = [8, 8, 5]
+        self, ecl_grid: EclGrid, well_coords: np.ndarray, partition: List[int]
     ):
-        """ 
+        """
         Creates a 3D coarse grid
 
         FIXME:
@@ -22,21 +20,52 @@ class CoarseGrid:
         - Add decorators
         - Check lint
         - ZCORN assumes all cells in a layer have same z
-        - Make sure tree splitting does not cut through wells in _find_split_plane and _refine
+        - Make sure tree splitting does not cut through wells in _find_split_plane and refine
         - Read partition from input
-       """
+        """
         self._ecl_grid = ecl_grid
         self._well_coords: np.ndarray = well_coords
         self._partition: List[int] = partition
-        
-    def create_coarse_grid(self) -> dict:
+
+    def create_coarse_grid(self) -> EclGrid:
+        """
+
+        Main function: Create a coarse grid of the fine scale grid. Return
+        the coarse grid as an ecl grid.
+
+        """
+
         # 1. Create tree with a root approximationg the bounding box
         # of the reservoir
-        bboxmin, bboxmax = self._create_bbox()
+        bboxmin, bboxmax = self.create_bbox()
         tree = Tree(bboxmin, bboxmax)
 
-        # 2. Split the tree to obtain one well per node, suggesting to
-        # alternate directions in each split
+        # 2. Split the tree to obtain one well per node
+        self.split(tree)
+
+        # 3. Refine if prescribed partition is finer
+        self.refine(tree)
+
+        # 4. Smooth
+        tree = self.smooth(tree)
+
+        # 5. Remove nodes outside the reservoir bounding box (or
+        # outside the reservoir boundary)
+        actnum = self.remove_cells_outside(tree)
+
+        # 6. Create the coarse grid
+        coordinates, num_nodes, num_elements = self.extract_grid_data(tree)
+        cg = create_egrid(coordinates, num_nodes, num_elements, actnum)
+
+        return cg
+
+    def split(self, tree) -> None:
+        """
+        Split the tree to obtain one well per node, suggesting to
+        alternate directions in each split. If this doesn't work,
+        another orientation of the split plane is used.
+
+        """
         dim = 0
         plane, dim = self._find_split_plane(tree, dim)
         while plane is not None:
@@ -44,66 +73,31 @@ class CoarseGrid:
             dim = np.remainder(dim + 1, 3)
             plane, dim = self._find_split_plane(tree, dim)
 
-        # 3. Refine if prescribed partition is finer
-        self._refine(tree)
-
-        # 4. Smooth
-        tree = self._smooth(tree)
-
-        # 5. Remove nodes outside the reservoir bounding box (or
-        # outside the reservoir boundary)
-        actnum = self._remove_cells_outside(tree)
-
-        # 6. Create the coarse grid
-        coordinates, num_nodes, num_elements = self._extract_grid_data(tree)
-
-        import ipdb; ipdb.set_trace()
-
-        grid = {
-            "coordinates": coordinates,
-            "num_nodes": num_nodes,
-            "num_elements": num_elements,
-            "actnum": actnum,
-        }
-
-        return grid
-
-    def _create_bbox(self) -> (List, List):
-        # Create bbox using vertices of the reservoir grid from the
-        # active cells
+    def create_bbox(self) -> (List, List):
+        """
+        Create a bounding using vertices of the reservoir grid from the
+        active cells
+        """
         bboxmin = [np.finfo(float).max] * 3
         bboxmax = [np.finfo(float).min] * 3
 
-        # cells = self._ecl_grid.cells(active=True)
-        # for c in cells:
-        #     for i in range(8):
-        #         x = self._ecl_grid.get_cell_corner(i, active_index=c)
-        #         for d in range(3):
-        #             bboxmin[d] = x[d] if x[d] < bboxmin[d] else bboxmin[d]
-        #             bboxmax[d] = x[d] if x[d] > bboxmax[d] else bboxmax[d]
-
-        # FIXME how to include only active cells
-        for i in range(self._ecl_grid.getNX() + 1):
-            for j in range(self._ecl_grid.getNY() + 1):
-                for k in range(self._ecl_grid.getNZ() + 1):
-                    point = self._ecl_grid.get_node_pos(i, j, k)
-                    for dim in range(3):
-                        bboxmin[dim] = (
-                            point[dim] if point[dim] < bboxmin[dim] else bboxmin[dim]
-                        )
-                        bboxmax[dim] = (
-                            point[dim] if point[dim] > bboxmax[dim] else bboxmax[dim]
-                        )
+        for cell in self._ecl_grid.cells(active=True):
+            for i in range(8):
+                x = self._ecl_grid.get_cell_corner(i, active_index=cell.active_index)
+                for d in range(3):
+                    bboxmin[d] = x[d] if x[d] < bboxmin[d] else bboxmin[d]
+                    bboxmax[d] = x[d] if x[d] > bboxmax[d] else bboxmax[d]
 
         return bboxmin, bboxmax
 
     @staticmethod
-    def _extract_grid_data(tree) -> (List[np.array], np.array, np.array):
-
-        # The grid is described by a list of points in x, y and z
-        # direction (the coordinates list). For convenience this
-        # function also returns the number of nodes and the number of
-        # elements
+    def extract_grid_data(tree) -> (List[np.array], np.array, np.array):
+        """
+        The grid is described by a list of points in x, y and z
+        direction (the coordinates list). For convenience this
+        function also returns the number of nodes and the number of
+        elements
+        """
         leaves = tree.get_leaves()
         num_leaves = len(leaves)
 
@@ -140,7 +134,8 @@ class CoarseGrid:
 
     def _find_split_plane(self, tree, dim) -> (List, int):
         """
-        Find a plane needed for splitting the tree.
+        Find a plane needed for splitting the tree. The input dim is the
+        suggested plane orientation.
         """
         checked_nodes = []
         checked_wc = []
@@ -203,9 +198,12 @@ class CoarseGrid:
         dim = None
         return plane, dim
 
-    def _refine(self, tree) -> None:
-
-        coordinates, _, num_elements = self._extract_grid_data(tree)
+    def refine(self, tree) -> None:
+        """
+        Refine the tree if the desired partition is finer than the
+        current partition of the tree
+        """
+        coordinates, _, num_elements = self.extract_grid_data(tree)
 
         for dim in range(3):
             for _ in range(self._partition[dim] - num_elements[dim]):
@@ -216,13 +214,16 @@ class CoarseGrid:
                 xcut = tree.root.midpoint()
                 xcut[dim] = coordinates[dim][idx] + 0.5 * diff[idx]
                 tree.split(xcut, dim, tree.root)
-                coordinates, _, num_elements = self._extract_grid_data(tree)
+                coordinates, _, num_elements = self.extract_grid_data(tree)
 
     @staticmethod
     def _laplacian_smoothing(
         x, xfix, A=None, rfix=None
     ) -> (np.array, np.ndarray, np.ndarray, float):
-
+        """
+        Perform a few laplacian smoothing steps as y=A*x and rfix
+        are the indices of the fixed points
+        """
         initial_x = np.concatenate([xfix, x])
         idx = np.argsort(initial_x)
         initial_x = initial_x[idx]
@@ -241,9 +242,11 @@ class CoarseGrid:
         err = np.linalg.norm(initial_x - y)
         return y[np.invert(rfix)], A, rfix, err
 
-    def _smooth(self, tree) -> Tree:
-        # Smooth one dimension at a time
-        coordinates, _, _ = self._extract_grid_data(tree)
+    def smooth(self, tree) -> Tree:
+        """
+        Smooth one dimension at a time using a laplacian smoother (averaging)
+        """
+        coordinates, _, _ = self.extract_grid_data(tree)
         new_cuts = [None] * 3
 
         # Only smooth until l2 norm is smaller than tol or until maxit
@@ -283,22 +286,30 @@ class CoarseGrid:
 
         return tree2
 
-    def _in_ecl_grid(self, x) -> bool:
-        for _, k in enumerate(self._ecl_grid.cells(active=True)):
-            if self._ecl_grid.cell_contains(x[0], x[1], x[2], active_index=k):
-                return True
-        return False
+    def _in_ecl_grid(self, x, start_ijk=None) -> (bool, tuple):
+        """
+        See if x is in the grid by calling a relevant ecl function.
+        """
+        ijk = self._ecl_grid.find_cell(x[0], x[1], x[2], start_ijk=start_ijk)
 
-    def _remove_cells_outside(self, tree) -> np.array:
+        if ijk is None:
+            return False, None
 
-        # Check centroid to determine if cell is inside/outside (could
-        # also check nodes)
+        if self._ecl_grid.active(ijk):
+            return True, ijk
+
+        return False, None
+
+    def remove_cells_outside(self, tree) -> np.array:
+        """
+        Check centroid to determine if cell is inside/outside (we could
+        also check the corners)
+        """
+        start_ijk = None
         leaves = tree.get_leaves()
         actnum = np.zeros(len(leaves), dtype=int)
         for k, node in enumerate(leaves):
-            if self._in_ecl_grid(node.midpoint()):
+            inside, start_ijk = self._in_ecl_grid(node.midpoint(), start_ijk=start_ijk)
+            if inside:
                 actnum[k] = 1
         return actnum
-
-
-    

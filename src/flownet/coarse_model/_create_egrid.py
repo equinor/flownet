@@ -6,7 +6,8 @@ from ..network_model._create_egrid import construct_kw
 
 
 def create_egrid(coordinates, num_nodes, num_elements, actnum=None):
-    """This function writes a grid based on the list of coordinates (in x,
+    """
+    This function writes a grid based on the list of coordinates (in x,
     y and z).
 
     """
