@@ -100,16 +100,3 @@ def create_egrid(df_coord: pd.DataFrame, filename: pathlib.Path):
         construct_kw("COORD", coord),
         construct_kw("ACTNUM", actnum, int_type=True),
     ).save_EGRID(str(filename))
-
-    eclgrid = EclGrid.create(
-        (len(df_coord.index), 1, 1),
-        construct_kw("ZCORN", zcorn),
-        construct_kw("COORD", coord),
-        construct_kw("ACTNUM", actnum, int_type=True),
-    )
-    eclgrid.save_EGRID("networkmodelgrid.egrid")
-    eclgrid.save_EGRID("networkmodelgrid.grid")
-    from cwrap import open as copen
-    eclgrid.save_grdecl(copen("networkmodelgrid.grdecl", "w"))
-
-    import ipdb; ipdb.set_trace()
