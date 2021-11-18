@@ -13,7 +13,6 @@ from configsuite import ConfigSuite
 
 from ..realization import Schedule
 from ..network_model import NetworkModel
-from ..coarse_model import CoarseModel
 from ..network_model import create_connections
 from ._assisted_history_matching import AssistedHistoryMatching
 from ..utils import kriging
@@ -577,13 +576,6 @@ def run_flownet_history_matching(
         config,
         concave_hull_list=concave_hull_list,
     )
-
-    coarse_model = CoarseModel(
-        ecl_grid = field_data.grid,
-        df_well_connections = df_well_connections
-    )
-    import ipdb; ipdb.set_trace()
-
 
     network = NetworkModel(
         df_entity_connections=df_entity_connections,
