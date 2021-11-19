@@ -1,11 +1,13 @@
 from typing import List
 
 import numpy as np
+import pandas as pd
 
 from ecl.grid import EclGrid
 
 from ._tree import Tree
 from ._create_egrid import create_egrid
+from ._create_df_grid import create_df_grid
 
 
 class CoarseGrid:
@@ -27,11 +29,41 @@ class CoarseGrid:
         self._well_coords: np.ndarray = well_coords
         self._partition: List[int] = partition
 
-    def create_coarse_grid(self) -> EclGrid:
+        # The grid
+        self._coordinates: np.array = None
+        self._actnum: np.array = None
+        self._create_coarse_grid()
+
+    @property
+    def actnum(self) -> List[int]:
+        return list(self._actnum)
+
+    @property
+    def coordinates(self) -> np.array:
+        return self._coordinates
+
+    @property
+    def num_nodes(self) -> List[int]:
+        return [len(x) for x in self.coordinates]
+
+    @property
+    def num_elements(self) -> List[int]:
+        return [n - 1 for n in self.num_nodes]
+
+    def ecl_grid(self) -> EclGrid:
+        return create_egrid(
+            self.coordinates, self.num_nodes, self.num_elements, self.actnum
+        )
+
+    def df_grid(self) -> pd.DataFrame:
+        return create_df_grid(
+            self.coordinates, self.num_nodes, self.num_elements, self.actnum
+        )
+
+    def _create_coarse_grid(self) -> None:
         """
 
-        Main function: Create a coarse grid of the fine scale grid. Return
-        the coarse grid as an ecl grid.
+        Create a coarse grid of the fine scale grid
 
         """
 
@@ -49,15 +81,18 @@ class CoarseGrid:
         # 4. Smooth
         tree = self.smooth(tree)
 
-        # 5. Remove nodes outside the reservoir bounding box (or
-        # outside the reservoir boundary)
-        actnum = self.remove_cells_outside(tree)
+        # # 5. Remove nodes outside the reservoir bounding box (or
+        # # outside the reservoir boundary)
+        # self._actnum = self.remove_cells_outside(tree)
 
-        # 6. Create the coarse grid
-        coordinates, num_nodes, num_elements = self.extract_grid_data(tree)
-        cg = create_egrid(coordinates, num_nodes, num_elements, actnum)
+        # # 6. Get the array of coordinates of the coarse grid
+        # self._coordinates, _, _ = self.extract_grid_data(tree)
 
-        return cg
+        # 5. Update the array of coordinates
+        self._coordinates, _, _ = self.extract_grid_data(tree)
+
+        # 6. Update actnum
+        self.create_actnum()
 
     def split(self, tree) -> None:
         """
@@ -300,16 +335,29 @@ class CoarseGrid:
 
         return False, None
 
-    def remove_cells_outside(self, tree) -> np.array:
+    def create_actnum(self) -> None:
         """
         Check centroid to determine if cell is inside/outside (we could
-        also check the corners)
+        also check the corners).
+
+        Note how we loop over the elements dimension-wise, as this
+        defines the element numbering
+
         """
+        self._actnum = [0] * np.prod(self.num_elements)
+        num_nodes = self.num_nodes
+        coords = self.coordinates
         start_ijk = None
-        leaves = tree.get_leaves()
-        actnum = np.zeros(len(leaves), dtype=int)
-        for k, node in enumerate(leaves):
-            inside, start_ijk = self._in_ecl_grid(node.midpoint(), start_ijk=start_ijk)
-            if inside:
-                actnum[k] = 1
-        return actnum
+        xyz = [0] * 3
+        cnt = 0
+
+        for k in range(num_nodes[2] - 1):
+            xyz[2] = 0.5 * (coords[2][k] + coords[2][k + 1])
+            for j in range(num_nodes[1] - 1):
+                xyz[1] = 0.5 * (coords[1][j] + coords[1][j + 1])
+                for i in range(num_nodes[0] - 1):
+                    xyz[0] = 0.5 * (coords[0][i] + coords[0][i + 1])
+                    inside, start_ijk = self._in_ecl_grid(xyz, start_ijk)
+                    if inside:
+                        self._actnum[cnt] = 1
+                        cnt += 1
