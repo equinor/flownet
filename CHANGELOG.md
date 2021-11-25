@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changes
 - [#440](https://github.com/equinor/flownet/pull/440) Speeds up workflow by removing search for well starting date from inside for-loop when processing historical production data in `_schedule.py`.
+- [#451](https://github.com/equinor/flownet/pull/451) Enables `flownet ahm` to run ERT in `ensemble_experiment` mode so that only the prior ensemble is simulated (i.e. without performing iterations of history matching or model updates). Entry `ert.ensemble_weights` of configuration file is now optional: when weights are not provided, ERT will be run in `ensemble_experiment` mode instead of `es_mda`.
 
 ## [0.5.3] - 2021-09-23
 

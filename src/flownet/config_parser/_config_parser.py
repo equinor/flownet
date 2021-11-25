@@ -670,7 +670,11 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
                     },
                     "ensemble_weights": {
                         MK.Type: types.List,
-                        MK.Content: {MK.Item: {MK.Type: types.Number}},
+                        MK.Content: {
+                            MK.Item: {MK.Type: types.Number, MK.AllowNone: True}
+                        },
+                        MK.Description: "List of weights assigned to the iterations "
+                        "of the ES-MDA algorithm",
                     },
                     "yamlobs": {
                         MK.Type: types.String,
