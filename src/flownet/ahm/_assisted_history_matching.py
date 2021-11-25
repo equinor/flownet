@@ -69,7 +69,7 @@ class AssistedHistoryMatching:
             training_set_fraction=training_set_fraction,
         )
 
-    def run_ert(self, weights: Optional[List[float]] = None):
+    def run_ert(self, weights: Optional[List[float]]):
         """
         This function will start running ert (assumes create_ert_setup has been called).
 
