@@ -1,5 +1,5 @@
 STDERR    DELETE_IN_CURRENT_ITERATION.stderr
 STDOUT    DELETE_IN_CURRENT_ITERATION.stdout
 
-PORTABLE_EXE  flownet_delete_simulation_output
+EXECUTABLE  flownet_delete_simulation_output
 ARGLIST       <ECLBASE>
