@@ -79,19 +79,9 @@ class CoarseGrid:
         self.refine(tree)
 
         # 4. Smooth
-        tree = self.smooth(tree)
+        self.smooth(tree)
 
-        # # 5. Remove nodes outside the reservoir bounding box (or
-        # # outside the reservoir boundary)
-        # self._actnum = self.remove_cells_outside(tree)
-
-        # # 6. Get the array of coordinates of the coarse grid
-        # self._coordinates, _, _ = self.extract_grid_data(tree)
-
-        # 5. Update the array of coordinates
-        self._coordinates, _, _ = self.extract_grid_data(tree)
-
-        # 6. Update actnum
+        # 5. Update actnum
         self.create_actnum()
 
     def split(self, tree) -> None:
@@ -318,6 +308,10 @@ class CoarseGrid:
             for cut in new_cuts[dim]:
                 midpoint[dim] = cut
                 tree2.split(midpoint, dim)
+
+        # Update self. It's sufficient to update coordinates since the
+        # topology is not changed
+        self._coordinates, _, _ = self.extract_grid_data(tree2)
 
         return tree2
 
