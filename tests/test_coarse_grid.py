@@ -20,8 +20,7 @@ def get_coarse_grid(partition: List) -> Tuple:
         well_coords = np.reshape(well_coords, (1, well_coords.shape[0]))
 
     CG = CoarseGrid(ecl_grid, well_coords, partition)
-    cg = CG.create_coarse_grid()
-    return cg, well_coords, CG
+    return CG, well_coords
 
 
 def check_bbox(coordinates, bboxmin, bboxmax) -> None:
@@ -37,7 +36,7 @@ def check_tree(num_elements, tree) -> None:
 
 def test_coarse_grid() -> None:
     # Check that we have reasonable values at the various stages
-    cg, _, CG = get_coarse_grid([1, 1, 1])
+    CG, _ = get_coarse_grid([1, 1, 1])
 
     # 1.
     bboxmin, bboxmax = CG.create_bbox()
@@ -53,7 +52,7 @@ def test_coarse_grid() -> None:
     tree = CG.smooth(tree)
 
     # 5.
-    actnum = CG.remove_cells_outside(tree)
+    CG.create_actnum()
 
     # 6.
     coordinates, num_nodes, num_elements = CG.extract_grid_data(tree)
@@ -75,7 +74,8 @@ def check_one_well_per_cell(cg, well_coords) -> bool:
 
 def test_one_well_per_cell() -> None:
     # Test that there are only one well per cell in the coarse grid
-    cg, well_coords, _ = get_coarse_grid([1, 1, 1])
+    CG, well_coords = get_coarse_grid([1, 1, 1])
+    cg = CG.ecl_grid()
     assert check_one_well_per_cell(cg, well_coords)
 
 
@@ -87,5 +87,5 @@ def test_well_setup() -> None:
     ecl_grid = EclGrid.create_rectangular(dims, dV)
     well_coords = np.array([[0.25, 0.25, 0.5], [0.25, 0.75, 0.5], [0.75, 0.5, 0.5]])
     CG = CoarseGrid(ecl_grid, well_coords, [1, 1, 1])
-    cg = CG.create_coarse_grid()
+    cg = CG.ecl_grid()
     assert check_one_well_per_cell(cg, well_coords)

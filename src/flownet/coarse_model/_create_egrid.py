@@ -49,5 +49,5 @@ def create_egrid(coordinates, num_nodes, num_elements, actnum=None):
         num_elements,
         construct_kw("ZCORN", zcorn.flatten().tolist()),
         construct_kw("COORD", coord.flatten().tolist()),
-        construct_kw("ACTNUM", actnum.flatten().tolist(), int_type=True),
+        construct_kw("ACTNUM", actnum, int_type=True),
     )
