@@ -663,9 +663,6 @@ def run_flownet_history_matching(
             [1] * len(network.grid.model.unique()), columns=["SATNUM"]
         )
 
-    # total number of regions in the field data
-    satnum_max = field_data.init("SATNUM").get_max()
-
     # Create a pandas dataframe with all parameter definition for each individual tube
     relperm_dist_values = pd.DataFrame(columns=column_names_probdist + ["satnum"])
 
@@ -691,7 +688,7 @@ def run_flownet_history_matching(
     )
 
     defined_satnum_regions = []
-    if config.model_parameters.relative_permeability.scheme ==  "regions_from_sim":
+    if config.model_parameters.relative_permeability.scheme == "regions_from_sim":
         relp_config_satnum = config.model_parameters.relative_permeability.regions
         for reg in relp_config_satnum:
             defined_satnum_regions.append(reg.id)
@@ -699,8 +696,7 @@ def run_flownet_history_matching(
         relp_config_satnum = [config.model_parameters.relative_permeability.regions[0]]
         defined_satnum_regions.append(None)
 
-    #for i in np.sort(df_satnum["SATNUM"].unique()):
-    for i in range(1, satnum_max+1):
+    for i in np.sort(df_satnum["SATNUM"].unique()):
         if i in defined_satnum_regions:
             idx = defined_satnum_regions.index(i)
         else:
@@ -804,9 +800,6 @@ def run_flownet_history_matching(
             [1] * len(network.grid.model.unique()), columns=["EQLNUM"]
         )
 
-    # total number of regions in the field data
-    eqlnum_max = field_data.init("EQLNUM").get_max()
-
     # Create a pandas dataframe with all parameter definition for each individual tube
     equil_dist_values = pd.DataFrame(columns=column_names_probdist + ["eqlnum"])
 
@@ -820,8 +813,7 @@ def run_flownet_history_matching(
         equil_config_eqlnum = [config.model_parameters.equil.regions[0]]
         defined_eqlnum_regions.append(None)
 
-    #for i in np.sort(df_eqlnum["EQLNUM"].unique()):
-    for i in range(1, eqlnum_max+1):
+    for i in np.sort(df_eqlnum["EQLNUM"].unique()):
         if i in defined_eqlnum_regions:
             idx = defined_eqlnum_regions.index(i)
         else:

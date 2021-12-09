@@ -80,8 +80,6 @@ def deck2dfs(
     Returns:
         Dictionary with dataframes, at least for COMPDAT, COMPSEGS and WELSEGS.
     """
-    # pylint: disable=too-many-branches, too-many-statements, too-many-lines, too-many-locals
-    
     compdatrecords = []  # List of dicts of every line in input file
     compsegsrecords = []
     welopenrecords = []
