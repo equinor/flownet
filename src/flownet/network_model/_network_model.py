@@ -383,7 +383,7 @@ class NetworkModel:
             # surf.plot(show_edges=True)
             vertices = surf.points[
                 surf.faces.reshape(-1, 4)[:, 1:4].ravel()
-            ]  # pylint: disable=E110
+            ]  # pylint: disable=E1101
 
             triangles = np.array(vertices).reshape(-1, 9)
 
