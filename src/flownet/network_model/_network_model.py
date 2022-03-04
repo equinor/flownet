@@ -381,7 +381,7 @@ class NetworkModel:
             cloud = pv.PolyData(data)
             surf = cloud.delaunay_2d(tol=fault_tolerance)
             # surf.plot(show_edges=True)
-            vertices = surf.points[surf.faces.reshape(-1, 4)[:, 1:4].ravel()]
+            vertices = surf.points[surf.faces.reshape(-1, 4)[:, 1:4].ravel()] # pylint: disable=E110
 
             triangles = np.array(vertices).reshape(-1, 9)
 
