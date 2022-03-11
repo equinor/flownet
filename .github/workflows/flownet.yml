@@ -67,7 +67,6 @@ jobs:
 
       - name: 🤖 Run tests
         run: |
-          webviz certificate --force
           pytest --cov=flownet --cov-fail-under=29 ./tests
 
       - name: 🚀 Run full FlowNet example
