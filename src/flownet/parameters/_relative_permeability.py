@@ -39,8 +39,8 @@ def swof_from_parameters(parameters: Dict) -> str:
     swn = ((sw - swcr) / (1 - swcr - sorw)).clip(min=0)
     son = ((1 - sw - sorw) / (1 - sorw - swl)).clip(min=0)
     # calculate relative permeabilities
-    krow = kroend * son ** now
-    krw = krwend * swn ** nw
+    krow = kroend * son**now
+    krw = krwend * swn**nw
     # interpolate between krwend and krwmax
     krw_interp = (krwmax - krwend) / sorw * (sw - 1) + krwmax
     krw[krw > krwend] = krw_interp[krw > krwend]
@@ -84,8 +84,8 @@ def sgof_from_parameters(parameters: Dict) -> str:
     son = (((1 - sg) - sorg - swl) / (1 - sorg - swl)).clip(min=0)
     sgn = ((sg - sgcr) / (1 - swl - sgcr - sorg)).clip(min=0)
     # calculate relative permeabilities
-    krog = kroend * son ** nog
-    krg = krgend * sgn ** ng
+    krog = kroend * son**nog
+    krg = krgend * sgn**ng
     # interpolate between krgend and krgmax (=1)
     krg_interp = (1 - krgend) / sorg * (sg - 1) + 1 + swl / sorg * (1 - krgend)
     krg[krg > krgend] = krg_interp[krg > krgend]
