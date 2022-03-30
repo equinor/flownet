@@ -202,62 +202,62 @@ in the actual configuration file. The unit conversion used for the various param
 part of the template file <em>TEMPLATE_MODEL.DATA.jinja2</em>. This is by default set to <em>METRIC</em>, but can of course also be changed
 to <em>FIELD</em> or <em>LAB</em>.</p>
 <p>Example of the entire flownet part of the configuration yaml file:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">data_source</span><span class="p">:</span>
-    <span class="nt">database</span><span class="p">:</span>
-      <span class="nt">input_data</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">../input_data/norne_production_data.csv</span>
-    <span class="nt">simulation</span><span class="p">:</span>
-      <span class="nt">input_case</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">../input_model/norne/NORNE_ATW2013</span>
-      <span class="nt">vectors</span><span class="p">:</span>
-        <span class="nt">WBHP</span><span class="p">:</span>
-          <span class="nt">rel_error</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.05</span>
-          <span class="nt">min_error</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-        <span class="nt">WOPR</span><span class="p">:</span>
-          <span class="nt">rel_error</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
-          <span class="nt">min_error</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
-        <span class="nt">WGPR</span><span class="p">:</span>
-          <span class="nt">rel_error</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
-          <span class="nt">min_error</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100000</span>
-      <span class="nt">well_logs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-      <span class="nt">layers</span><span class="p">:</span>
-        <span class="p p-Indicator">-</span> <span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span> <span class="nv">3</span><span class="p p-Indicator">]</span>
-        <span class="p p-Indicator">-</span> <span class="p p-Indicator">[</span><span class="nv">4</span><span class="p p-Indicator">,</span> <span class="nv">22</span><span class="p p-Indicator">]</span>
-    <span class="nt">concave_hull</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-  <span class="nt">constraining</span><span class="p">:</span>
-    <span class="nt">kriging</span><span class="p">:</span>
-      <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
-      <span class="nt">n</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
-      <span class="nt">n_lags</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6</span>
-      <span class="nt">anisotropy_scaling_z</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-      <span class="nt">variogram_model</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">spherical</span>
-      <span class="nt">permeability_variogram_parameters</span><span class="p">:</span>
-        <span class="nt">sill</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.75</span>
-        <span class="nt">range</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
-        <span class="nt">nugget</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-      <span class="nt">porosity_variogram_parameters</span><span class="p">:</span>
-        <span class="nt">sill</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.05</span>
-        <span class="nt">range</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
-        <span class="nt">nugget</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-  <span class="nt">phases</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">oil</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">gas</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">vapoil</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">disgas</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">water</span>
-  <span class="nt">pvt</span><span class="p">:</span>
-    <span class="nt">rsvd</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">norne_static/rsvd_multiple.csv</span>
-  <span class="nt">cell_length</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
-  <span class="nt">additional_flow_nodes</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">500</span><span class="p p-Indicator">,</span> <span class="nv">100</span><span class="p p-Indicator">]</span>
-  <span class="nt">additional_node_candidates</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
-  <span class="nt">hull_factor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.2</span>
-  <span class="nt">random_seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">123456</span>
-  <span class="nt">perforation_handling_strategy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">multiple_based_on_workovers</span>
-  <span class="nt">fast_pyscal</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-  <span class="nt">training_set_end_date</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2005-01-31</span>
-  <span class="nt">fault_tolerance</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0001</span>
-  <span class="nt">max_distance_fraction</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.10</span>
-  <span class="nt">prod_control_mode</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">RESV</span>
-  <span class="nt">inj_control_mode</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">RATE</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">data_source</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">database</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">input_data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">../input_data/norne_production_data.csv</span><span class="w"></span>
+<span class="w">    </span><span class="nt">simulation</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">input_case</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">../input_model/norne/NORNE_ATW2013</span><span class="w"></span>
+<span class="w">      </span><span class="nt">vectors</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">WBHP</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">rel_error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min_error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="w">        </span><span class="nt">WOPR</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">rel_error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min_error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span><span class="w"></span>
+<span class="w">        </span><span class="nt">WGPR</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">rel_error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min_error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100000</span><span class="w"></span>
+<span class="w">      </span><span class="nt">well_logs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">      </span><span class="nt">layers</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">4</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">22</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">    </span><span class="nt">concave_hull</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">  </span><span class="nt">constraining</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">kriging</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">      </span><span class="nt">n</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"></span>
+<span class="w">      </span><span class="nt">n_lags</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"></span>
+<span class="w">      </span><span class="nt">anisotropy_scaling_z</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="w">      </span><span class="nt">variogram_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spherical</span><span class="w"></span>
+<span class="w">      </span><span class="nt">permeability_variogram_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">sill</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.75</span><span class="w"></span>
+<span class="w">        </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w"></span>
+<span class="w">        </span><span class="nt">nugget</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
+<span class="w">      </span><span class="nt">porosity_variogram_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">sill</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span><span class="w"></span>
+<span class="w">        </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w"></span>
+<span class="w">        </span><span class="nt">nugget</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
+<span class="w">  </span><span class="nt">phases</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">oil</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gas</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vapoil</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">disgas</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">water</span><span class="w"></span>
+<span class="w">  </span><span class="nt">pvt</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">rsvd</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">norne_static/rsvd_multiple.csv</span><span class="w"></span>
+<span class="w">  </span><span class="nt">cell_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span><span class="w"></span>
+<span class="w">  </span><span class="nt">additional_flow_nodes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">500</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">100</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">  </span><span class="nt">additional_node_candidates</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w"></span>
+<span class="w">  </span><span class="nt">hull_factor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.2</span><span class="w"></span>
+<span class="w">  </span><span class="nt">random_seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">123456</span><span class="w"></span>
+<span class="w">  </span><span class="nt">perforation_handling_strategy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">multiple_based_on_workovers</span><span class="w"></span>
+<span class="w">  </span><span class="nt">fast_pyscal</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">  </span><span class="nt">training_set_end_date</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2005-01-31</span><span class="w"></span>
+<span class="w">  </span><span class="nt">fault_tolerance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0001</span><span class="w"></span>
+<span class="w">  </span><span class="nt">max_distance_fraction</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.10</span><span class="w"></span>
+<span class="w">  </span><span class="nt">prod_control_mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RESV</span><span class="w"></span>
+<span class="w">  </span><span class="nt">inj_control_mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RATE</span><span class="w"></span>
 </pre></div>
 </div>
 <section id="additional-flow-nodes">
@@ -306,22 +306,22 @@ using kriging (refer to the pykrige documentation for more specific documentatio
 <li><p><strong>porosity_variogram_parameters</strong>: Parameters that define the specified variogram model. See PyKrige documentation for valid options.
 Typically, this will include things like <em>sill</em>, <em>range</em> and <em>nugget</em>.</p></li>
 </ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">constraining</span><span class="p">:</span>
-    <span class="nt">kriging</span><span class="p">:</span>
-      <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
-      <span class="nt">n</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
-      <span class="nt">n_lags</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6</span>
-      <span class="nt">anisotropy_scaling_z</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-      <span class="nt">variogram_model</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">spherical</span>
-      <span class="nt">permeability_variogram_parameters</span><span class="p">:</span>
-        <span class="nt">sill</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.75</span>
-        <span class="nt">range</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
-        <span class="nt">nugget</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-      <span class="nt">porosity_variogram_parameters</span><span class="p">:</span>
-        <span class="nt">sill</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.05</span>
-        <span class="nt">range</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
-        <span class="nt">nugget</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">constraining</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">kriging</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">      </span><span class="nt">n</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"></span>
+<span class="w">      </span><span class="nt">n_lags</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"></span>
+<span class="w">      </span><span class="nt">anisotropy_scaling_z</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="w">      </span><span class="nt">variogram_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spherical</span><span class="w"></span>
+<span class="w">      </span><span class="nt">permeability_variogram_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">sill</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.75</span><span class="w"></span>
+<span class="w">        </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w"></span>
+<span class="w">        </span><span class="nt">nugget</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
+<span class="w">      </span><span class="nt">porosity_variogram_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">sill</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span><span class="w"></span>
+<span class="w">        </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w"></span>
+<span class="w">        </span><span class="nt">nugget</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
@@ -353,22 +353,22 @@ start and end layer in the input simulation model for each distinct layer</p></l
 <li><p><strong>input_data</strong>: Path to the production data CSV file.</p></li>
 </ul>
 <p>Example yaml section:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">data_source</span><span class="p">:</span>
-    <span class="nt">database</span><span class="p">:</span>
-      <span class="nt">input_data</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/path/to/production_data.csv</span>
-    <span class="nt">simulation</span><span class="p">:</span>
-      <span class="nt">input_case</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/path/to/simulation_model.DATA</span>
-      <span class="nt">vectors</span><span class="p">:</span>
-        <span class="nt">WOPR</span><span class="p">:</span>
-          <span class="nt">rel_error</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
-          <span class="nt">min_error</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
-        <span class="nt">WGPR</span><span class="p">:</span>
-          <span class="nt">rel_error</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
-          <span class="nt">min_error</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
-      <span class="nt">layers</span><span class="p">:</span>
-        <span class="p p-Indicator">-</span> <span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span> <span class="nv">5</span><span class="p p-Indicator">]</span>
-        <span class="p p-Indicator">-</span> <span class="p p-Indicator">[</span><span class="nv">6</span><span class="p p-Indicator">,</span> <span class="nv">10</span><span class="p p-Indicator">]</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">data_source</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">database</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">input_data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/production_data.csv</span><span class="w"></span>
+<span class="w">    </span><span class="nt">simulation</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">input_case</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/simulation_model.DATA</span><span class="w"></span>
+<span class="w">      </span><span class="nt">vectors</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">WOPR</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">rel_error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min_error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span><span class="w"></span>
+<span class="w">        </span><span class="nt">WGPR</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">rel_error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min_error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span><span class="w"></span>
+<span class="w">      </span><span class="nt">layers</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">5</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">6</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">10</span><span class="p p-Indicator">]</span><span class="w"></span>
 </pre></div>
 </div>
 <p>In this example, the input simulation model (which has been simulated with Flow or Eclipse or similar) will be found in
@@ -859,47 +859,47 @@ should be defined, and it will be used for all regions defined.</p>
 <td><p>Example of usage</p></td>
 <td><p>Example of usage</p></td>
 </tr>
-<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">permeability</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span>
-      <span class="nt">max</span><span class="p">:</span>
-      <span class="nt">base</span><span class="p">:</span>
-      <span class="nt">mean</span><span class="p">:</span>
-      <span class="nt">stddev</span><span class="p">:</span>
-      <span class="nt">distribution</span><span class="p">:</span>
-    <span class="nt">permeability_regional_scheme</span><span class="p">:</span>
-    <span class="nt">permeability_regional</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span>
-      <span class="nt">max</span><span class="p">:</span>
-      <span class="nt">base</span><span class="p">:</span>
-      <span class="nt">mean</span><span class="p">:</span>
-      <span class="nt">stddev</span><span class="p">:</span>
-      <span class="nt">distribution</span><span class="p">:</span>
-    <span class="nt">permeability_parameter_from_sim_model</span><span class="p">:</span>
+<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">permeability</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">base</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">mean</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">stddev</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">permeability_regional_scheme</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">permeability_regional</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">base</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">mean</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">stddev</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">permeability_parameter_from_sim_model</span><span class="p">:</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">permeability</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
-      <span class="nt">distribution</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">logunif</span>
+<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">permeability</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logunif</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">permeability</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-      <span class="nt">mean</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
-      <span class="nt">distribution</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">uniform</span>
-    <span class="nt">permeability_regional_scheme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">regions_from_sim</span>
-    <span class="nt">permeability_regional</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.5</span>
-    <span class="nt">permeability_parameter_from_sim_model</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FIPNUM</span>
+<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">permeability</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="w">      </span><span class="nt">mean</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uniform</span><span class="w"></span>
+<span class="w">    </span><span class="nt">permeability_regional_scheme</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">regions_from_sim</span><span class="w"></span>
+<span class="w">    </span><span class="nt">permeability_regional</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.5</span><span class="w"></span>
+<span class="w">    </span><span class="nt">permeability_parameter_from_sim_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FIPNUM</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
@@ -941,49 +941,49 @@ should be defined, and it will be used for all regions defined.</p>
 <td><p>Example of usage</p></td>
 <td><p>Example of usage</p></td>
 </tr>
-<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">porosity</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span>
-      <span class="nt">max</span><span class="p">:</span>
-      <span class="nt">base</span><span class="p">:</span>
-      <span class="nt">mean</span><span class="p">:</span>
-      <span class="nt">stddev</span><span class="p">:</span>
-      <span class="nt">distribution</span><span class="p">:</span>
-    <span class="nt">porosity_regional_scheme</span><span class="p">:</span>
-    <span class="nt">porosity_regional</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span>
-      <span class="nt">max</span><span class="p">:</span>
-      <span class="nt">base</span><span class="p">:</span>
-      <span class="nt">mean</span><span class="p">:</span>
-      <span class="nt">stddev</span><span class="p">:</span>
-      <span class="nt">distribution</span><span class="p">:</span>
-    <span class="nt">porosity_parameter_from_sim_model</span><span class="p">:</span>
+<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">porosity</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">base</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">mean</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">stddev</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">porosity_regional_scheme</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">porosity_regional</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">base</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">mean</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">stddev</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">porosity_parameter_from_sim_model</span><span class="p">:</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">porosity</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.15</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.35</span>
-      <span class="nt">distribution</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">uniform</span>
+<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">porosity</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.15</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.35</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uniform</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">porosity</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.20</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.40</span>
-      <span class="nt">distribution</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">uniform</span>
-    <span class="nt">porosity_regional_scheme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">regions_from_sim</span>
-    <span class="nt">porosity_regional</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-      <span class="nt">mean</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-      <span class="nt">distribution</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">triangluar</span>
-    <span class="nt">porosity_parameter_from_sim_model</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FIPNUM</span>
+<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">porosity</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.20</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.40</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uniform</span><span class="w"></span>
+<span class="w">    </span><span class="nt">porosity_regional_scheme</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">regions_from_sim</span><span class="w"></span>
+<span class="w">    </span><span class="nt">porosity_regional</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span><span class="w"></span>
+<span class="w">      </span><span class="nt">mean</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">triangluar</span><span class="w"></span>
+<span class="w">    </span><span class="nt">porosity_parameter_from_sim_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FIPNUM</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
@@ -1027,49 +1027,49 @@ should be defined, and it will be used for all regions defined.</p>
 <td><p>Example of usage</p></td>
 <td><p>Example of usage</p></td>
 </tr>
-<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">bulkvolume_mult</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span>
-      <span class="nt">max</span><span class="p">:</span>
-      <span class="nt">base</span><span class="p">:</span>
-      <span class="nt">mean</span><span class="p">:</span>
-      <span class="nt">stddev</span><span class="p">:</span>
-      <span class="nt">distribution</span><span class="p">:</span>
-    <span class="nt">bulkvolume_mult_regional_scheme</span><span class="p">:</span>
-    <span class="nt">bulkvolume_mult_regional</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span>
-      <span class="nt">max</span><span class="p">:</span>
-      <span class="nt">base</span><span class="p">:</span>
-      <span class="nt">mean</span><span class="p">:</span>
-      <span class="nt">stddev</span><span class="p">:</span>
-      <span class="nt">distribution</span><span class="p">:</span>
-    <span class="nt">bulkvolume_mult_parameter_from_sim_model</span><span class="p">:</span>
+<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bulkvolume_mult</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">base</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">mean</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">stddev</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bulkvolume_mult_regional_scheme</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bulkvolume_mult_regional</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">base</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">mean</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">stddev</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bulkvolume_mult_parameter_from_sim_model</span><span class="p">:</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">bulkvolume_mult</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.2</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
-      <span class="nt">distribution</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">uniform</span>
+<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bulkvolume_mult</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uniform</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">bulkvolume_mult</span><span class="p">:</span>
-      <span class="nt">mean</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-      <span class="nt">stddev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.2</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-      <span class="nt">distribution</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">truncated_normal</span>
-    <span class="nt">bulkvolume_mult_regional_scheme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">regions_from_sim</span>
-      <span class="l l-Scalar l-Scalar-Plain">mean</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-      <span class="l l-Scalar l-Scalar-Plain">max</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-      <span class="l l-Scalar l-Scalar-Plain">distribution</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">triangluar</span>
-    <span class="nt">bulkvolume_mult_parameter_from_sim_model</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FIPNUM</span>
+<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bulkvolume_mult</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">mean</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<span class="w">      </span><span class="nt">stddev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">truncated_normal</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bulkvolume_mult_regional_scheme</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">regions_from_sim</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">mean</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">max</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">distribution</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">triangluar</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bulkvolume_mult_parameter_from_sim_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FIPNUM</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
@@ -1187,124 +1187,124 @@ A three-phase model needs all 13 relative permeability parameters to be defined.
 <td><p>Example of usage</p></td>
 <td><p>Example of usage</p></td>
 </tr>
-<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">relative_permeability</span><span class="p">:</span>
-      <span class="nt">scheme</span><span class="p">:</span>
-      <span class="nt">region_parameter_from_sim_model</span><span class="p">:</span>
-      <span class="nt">swcr_add_to_swl</span><span class="p">:</span>
-      <span class="nt">krwmax_add_to_krwend</span><span class="p">:</span>
-      <span class="nt">interpolate</span><span class="p">:</span>
-      <span class="nt">independent_interpolation</span><span class="p">:</span>
-      <span class="nt">regions</span><span class="p">:</span>
-        <span class="nt">id</span><span class="p">:</span>
-        <span class="nt">swirr</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>
-          <span class="nt">max</span><span class="p">:</span>
-          <span class="nt">mean</span><span class="p">:</span>
-          <span class="nt">base</span><span class="p">:</span>
-          <span class="nt">stddev</span><span class="p">:</span>
-          <span class="nt">distribution</span><span class="p">:</span>
-          <span class="nt">low_optimistic</span><span class="p">:</span>
-        <span class="nt">swl</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span>
-        <span class="nt">swcr</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span>
-        <span class="nt">sorw</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span>
-        <span class="nt">krwend</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span>
-        <span class="nt">kroend</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span>
-        <span class="nt">no</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span>
-        <span class="nt">now</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span>
-        <span class="nt">sorg</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span>
-        <span class="nt">sgcr</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span>
-        <span class="nt">ng</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span>
-        <span class="nt">nog</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span>
-        <span class="nt">krgend</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span>
+<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">relative_permeability</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">scheme</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">region_parameter_from_sim_model</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">swcr_add_to_swl</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">krwmax_add_to_krwend</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">interpolate</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">independent_interpolation</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">regions</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">swirr</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">mean</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">base</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">stddev</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">distribution</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">low_optimistic</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">swl</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">swcr</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">sorw</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">krwend</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">kroend</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">no</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">now</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">sorg</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">sgcr</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">ng</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">nog</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">krgend</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">&lt;same as for swirr&gt;</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">relative_permeability</span><span class="p">:</span>
-      <span class="nt">scheme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">global</span>
-      <span class="nt">regions</span><span class="p">:</span>
-        <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">None</span>
-        <span class="nt">swirr</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.01</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.03</span>
-        <span class="nt">swl</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.03</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.05</span>
-        <span class="nt">swcr</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.09</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.15</span>
-        <span class="nt">sorw</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.2</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.3</span>
-        <span class="nt">nw</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">1.5</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">3.0</span>
-        <span class="nt">now</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">1.5</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">3.0</span>
-        <span class="nt">krwend</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.4</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.6</span>
-        <span class="nt">kroend</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.9</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">1.0</span>
+<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">relative_permeability</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">scheme</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
+<span class="w">      </span><span class="nt">regions</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
+<span class="w">        </span><span class="nt">swirr</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.01</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.03</span><span class="w"></span>
+<span class="w">        </span><span class="nt">swl</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.03</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.05</span><span class="w"></span>
+<span class="w">        </span><span class="nt">swcr</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.09</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.15</span><span class="w"></span>
+<span class="w">        </span><span class="nt">sorw</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.2</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.3</span><span class="w"></span>
+<span class="w">        </span><span class="nt">nw</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">1.5</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">3.0</span><span class="w"></span>
+<span class="w">        </span><span class="nt">now</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">1.5</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">3.0</span><span class="w"></span>
+<span class="w">        </span><span class="nt">krwend</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.4</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.6</span><span class="w"></span>
+<span class="w">        </span><span class="nt">kroend</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.9</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">relative_permeability</span><span class="p">:</span>
-      <span class="nt">scheme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">regions_from_sim</span>
-      <span class="nt">interpolate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-      <span class="nt">regions</span><span class="p">:</span>
-        <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">None</span>
-        <span class="nt">swirr</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.01</span>
-          <span class="nt">base</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.02</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.03</span>
-        <span class="nt">swl</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.03</span>
-          <span class="nt">base</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.04</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.05</span>
-        <span class="nt">swcr</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.09</span>
-          <span class="nt">base</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.12</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.15</span>
-        <span class="nt">sorw</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.2</span>
-          <span class="nt">base</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.3</span>
-        <span class="nt">nw</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">1.5</span>
-          <span class="nt">base</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2.25</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">3.0</span>
-        <span class="nt">now</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">1.5</span>
-          <span class="nt">base</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2.25</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">3.0</span>
-        <span class="nt">krwend</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.4</span>
-          <span class="nt">base</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.6</span>
-        <span class="nt">kroend</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">0.9</span>
-          <span class="nt">base</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.95</span>
-          <span class="nt">max</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">1.0</span>
+<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">relative_permeability</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">scheme</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">regions_from_sim</span><span class="w"></span>
+<span class="w">      </span><span class="nt">interpolate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">      </span><span class="nt">regions</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
+<span class="w">        </span><span class="nt">swirr</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.01</span><span class="w"></span>
+<span class="w">          </span><span class="nt">base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.02</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.03</span><span class="w"></span>
+<span class="w">        </span><span class="nt">swl</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.03</span><span class="w"></span>
+<span class="w">          </span><span class="nt">base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.04</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.05</span><span class="w"></span>
+<span class="w">        </span><span class="nt">swcr</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.09</span><span class="w"></span>
+<span class="w">          </span><span class="nt">base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.12</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.15</span><span class="w"></span>
+<span class="w">        </span><span class="nt">sorw</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.2</span><span class="w"></span>
+<span class="w">          </span><span class="nt">base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.25</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.3</span><span class="w"></span>
+<span class="w">        </span><span class="nt">nw</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">1.5</span><span class="w"></span>
+<span class="w">          </span><span class="nt">base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.25</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">3.0</span><span class="w"></span>
+<span class="w">        </span><span class="nt">now</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">1.5</span><span class="w"></span>
+<span class="w">          </span><span class="nt">base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.25</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">3.0</span><span class="w"></span>
+<span class="w">        </span><span class="nt">krwend</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.4</span><span class="w"></span>
+<span class="w">          </span><span class="nt">base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.6</span><span class="w"></span>
+<span class="w">        </span><span class="nt">kroend</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">0.9</span><span class="w"></span>
+<span class="w">          </span><span class="nt">base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.95</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
@@ -1356,62 +1356,62 @@ should be entered with a prior probability distribution according to the informa
 <tr class="row-odd"><td><p>Available options in config yaml</p></td>
 <td><p>Example of usage</p></td>
 </tr>
-<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">equil</span><span class="p">:</span>
-      <span class="nt">scheme</span><span class="p">:</span>
-      <span class="nt">region_parameter_from_sim_model</span><span class="p">:</span>
-      <span class="nt">regions</span><span class="p">:</span>
-        <span class="nt">id</span><span class="p">:</span>
-        <span class="nt">datum_depth</span><span class="p">:</span>
-        <span class="nt">datum_pressure</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>
-          <span class="nt">max</span><span class="p">:</span>
-          <span class="nt">mean</span><span class="p">:</span>
-          <span class="nt">base</span><span class="p">:</span>
-          <span class="nt">stddev</span><span class="p">:</span>
-          <span class="nt">distribution</span><span class="p">:</span>
-        <span class="nt">owc_depth</span><span class="p">:</span>
-          <span class="nt">min</span><span class="p">:</span>
-          <span class="nt">max</span><span class="p">:</span>
-          <span class="nt">mean</span><span class="p">:</span>
-          <span class="nt">base</span><span class="p">:</span>
-          <span class="nt">stddev</span><span class="p">:</span>
-          <span class="nt">distribution</span><span class="p">:</span>
-        <span class="nt">goc_depth</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">same as for owc_depth</span>
-        <span class="nt">gwc_depth</span><span class="p">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">same as for owc_depth</span>
+<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">equil</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">scheme</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">region_parameter_from_sim_model</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">regions</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">datum_depth</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">datum_pressure</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">mean</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">base</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">stddev</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">distribution</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">owc_depth</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">min</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">max</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">mean</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">base</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">stddev</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">distribution</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">goc_depth</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">same as for owc_depth</span><span class="w"></span>
+<span class="w">        </span><span class="nt">gwc_depth</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">same as for owc_depth</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">equil</span><span class="p">:</span>
-      <span class="nt">scheme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">global</span>
-        <span class="l l-Scalar l-Scalar-Plain">regions</span><span class="p p-Indicator">:</span>
-          <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">None</span>
-          <span class="nt">datum_depth</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2500</span>
-          <span class="nt">datum_pressure</span><span class="p">:</span>
-            <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">250</span>
-            <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">270</span>
-          <span class="nt">owc_depth</span><span class="p">:</span>
-            <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2565</span>
-            <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2605</span>
-          <span class="nt">goc_depth</span><span class="p">:</span>
-            <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2475</span>
-            <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2525</span>
-          <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-          <span class="nt">datum_depth</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2582</span>
-          <span class="nt">datum_pressure</span><span class="p">:</span>
-            <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">260</span>
-            <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">280</span>
-          <span class="nt">owc_depth</span><span class="p">:</span>
-            <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2670</span>
-            <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2725</span>
-          <span class="nt">goc_depth</span><span class="p">:</span>
-            <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2560</span>
-            <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2600</span>
+<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">equil</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">scheme</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">regions</span><span class="p p-Indicator">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
+<span class="w">          </span><span class="nt">datum_depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2500</span><span class="w"></span>
+<span class="w">          </span><span class="nt">datum_pressure</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">250</span><span class="w"></span>
+<span class="w">            </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">270</span><span class="w"></span>
+<span class="w">          </span><span class="nt">owc_depth</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2565</span><span class="w"></span>
+<span class="w">            </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2605</span><span class="w"></span>
+<span class="w">          </span><span class="nt">goc_depth</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2475</span><span class="w"></span>
+<span class="w">            </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2525</span><span class="w"></span>
+<span class="w">          </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<span class="w">          </span><span class="nt">datum_depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2582</span><span class="w"></span>
+<span class="w">          </span><span class="nt">datum_pressure</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">260</span><span class="w"></span>
+<span class="w">            </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">280</span><span class="w"></span>
+<span class="w">          </span><span class="nt">owc_depth</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2670</span><span class="w"></span>
+<span class="w">            </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2725</span><span class="w"></span>
+<span class="w">          </span><span class="nt">goc_depth</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2560</span><span class="w"></span>
+<span class="w">            </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2600</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
@@ -1436,34 +1436,34 @@ faults are drawn independently.</p>
 <td><p>Example of usage</p></td>
 <td><p>Example of usage</p></td>
 </tr>
-<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">fault_mult</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span>
-      <span class="nt">max</span><span class="p">:</span>
-      <span class="nt">base</span><span class="p">:</span>
-      <span class="nt">mean</span><span class="p">:</span>
-      <span class="nt">stddev</span><span class="p">:</span>
-      <span class="nt">distribution</span><span class="p">:</span>
+<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">fault_mult</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">base</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">mean</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">stddev</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">fault_mult</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0001</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-      <span class="nt">distribution</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">logunif</span>
+<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">fault_mult</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0001</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logunif</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">fault_mult</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-      <span class="nt">base</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
-      <span class="nt">distribution</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">triangular</span>
+<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">fault_mult</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<span class="w">      </span><span class="nt">base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w"></span>
+<span class="w">      </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">triangular</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
@@ -1486,21 +1486,21 @@ a value.</p>
 <tr class="row-odd"><td><p>Available options in config yaml</p></td>
 <td><p>Example of usage</p></td>
 </tr>
-<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">rock_compressibility</span><span class="p">:</span>
-      <span class="nt">reference_pressure</span><span class="p">:</span>
-      <span class="nt">min</span><span class="p">:</span>
-      <span class="nt">max</span><span class="p">:</span>
+<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">rock_compressibility</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">reference_pressure</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">rock_compressibility</span><span class="p">:</span>
-      <span class="nt">reference_pressure</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">170</span>
-      <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6.0e-6</span>
-      <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5.0e-5</span>
+<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">rock_compressibility</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">reference_pressure</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">170</span><span class="w"></span>
+<span class="w">      </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6.0e-6</span><span class="w"></span>
+<span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5.0e-5</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
@@ -1519,31 +1519,31 @@ a value.</p>
 <tr class="row-odd"><td><p>Available options in config yaml</p></td>
 <td><p>Example of usage</p></td>
 </tr>
-<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">aquifer</span><span class="p">:</span>
-      <span class="nt">scheme</span><span class="p">:</span>
-      <span class="nt">fraction</span><span class="p">:</span>
-      <span class="nt">delta_depth</span><span class="p">:</span>
-      <span class="nt">size_in_bulkvolumes</span><span class="p">:</span>
-         <span class="nt">min</span><span class="p">:</span>
-         <span class="nt">max</span><span class="p">:</span>
-         <span class="nt">mean</span><span class="p">:</span>
-         <span class="nt">base</span><span class="p">:</span>
-         <span class="nt">stddev</span><span class="p">:</span>
-         <span class="nt">distribution</span><span class="p">:</span>
+<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">aquifer</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">scheme</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">fraction</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">delta_depth</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">size_in_bulkvolumes</span><span class="p">:</span><span class="w"></span>
+<span class="w">         </span><span class="nt">min</span><span class="p">:</span><span class="w"></span>
+<span class="w">         </span><span class="nt">max</span><span class="p">:</span><span class="w"></span>
+<span class="w">         </span><span class="nt">mean</span><span class="p">:</span><span class="w"></span>
+<span class="w">         </span><span class="nt">base</span><span class="p">:</span><span class="w"></span>
+<span class="w">         </span><span class="nt">stddev</span><span class="p">:</span><span class="w"></span>
+<span class="w">         </span><span class="nt">distribution</span><span class="p">:</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span>
-  <span class="nt">model_parameters</span><span class="p">:</span>
-    <span class="nt">aquifer</span><span class="p">:</span>
-      <span class="nt">scheme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">individual</span>
-      <span class="nt">fraction</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25</span>
-      <span class="nt">delta_depth</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
-      <span class="nt">size_in_bulkvolumes</span><span class="p">:</span>
-        <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0e-4</span>
-        <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+<td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flownet</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">model_parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">aquifer</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">scheme</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">individual</span><span class="w"></span>
+<span class="w">      </span><span class="nt">fraction</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.25</span><span class="w"></span>
+<span class="w">      </span><span class="nt">delta_depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w"></span>
+<span class="w">      </span><span class="nt">size_in_bulkvolumes</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0e-4</span><span class="w"></span>
+<span class="w">        </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
