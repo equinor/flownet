@@ -1,0 +1,8 @@
+flownet.data.compdat module
+===========================
+
+.. automodule:: flownet.data.compdat
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
