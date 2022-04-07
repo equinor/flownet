@@ -221,8 +221,8 @@ def test_create_entity_connection_matrix() -> None:
 
 
 def test_is_angle_too_large() -> None:
-    assert _is_angle_too_large(0, 1, 1, 2 ** 0.5)
-    assert not _is_angle_too_large(180, 1, 1, 2 ** 0.5)
-    assert _is_angle_too_large(44, 2 ** 0.5, 1, 1)
-    assert not _is_angle_too_large(45, 2 ** 0.5, 1, 1)
-    assert not _is_angle_too_large(46, 2 ** 0.5, 1, 1)
+    assert _is_angle_too_large(0, 1, 1, 2**0.5)
+    assert not _is_angle_too_large(180, 1, 1, 2**0.5)
+    assert _is_angle_too_large(44, 2**0.5, 1, 1)
+    assert not _is_angle_too_large(45, 2**0.5, 1, 1)
+    assert not _is_angle_too_large(46, 2**0.5, 1, 1)

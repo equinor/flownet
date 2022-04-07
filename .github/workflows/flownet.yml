@@ -19,8 +19,8 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9"]
-        flownet-model: ["norne", "egg", "brugge"]
+        python-version: ["3.7", "3.8"]
+        flownet-model: [ "egg"]
     env:
       PYTHONWARNINGS: default
     steps:
@@ -67,7 +67,6 @@ jobs:
 
       - name: 🤖 Run tests
         run: |
-          webviz certificate --force
           pytest --cov=flownet --cov-fail-under=29 ./tests
 
       - name: 🚀 Run full FlowNet example
