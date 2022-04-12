@@ -2152,13 +2152,10 @@ def parse_config(
                 f"The {phase} phase is not a valid phase\n"
                 f"The valid phases are 'oil', 'gas', 'water', 'disgas', 'vapoil', 'brine' and 'temp'"
             )
-    if (
-        not {"vapoil", "disgas"}.isdisjoint(config.flownet.phases)
-        and not {
-            "oil",
-            "gas",
-        }.issubset(config.flownet.phases)
-    ):
+    if not {"vapoil", "disgas"}.isdisjoint(config.flownet.phases) and not {
+        "oil",
+        "gas",
+    }.issubset(config.flownet.phases):
         raise ValueError(
             "The phases 'vapoil' and 'disgas' can not be defined without the phases 'oil' and 'gas'"
         )
