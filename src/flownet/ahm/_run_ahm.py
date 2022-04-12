@@ -819,7 +819,6 @@ def run_flownet_history_matching(
         equil_config_eqlnum = [config.model_parameters.equil.regions[0]]
         defined_eqlnum_regions.append(None)
 
-    #for i in np.sort(df_eqlnum["EQLNUM"].unique()):
     for i in range(1, eqlnum_max+1):
         if i in defined_eqlnum_regions:
             idx = defined_eqlnum_regions.index(i)
