@@ -664,7 +664,7 @@ def run_flownet_history_matching(
         )
 
     # total number of regions in the field data
-    satnum_max = field_data.init("SATNUM").get_max()
+    satnum_max = field_data.init("SATNUM").get_max()  # type: ignore
 
     # Create a pandas dataframe with all parameter definition for each individual tube
     relperm_dist_values = pd.DataFrame(columns=column_names_probdist + ["satnum"])
@@ -804,7 +804,7 @@ def run_flownet_history_matching(
         )
 
     # total number of regions in the field data
-    eqlnum_max = field_data.init("EQLNUM").get_max()
+    eqlnum_max = field_data.init("EQLNUM").get_max()  # type: ignore
 
     # Create a pandas dataframe with all parameter definition for each individual tube
     equil_dist_values = pd.DataFrame(columns=column_names_probdist + ["eqlnum"])
