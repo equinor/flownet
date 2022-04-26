@@ -1,15 +1,14 @@
 import argparse
 import pathlib
 import re
-import copy
 from datetime import datetime
-from typing import Optional, List
+from typing import List, Optional
 
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
-from fmu import ensemble
 from ecl.summary import EclSum
+from fmu import ensemble
 
 from .observations import _read_ert_obs
 
@@ -115,7 +114,9 @@ def plot(
         )
 
     if plot_settings["vertical_lines"] is not None:
-        for vertical_line_date in plot_settings["vertical_lines"]:
+        for vertical_line_date in plot_settings[
+            "vertical_lines"
+        ]:  # pylint: disable=undefined-loop-variable
             plt.axvline(x=vertical_line_date, color="k", linestyle="--")
 
     if vector in plot_settings["errors"]:
@@ -125,7 +126,9 @@ def plot(
         dates2 = []
         values2 = []
         for idx, date in enumerate(plot_settings["errors"][vector][0]):
-            if date < datetime.date(vertical_line_date):
+            if date < datetime.date(
+                vertical_line_date
+            ):  # pylint: disable=undefined-loop-variable
                 dates.append(plot_settings["errors"][vector][0][idx])
                 values.append(
                     plot_settings["errors"][vector][1][idx] / plot_settings["scale"]
@@ -456,7 +459,7 @@ def main():
         print(f"Plotting {vector}...", end=" ", flush=True)
 
         try:
-            if args.xtype[0] is "time":
+            if args.xtype[0] == "time":
                 plot(
                     vector,
                     prior_data,
@@ -467,7 +470,7 @@ def main():
 
             print("[Done]", flush=True)
 
-        except:
+        except:  # pylint: disable=bare-except
             print(f"No data found for vector {vector}")
 
 
