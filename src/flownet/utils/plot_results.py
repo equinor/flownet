@@ -127,8 +127,8 @@ def plot(
         values2 = []
         for idx, date in enumerate(plot_settings["errors"][vector][0]):
             if date < datetime.date(
-                vertical_line_date
-            ):  # pylint: disable=undefined-loop-variable
+                vertical_line_date  # pylint: disable=undefined-loop-variable
+            ):
                 dates.append(plot_settings["errors"][vector][0][idx])
                 values.append(
                     plot_settings["errors"][vector][1][idx] / plot_settings["scale"]
