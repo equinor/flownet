@@ -1,23 +1,14 @@
-# pylint: skip-file
 """
 Extract COMPDAT, WELSEGS and COMPSEGS from an Eclipse deck
 
 """
 
+import argparse
 import datetime
 import logging
-import argparse
-from typing import Dict, Optional, Union, List
+from typing import Dict, List, Optional, Union
 
 import pandas as pd
-
-try:
-    import opm.io.deck
-except ImportError:
-    # Allow parts of ecl2df to work without OPM:
-    pass
-
-from ecl2df.eclfiles import EclFiles
 from ecl2df.common import (
     merge_zones,
     parse_opmio_date_rec,
@@ -25,7 +16,15 @@ from ecl2df.common import (
     parse_opmio_tstep_rec,
     write_dframe_stdout_file,
 )
+from ecl2df.eclfiles import EclFiles
 from ecl2df.grid import merge_initvectors
+
+try:
+    import opm.io.deck  # pylint: disable=unused-import
+except ImportError:
+    # Allow parts of ecl2df to work without OPM:
+    pass
+
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +57,7 @@ WSEG_RENAMER: Dict[str, str] = {
     "SEG2": "SEGMENT2",
 }
 
-
+# pylint: disable=too-many-locals,too-many-branches,too-many-statements
 def deck2dfs(
     deck: "opm.io.Deck",
     start_date: Optional[Union[str, datetime.date]] = None,
@@ -90,8 +89,8 @@ def deck2dfs(
     wsegvalvrecords = []
     welspecs = {}
     date = start_date  # DATE column will always be there, but can contain NaN/None
-    for idx, kword in enumerate(deck):
-        if kword.name == "DATES" or kword.name == "START":
+    for idx, kword in enumerate(deck):  # pylint: disable=too-many-nested-blocks
+        if kword.name == ("DATES", "START"):
             for rec in kword:
                 date = parse_opmio_date_rec(rec)
                 logger.info("Parsing at date %s", str(date))
@@ -187,7 +186,8 @@ def deck2dfs(
                     rec_data["STATUS"] = "SHUT"
                     logger.warning(
                         "WELOPEN status %s is not a valid "
-                        "COMPDAT state. Using 'SHUT' instead." % rec_data["STATUS"]
+                        "COMPDAT state. Using 'SHUT' instead.",
+                        rec_data["STATUS"],
                     )
                 welopenrecords.append(rec_data)
         elif kword.name == "WELSEGS":
@@ -392,6 +392,7 @@ def applywelopen(compdat_df: pd.DataFrame, welopen_df: pd.DataFrame) -> pd.DataF
 
     """
     welopen_df = welopen_df.astype(object).where(pd.notnull(welopen_df), None)
+    # pylint: disable=too-many-boolean-expressions
     for _, row in welopen_df.iterrows():
         if (row["I"] is None and row["J"] is None and row["K"] is None) or (
             row["I"] <= 0 and row["J"] <= 0 and row["K"] <= 0
