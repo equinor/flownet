@@ -62,6 +62,18 @@ run jobs via LSF correctly you will need to update your default shell's
 configuration file (`.cshrc` or `.bashrc`) to automatically source your
 virtual environment.
 
+It is also possible to use the provided docker file as
+```bash
+git clone git@github.com:equinor/flownet.git
+docker build --tag=flownet-image --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) --file=flownet/Dockerfile .
+docker run -ti --mount "type=bind,src=$(pwd),dst=/home/flownet/shared" --workdir="/home/flownet/shared" flownet-image
+```
+In the docker container, install flownet as above by
+```bash
+cd flownet
+pip install -e .
+```
+
 ### Running FlowNet
 
 You can run _FlowNet_ as a single command line:
