@@ -49,9 +49,9 @@ def plot_ensembles(
         )
 
         color = (
-            plot_settings[f"{ensemble_type}_colors"][0]
-            if len(plot_settings[f"{ensemble_type}_colors"]) == 1
-            else plot_settings[f"{ensemble_type}_colors"][i]
+        plot_settings[f"{ensemble_type}_colors"][0]
+        if len(plot_settings[f"{ensemble_type}_colors"]) == 1
+        else plot_settings[f"{ensemble_type}_colors"][i]
         )
         alpha = (
             plot_settings[f"{ensemble_type}_alphas"][0]
@@ -61,23 +61,22 @@ def plot_ensembles(
 
         plt.plot(
             ensemble_data.index,
-            ensemble_data.values / plot_settings["scale"],
+            ensemble_data.values/plot_settings["scale"],
             color=color,
             alpha=alpha,
             linestyle="solid",
         )
 
-        if ensemble_type == "posterior":
-            ensemble_mean = ensemble_data.values.mean(axis=1) / plot_settings["scale"]
+        if ensemble_type == 'posterior':
+            ensemble_mean = ensemble_data.values.mean(axis=1)/plot_settings["scale"]
             plt.plot(
                 ensemble_data.index,
                 ensemble_mean,
-                color="w",
+                color='w',
                 alpha=alpha,
                 linestyle="-",
                 linewidth="1.0",
             )
-
 
 def plot(
     vector: str,
@@ -108,9 +107,9 @@ def plot(
     if reference_simulation:
         plt.plot(
             reference_simulation.dates,
-            reference_simulation.numpy_vector(vector) / plot_settings["scale"],
+            reference_simulation.numpy_vector(vector)/plot_settings["scale"],
             color=plot_settings["reference_simulation_color"],
-            linestyle="-",
+            linestyle='-',
             alpha=1,
         )
 
@@ -118,6 +117,7 @@ def plot(
         for vertical_line_date in plot_settings["vertical_lines"]:
             plt.axvline(x=vertical_line_date, color="k", linestyle="--")
 
+    vertical_line_date = plot_settings["vertical_lines"]
     if vector in plot_settings["errors"]:
         dates = []
         values = []
@@ -125,21 +125,13 @@ def plot(
         dates2 = []
         values2 = []
         for idx, date in enumerate(plot_settings["errors"][vector][0]):
-            if date < datetime.date(vertical_line_date):
+            if date < datetime.date(vertical_line_date[0]):
                 dates.append(plot_settings["errors"][vector][0][idx])
-                values.append(
-                    plot_settings["errors"][vector][1][idx] / plot_settings["scale"]
-                )
-                errors.append(
-                    plot_settings["errors"][vector][2][idx] / plot_settings["scale"]
-                )
+                values.append(plot_settings["errors"][vector][1][idx]/plot_settings["scale"])
+                errors.append(plot_settings["errors"][vector][2][idx]/plot_settings["scale"])
             else:
-                dates2.append(
-                    plot_settings["errors"][vector][0][idx] / plot_settings["scale"]
-                )
-                values2.append(
-                    plot_settings["errors"][vector][1][idx] / plot_settings["scale"]
-                )
+                dates2.append(plot_settings["errors"][vector][0][idx])
+                values2.append(plot_settings["errors"][vector][1][idx]/plot_settings["scale"])
 
     if plot_settings["errors"] is not None:
         if vector in plot_settings["errors"]:
@@ -158,12 +150,12 @@ def plot(
         plt.plot(
             dates2,
             values2,
-            "v",
-            color="k",
-            markersize="5",
+            'v',
+            color='k',
+            markersize='5',
         )
 
-    plt.ylim([plot_settings["ymin"], plot_settings["ymax"] / plot_settings["scale"]])
+    plt.ylim([plot_settings["ymin"], plot_settings["ymax"]/plot_settings["scale"]])
     plt.xlabel("date")
     if plot_settings["units"] != "":
         plt.ylabel(vector + " [" + plot_settings["units"] + "]")
@@ -410,7 +402,7 @@ def main():
         default=["time"],
         nargs="+",
         help="(Optional) data type to be plotted on the x-axis instead of time",
-    )
+    )    
     args = parser.parse_args()
 
     check_args(args)
@@ -456,7 +448,7 @@ def main():
         print(f"Plotting {vector}...", end=" ", flush=True)
 
         try:
-            if args.xtype[0] is "time":
+            if args.xtype[0] == "time":
                 plot(
                     vector,
                     prior_data,
