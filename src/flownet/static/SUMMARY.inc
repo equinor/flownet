@@ -163,6 +163,20 @@ WSPT
 /
 WSIT
 /
+-- Salt concentrations ( only eclipse)
+WSPC
+/
+WSIC
+/
+
+FSPT
+FSIT
+FSPR
+FSIR
+FSIP 
+
+FSPC
+FSIC
 
 -- Temperature
 WTPCHEA 

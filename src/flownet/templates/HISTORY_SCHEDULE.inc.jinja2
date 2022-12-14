@@ -10,6 +10,12 @@ WELSPECS
 /
 {%- endif %}
 
+{# Hack: create list(s) of Water injectors. Example: #}
+{# WLIST
+ '*INJ_LIST1'  NEW  INJ1 INJ2 INJ3 /
+ '*INJ_LIST2'  NEW  INJ4 INJ5 INJ6 /
+ / #}
+
 {%- if schedule.get_keywords(dates=date, kw_class="COMPDAT"): %}
 COMPDAT
 -- WELL --- LOCATION --- OPEN SAT CONN WELL KH   SKIN D    DIR
@@ -39,6 +45,14 @@ WCONINJH
 {%- endfor %}
 /
 {%- endif %}
+
+{# Hack. Example:#}
+{# WSALT
+-- WELL SALT
+-- NAME SALTCON
+  '*INJ_LIST1' 2.75 /
+  '*INJ_LIST2' 2.75 /
+  / #}
 
 {%- if schedule.get_keywords(dates=date, kw_class="WSALT"): %}
 WSALT

@@ -72,19 +72,18 @@ class Schedule:
         self._calculate_wconhist()
         self._calculate_wconinjh()
         self._calculate_wsalt()
-        self._calculate_wtemp()
+        #self._calculate_wtemp()
         print("done.", flush=True)
 
     def _calculate_wtemp(self):
         """
         Helper Function that generates the WTEMP keywords based on temperature measurements.
-
         Returns:
             Nothing
 
         """
         for _, value in self._df_production_data.iterrows():
-            if value["WWIR"] > 0:  # PJPE check
+            if value["WWIR"] > 0: 
                 self.append(
                     WTEMP(
                         date=value["date"],
@@ -267,6 +266,8 @@ class Schedule:
                         oil_total=value["WOPT"],
                         water_total=value["WWPT"],
                         gas_total=value["WGPT"],
+                        salt_rate=value["WSPR"],
+                        salt_total=value["WSPT"],
                         bhp=value["WBHP"],
                         thp=value["WTHP"],
                     )

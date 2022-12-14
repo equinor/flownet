@@ -27,23 +27,37 @@ def run_flow():
     parser.add_argument("data_file", type=str)
     args = parser.parse_args()
 
-    flow_path = shutil.which("flow")
-    if "FLOW_PATH" in os.environ:
-        flow_path = os.environ.get("FLOW_PATH")
-        print(flow_path)
-        if not os.path.isfile(flow_path):
+    #flow_path = shutil.which("flow")
+    flow_path = "/project/res/x86_64_RH_7/bin/flowrc13"
+    #flow_path = "/prog/res/ecl/grid/macros/eclrun"
+
+
+    if not os.path.isfile(flow_path):
             raise FileNotFoundError(
                 r"$FLOW_PATH does not point at a file that exists.\n \
                 Please, use the environment variable $FLOW_PATH to indicate a path for OPM Flow"
             )
-    elif flow_path is None:
-        raise RuntimeError(
-            r"OPM Flow could not be found.\n \
-            Follow the instructions on https://opm-project.org/ to install OPM Flow.\n \
-            If OPM Flow is already installed, make sure it is available in $PATH,\n \
-            or alternatively use the environment variable $FLOW_PATH."
-        )
+    #print(flow_path)
+    # if "FLOW_PATH" in os.environ:
+    #     #flow_path = os.environ.get("FLOW_PATH")
+    #     print(flow_path)
+    #     if not os.path.isfile(flow_path):
+    #         raise FileNotFoundError(
+    #             r"$FLOW_PATH does not point at a file that exists.\n \
+    #             Please, use the environment variable $FLOW_PATH to indicate a path for OPM Flow"
+    #         )
+    # elif flow_path is None:
+    #     raise RuntimeError(
+    #         r"OPM Flow could not be found.\n \
+    #         Follow the instructions on https://opm-project.org/ to install OPM Flow.\n \
+    #         If OPM Flow is already installed, make sure it is available in $PATH,\n \
+    #         or alternatively use the environment variable $FLOW_PATH."
+    #     )
 
-    subprocess.run([flow_path, args.data_file], check=True)
-
-    Path("FLOW_SIMULATION.OK").write_text("", encoding="utf8")
+    #subprocess.run([flow_path, args.data_file], check=True) #Flow
+    result = subprocess.run(["/scratch/gullfaks_ert/pegbe/bin/myeclipserun.sh", args.data_file + ".DATA"], check=True) # Eclipse
+    print("returncode: %d " %(result.returncode))
+    print(result.stderr)
+    print(result.stdout)
+    if result.returncode == 0 :
+        Path("FLOW_SIMULATION.OK").write_text("", encoding="utf8")

@@ -12,7 +12,7 @@ import pandas as pd
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from ecl.summary import EclSum
 
-from flownet.data import FlowData
+from flownet.data import FlowData, CSVData
 from flownet.ert.forward_models.utils import get_last_iteration
 
 
@@ -405,7 +405,8 @@ def save_iteration_analytics():
     )
 
     # Load reference simulation (OPM-Flow/Eclipse)
-    field_data = FlowData(args.reference_simulation)
+    #field_data = FlowData(args.reference_simulation)
+    field_data = CSVData(args.reference_simulation)
     df_obs: pd.DataFrame = field_data.production
     df_obs["DATE"] = df_obs["date"]
 

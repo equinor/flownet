@@ -1,6 +1,7 @@
 import argparse
 import pathlib
 import re
+import copy
 from datetime import datetime
 from typing import Optional, List
 
@@ -48,9 +49,9 @@ def plot_ensembles(
         )
 
         color = (
-            plot_settings[f"{ensemble_type}_colors"][0]
-            if len(plot_settings[f"{ensemble_type}_colors"]) == 1
-            else plot_settings[f"{ensemble_type}_colors"][i]
+        plot_settings[f"{ensemble_type}_colors"][0]
+        if len(plot_settings[f"{ensemble_type}_colors"]) == 1
+        else plot_settings[f"{ensemble_type}_colors"][i]
         )
         alpha = (
             plot_settings[f"{ensemble_type}_alphas"][0]
@@ -60,12 +61,22 @@ def plot_ensembles(
 
         plt.plot(
             ensemble_data.index,
-            ensemble_data.values,
+            ensemble_data.values/plot_settings["scale"],
             color=color,
             alpha=alpha,
             linestyle="solid",
         )
 
+        if ensemble_type == 'posterior':
+            ensemble_mean = ensemble_data.values.mean(axis=1)/plot_settings["scale"]
+            plt.plot(
+                ensemble_data.index,
+                ensemble_mean,
+                color='w',
+                alpha=alpha,
+                linestyle="-",
+                linewidth="1.0",
+            )
 
 def plot(
     vector: str,
@@ -96,8 +107,9 @@ def plot(
     if reference_simulation:
         plt.plot(
             reference_simulation.dates,
-            reference_simulation.numpy_vector(vector),
+            reference_simulation.numpy_vector(vector)/plot_settings["scale"],
             color=plot_settings["reference_simulation_color"],
+            linestyle='-',
             alpha=1,
         )
 
@@ -105,22 +117,59 @@ def plot(
         for vertical_line_date in plot_settings["vertical_lines"]:
             plt.axvline(x=vertical_line_date, color="k", linestyle="--")
 
+    vertical_line_date = plot_settings["vertical_lines"]
+    if vector in plot_settings["errors"]:
+        dates = []
+        values = []
+        errors = []
+        dates2 = []
+        values2 = []
+        for idx, date in enumerate(plot_settings["errors"][vector][0]):
+            if date < datetime.date(vertical_line_date[0]):
+                dates.append(plot_settings["errors"][vector][0][idx])
+                values.append(plot_settings["errors"][vector][1][idx]/plot_settings["scale"])
+                errors.append(plot_settings["errors"][vector][2][idx]/plot_settings["scale"])
+            else:
+                #dates2.append(plot_settings["errors"][vector][0][idx]/plot_settings["scale"])
+                dates2.append(plot_settings["errors"][vector][0][idx])
+                values2.append(plot_settings["errors"][vector][1][idx]/plot_settings["scale"])
+
     if plot_settings["errors"] is not None:
         if vector in plot_settings["errors"]:
-            plt.errorbar(
-                plot_settings["errors"][vector][0],
-                plot_settings["errors"][vector][1],
-                yerr=plot_settings["errors"][vector][2],
-                fmt="o",
+    #         plt.errorbar(
+    #             dates,
+    #             values,
+    #             yerr=errors,
+    #             fmt="o",
+    #             color="k",
+    #             ecolor="k",
+    #             capsize=5,
+    #             elinewidth=1,
+    #         )
+            plt.plot(
+                dates,
+                values,
+                'o',
                 color="k",
-                ecolor="k",
-                capsize=5,
-                elinewidth=2,
+                markersize='5',
             )
+    
 
-    plt.ylim([plot_settings["ymin"], plot_settings["ymax"]])
+    if vector in plot_settings["errors"]:
+        plt.plot(
+            dates2,
+            values2,
+            'v',
+            color='k',
+            markersize='5',
+        )
+
+    plt.ylim([plot_settings["ymin"], plot_settings["ymax"]/plot_settings["scale"]])
     plt.xlabel("date")
-    plt.ylabel(vector + " [" + plot_settings["units"] + "]")
+    if plot_settings["units"] != "":
+        plt.ylabel(vector + " [" + plot_settings["units"] + "]")
+    else:
+        plt.ylabel(vector)
     plt.savefig(re.sub(r"[^\w\-_\. ]", "_", vector), dpi=300)
     plt.close()
 
@@ -333,7 +382,7 @@ def main():
     parser.add_argument(
         "-reference_simulation_color",
         type=str,
-        default="red",
+        default="#E3CF57",
         help="The reference simulation color. Examples: 'red', 'blue', 'green'.",
     )
     parser.add_argument(
@@ -349,12 +398,34 @@ def main():
         default=None,
         help="Path to an ERT observation file.",
     )
+    parser.add_argument(
+        "-scale",
+        type=float,
+        default=[1],
+        nargs="+",
+        help="Factor by which all y values (including ymax and errors) are divided.",
+    )
+    parser.add_argument(
+        "-xtype",
+        type=str,
+        default=["time"],
+        nargs="+",
+        help="(Optional) data type to be plotted on the x-axis instead of time",
+    )    
     args = parser.parse_args()
 
     check_args(args)
 
     prior_data = build_ensemble_df_list(args.prior, args.vectors)
     posterior_data = build_ensemble_df_list(args.posterior, args.vectors)
+
+    # if args.xtype is not "time":
+    #     #vectors = args.vectors[0].split(" ")
+    #     vectors2 = []
+    #     for entry in args.vectors:
+    #         vectors2.append(args.xtype[0] + ':' + entry.split(':')[1])
+    #     prior_data2 = build_ensemble_df_list(args.prior, vectors2)
+    #     posterior_data2 = build_ensemble_df_list(args.posterior, vectors2)
 
     if args.ertobs is not None:
         ertobs = _read_ert_obs(args.ertobs)
@@ -379,19 +450,32 @@ def main():
             "reference_simulation_color": args.reference_simulation_color,
             "vertical_lines": args.vertical_lines,
             "errors": ertobs,
+            "scale": args.scale[0] if len(args.scale) == 1 else args.scale[i],
+            "xtype": args.xtype,
         }
 
         print(f"Plotting {vector}...", end=" ", flush=True)
-
         plot(
-            vector,
-            prior_data,
-            posterior_data,
-            reference_eclsum,
-            plot_settings,
-        )
+                vector,
+                prior_data,
+                posterior_data,
+                reference_eclsum,
+                plot_settings,
+            )
+        # try:
+        #     #if args.xtype[0] == "time":
+        #     plot(
+        #         vector,
+        #         prior_data,
+        #         posterior_data,
+        #         reference_eclsum,
+        #         plot_settings,
+        #     )
 
-        print("[Done]", flush=True)
+        #     print("[Done]", flush=True)
+
+        # except:
+        #     print(f"No data found for vector {vector}")
 
 
 if __name__ == "__main__":

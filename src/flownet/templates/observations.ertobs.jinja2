@@ -25,7 +25,7 @@ SUMMARY_OBSERVATION WGPR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.gas
 SUMMARY_OBSERVATION WWPR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.water_rate }}; ERROR = {{ [error_config.WWPR.rel_error * kw.water_rate, error_config.WWPR.min_error] | max }}; DATE  = {{ date_formatted  }}; KEY = WWPR:{{ kw.well_name }}; };
 {%- endif %}
 {%- if not isnan(kw.salt_total) and error_config.WSPT.rel_error is not none and error_config.WSPT.min_error is not none: %}
-SUMMARY_OBSERVATION WSPT_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.salt_total }}; ERROR = {{ [error_config.WSPT.rel_error * kw.salt_total, error_config.WSPR.min_error] | max }}; DATE  = {{ date_formatted  }}; KEY = WSPR:{{ kw.well_name }}; };
+SUMMARY_OBSERVATION WSPT_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.salt_total }}; ERROR = {{ [error_config.WSPT.rel_error * kw.salt_total, error_config.WSPT.min_error] | max }}; DATE  = {{ date_formatted  }}; KEY = WSPT:{{ kw.well_name }}; };
 {%- endif %}
 {%- if not isnan(kw.salt_rate) and error_config.WSPR.rel_error is not none and error_config.WSPR.min_error is not none: %}
 SUMMARY_OBSERVATION WSPR_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.salt_rate }}; ERROR = {{ [error_config.WSPR.rel_error * kw.salt_rate, error_config.WSPR.min_error] | max }}; DATE  = {{ date_formatted  }}; KEY = WSPR:{{ kw.well_name }}; };
