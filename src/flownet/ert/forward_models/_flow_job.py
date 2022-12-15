@@ -44,6 +44,7 @@ def run_flow():
             or alternatively use the environment variable $FLOW_PATH."
         )
 
-    subprocess.run([flow_path, args.data_file], check=True)
+    #subprocess.run([flow_path, args.data_file], check=True) # Flow
+    subprocess.run(["/scratch/gullfaks_ert/olwl/myeclipserun.sh", args.data_file + ".DATA"], check=True) # Eclipse
 
     Path("FLOW_SIMULATION.OK").write_text("", encoding="utf8")

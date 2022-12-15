@@ -71,8 +71,8 @@ class Schedule:
         self._get_start_dates()
         self._calculate_wconhist()
         self._calculate_wconinjh()
-        self._calculate_wsalt()
-        self._calculate_wtemp()
+        #self._calculate_wsalt()
+        #self._calculate_wtemp()
         print("done.", flush=True)
 
     def _calculate_wtemp(self):

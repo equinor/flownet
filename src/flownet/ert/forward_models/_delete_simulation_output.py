@@ -19,6 +19,7 @@ def delete_simulation_output():
 
     args = parser.parse_args()
 
-    for suffix in ["EGRID", "INIT", "UNRST", "LOG", "PRT"]:
+    #for suffix in ["EGRID", "INIT", "UNRST", "LOG", "PRT"]:
+    for suffix in ["PRT"]:
         if os.path.exists(f"{args.ecl_base}.{suffix}"):
             os.remove(f"{args.ecl_base}.{suffix}")
