@@ -7,3 +7,5 @@ from ._equilibration import Equilibration
 from ._rock_compressibility import RockCompressibility
 from ._aquifer import Aquifer
 from ._fault_transmissibility import FaultTransmissibility
+from ._transmissibility import Transmissibility
+from ._porevolume import PoreVolume

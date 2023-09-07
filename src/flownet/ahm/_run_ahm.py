@@ -19,6 +19,8 @@ from ..utils import kriging
 
 from ..parameters import (
     PorvPoroTrans,
+    PoreVolume,
+    Transmissibility,
     RockCompressibility,
     RelativePermeability,
     Aquifer,
@@ -928,14 +930,43 @@ def run_flownet_history_matching(
 
     datum_depths = list(datum_depths)
 
+    # parameters = [
+    #     PorvPoroTrans(
+    #         porv_poro_trans_dist_values,
+    #         ti2ci,
+    #         network,
+    #         config.flownet.min_permeability,
+    #     ),
+    #     RelativePermeability(
+    #         relperm_dist_values,
+    #         ti2ci,
+    #         df_satnum,
+    #         config,
+    #         interpolation_values=relperm_interp_values,
+    #     ),
+    #     Equilibration(
+    #         equil_dist_values,
+    #         network,
+    #         ti2ci,
+    #         df_eqlnum,
+    #         datum_depths,
+    #         config.flownet.pvt.rsvd,
+    #     ),
+    # ]
+
     parameters = [
-        PorvPoroTrans(
+        Transmissibility(
             porv_poro_trans_dist_values,
             regional_porv_poro_trans_dist_values,
             ti2ci,
             ci2ri,
             network,
             config.flownet.min_permeability,
+        ),
+        PoreVolume(
+            porv_poro_trans_dist_values,
+            ti2ci,
+            network,
         ),
         RelativePermeability(
             relperm_dist_values,
