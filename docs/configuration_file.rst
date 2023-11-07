@@ -517,7 +517,7 @@ The maximum number of simulation jobs executed simultaneously.
 ensemble_weights
 ----------------
 
-A list with weights assigned to the iteration in the ES MDA algorithm.
+A list with weights assigned to the iteration in the ES MDA algorithm. When this list is not provided, FlowNet will run ERT in ensemble_experiment mode (i.e. only prior ensemble or iter-0 will be run, without performing iterations of the history matching or model updates).
 
 yamlobs
 -------

@@ -1,5 +1,5 @@
 import argparse
-from typing import List
+from typing import List, Optional
 from configsuite import ConfigSuite
 import jinja2
 import numpy as np
@@ -69,7 +69,7 @@ class AssistedHistoryMatching:
             training_set_fraction=training_set_fraction,
         )
 
-    def run_ert(self, weights: List[float]):
+    def run_ert(self, weights: Optional[List[float]]):
         """
         This function will start running ert (assumes create_ert_setup has been called).
 
@@ -101,12 +101,20 @@ class AssistedHistoryMatching:
                 )
             )
 
-        run_ert_subprocess(
-            f"ert es_mda --weights {','.join(map(str, weights))!r} ahm_config.ert",
-            cwd=self.output_folder,
-            runpath=self._config.ert.runpath,
-            timeout=self._config.ert.timeout,
-        )
+        if weights:
+            run_ert_subprocess(
+                f"ert es_mda --weights {','.join(map(str, weights))!r} ahm_config.ert",
+                cwd=self.output_folder,
+                runpath=self._config.ert.runpath,
+                timeout=self._config.ert.timeout,
+            )
+        else:
+            run_ert_subprocess(
+                "ert ensemble_experiment ahm_config.ert",
+                cwd=self.output_folder,
+                runpath=self._config.ert.runpath,
+                timeout=self._config.ert.timeout,
+            )
 
     def report(self):
         """
