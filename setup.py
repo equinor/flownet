@@ -31,6 +31,7 @@ REQUIREMENTS = [
 TEST_REQUIRES = [
     "black",
     "mypy>=0.761",
+    "promise",
     "pylint>=2.3",
     "pyscal>=0.7.4",
     "pytest>=5.3",
