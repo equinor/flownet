@@ -176,7 +176,7 @@ jobs:
           popd
 
       - name: 🚢 Build and deploy Python package
-        if: github.event_name == 'release' && matrix.python-version == '3.12'
+        if: github.event_name == 'release' && matrix.python-version == '3.12' && matrix.testdata-model == 'egg'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.pypi_flownet_token }}
