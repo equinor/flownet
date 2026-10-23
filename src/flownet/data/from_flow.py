@@ -502,7 +502,7 @@ class FlowData(FromSource):
             # Assign each reservoir model volume to a flow tube
             np.add.at(
                 tube_cell_volumes,
-                np.asarray(flownet_indices)[matched_indices],
+                np.asarray(flownet_indices, dtype=int)[matched_indices],
                 np.asarray(model_cell_volume)[model_indices],
             )
 
