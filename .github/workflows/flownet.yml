@@ -186,7 +186,7 @@ jobs:
           twine upload dist/*
 
       - name: 📚 Update GitHub pages
-        if: github.event_name != 'schedule' && github.ref == 'refs/heads/master' && matrix.python-version == '3.12'
+        if: github.event_name != 'schedule' && github.ref == 'refs/heads/master' && matrix.python-version == '3.12' && matrix.testdata-model == 'egg'
         run: |
           cp -R ./docs/_build ../_build
           git config --local user.email "flownet-github-action"
