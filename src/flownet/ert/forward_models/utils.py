@@ -2,6 +2,15 @@ import glob
 from typing import List, Tuple
 
 
+def normalize_ert_parameters(parameters: dict) -> dict:
+    """Normalize legacy and current ERT parameter JSON formats."""
+    parameters = parameters.get("FLOWNET_PARAMETERS", parameters)
+    return {
+        name: value["value"] if isinstance(value, dict) and "value" in value else value
+        for name, value in parameters.items()
+    }
+
+
 def get_last_iteration(path: str) -> Tuple[int, List]:
     """
     Function to collect the last iteration number for which the simulation has run

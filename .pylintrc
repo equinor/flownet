@@ -1,10 +1,11 @@
 [MESSAGES CONTROL]
 
-disable = bad-continuation, missing-docstring, duplicate-code
+disable = missing-docstring, duplicate-code
 
 [DESIGN]
 
 max-args = 8
+max-positional-arguments = 17
 max-branches = 14
 max-attributes = 16
 min-public-methods = 1
@@ -60,3 +61,6 @@ max-statements=60
 
 [TYPECHECK]
 generated-members=df_rsvd.*, DF
+
+[FORMAT]
+max-module-lines=1100

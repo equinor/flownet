@@ -16,28 +16,46 @@ on:
 
 jobs:
   FlowNet:
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.ubuntu-version }}
     strategy:
       matrix:
-        python-version: ["3.7", "3.8"]
-        flownet-model: [ "egg"]
+        include:
+          - python-version: "3.12"
+            ubuntu-version: ubuntu-24.04
+            testdata-model: egg
+          - python-version: "3.12"
+            ubuntu-version: ubuntu-24.04
+            testdata-model: norne
+          - python-version: "3.14"
+            ubuntu-version: ubuntu-26.04
+            testdata-model: egg
+          - python-version: "3.14"
+            ubuntu-version: ubuntu-26.04
+            testdata-model: norne
     env:
       PYTHONWARNINGS: default
     steps:
       - name: 📖 Checkout commit locally
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: 🐍 Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: setup.py
+
+      - name: 🧪 Create virtual environment
+        run: |
+          python -m venv "$RUNNER_TEMP/flownet-venv"
+          echo "$RUNNER_TEMP/flownet-venv/bin" >> "$GITHUB_PATH"
 
       - name: 📦 Install non-python dependencies
         run: sudo bash ./apt_install.sh
 
       - name: 🍿 Download FlowNet test data
         env:
-          INPUT_MODEL_FOLDER: ./flownet-testdata/${{ matrix.flownet-model }}/input_model
+          INPUT_MODEL_FOLDER: ./flownet-testdata/${{ matrix.testdata-model }}/input_model
           # If you want the CI to (temporarily) run against your fork of the testdata,
           # change the value her from "equinor" to your username.
           TESTDATA_REPO_OWNER: equinor
@@ -48,16 +66,18 @@ jobs:
           git clone --depth 1 --branch $TESTDATA_REPO_BRANCH https://github.com/$TESTDATA_REPO_OWNER/flownet-testdata.git --recursive
           for f in $INPUT_MODEL_FOLDER/*.tar.gz; do tar -zxvf "$f" -C $INPUT_MODEL_FOLDER; done
 
-      - name: 📦 Install FlowNet
+      - name: 📦 Install FlowNet and test dependencies
         run: |
-          pip install "matplotlib<3.2"  # As long as ERT requires it...
-          pip install .
+          python -m pip install --upgrade pip
+          python -m pip install ".[tests]"
 
-      - name: 📦 Install test dependencies
-        run: pip install .[tests]
+      - name: 🚀 Check FlowNet and simulator entry points
+        run: |
+          flownet --help
+          flow --version
 
       - name: 🧾 List all installed packages
-        run: pip freeze
+        run: python -m pip freeze
 
       - name: 🕵️ Check code style & linting
         run: |
@@ -69,13 +89,85 @@ jobs:
         run: |
           pytest --cov=flownet --cov-fail-under=29 ./tests
 
-      - name: 🚀 Run full FlowNet example
+      - name: 🚀 Run reduced Egg integration examples
+        if: matrix.testdata-model == 'egg'
+        timeout-minutes: 15
+        env:
+          MLFLOW_ALLOW_FILE_STORE: "true"
         run: |
-          pushd ./flownet-testdata/${{ matrix.flownet-model }}
-          flownet ahm ./config/assisted_history_matching.yml ./some_ahm_run --update-config ./ci_config/assisted_history_matching.yml
-          flownet ahm ./config/assisted_history_matching.yml ./some_ahm_run2 --update-config ./ci_config/assisted_history_matching.yml --restart-folder ./some_ahm_run
-          flownet pred ./config/prediction.yml ./some_pred_run ./some_ahm_run  --update-config ./ci_config/prediction.yml
-          (test -f ./config/hyperparameter.yml && flownet hyperparam ./config/hyperparameter.yml ./hyper --update-config ./ci_config/assisted_history_matching.yml) || echo Skipping hyperparameter run...
+          cd ./flownet-testdata/egg
+          flownet ahm ./config/assisted_history_matching.yml ./ci_ahm_run --update-config ./ci_config/assisted_history_matching.yml
+          flownet ahm ./config/assisted_history_matching.yml ./ci_ahm_restart --update-config ./ci_config/assisted_history_matching.yml --restart-folder ./ci_ahm_run
+          flownet pred ./config/prediction.yml ./ci_pred_run ./ci_ahm_run --update-config ./ci_config/prediction.yml
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+
+          config_path = Path("config/hyperparameter.yml")
+          config = yaml.safe_load(config_path.read_text(encoding="utf8"))
+          config["flownet"]["hyperopt"]["n_runs"] = 1
+          config["model_parameters"]["relative_permeability"]["scheme"] = "global"
+          Path("config/ci_hyperparameter.yml").write_text(
+              yaml.safe_dump(config, sort_keys=False), encoding="utf8"
+          )
+          PY
+          flownet hyperparam ./config/ci_hyperparameter.yml ./ci_hyperparameter_run --update-config ./ci_config/assisted_history_matching.yml
+
+      - name: 🚀 Run reduced Norne integration examples
+        if: matrix.testdata-model == 'norne'
+        timeout-minutes: 15
+        run: |
+          cd ./flownet-testdata/norne
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+
+          config_path = Path("config/assisted_history_matching.yml")
+          config = yaml.safe_load(config_path.read_text(encoding="utf8"))
+          region = config["model_parameters"]["relative_permeability"]["regions"][0]
+          region["swirr"].update(min=0.009, max=0.011)
+          region["swl"].update(min=0.049, max=0.051)
+          Path("config/ci_assisted_history_matching.yml").write_text(
+              yaml.safe_dump(config, sort_keys=False), encoding="utf8"
+          )
+
+          prediction = yaml.safe_load(
+              Path("ci_config/prediction.yml").read_text(encoding="utf8")
+          )
+          ert = prediction.setdefault("ert", {})
+          ert.setdefault("realizations", {})["num_realizations"] = 2
+          ert.setdefault("queue", {})["max_running"] = 2
+          Path("ci_config/ci_prediction.yml").write_text(
+              yaml.safe_dump(prediction, sort_keys=False), encoding="utf8"
+          )
+
+          ahm_update = {
+            "flownet": {
+              "additional_flow_nodes": [20, 40],
+              "additional_node_candidates": 100,
+              "max_distance_fraction": 0.05,
+              "constraining": {"kriging": {"enabled": False}},
+            },
+            "ert": {
+              "realizations": {
+                "num_realizations": 2,
+                "required_success_percent": 40,
+                "max_runtime": 180,
+              },
+              "queue": {"max_running": 2},
+              "ensemble_weights": [1],
+            },
+            "model_parameters": {
+              "relative_permeability": {"scheme": "global"}
+            },
+          }
+          Path("ci_config/ci_assisted_history_matching.yml").write_text(
+            yaml.safe_dump(ahm_update, sort_keys=False), encoding="utf8"
+          )
+          PY
+          flownet ahm ./config/ci_assisted_history_matching.yml ./ci_ahm_run --update-config ./ci_config/ci_assisted_history_matching.yml
+          flownet ahm ./config/ci_assisted_history_matching.yml ./ci_ahm_restart --update-config ./ci_config/ci_assisted_history_matching.yml --restart-folder ./ci_ahm_run
+          flownet pred ./config/prediction.yml ./ci_pred_run ./ci_ahm_run --update-config ./ci_config/ci_prediction.yml
 
       - name: 📚 Build documentation
         run: |
@@ -84,25 +176,33 @@ jobs:
           popd
 
       - name: 🚢 Build and deploy Python package
-        if: github.event_name == 'release' && matrix.python-version == '3.7'
+        if: github.event_name == 'release' && matrix.python-version == '3.12' && matrix.testdata-model == 'egg'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.pypi_flownet_token }}
         run: |
-          python -m pip install --upgrade setuptools wheel twine
+          python -m pip install --upgrade setuptools wheel setuptools-scm twine
           python setup.py bdist_wheel
           twine upload dist/*
 
       - name: 📚 Update GitHub pages
-        if: github.event_name != 'schedule' && github.ref == 'refs/heads/master' && matrix.python-version == '3.7'
+        if: github.event_name != 'schedule' && github.ref == 'refs/heads/master' && matrix.python-version == '3.12' && matrix.testdata-model == 'egg'
         run: |
           cp -R ./docs/_build ../_build
           git config --local user.email "flownet-github-action"
           git config --local user.name "flownet-github-action"
-          git fetch origin gh-pages
-          git checkout --track origin/gh-pages
+          if git ls-remote --exit-code --heads origin gh-pages; then
+            git fetch origin gh-pages
+            git checkout --track origin/gh-pages
+          else
+            status=$?
+            if [ "$status" -ne 2 ]; then
+              exit "$status"
+            fi
+            git checkout --orphan gh-pages
+          fi
           git clean -f -f -d -x
-          git rm -r *
+          git rm -rf --ignore-unmatch .
 
           cp -R ../_build/html/* .
           git add .

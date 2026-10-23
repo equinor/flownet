@@ -10,12 +10,17 @@ The following is a set of guidelines for contributing to FlowNet.
 1. We document our code
 1. We use type annotations
 
-## Pre-commit hook
+## Local checks before pushing
 
-    ```bash
-    # optional
-    pre-commit install
-    ```
+Install the test tools in your active FlowNet environment, then install the Git hooks from the repository root:
+
+```bash
+python -m pip install -e '.[tests]'
+pre-commit install
+pre-commit install --hook-type pre-push
+```
+
+The commit hook applies Black to changed files. The pre-push hook checks the committed tree being pushed with the same repository-wide Black, Pylint, and mypy commands as CI.
 
 ## Pull Request Process
 

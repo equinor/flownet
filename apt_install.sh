@@ -1,10 +1,8 @@
-apt-get install zlib1g-dev  # libecl
-apt-get install libblas-dev liblapack-dev  # libres
-apt-get install libnss3-tools # webviz
+set -e
+export DEBIAN_FRONTEND=noninteractive
 
-# Flow:
 apt-get update
-apt-get install software-properties-common -y
-apt-add-repository ppa:opm/ppa -y
+apt-get install -y software-properties-common zlib1g-dev libblas-dev liblapack-dev libnss3-tools
+add-apt-repository -y ppa:opm/ppa
 apt-get update
-apt-get install mpi-default-bin libopm-simulators-bin -y
+apt-get install -y mpi-default-bin libopm-simulators-bin

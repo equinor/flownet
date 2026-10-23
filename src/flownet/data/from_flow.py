@@ -6,11 +6,11 @@ from typing import Union, List, Tuple
 import numpy as np
 import pandas as pd
 from scipy.spatial import KDTree
-from ecl.grid import EclGrid
-from ecl.eclfile import EclFile, EclInitFile
-from ecl.summary import EclSum
-from ecl2df import faults
-from ecl2df.eclfiles import EclFiles
+from resdata.grid import Grid
+from resdata.resfile import ResdataFile, ResdataInitFile
+from resdata.summary import Summary
+from res2df import faults
+from res2df.resdatafiles import ResdataFiles
 
 from ..data import perforation_strategy, compdat
 
@@ -36,12 +36,14 @@ class FlowData(FromSource):
         super().__init__()
 
         self._input_case: Path = Path(input_case)
-        self._eclsum = EclSum(str(self._input_case))
-        self._init = EclFile(str(self._input_case.with_suffix(".INIT")))
-        self._grid = EclGrid(str(self._input_case.with_suffix(".EGRID")))
-        self._restart = EclFile(str(self._input_case.with_suffix(".UNRST")))
-        self._init = EclInitFile(self._grid, str(self._input_case.with_suffix(".INIT")))
-        self._wells = compdat.df(EclFiles(str(self._input_case)))
+        self._eclsum = Summary(str(self._input_case))
+        self._init = ResdataFile(str(self._input_case.with_suffix(".INIT")))
+        self._grid = Grid(str(self._input_case.with_suffix(".EGRID")))
+        self._restart = ResdataFile(str(self._input_case.with_suffix(".UNRST")))
+        self._init = ResdataInitFile(
+            self._grid, str(self._input_case.with_suffix(".INIT"))
+        )
+        self._wells = compdat.df(ResdataFiles(str(self._input_case)))
         self._layers = layers
 
     # pylint: disable=too-many-branches
@@ -207,7 +209,7 @@ class FlowData(FromSource):
             "WSTAT",
         ]
 
-        df_production_data = pd.DataFrame()
+        production_dataframes = []
 
         # Suppress a depreciation warning inside LibEcl
         warnings.simplefilter("ignore", category=DeprecationWarning)
@@ -244,10 +246,16 @@ class FlowData(FromSource):
                 df.loc[df["WWIR"] > 0, "TYPE"] = "WI"
                 df.loc[df["WGIR"] > 0, "TYPE"] = "GI"
                 # make sure the correct well type is set also when the well is shut in
-                df[["PHASE", "TYPE"]] = df[["PHASE", "TYPE"]].fillna(method="backfill")
-                df[["PHASE", "TYPE"]] = df[["PHASE", "TYPE"]].fillna(method="ffill")
+                df[["PHASE", "TYPE"]] = df[["PHASE", "TYPE"]].bfill()
+                df[["PHASE", "TYPE"]] = df[["PHASE", "TYPE"]].ffill()
 
-                df_production_data = df_production_data.append(df)
+                production_dataframes.append(df)
+
+        df_production_data = (
+            pd.concat(production_dataframes)
+            if production_dataframes
+            else pd.DataFrame()
+        )
 
         if df_production_data["WSTAT"].isna().all():
             warnings.warn(
@@ -273,10 +281,10 @@ class FlowData(FromSource):
         # ensure that a type is assigned also if a well is never activated
         df_production_data[["PHASE", "TYPE"]] = df_production_data[
             ["PHASE", "TYPE"]
-        ].fillna(method="backfill")
+        ].bfill()
         df_production_data[["PHASE", "TYPE"]] = df_production_data[
             ["PHASE", "TYPE"]
-        ].fillna(method="ffill")
+        ].ffill()
 
         df_production_data["date"] = df_production_data.index
         df_production_data["date"] = pd.to_datetime(df_production_data["date"]).dt.date
@@ -285,13 +293,13 @@ class FlowData(FromSource):
 
     def _faults(self) -> pd.DataFrame:
         """
-        Function to read fault plane data using ecl2df.
+        Function to read fault plane data using res2df.
 
         Returns:
             A dataframe with columns NAME, X, Y, Z with data for fault planes
 
         """
-        eclfile = EclFiles(self._input_case)
+        eclfile = ResdataFiles(self._input_case)
         df_fault_keyword = faults.df(eclfile)
 
         points = []
@@ -361,9 +369,9 @@ class FlowData(FromSource):
             filtered on layer_id if not None.
         """
         if self._layers:
-            (k_min, k_max) = tuple(map(operator.sub, self._layers[layer_id], (1, 1)))
+            k_min, k_max = tuple(map(operator.sub, self._layers[layer_id], (1, 1)))
         else:
-            (k_min, k_max) = (0, self._grid.nz)
+            k_min, k_max = (0, self._grid.nz)
 
         cells = [
             cell for cell in self._grid.cells(active=True) if (k_min <= cell.k <= k_max)
@@ -487,17 +495,24 @@ class FlowData(FromSource):
 
             # Determine nearest flow tube cell for each cell in the original model
             tree = KDTree(flownet_cell_midpoints[flownet_indices, :])
-            _, matched_indices = tree.query(model_cell_mid_points[model_indices], k=[1])
+            _, matched_indices = tree.query(
+                model_cell_mid_points[model_indices], k=1, workers=-1
+            )
 
             # Assign each reservoir model volume to a flow tube
-            for idx, val in enumerate(matched_indices):
-                tube_cell_volumes[flownet_indices[val[0]]] += model_cell_volume[
-                    model_indices[idx]
-                ]
+            np.add.at(
+                tube_cell_volumes,
+                np.asarray(flownet_indices, dtype=int)[matched_indices],
+                np.asarray(model_cell_volume)[model_indices],
+            )
 
             # Compute the total volumes per tube section between the current depth levels
             properties_per_cell["distributed_volume"] = tube_cell_volumes
-            tube_volumes = properties_per_cell.groupby(by="model").sum().values
+            tube_volumes = (
+                properties_per_cell.groupby(by="model")["distributed_volume"]
+                .sum()
+                .values
+            )
 
             # Evenly distribute tube volumes over the tube cells between the current depth levels
             for tube in range(number_of_tubes):
@@ -531,7 +546,7 @@ class FlowData(FromSource):
         return self._well_logs()
 
     @property
-    def grid(self) -> EclGrid:
+    def grid(self) -> Grid:
         """the simulation grid with properties"""
         return self._grid
 

@@ -63,6 +63,8 @@ def _create_schedule_from_data(
     """
     # Create schedule
     schedule = Schedule()
+    df_production_data = df_production_data.copy()
+    df_production_data["date"] = pd.to_datetime(df_production_data["date"]).dt.date
 
     # Feed schedule with production data
     for _, value in df_production_data.iterrows():

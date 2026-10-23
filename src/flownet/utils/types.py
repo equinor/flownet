@@ -4,4 +4,4 @@ from typing import Tuple, Union, List, Any
 # Ideally, we remove the possibility of it being a list and convert Numpy floats to Python floats.
 Coordinate = Union[Tuple[float, float, float], List[float], Tuple[Any, ...]]
 
-IJK = Union[(Tuple[int, int, int],)]
+IJK = Union[(Tuple[int, int, int],)]  # pylint: disable=invalid-name

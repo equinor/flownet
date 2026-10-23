@@ -4,7 +4,7 @@
 {%- for kw in schedule.get_keywords(dates=date, kw_class="WCONHIST"): -%}
 
 {%- set index_name = date.strftime('%d_%m_%Y') -%}
-{%- set date_formatted = date.strftime('%d/%m/%Y') %}
+{%- set date_formatted = date.strftime('%Y-%m-%d') %}
 
 {%- if not isnan(kw.oil_total) and error_config.WOPT.rel_error is not none and error_config.WOPT.min_error is not none: -%}
 SUMMARY_OBSERVATION WOPT_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.oil_total }}; ERROR = {{ [error_config.WOPT.rel_error * kw.oil_total, error_config.WOPT.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WOPT:{{ kw.well_name }}; };
@@ -47,7 +47,7 @@ SUMMARY_OBSERVATION WTPCHEA_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.
 {%- for kw in schedule.get_keywords(dates=date, kw_class="WCONINJH"): -%}
 
 {%- set index_name = date.strftime('%d_%m_%Y') -%}
-{%- set date_formatted = date.strftime('%d/%m/%Y') %}
+{%- set date_formatted = date.strftime('%Y-%m-%d') %}
 
 {%- if not isnan(kw.bhp) and error_config.WBHP.rel_error is not none and error_config.WBHP.min_error is not none: %}
 SUMMARY_OBSERVATION WBHP_{{ kw.well_name }}_{{ index_name }} { VALUE = {{ kw.bhp }}; ERROR = {{ [error_config.WBHP.rel_error * kw.bhp, error_config.WBHP.min_error] | max }}; DATE = {{ date_formatted  }}; KEY = WBHP:{{ kw.well_name }}; };

@@ -54,9 +54,9 @@ class UniformDistribution(ProbabilityDistribution):
 
     def __init__(
         self,
-        minimum: float = None,
-        maximum: float = None,
-        mean: float = None,
+        minimum: Optional[float] = None,
+        maximum: Optional[float] = None,
+        mean: Optional[float] = None,
     ):
         super().__init__("UNIFORM")
         self.update_distribution(minimum=minimum, mean=mean, maximum=maximum)
@@ -124,11 +124,6 @@ class UniformDistribution(ProbabilityDistribution):
             raise ValueError(
                 "It is not possible to update the mean of the uniform distribution without "
                 "providing either a new minimum value or a new maximum value at the same time."
-            )
-        elif mode is not None:
-            raise ValueError(
-                "The mode in a uniform distribution is either all possible values or non-existing. "
-                "You can choose yourself, but don't try to update it!"
             )
         elif stddev is not None:
             raise ValueError(
@@ -213,12 +208,14 @@ class LogUniformDistribution(ProbabilityDistribution):
         elif minimum is None and mean is not None and maximum is not None:
             self.mean = mean
             self.maximum = maximum
+            assert self.maximum is not None
             self.minimum = self._find_dist_minmax(
                 mean_val=self.mean, min_val=None, max_val=self.maximum
             )
         elif maximum is None and mean is not None and minimum is not None:
             self.mean = mean
             self.minimum = minimum
+            assert self.minimum is not None
             self.maximum = self._find_dist_minmax(
                 min_val=self.minimum, mean_val=self.mean, max_val=None
             )
@@ -253,10 +250,9 @@ class LogUniformDistribution(ProbabilityDistribution):
     def _find_dist_minmax(
         self,
         mean_val: float,
-        min_val: float = None,
-        max_val: float = None,
+        min_val: Optional[float] = None,
+        max_val: Optional[float] = None,
     ) -> float:
-        # pylint: disable=no-self-use
         """
         Find the distribution min or max for a loguniform distribution, assuming only
         one of these and the mean are given
@@ -271,7 +267,7 @@ class LogUniformDistribution(ProbabilityDistribution):
 
         """
         # pylint: disable=cell-var-from-loop
-        if min_val is None:
+        if min_val is None and max_val is not None:
             result = minimize(
                 lambda x: (mean_val - ((max_val - x) / np.log(max_val / x))) ** 2,
                 x0=mean_val,
@@ -279,7 +275,7 @@ class LogUniformDistribution(ProbabilityDistribution):
                 method="L-BFGS-B",
                 bounds=[(1e-9, mean_val)],
             ).x[0]
-        if max_val is None:
+        elif max_val is None and min_val is not None:
             result = minimize(
                 lambda x: (mean_val - ((x - min_val) / np.log(x / min_val))) ** 2,
                 x0=mean_val,
@@ -287,6 +283,8 @@ class LogUniformDistribution(ProbabilityDistribution):
                 method="L-BFGS-B",
                 bounds=[(mean_val, None)],
             ).x[0]
+        else:
+            raise ValueError("Exactly one of min_val or max_val must be None.")
         return result
 
 

@@ -13,6 +13,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changes
 - [#440](https://github.com/equinor/flownet/pull/440) Speeds up workflow by removing search for well starting date from inside for-loop when processing historical production data in `_schedule.py`.
+- FlowNet now requires Python 3.12 or newer (tested on 3.12 and 3.14) and ERT 26, and uses `resdata`/`res2df` instead of `ecl`/`ecl2df`.
+- ERT observation files are written with ISO dates (`YYYY-MM-DD`); the reader still accepts the legacy `DD/MM/YYYY` format.
+- Replaced deprecated pandas calls (`fillna(method=...)`, empty-frame concatenation), vectorised the volume distribution in `from_flow.py` and raised the lower bounds of loosely pinned dependencies.
+- CI uses newer GitHub Actions versions and caches pip downloads. Removed the pre-commit pre-push hook that pointed to the deleted `scripts/pre-push-checks.sh`.
 
 ## [0.5.3] - 2021-09-23
 
@@ -39,7 +43,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - [#383](https://github.com/equinor/flownet/pull/383) KRWMAX now defaulted to 1, but exposed to used. Previously it was hard coded to 1.
 - [#386](https://github.com/equinor/flownet/pull/386) Increase default timeout from 900 s to 3600 s.
 - [#363](https://github.com/equinor/flownet/pull/363) Drop Python 3.6 support.
-- [#361](https://github.com/equinor/flownet/pull/361) Adding numpy code for SWOF/SGOF table generation, instead of using pyscal, to improve computational efficiency when running many realizations with many SATNUM regions. Keeping pyscal in the tests for comparison. 
+- [#361](https://github.com/equinor/flownet/pull/361) Adding numpy code for SWOF/SGOF table generation, instead of using pyscal, to improve computational efficiency when running many realizations with many SATNUM regions. Keeping pyscal in the tests for comparison.
 
 ## [0.5.2] - 2021-03-19
 
@@ -48,10 +52,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - [#351](https://github.com/equinor/flownet/pull/351) Added simple plotting tool that allows for plotting of FlowNet ensembles and observations.
 
 ### Fixes
-- [#365](https://github.com/equinor/flownet/pull/365) Fixes bug where the parquet parameters file would not be saved for iterations larger than 9. 
+- [#365](https://github.com/equinor/flownet/pull/365) Fixes bug where the parquet parameters file would not be saved for iterations larger than 9.
 
 ### Changes
-- [#365](https://github.com/equinor/flownet/pull/365) Structure change of the code. Moved all forward models called from ERT to a seperate folder ert/forward_models. Scripts moved: delete_simulation_output, save_iteration_parameters, iteration_analytics, render_realization and flow_job. 
+- [#365](https://github.com/equinor/flownet/pull/365) Structure change of the code. Moved all forward models called from ERT to a seperate folder ert/forward_models. Scripts moved: delete_simulation_output, save_iteration_parameters, iteration_analytics, render_realization and flow_job.
 - [#347](https://github.com/equinor/flownet/pull/347) Additional flow nodes is now allowed to be either a list (equal length of number of layers) or a single integer (which will be split over the layers according to volume of concave hull).
 
 ## [0.5.1] - 2021-03-03
@@ -87,20 +91,20 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - [#221](https://github.com/equinor/flownet/pull/221) For traceability and reproducibility, the FlowNet configuration file is now automatically copied to the output folder. The content of 'pip freeze' is stored in the file 'pipfreeze.output' in the output folder.
 - [#220](https://github.com/equinor/flownet/pull/220) User can now provide the historical _control mode_ in the production wells and _control mode_/_target_ in the injection wells. One value for each, applied to all wells.
 - [#199](https://github.com/equinor/flownet/pull/199) Added the possibility of defining a 'base' value for all parameters related to relative permeability. This provides the opportunity to interpolate between three relative permeability models. All the 'min' values will be used to construct a pessimistic or low model, the 'base' values are used for a 'base' model, and the 'high' values are used for an optimistic or high model value. The history matching can then be done with only one (two for three phase models - oil/water and gas/oil interpolated independently) relative permeability parameter(s) per SATNUM region.
-- [#197](https://github.com/equinor/flownet/pull/197) Added opening/closing of connections based on straddling/plugging/perforations through time. This PR also adds a new perforation strategy `multiple_based_on_workovers` which models the well connections with as few connections as possible taking into account opening/closing of groups of connections. 
+- [#197](https://github.com/equinor/flownet/pull/197) Added opening/closing of connections based on straddling/plugging/perforations through time. This PR also adds a new perforation strategy `multiple_based_on_workovers` which models the well connections with as few connections as possible taking into account opening/closing of groups of connections.
 - [#188](https://github.com/equinor/flownet/pull/188) The possibility to extract regions from an input simulation model extended to also include SATNUM regions. For relative permeability, the scheme keyword can be set to 'regions_from_sim' in the configuration file.
 - [#189](https://github.com/equinor/flownet/pull/189) User can now provide both a _base_ configuration file, and an optional extra configuration file which will be used to override the base settings.
 - [#155](https://github.com/equinor/flownet/pull/155) Adds reading of simulation 'well logs' to condition the priors of permeability and porosity based using kriging
 
 ### Changed
-- [#199](https://github.com/equinor/flownet/pull/199) Removed deprecated parameters in pyscal ('krowend', 'krogend') from config file. Added 'kroend' to config file. 
+- [#199](https://github.com/equinor/flownet/pull/199) Removed deprecated parameters in pyscal ('krowend', 'krogend') from config file. Added 'kroend' to config file.
 - [#228](https://github.com/equinor/flownet/pull/228) FlowNet is now `pip` installable without any dependency compilations (also the custom ERT forward model running Flow is installed automatically). Note that any `simulator` part of configuration files need to be removed.
 
 
 ## [0.3.0] - 2020-09-14
 ### Added
 - [#160](https://github.com/equinor/flownet/pull/160) Adds the possibility to extract regions from an existing model when the data source is a simulation model. For equil, the scheme key can be set to 'regions_from_sim'
-- [#157](https://github.com/equinor/flownet/pull/157) Adds a new 'time-weighted average open perforation location' perforation strategy called `time_avg_open_location`. 
+- [#157](https://github.com/equinor/flownet/pull/157) Adds a new 'time-weighted average open perforation location' perforation strategy called `time_avg_open_location`.
 - [#150](https://github.com/equinor/flownet/pull/150) Adds this changelog.
 - [#146](https://github.com/equinor/flownet/pull/146) Added about page to documentation with logo of industry and research institute partners.
 - [#138](https://github.com/equinor/flownet/pull/138) Print message to terminal when the schedule is being generated instead of utter silence.
@@ -123,7 +127,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - [#89](https://github.com/equinor/flownet/pull/89), [#91](https://github.com/equinor/flownet/pull/91), [#99](https://github.com/equinor/flownet/pull/99) Updates and fixes in git workflow.
 - [#81](https://github.com/equinor/flownet/pull/81) Various bugfixes in the analysis workflow are now solved.
 - [#75](https://github.com/equinor/flownet/pull/75) Resampling via the config path is no longer supported. This PR removes also the resampling option from the config file parser.
- 
+
 ### Changed
 - [#147](https://github.com/equinor/flownet/pull/147) The observation uncertainty now only needs to be specified for the vectors that are actually used in the conditioning. This PR also adds possibility of defining uncertainty for WWIR and WGIR into the flownet config YAML.
 - [#132](https://github.com/equinor/flownet/pull/132) The observation uncertainty, used for conditioning models, is now exposed to the user via the configuration file instead of hidden in the `observations.yamlobs.jinja2` template. This PR also introduced a wider usage of passing around the `ConfigSuit.snapshot`.

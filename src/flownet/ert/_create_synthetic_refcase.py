@@ -1,7 +1,7 @@
 import pathlib
 
-from ecl.summary import EclSum
-from ecl.util.util import CTime
+from resdata.summary import Summary
+from resdata.util.util import CTime
 from matplotlib.dates import date2num
 
 from ..realization import Schedule
@@ -32,7 +32,7 @@ def create_synthetic_refcase(
         0, 0, 0, datetimes[0].day, datetimes[0].month, datetimes[0].year
     )
 
-    eclsum = EclSum.writer(str(case_name), start_time, nx, ny, nz)
+    summary = Summary.writer(str(case_name), start_time, nx, ny, nz)
 
     vectors = []
     for well in schedule.get_wells():
@@ -42,19 +42,16 @@ def create_synthetic_refcase(
         vectors.append(["WBHP", well, 0, "Sm3/day"])
 
     for vector in vectors:
-        # pylint: disable=no-member
-        EclSum.addVariable(eclsum, vector[0], vector[1], vector[2], vector[3])
+        summary.add_variable(vector[0], vector[1], vector[2], vector[3])
 
     for report_step, _ in enumerate(numdates):
         # pylint: disable=no-member
         if report_step == 0:
-            tstep = EclSum.addTStep(eclsum, 1, numdates[report_step] - numdates[0])
+            tstep = summary.add_t_step(1, numdates[report_step] - numdates[0])
         else:
-            tstep = EclSum.addTStep(
-                eclsum, report_step, numdates[report_step] - numdates[0]
-            )
+            tstep = summary.add_t_step(report_step, numdates[report_step] - numdates[0])
 
         for vector in vectors:
             tstep[f"{vector[0]}:{vector[1]}"] = 0
 
-    EclSum.fwrite(eclsum)
+    summary.fwrite()

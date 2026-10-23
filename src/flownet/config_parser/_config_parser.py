@@ -18,6 +18,14 @@ from ._config_transformations import (
 from ..data.from_flow import FlowData
 
 
+def _normalize_analysis_entries(config: Dict) -> Dict:
+    """Accept a single analysis mapping as shorthand for a one-entry list."""
+    ert_config = config.get("ert")
+    if isinstance(ert_config, dict) and isinstance(ert_config.get("analysis"), dict):
+        ert_config["analysis"] = [ert_config["analysis"]]
+    return config
+
+
 # Small workaround while waiting for https://github.com/equinor/configsuite/pull/157
 # to be merged and released in upstream ConfigSuite:
 def create_schema_without_arguments() -> Dict:
@@ -1951,7 +1959,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
 
 
 def parse_config(
-    base_config: pathlib.Path, update_config: pathlib.Path = None
+    base_config: pathlib.Path, update_config: Optional[pathlib.Path] = None
 ) -> ConfigSuite.snapshot:
     """
     Takes in path to a yaml configuration file, parses it, populates with default values
@@ -1976,6 +1984,7 @@ def parse_config(
             yaml.safe_load(base_config.read_text()),
             yaml.safe_load(update_config.read_text()),
         )
+    input_config = _normalize_analysis_entries(input_config)
 
     suite = ConfigSuite(
         input_config,
@@ -1991,6 +2000,7 @@ def parse_config(
 
     available_region_schemes = ["global", "individual", "regions_from_sim"]
     config = suite.snapshot
+    field_data: Optional[FlowData] = None
     if (
         config.model_parameters.relative_permeability.interpolate
         and config.model_parameters.relative_permeability.swcr_add_to_swl
@@ -2038,6 +2048,8 @@ def parse_config(
                 f"Valid options are {available_region_schemes}"
             )
         if scheme == "regions_from_sim":
+            if field_data is None:
+                raise ValueError("Simulation data is required for regions_from_sim.")
             if flow_region_name is not None:
                 reg_param_sim_model = getattr(
                     getattr(config.model_parameters, reg_param),

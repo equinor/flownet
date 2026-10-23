@@ -7,6 +7,7 @@ import numpy as np
 from ..utils.types import Coordinate
 from ._hull import check_in_hull
 
+
 # pylint: disable=too-many-branches,too-many-statements
 def mitchell_best_candidate(
     perforations: List[Coordinate],
@@ -53,15 +54,21 @@ def mitchell_best_candidate(
     # Read list of coordinate tuples and convert to 1D-numpy arrays
     x, y, z = (np.asarray(t) for t in zip(*perforations))
 
+    if mitchell_mode not in ("normal", "fast"):
+        raise ValueError(f"Unsupported Mitchell mode: {mitchell_mode}")
+    x_candidate = np.empty(0)
+    y_candidate = np.empty(0)
+    z_candidate = np.empty(0)
+
     # Number of real wells
     num_points = len(x)
 
     # Bounding box to place initial candidates in: reservoir volume or (scaled) convex hull of real perforations.
     if place_nodes_in_volume_reservoir and concave_hull_bounding_boxes is not None:
-        (x_min, y_min, z_min) = np.ndarray.min(
+        x_min, y_min, z_min = np.ndarray.min(
             concave_hull_bounding_boxes[:, [0, 2, 4]], axis=0
         )
-        (x_max, y_max, z_max) = np.ndarray.max(
+        x_max, y_max, z_max = np.ndarray.max(
             concave_hull_bounding_boxes[:, [1, 3, 5]], axis=0
         )
 

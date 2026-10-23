@@ -18,7 +18,7 @@ def bottom_point(df: pd.DataFrame) -> pd.DataFrame:
     """
     df_multiple = multiple(df)
     df_multiple_ever_true = (
-        df_multiple.groupby(["X", "Y", "Z", "WELL_NAME", "LAYER_ID"])
+        df_multiple.groupby(["X", "Y", "Z", "WELL_NAME", "LAYER_ID"])["OPEN"]
         .sum()
         .reset_index()
     )
@@ -52,7 +52,7 @@ def top_point(df: pd.DataFrame) -> pd.DataFrame:
     """
     df_multiple = multiple(df)
     df_multiple_ever_true = (
-        df_multiple.groupby(["X", "Y", "Z", "WELL_NAME", "LAYER_ID"])
+        df_multiple.groupby(["X", "Y", "Z", "WELL_NAME", "LAYER_ID"])["OPEN"]
         .sum()
         .reset_index()
     )
@@ -139,7 +139,7 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
             df_well_piv = df_well.pivot_table(
                 "OPEN", ["X", "Y", "Z", "WELL_NAME", "LAYER_ID"], "DATE"
             )
-            df_well_piv.fillna(method="ffill", axis=1, inplace=True)
+            df_well_piv.ffill(axis=1, inplace=True)
             df_well_piv.fillna(False, inplace=True)
             df_well_piv = df_well_piv.apply(lambda x: hash(tuple(x)), axis=1)
 
@@ -151,10 +151,17 @@ def multiple_based_on_workovers(df: pd.DataFrame) -> pd.DataFrame:
                 )
                 df_group["GROUPID"] = groupid
                 groupid += 1
-                df_groups = df_groups.append(df_group)
+                df_groups = (
+                    df_group
+                    if df_groups.empty
+                    else pd.concat([df_groups, df_group], ignore_index=True)
+                )
 
-            df_w_groups = df_w_groups.append(
-                df_well.merge(df_groups, how="left", on=["X", "Y", "Z"])
+            df_well_groups = df_well.merge(df_groups, how="left", on=["X", "Y", "Z"])
+            df_w_groups = (
+                df_well_groups
+                if df_w_groups.empty
+                else pd.concat([df_w_groups, df_well_groups], ignore_index=True)
             )
 
     # Step 2

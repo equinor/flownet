@@ -8,6 +8,7 @@ from flownet.ert.forward_models._iteration_analytics import (
     normalize_data,
     accuracy_metric,
 )
+from flownet.ert.forward_models.utils import normalize_ert_parameters
 
 
 def test_prepare_opm_reference_data() -> None:
@@ -59,6 +60,13 @@ def test_normalize_data() -> None:
         and np.allclose(tmp_3[0], res_5)
         and all(np.allclose(x, y) for x, y in zip(tmp_3[1], res_6))
     )
+
+
+def test_normalize_ert_parameters() -> None:
+    assert normalize_ert_parameters({"FLOWNET_PARAMETERS": {"0_perm": 1.25}}) == {
+        "0_perm": 1.25
+    }
+    assert normalize_ert_parameters({"0_perm": {"value": 1.25}}) == {"0_perm": 1.25}
 
 
 def test_calculation_accuracy_metric() -> None:

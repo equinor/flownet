@@ -189,7 +189,7 @@ def create_schema(config_folder: Optional[pathlib.Path] = None) -> Dict:
 
 
 def parse_pred_config(
-    base_config: pathlib.Path, update_config: pathlib.Path = None
+    base_config: pathlib.Path, update_config: Optional[pathlib.Path] = None
 ) -> ConfigSuite.snapshot:
     """
     Takes in path to a yaml configuration file, parses it, populates with default values

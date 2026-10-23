@@ -33,7 +33,7 @@ def run_ert_subprocess(
         cwd=cwd,
         shell=True,
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
         universal_newlines=True,
     ) as process:
 

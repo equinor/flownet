@@ -20,7 +20,7 @@ class NetworkModel:
         area: float,
         fault_planes: Optional[pd.DataFrame] = None,
         fault_tolerance: float = 1.0e-5,
-        volume_layering: List[float] = None,
+        volume_layering: Optional[List[float]] = None,
     ):
         """
         Creates a network of one dimensional models.
@@ -53,7 +53,7 @@ class NetworkModel:
 
         self._initial_cell_volumes = np.ones((len(self.connection_midpoints), 1))
         if volume_layering is None:
-            self._volume_layering = []
+            self._volume_layering: List[float] = []
         else:
             self._volume_layering = list(volume_layering)
 
@@ -266,23 +266,29 @@ class NetworkModel:
 
         df_concat = (
             df_concat.apply(
-                lambda x: np.rint(
-                    np.array((x - minx) * 1000 / (maxx - minx), dtype=np.double)
+                lambda x: (
+                    np.rint(
+                        np.array((x - minx) * 1000 / (maxx - minx), dtype=np.double)
+                    )
+                    if x.name in ["x"]
+                    else x
                 )
-                if x.name in ["x"]
-                else x
             )
             .apply(
-                lambda y: np.rint(
-                    np.array((y - miny) * 1000 / (maxy - miny), dtype=np.double)
+                lambda y: (
+                    np.rint(
+                        np.array((y - miny) * 1000 / (maxy - miny), dtype=np.double)
+                    )
+                    if y.name in ["y"]
+                    else y
                 )
-                if y.name in ["y"]
-                else y
             )
             .apply(
-                lambda z: np.rint(np.array((z - minz) * 1000 / zdist, dtype=np.double))
-                if z.name in ["z"]
-                else z
+                lambda z: (
+                    np.rint(np.array((z - minz) * 1000 / zdist, dtype=np.double))
+                    if z.name in ["z"]
+                    else z
+                )
             )
             .astype({"x": int, "y": int, "z": int})
         )
@@ -362,8 +368,10 @@ class NetworkModel:
 
         """
         dict_fault_keyword: Dict[str, List[int]] = {}
-        if self._fault_planes is not None:
-            fault_names = self._fault_planes["NAME"].unique().tolist()
+        fault_planes = self._fault_planes
+        if fault_planes is None:
+            return None
+        fault_names = fault_planes["NAME"].unique().tolist()
         if not fault_names:
             return None
 
@@ -374,7 +382,7 @@ class NetworkModel:
         all_triangles = np.empty(shape=[0, 9])
 
         for fault_name in fault_names:
-            data = self._fault_planes.loc[self._fault_planes["NAME"] == fault_name][
+            data = fault_planes.loc[fault_planes["NAME"] == fault_name][
                 ["X", "Y", "Z"]
             ].values
 
@@ -430,7 +438,7 @@ class NetworkModel:
 
             # Loop through all triangles inside of the bounding box and perform ray tracing
             cells_in_fault = []
-            for (triangle, fault_name) in list(
+            for triangle, fault_name in list(
                 zip(triangles_in_bounding_box, fault_names_in_bounding_box)
             ):
 
@@ -477,7 +485,7 @@ class NetworkModel:
         Returns:
             DataFrame of all corner-points needed to generate the grid.
         """
-        df_grid = pd.DataFrame()
+        grid_frames = []
 
         for index, row in self._df_entity_connections.iterrows():
             start = row[["xstart", "ystart", "zstart"]]
@@ -485,8 +493,11 @@ class NetworkModel:
             model = OneDimensionalModel(start, end, self._cell_length, self._area)
             new_df = model.df_coord
             new_df["model"] = index
-            df_grid = df_grid.append(new_df, sort=False)
+            grid_frames.append(new_df)
 
+        df_grid = (
+            pd.concat(grid_frames, ignore_index=True) if grid_frames else pd.DataFrame()
+        )
         df_grid.reset_index(inplace=True, drop=True)
 
         df_grid["z_mean"] = df_grid[

@@ -118,7 +118,7 @@ class OneDimensionalModel:
     @property
     def cell_length(self) -> float:
         """Actual cell length of the grid cells."""
-        return self._length / self._nactive
+        return float(self._length / self._nactive)
 
     @property
     def start(self) -> np.ndarray:
@@ -135,7 +135,7 @@ class OneDimensionalModel:
         """Length of one dimensional model, measured as distance between
         first and last grid cell mid point.
         """
-        return self._length
+        return float(self._length)
 
     @property
     def df_coord(self) -> pd.DataFrame:

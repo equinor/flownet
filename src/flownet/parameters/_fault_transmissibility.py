@@ -7,7 +7,6 @@ from ..network_model import NetworkModel
 from .probability_distributions import ProbabilityDistribution
 from ._base_parameter import Parameter, parameter_probability_distribution_class
 
-
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
     undefined=jinja2.StrictUndefined,

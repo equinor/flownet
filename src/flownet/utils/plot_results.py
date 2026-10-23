@@ -7,8 +7,8 @@ from typing import List, Optional
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
-from ecl.summary import EclSum
 from fmu import ensemble
+from resdata.summary import Summary
 
 from .observations import _read_ert_obs
 
@@ -82,7 +82,7 @@ def plot(
     vector: str,
     prior_data: list,
     posterior_data: list,
-    reference_simulation: Optional[EclSum],
+    reference_simulation: Optional[Summary],
     plot_settings: dict,
 ):
     """Main plotting function that generates a single plot
@@ -92,7 +92,7 @@ def plot(
         vector: Name of the vector to plot.
         prior_data: List of prior ensemble data DataFrames.
         posterior_data: List of posterior ensemble data DataFrames.
-        reference_simulation: EclSum object for the reference simulation.
+        reference_simulation: Summary object for the reference simulation.
         plot_settings: Settings dictionary for the plots.
 
     """
@@ -166,7 +166,7 @@ def plot(
             markersize="5",
         )
 
-    plt.ylim([plot_settings["ymin"], plot_settings["ymax"] / plot_settings["scale"]])
+    plt.ylim((plot_settings["ymin"], plot_settings["ymax"] / plot_settings["scale"]))
     plt.xlabel("date")
     if plot_settings["units"] != "":
         plt.ylabel(vector + " [" + plot_settings["units"] + "]")
@@ -435,7 +435,9 @@ def main():
         ertobs = None
 
     if args.reference_simulation is not None:
-        reference_eclsum = EclSum(str(args.reference_simulation.with_suffix(".UNSMRY")))
+        reference_eclsum = Summary(
+            str(args.reference_simulation.with_suffix(".UNSMRY"))
+        )
     else:
         reference_eclsum = None
 

@@ -6,7 +6,7 @@ from hyperopt import hp
 from hyperopt.pyll.base import Apply
 import yaml
 
-from ._config_parser import create_schema
+from ._config_parser import _normalize_analysis_entries, create_schema
 from ._merge_configs import merge_configs
 
 
@@ -147,6 +147,7 @@ def create_ahm_config(
             yaml.safe_load(base_config.read_text()),
             yaml.safe_load(update_config.read_text()),
         )
+    hyper_config = _normalize_analysis_entries(hyper_config)
     hyper_config = update_hyper_config(hyper_config, hyperparameter_values)[0]
 
     suite = ConfigSuite(

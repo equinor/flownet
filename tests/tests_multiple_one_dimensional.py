@@ -19,6 +19,6 @@ def test_mutliple_one_dimensional(tmp_path: pathlib.Path) -> None:
         model = OneDimensionalModel(
             coordinates[:3], coordinates[-3:], cell_length, cross_section_area
         )
-        df_grid = df_grid.append(model.df_coord)
+        df_grid = pd.concat([df_grid, model.df_coord], ignore_index=True)
 
     create_egrid(df_grid, tmp_path / "MULTIPLE_ONE_DIMENSIONAL_MODELS.EGRID")

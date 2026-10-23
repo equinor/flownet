@@ -3,14 +3,14 @@ import pathlib
 
 import pandas as pd
 
-from ecl import EclDataType
-from ecl.eclfile import EclKW
-from ecl.grid import EclGrid
+from resdata.grid import Grid
+from resdata.rd_type import ResDataType, ResdataTypeEnum
+from resdata.resfile import ResdataKW
 
 
 def construct_kw(
     name: str, values: List[Union[int, float]], int_type: bool = False
-) -> EclKW:
+) -> ResdataKW:
     """
     This function generates a Flow-type keyword for a given set of values.
 
@@ -23,9 +23,11 @@ def construct_kw(
         EclKW instance
 
     """
-    ecl_type = EclDataType.ECL_INT if int_type else EclDataType.ECL_FLOAT
+    ecl_type = ResDataType(
+        ResdataTypeEnum.RD_INT_TYPE if int_type else ResdataTypeEnum.RD_FLOAT_TYPE
+    )
 
-    keyword = EclKW(name, len(values), ecl_type)
+    keyword = ResdataKW(name, len(values), ecl_type)
 
     for i, _ in enumerate(values):
         keyword[i] = values[i]
@@ -94,7 +96,7 @@ def create_egrid(df_coord: pd.DataFrame, filename: pathlib.Path):
 
     actnum = df_coord["ACTNUM"].astype(int).values.flatten().tolist()
 
-    EclGrid.create(
+    Grid.create(
         (len(df_coord.index), 1, 1),
         construct_kw("ZCORN", zcorn),
         construct_kw("COORD", coord),

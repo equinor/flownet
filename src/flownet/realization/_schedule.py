@@ -33,9 +33,9 @@ class Schedule:
 
     def __init__(
         self,
-        network: NetworkModel = None,
+        network: Optional[NetworkModel] = None,
         df_production_data: Optional[pd.DataFrame] = None,
-        config: ConfigSuite.snapshot = None,
+        config: Optional[ConfigSuite.snapshot] = None,
     ):
         self._schedule_items: List = []
         self._prod_control_mode: str
@@ -55,11 +55,9 @@ class Schedule:
             self._inj_control_mode = "RATE"
             self._case_name = "none"
         else:
-            raise ValueError(
-                "Cannot initiate Schedule object. \
+            raise ValueError("Cannot initiate Schedule object. \
                 Either supply all arguments to fully initiate a Schedule object \
-                or nothing to initiate an empty Schedule object."
-            )
+                or nothing to initiate an empty Schedule object.")
 
     def _create_schedule(self):
         """
@@ -188,9 +186,9 @@ class Schedule:
                                 k1=0,
                                 k2=0,
                                 rw=0.22,
-                                status="OPEN"
-                                if well_connection_state["OPEN"]
-                                else "SHUT",
+                                status=(
+                                    "OPEN" if well_connection_state["OPEN"] else "SHUT"
+                                ),
                             )
                         )
 
@@ -224,12 +222,10 @@ class Schedule:
                     )
                 )
             except IndexError:
-                print(
-                    f"""The schedule could not be created for well '{well_name}'.\n
+                print(f"""The schedule could not be created for well '{well_name}'.\n
                 This most likely is a result of this well not having any connections.\n
                 Try adding more additional nodes, relax angle constraint for the Delaunay triangles,\n
-                maximum distance and/or convex hull."""
-                )
+                maximum distance and/or convex hull.""")
                 raise
 
     def _calculate_wconhist(self):
@@ -399,8 +395,8 @@ class Schedule:
         self,
         dates: Optional[Union[List[datetime.date], datetime.date]] = None,
         kw_class: Optional[Union[Keyword, str]] = None,
-        well_name: str = None,
-        ignore_nan: str = None,
+        well_name: Optional[str] = None,
+        ignore_nan: Optional[str] = None,
     ) -> List[Keyword]:
         """
         Returns a list of all keywords at given dates and/or of a
@@ -524,9 +520,9 @@ class Schedule:
             Maximum number of connections with the grid in a single well in the schedule
 
         """
-        return max([self.num_connections(well) for well in self.get_wells()], default=0)
+        return max((self.num_connections(well) for well in self.get_wells()), default=0)
 
-    def get_compdat(self, well_name: str = None) -> List[COMPDAT]:
+    def get_compdat(self, well_name: Optional[str] = None) -> List[COMPDAT]:
         """
         Function to retrieve all COMPDAT entries defined for a particular well.
 

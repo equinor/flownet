@@ -27,10 +27,84 @@ def create_webviz(output_folder: pathlib.Path, start_webviz: bool = True):
 
     generated_folder = "generated_app"
 
+    res2arrow = shutil.which("res2arrow") or str(
+        pathlib.Path(sys.executable).with_name("res2arrow")
+    )
+    if not pathlib.Path(res2arrow).is_file():
+        raise FileNotFoundError("res2arrow must be available on PATH to build Webviz")
+
+    for data_file in output_folder.glob(
+        "output/runpath/realization-*/*/eclipse/model/*.DATA"
+    ):
+        unsmry_file = data_file.with_suffix(".UNSMRY")
+        if not unsmry_file.is_file():
+            continue
+
+        runpath = data_file.parents[2]
+        arrow_folder = runpath / "share" / "results" / "unsmry"
+        arrow_file = arrow_folder / f"{data_file.stem}.arrow"
+        if (
+            arrow_file.is_file()
+            and arrow_file.stat().st_mtime >= unsmry_file.stat().st_mtime
+        ):
+            continue
+
+        arrow_folder.mkdir(parents=True, exist_ok=True)
+        subprocess.run(
+            [
+                res2arrow,
+                "summary",
+                str(data_file.resolve()),
+                "--arrow",
+                "--time_index",
+                "raw",
+                "--output",
+                str(arrow_file.resolve()),
+            ],
+            check=True,
+        )
+
+    webviz = shutil.which("webviz") or str(
+        pathlib.Path(sys.executable).with_name("webviz")
+    )
+    if not pathlib.Path(webviz).is_file():
+        raise FileNotFoundError(
+            "webviz must be available in the active Python environment"
+        )
+
+    # Webviz runs the generated app (copy_data.py) in a fresh interpreter without a
+    # __main__ guard. Python 3.14 defaults to "forkserver", which re-imports that
+    # script in worker processes and crashes, so run it with the "fork" start method.
+    webviz_main = (
+        "import runpy, subprocess, sys\n"
+        "_call = subprocess.call\n"
+        "def call(cmd, *args, **kwargs):\n"
+        "    if list(cmd[1:]) == ['copy_data.py']:\n"
+        "        cmd = [cmd[0], '-c', "
+        "'import multiprocessing, runpy; "
+        'multiprocessing.set_start_method("fork"); '
+        'runpy.run_path("copy_data.py", run_name="__main__")\']\n'
+        "    return _call(cmd, *args, **kwargs)\n"
+        "subprocess.call = call\n"
+        "webviz = sys.argv[1]\n"
+        "sys.argv = sys.argv[1:]\n"
+        "runpy.run_path(webviz, run_name='__main__')\n"
+    )
+
     subprocess.run(
-        f"webviz build ./webviz_config.yml --portable { generated_folder } --theme equinor",
+        [
+            sys.executable,
+            "-c",
+            webviz_main,
+            webviz,
+            "build",
+            "./webviz_config.yml",
+            "--portable",
+            generated_folder,
+            "--theme",
+            "equinor",
+        ],
         cwd=output_folder,
-        shell=True,
         check=True,
     )
 

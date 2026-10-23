@@ -10,6 +10,7 @@ from mlflow.entities import RunStatus
 import pandas as pd
 
 from ..ahm import run_flownet_history_matching
+from ..config_parser._merge_configs import merge_configs
 from ..config_parser._config_parser_hyperparam import (
     create_ahm_config,
     list_hyperparameters_names,
@@ -31,6 +32,10 @@ def run_flownet_hyperparameter(args: argparse.Namespace, hyperparameters: list):
     fmin_objective = partial(flownet_ahm_run, args=args)
 
     raw_config = yaml.safe_load(args.config.read_text())
+    if args.update_config is not None:
+        raw_config = merge_configs(
+            raw_config, yaml.safe_load(args.update_config.read_text())
+        )
 
     if raw_config["flownet"]["hyperopt"]["mode"] == "tpe":
         algo = tpe.suggest
@@ -82,7 +87,7 @@ def flownet_ahm_run(x: list, args: argparse.Namespace):
             yaml.safe_load(args.config.read_text()), []
         )
 
-        for (parameter, param_value) in zip(parameters, x):
+        for parameter, param_value in zip(parameters, x):
             mlflow.log_param(key=parameter, value=param_value)
 
         run_flownet_history_matching(config, run_args)

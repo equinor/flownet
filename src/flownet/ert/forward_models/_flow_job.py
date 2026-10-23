@@ -4,8 +4,12 @@ import subprocess
 from pathlib import Path
 import shutil
 
-from ert_shared.plugins.plugin_response import plugin_response
-from ert_shared.plugins.plugin_manager import hook_implementation
+try:
+    from ert.shared.plugins.plugin_manager import hook_implementation
+    from ert.shared.plugins.plugin_response import plugin_response
+except ModuleNotFoundError:
+    from ert_shared.plugins.plugin_manager import hook_implementation
+    from ert_shared.plugins.plugin_response import plugin_response
 
 
 @hook_implementation
@@ -37,12 +41,10 @@ def run_flow():
                 Please, use the environment variable $FLOW_PATH to indicate a path for OPM Flow"
             )
     elif flow_path is None:
-        raise RuntimeError(
-            r"OPM Flow could not be found.\n \
+        raise RuntimeError(r"OPM Flow could not be found.\n \
             Follow the instructions on https://opm-project.org/ to install OPM Flow.\n \
             If OPM Flow is already installed, make sure it is available in $PATH,\n \
-            or alternatively use the environment variable $FLOW_PATH."
-        )
+            or alternatively use the environment variable $FLOW_PATH.")
 
     subprocess.run([flow_path, args.data_file], check=True)
 

@@ -7,7 +7,6 @@ import pandas as pd
 from flownet.parameters._base_parameter import parameter_probability_distribution_class
 from flownet.parameters.probability_distributions import ProbabilityDistribution
 
-
 DATA = {
     "parameter": [
         "P1",
@@ -131,15 +130,15 @@ PD_LOOKUP = {
     "stddev": "stddev",
 }
 
-DISTRIBUTION_DF = pd.DataFrame(DATA)
+distribution_df = pd.DataFrame(DATA)
 # NaNs to None
-DISTRIBUTION_DF = DISTRIBUTION_DF.replace({np.nan: None})
+distribution_df = distribution_df.replace({np.nan: None})
 
 
 def test_probability_distributions() -> None:
     probdist: List[ProbabilityDistribution] = [
         parameter_probability_distribution_class(row)
-        for _, row in DISTRIBUTION_DF.iterrows()
+        for _, row in distribution_df.iterrows()
     ]
     for i in range(len(DATA.get("parameter"))):
         assert probdist[i].name.lower() == DATA["distribution"][i]

@@ -1,10 +1,12 @@
+from typing import Optional
+
 import numpy as np
 
 
 def check_in_hull(
     concave_hull_bounding_boxes: np.ndarray,
     coordinates: np.ndarray,
-    in_hull_known: np.ndarray = None,
+    in_hull_known: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     """Checks if all coordinates are inside the concave hull bounding boxes.
 

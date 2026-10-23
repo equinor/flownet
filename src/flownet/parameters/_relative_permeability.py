@@ -116,9 +116,9 @@ def interpolate_wo(parameter: float, scalrec: Dict) -> Dict:
     """
     # interpolate swirr, swl, swcr, sorw, nw, now, krwend, kroend
     if parameter < 0:
-        (i, j) = (1, 0)
+        i, j = (1, 0)
     else:
-        (i, j) = (1, 2)
+        i, j = (1, 2)
     parameter = abs(parameter)
 
     parameter_dict = {}
@@ -147,9 +147,9 @@ def interpolate_go(parameter: float, scalrec: Dict) -> Dict:
     """
     # interpolate swirr, swl, sgcr, sorg, ng, nog, krgend, kroend
     if parameter < 0:
-        (i, j) = (1, 0)
+        i, j = (1, 0)
     else:
-        (i, j) = (1, 2)
+        i, j = (1, 2)
     parameter = abs(parameter)
 
     parameter_dict = {}

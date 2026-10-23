@@ -9,6 +9,7 @@ import pandas as pd
 
 from flownet.parameters import Parameter
 from flownet.realization._simulation_realization import SimulationRealization
+from flownet.ert.forward_models.utils import normalize_ert_parameters
 
 
 def _ert_samples2simulation_input(
@@ -31,12 +32,14 @@ def _ert_samples2simulation_input(
     """
     if random_samples.suffix == ".json":
         with open(random_samples, "r", encoding="utf8") as json_file:
-            unsorted_random_samples = json.load(json_file)["FLOWNET_PARAMETERS"]
+            unsorted_random_samples = normalize_ert_parameters(json.load(json_file))
     elif random_samples.suffix == ".parquet":
         df = pd.read_parquet(random_samples)
-        unsorted_random_samples = json.loads(
-            df[df.index == realization_index].transpose().to_json()
-        )[str(realization_index)]
+        unsorted_random_samples = normalize_ert_parameters(
+            json.loads(df[df.index == realization_index].transpose().to_json())[
+                str(realization_index)
+            ]
+        )
     else:
         raise ValueError(f"Unknown file type {random_samples}")
 

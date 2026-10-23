@@ -37,7 +37,7 @@ def make_dataframe_simulation_data(
         runpath_list = glob.glob(path)
         iteration = "latest"
     elif mode == "ahm":
-        (i, runpath_list) = get_last_iteration(path)
+        i, runpath_list = get_last_iteration(path)
         iteration = str(i)
     else:
         raise ValueError(
@@ -57,7 +57,7 @@ def make_dataframe_simulation_data(
     n_realization = 0
 
     # Load all simulation results for the required vector keys
-    df_sim = pd.DataFrame()
+    simulation_dataframes = []
     for _, eclsum in realizations_dict.items():
         if eclsum and eclsum.dates[-1] >= end_date:
             df_realization = eclsum.pandas_frame(
@@ -66,14 +66,18 @@ def make_dataframe_simulation_data(
             df_realization["DATE"] = eclsum.dates
             df_realization["REALIZATION"] = n_realization
 
-            df_sim = df_sim.append(df_realization)
+            simulation_dataframes.append(df_realization)
             n_realization += 1
+
+    df_sim = (
+        pd.concat(simulation_dataframes) if simulation_dataframes else pd.DataFrame()
+    )
 
     return df_sim, iteration
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(prog=("Save ensemble predictions to CSV file."))
+    parser = argparse.ArgumentParser(prog="Save ensemble predictions to CSV file.")
     parser.add_argument("mode", type=str, help="Mode: ahm or pred")
     parser.add_argument("runpath", type=str, help="Path to the ERT runpath.")
     parser.add_argument(
@@ -120,7 +124,7 @@ def save_predictions():
     vector_keys = list(args.quantity.replace("[", "").replace("]", "").split(","))
 
     # Load ensemble of FlowNet
-    (df_sim, iteration) = make_dataframe_simulation_data(
+    df_sim, iteration = make_dataframe_simulation_data(
         args.mode,
         args.runpath,
         args.eclbase,

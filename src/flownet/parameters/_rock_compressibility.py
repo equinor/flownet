@@ -5,7 +5,6 @@ import jinja2
 from .probability_distributions import UniformDistribution, ProbabilityDistribution
 from ._base_parameter import Parameter
 
-
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
     undefined=jinja2.StrictUndefined,

@@ -12,7 +12,6 @@ from .probability_distributions import (
 )
 from ._base_parameter import Parameter
 
-
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
     undefined=jinja2.StrictUndefined,
@@ -44,9 +43,11 @@ class Permeability(Parameter):
         self._network: NetworkModel = network
 
         self._random_variables: List[ProbabilityDistribution] = [
-            LogUniformDistribution(row["minimum"], row["maximum"])
-            if row["loguniform"]
-            else UniformDistribution(row["minimum"], row["maximum"])
+            (
+                LogUniformDistribution(row["minimum"], row["maximum"])
+                if row["loguniform"]
+                else UniformDistribution(row["minimum"], row["maximum"])
+            )
             for _, row in distribution_values.iterrows()
         ]
 

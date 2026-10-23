@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 from numpy.testing import assert_almost_equal
-from ecl.grid import EclRegion
+from resdata.grid import ResdataRegion
 
 from flownet.data.from_flow import FlowData
 from flownet.network_model import NetworkModel
@@ -66,7 +66,7 @@ def test_grid_cell_bounding_boxes() -> None:
     # Test zero'th layer id
     flowdata._layers = ((1, 2), (3, 4))
     result = flowdata.grid_cell_bounding_boxes(0)
-    active_cells = EclRegion(flowdata.grid, True)
+    active_cells = ResdataRegion(flowdata.grid, True)
     active_cells.select_kslice(
         *tuple(map(operator.sub, flowdata._layers[0], (1, 1))), intersect=True
     )
@@ -77,7 +77,7 @@ def test_grid_cell_bounding_boxes() -> None:
     # Test last layer id
     flowdata._layers = ((1, 2), (3, 4))
     result = flowdata.grid_cell_bounding_boxes(1)
-    active_cells = EclRegion(flowdata.grid, True)
+    active_cells = ResdataRegion(flowdata.grid, True)
     active_cells.select_kslice(
         *tuple(map(operator.sub, flowdata._layers[-1], (1, 1))), intersect=True
     )

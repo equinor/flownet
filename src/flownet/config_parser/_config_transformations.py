@@ -21,7 +21,7 @@ def _integer_to_list(input_data: Union[List, int]) -> List:
 
 @configsuite.transformation_msg("Convert 'None' to None")
 def _str_none_to_none(
-    input_data: Union[str, int, float, None]
+    input_data: Union[str, int, float, None],
 ) -> Union[str, int, float, None]:
     """
     Converts "None" to None

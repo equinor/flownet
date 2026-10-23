@@ -98,12 +98,12 @@ def _from_regions_to_flow_tubes(
     tube_outside = []
     for i in network.grid.model.unique():
         tube_regions = []
-        for j in ti2ci[ti2ci.index == i].values:
+        for j in ti2ci[ti2ci.index == i].to_numpy().ravel():
             ijk = field_data.grid.find_cell(xyz_mid[0][j], xyz_mid[1][j], xyz_mid[2][j])
             if ijk is not None and field_data.grid.active(ijk=ijk):
                 tube_regions.append(field_data.init(region_name)[ijk])
         if tube_regions:
-            df_regions.append(mode(tube_regions).mode.tolist()[0])
+            df_regions.append(np.asarray(mode(tube_regions).mode).item())
         else:
             df_regions.append(None)
             tube_outside.append(i)
@@ -113,18 +113,17 @@ def _from_regions_to_flow_tubes(
         candidate_tubes = set(network.grid.model.unique()) - set(tube_outside)
         while tube_outside:
             i = tube_outside.pop(0)
-            first = True
+            if not candidate_tubes:
+                continue
+            shortest_index = next(iter(candidate_tubes))
+            shortest_dist = np.inf
             for j in candidate_tubes:
                 dist_to_tube = np.sqrt(
                     np.square(tube_midpoints[i][0] - tube_midpoints[j][0])
                     + np.square(tube_midpoints[i][1] - tube_midpoints[j][1])
                     + np.square(tube_midpoints[i][2] - tube_midpoints[j][2])
                 )
-                if first:
-                    first = False
-                    shortest_dist = dist_to_tube
-                    shortest_index = j
-                elif dist_to_tube < shortest_dist:
+                if dist_to_tube < shortest_dist:
                     shortest_dist = dist_to_tube
                     shortest_index = j
 
@@ -261,12 +260,12 @@ def _get_regional_distribution(
         df_dist_values[f"maximum_{parameter}_regional"] = parameter_config_regional.max
         df_dist_values[f"mean_{parameter}_regional"] = parameter_config_regional.mean
         df_dist_values[f"base_{parameter}_regional"] = parameter_config_regional.base
-        df_dist_values[
-            f"stddev_{parameter}_regional"
-        ] = parameter_config_regional.stddev
-        df_dist_values[
-            f"distribution_{parameter}_regional"
-        ] = parameter_config_regional.distribution
+        df_dist_values[f"stddev_{parameter}_regional"] = (
+            parameter_config_regional.stddev
+        )
+        df_dist_values[f"distribution_{parameter}_regional"] = (
+            parameter_config_regional.distribution
+        )
     return ci2ri, df_dist_values
 
 
@@ -667,7 +666,7 @@ def run_flownet_history_matching(
     satnum_max = field_data.init("SATNUM").get_max()  # type: ignore
 
     # Create a pandas dataframe with all parameter definition for each individual tube
-    relperm_dist_values = pd.DataFrame(columns=column_names_probdist + ["satnum"])
+    relperm_dist_frames: List[pd.DataFrame] = []
 
     relperm_parameters = config.model_parameters.relative_permeability.regions[
         0
@@ -684,11 +683,8 @@ def run_flownet_history_matching(
 
     relperm_parameters = relperm_dict
 
-    relperm_interp_values: Optional[pd.DataFrame] = (
-        pd.DataFrame(columns=list(relperm_parameters.keys()) + ["CASE", "SATNUM"])
-        if config.model_parameters.relative_permeability.interpolate
-        else None
-    )
+    relperm_interp_columns = list(relperm_parameters.keys()) + ["CASE", "SATNUM"]
+    relperm_interp_frames: List[pd.DataFrame] = []
 
     defined_satnum_regions = []
     if config.model_parameters.relative_permeability.scheme == "regions_from_sim":
@@ -762,21 +758,32 @@ def run_flownet_history_matching(
                 )
             info.append([i] * len(relperm_parameters))
 
-        if isinstance(relperm_interp_values, pd.DataFrame):
-            relperm_interp_values = relperm_interp_values.append(
+        if config.model_parameters.relative_permeability.interpolate:
+            relperm_interp_frames.append(
                 pd.DataFrame(
                     list(map(list, interp_info)),
-                    columns=list(relperm_parameters.keys()) + ["CASE", "SATNUM"],
-                ),
-                ignore_index=True,
+                    columns=relperm_interp_columns,
+                )
             )
 
-        relperm_dist_values = relperm_dist_values.append(
+        relperm_dist_frames.append(
             pd.DataFrame(
                 list(map(list, zip(*info))),
                 columns=column_names_probdist + ["satnum"],
-            ),
-            ignore_index=True,
+            )
+        )
+
+    relperm_dist_values = (
+        pd.concat(relperm_dist_frames, ignore_index=True)
+        if relperm_dist_frames
+        else pd.DataFrame(columns=column_names_probdist + ["satnum"])
+    )
+    relperm_interp_values: Optional[pd.DataFrame] = None
+    if config.model_parameters.relative_permeability.interpolate:
+        relperm_interp_values = (
+            pd.concat(relperm_interp_frames, ignore_index=True)
+            if relperm_interp_frames
+            else pd.DataFrame(columns=relperm_interp_columns)
         )
 
     #########################################
@@ -801,6 +808,10 @@ def run_flownet_history_matching(
     elif config.model_parameters.equil.scheme == "global":
         df_eqlnum = pd.DataFrame(
             [1] * len(network.grid.model.unique()), columns=["EQLNUM"]
+        )
+    else:
+        raise ValueError(
+            f"Unsupported equilibration scheme: {config.model_parameters.equil.scheme}"
         )
 
     # total number of regions in the field data
@@ -830,24 +841,33 @@ def run_flownet_history_matching(
             info.append(
                 [
                     getattr(equil_config_eqlnum[idx].datum_pressure, keyword),
-                    None
-                    if equil_config_eqlnum[idx].owc_depth is None
-                    else getattr(equil_config_eqlnum[idx].owc_depth, keyword),
-                    None
-                    if equil_config_eqlnum[idx].gwc_depth is None
-                    else getattr(equil_config_eqlnum[idx].gwc_depth, keyword),
-                    None
-                    if equil_config_eqlnum[idx].goc_depth is None
-                    else getattr(equil_config_eqlnum[idx].goc_depth, keyword),
+                    (
+                        None
+                        if equil_config_eqlnum[idx].owc_depth is None
+                        else getattr(equil_config_eqlnum[idx].owc_depth, keyword)
+                    ),
+                    (
+                        None
+                        if equil_config_eqlnum[idx].gwc_depth is None
+                        else getattr(equil_config_eqlnum[idx].gwc_depth, keyword)
+                    ),
+                    (
+                        None
+                        if equil_config_eqlnum[idx].goc_depth is None
+                        else getattr(equil_config_eqlnum[idx].goc_depth, keyword)
+                    ),
                 ]
             )
         info.append([i] * 4)
 
-        equil_dist_values = equil_dist_values.append(
-            pd.DataFrame(
-                list(map(list, zip(*info))),
-                columns=column_names_probdist + ["eqlnum"],
-            ),
+        equil_dist_values = pd.concat(
+            [
+                equil_dist_values,
+                pd.DataFrame(
+                    list(map(list, zip(*info))),
+                    columns=column_names_probdist + ["eqlnum"],
+                ),
+            ],
             ignore_index=True,
         )
 
@@ -862,7 +882,10 @@ def run_flownet_history_matching(
         for param in ["bulkvolume_mult", "porosity", "permeability"]
         if getattr(config.model_parameters, param + "_regional_scheme") != "individual"
     ]
-    (ci2ri, regional_porv_poro_trans_dist_values,) = _get_regional_distribution(
+    (
+        ci2ri,
+        regional_porv_poro_trans_dist_values,
+    ) = _get_regional_distribution(
         regional_parameters,
         config.model_parameters,
         network,
@@ -896,6 +919,8 @@ def run_flownet_history_matching(
             )
         elif aquifer_config.scheme == "global":
             df_aquid = pd.DataFrame([1] * len(network.aquifers_xyz), columns=["AQUID"])
+        else:
+            raise ValueError(f"Unsupported aquifer scheme: {aquifer_config.scheme}")
 
         # Create a pandas dataframe with all parameter definition for each individual tube
         aquifer_dist_values = pd.DataFrame(columns=column_names_probdist + ["aquid"])
@@ -914,11 +939,14 @@ def run_flownet_history_matching(
                 )
             info.append([i] * len(aquifer_parameters))
 
-            aquifer_dist_values = aquifer_dist_values.append(
-                pd.DataFrame(
-                    list(map(list, zip(*info))),
-                    columns=column_names_probdist + ["aquid"],
-                ),
+            aquifer_dist_values = pd.concat(
+                [
+                    aquifer_dist_values,
+                    pd.DataFrame(
+                        list(map(list, zip(*info))),
+                        columns=column_names_probdist + ["aquid"],
+                    ),
+                ],
                 ignore_index=True,
             )
 

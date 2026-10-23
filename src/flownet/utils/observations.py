@@ -1,6 +1,6 @@
 import os
 import pathlib
-from datetime import datetime
+from datetime import date, datetime
 import yaml
 
 
@@ -30,13 +30,21 @@ def _read_ert_obs(ert_obs_file_name: pathlib.Path) -> dict:
                     dic[tmp2[0]] = tmp2[1]
             if not dic["KEY"] in ert_obs:
                 ert_obs[dic["KEY"]] = [[], [], []]
-            ert_obs[dic["KEY"]][0].append(
-                datetime.strptime(dic["DATE"], "%d/%m/%Y").date()
-            )
+            ert_obs[dic["KEY"]][0].append(_parse_ert_date(dic["DATE"]))
             ert_obs[dic["KEY"]][1].append(float(dic["VALUE"]))
             ert_obs[dic["KEY"]][2].append(float(dic["ERROR"]))
 
     return ert_obs
+
+
+def _parse_ert_date(date_string: str) -> date:
+    """Parses an ERT observation date in ISO (YYYY-MM-DD) or legacy (DD/MM/YYYY) format."""
+    for date_format in ("%Y-%m-%d", "%d/%m/%Y"):
+        try:
+            return datetime.strptime(date_string, date_format).date()
+        except ValueError:
+            continue
+    raise ValueError(f"Unsupported ERT observation date format: {date_string}")
 
 
 def _read_yaml_obs(yaml_obs_file_name: pathlib.Path) -> dict:

@@ -3,9 +3,13 @@ repos:
     rev: v3.2.0
     hooks:
     - id: trailing-whitespace
+      stages: [pre-commit]
     - id: end-of-file-fixer
+      stages: [pre-commit]
     - id: check-yaml
+      stages: [pre-commit]
     - id: check-added-large-files
+      stages: [pre-commit]
 
   # - repo: https://github.com/asottile/seed-isort-config
   #   rev: v1.9.3
@@ -18,6 +22,7 @@ repos:
   #   - id: isort
 
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 26.10.0
     hooks:
     - id: black
+      stages: [pre-commit]

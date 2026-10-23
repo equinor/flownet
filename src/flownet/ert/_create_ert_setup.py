@@ -15,7 +15,6 @@ from ._create_synthetic_refcase import create_synthetic_refcase
 from ..parameters import Parameter
 from ..realization import Schedule
 
-
 _TEMPLATE_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.PackageLoader("flownet", "templates"),
     undefined=jinja2.StrictUndefined,
@@ -40,6 +39,10 @@ def resample_schedule_dates(schedule: Schedule, resampling: Optional[str]) -> Li
     df_dates_schedule = pd.to_datetime(schedule.get_dates())
 
     if resampling:
+        for old_suffix, new_suffix in {"M": "ME", "Q": "QE", "A": "YE"}.items():
+            if resampling.endswith(old_suffix):
+                resampling = resampling[: -len(old_suffix)] + new_suffix
+                break
         df_dates_resampled = pd.date_range(
             schedule.get_dates()[0],
             schedule.get_dates()[-1],
@@ -48,9 +51,7 @@ def resample_schedule_dates(schedule: Schedule, resampling: Optional[str]) -> Li
         df_schedule = pd.DataFrame(
             data=range(len(df_dates_schedule)), index=df_dates_schedule
         )
-        idx = np.zeros(len(df_dates_resampled), dtype=int)
-        for i, k in enumerate(df_dates_resampled):
-            idx[i] = df_schedule.index.get_loc(k, method="nearest")
+        idx = df_schedule.index.get_indexer(df_dates_resampled, method="nearest")
         dates = [
             d.date() for d in df_schedule.iloc[np.unique(idx)].index.to_pydatetime()
         ]
@@ -67,7 +68,6 @@ def create_observation_file(
     training_set_fraction: float = 1,
     yaml: bool = False,
 ):
-    # pylint: disable=no-self-use
     """
     Creates an ERT observation file from a given schedule instance.
     It has not yet been decided if schedule is to be given at creation or should be part
@@ -182,12 +182,12 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     output_folder = pathlib.Path(args.output_folder)
     os.makedirs(output_folder, exist_ok=True)
 
+    mode = "pred" if prediction_setup else "ahm"
+    path_ref_sim = pathlib.Path(".").resolve()
     if prediction_setup:
-        mode = "pred"
         if config.ert.ref_sim:
             path_ref_sim = pathlib.Path(config.ert.ref_sim).resolve()
-    elif not prediction_setup:
-        mode = "ahm"
+    else:
         # Derive absolute path to reference simulation case
         if config.flownet.data_source.simulation.input_case:
             path_ref_sim = pathlib.Path(
@@ -244,6 +244,11 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     shutil.copyfile(
         _MODULE_FOLDER / ".." / "static" / "DELETE_IN_CURRENT_ITERATION",
         output_folder / "DELETE_IN_CURRENT_ITERATION",
+    )
+
+    shutil.copyfile(
+        _MODULE_FOLDER / "forward_models" / "FLOW_SIMULATION",
+        output_folder / "FLOW_SIMULATION",
     )
 
     shutil.copyfile(

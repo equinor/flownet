@@ -15,7 +15,6 @@ from ..network_model import NetworkModel, create_egrid
 from ._schedule import Schedule
 from ..utils import write_grdecl_file
 
-
 MODULE_FOLDER = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
 
 
